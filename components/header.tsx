@@ -7,8 +7,10 @@ interface HeaderProps {
 const Header = ({ numberArticles }: HeaderProps) => {
   return (
     <header>
-      <h1>CDRXIV</h1>
-      <Box sx={{ fontSize: [1, 2, 3, 4] }}>{numberArticles} articles</Box>
+      <Box sx={{ fontSize: [5], fontFamily: 'heading' }}>CDRXIV</Box>
+      <Box sx={{ fontSize: [1, 2, 3, 4], fontFamily: 'mono' }}>
+        {numberArticles} articles
+      </Box>
     </header>
   )
 }
