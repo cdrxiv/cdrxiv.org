@@ -21,6 +21,7 @@ export const theme: Theme = {
     },
     mono: {
       fontFamily: 'mono',
+      fontSize: [1, 1, 1, 2],
     },
     monoCaps: {
       fontFamily: 'mono',
