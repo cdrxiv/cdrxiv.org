@@ -4,15 +4,16 @@ import { Link } from 'theme-ui'
 type LinkProps = {
   href: string
   children: React.ReactNode
+  showArrow?: boolean
 }
 
-const StyledLink = ({ href, children }: LinkProps) => {
+const StyledLink = ({ href, children, showArrow = true }: LinkProps) => {
   return (
     <Link
       sx={{ color: 'blue', ':visited': { color: 'visitedPurple' } }}
       href={href}
     >
-      {children} {'>>'}
+      {children} {showArrow && '>>'}
     </Link>
   )
 }
