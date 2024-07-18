@@ -43,20 +43,6 @@ const Card: React.FC<CardProps> = ({ title, authors, type, date }) => {
           height: '100%',
         }}
       >
-        <Box
-          sx={{
-            position: 'absolute',
-            top: `-${borderWidth}px`,
-            right: `-${borderWidth}px`,
-            border: `${borderWidth}px solid`,
-            borderColor: 'black',
-            height: foldSize,
-            width: foldSize,
-            backgroundColor: 'white',
-            borderRightColor: 'white',
-            borderTopColor: 'white',
-          }}
-        />
         <svg
           width={foldSize}
           height={foldSize}
@@ -68,13 +54,14 @@ const Card: React.FC<CardProps> = ({ title, authors, type, date }) => {
             pointerEvents: 'none',
           }}
         >
-          <line
-            x1='0'
-            y1='0'
-            x2={foldSize}
-            y2={foldSize}
-            stroke={(theme?.colors?.black as string) ?? 'black'}
-            strokeWidth={borderWidth}
+          <polygon
+            points={`0,0 0,${foldSize} ${foldSize},${foldSize}`}
+            fill={theme?.colors?.white as string}
+            stroke={theme?.colors?.black as string}
+          />
+          <polygon
+            points={`0,0 ${foldSize},0 ${foldSize},${foldSize}`}
+            fill={theme?.colors?.backgroundGray as string}
           />
         </svg>
 
