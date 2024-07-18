@@ -3,6 +3,7 @@ import Badge from './badge'
 import Link from './link'
 import Button from './button'
 import Card from './card'
+import Dropdown from './dropdown'
 
 interface HeaderProps {
   numberArticles: number
@@ -25,6 +26,12 @@ const Header = ({ numberArticles }: HeaderProps) => {
           date={new Date()}
           type='article'
         ></Card>
+        <Dropdown
+          title='Filter by'
+          selectedOption='All'
+          options={['All', 'Articles', 'Data']}
+          handleOptionChange={(e) => console.log(e.target.value)}
+        />
       </Box>
     </header>
   )
