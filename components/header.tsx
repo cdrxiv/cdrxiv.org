@@ -4,6 +4,7 @@ import Link from './link'
 import Button from './button'
 import Card from './card'
 import Dropdown from './dropdown'
+import TextInput from './input'
 
 interface HeaderProps {
   numberArticles: number
@@ -31,6 +32,11 @@ const Header = ({ numberArticles }: HeaderProps) => {
           selectedOption='All'
           options={['All', 'Articles', 'Data']}
           handleOptionChange={(e) => console.log(e.target.value)}
+        />
+        <TextInput
+          placeholder='Search'
+          title='Lookup'
+          handleChange={(e) => console.log(e.target.value)}
         />
       </Box>
     </header>
