@@ -4,13 +4,11 @@ import { Box, Input } from 'theme-ui'
 interface TextInputProps {
   title: string
   placeholder: string
-  value: string
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 const TextInput: React.FC<TextInputProps> = ({
   title,
-  value,
   handleChange,
   placeholder,
 }) => {
@@ -21,7 +19,6 @@ const TextInput: React.FC<TextInputProps> = ({
       </Box>
       <Input
         placeholder={placeholder}
-        value={value}
         onChange={handleChange}
         sx={{
           variant: 'text.body',
