@@ -6,7 +6,7 @@ import { Box, useThemeUI } from 'theme-ui'
 const foldSize = 100
 const margin = 12
 
-const BasicPage = ({ children }) => {
+const BasicPage = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useThemeUI()
   return (
     <Box sx={{ m: `${margin}px` }}>
