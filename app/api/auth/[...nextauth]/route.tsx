@@ -42,6 +42,25 @@ const handler = NextAuth({
   pages: {
     error: '/',
   },
-})
+  callbacks: {
+    async jwt({ token, account }) {
+      if (account?.access_token) {
+        return {
+          ...token,
+          accessToken: account.access_token,
+          refreshToken: account.refresh_token,
+        }
+      } else {
+        return token
+      }
+    },
+    async session({ session, token }) {
+      if (token?.accessToken) {
+        return { ...session, accessToken: token.accessToken }
+      }
 
+      return session
+    },
+  },
+})
 export { handler as GET, handler as POST }
