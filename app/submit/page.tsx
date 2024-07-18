@@ -27,7 +27,10 @@ const UserInfo = () => {
         </StyledLink>
         {expanded && (
           <Box sx={{ position: 'absolute', top: '28px' }}>
-            <StyledLink onClick={() => signOut()} showArrow={false}>
+            <StyledLink
+              onClick={() => signOut({ callbackUrl: '/' })}
+              showArrow={false}
+            >
               Sign out
             </StyledLink>
           </Box>
