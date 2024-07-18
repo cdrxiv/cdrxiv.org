@@ -18,8 +18,7 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
           borderColor: 'black',
         }}
       >
-        <Box
-          as='svg'
+        <svg
           width={foldSize}
           height={foldSize}
           viewBox={`0 0 ${foldSize} ${foldSize}`}
@@ -64,7 +63,7 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
             d='M46.6988 75.6341L51.6081 90.184L56.4585 75.6341H59.0526L52.8175 92.7206H50.3635L44.1401 75.6341H46.6988Z'
             fill={theme?.colors?.black as string}
           />
-        </Box>
+        </svg>
         {children}
       </Box>
     </Box>
