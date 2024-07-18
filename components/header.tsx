@@ -15,6 +15,9 @@ const Header = ({ numberArticles }: HeaderProps) => {
         <Link showArrow={false} href=''>
           about
         </Link>
+        <Link showArrow={false} href='/submit'>
+          submit
+        </Link>
         <Box sx={{ variant: 'text.body' }}>cdr study </Box>
       </Box>
     </header>
