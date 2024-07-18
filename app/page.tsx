@@ -1,11 +1,14 @@
-'use client'
-
 import Header from '../components/header'
+import BasicPage from '../components/basic-page'
 
-export default function Home() {
+const Home = () => {
   return (
     <main>
-      <Header numberArticles={10} />
+      <BasicPage>
+        <Header numberArticles={10} />
+      </BasicPage>
     </main>
   )
 }
+
+export default Home

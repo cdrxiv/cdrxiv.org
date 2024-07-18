@@ -1,3 +1,5 @@
+'use client'
+
 import { Box } from 'theme-ui'
 import Badge from './badge'
 import Link from './link'
