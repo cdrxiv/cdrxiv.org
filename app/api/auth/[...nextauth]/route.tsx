@@ -14,7 +14,14 @@ const Janeway: Provider = {
   token: 'https://carbonplan.endurance.janeway.systems/carbonplan/o/token/',
   userinfo: {
     request: async () => {
-      return { id: 'foo', pk: 'bar' }
+      return {
+        pk: 'pk',
+        email: 'email',
+        first_name: 'first_name',
+        middle_name: 'middle_name',
+        last_name: 'last_name',
+        orcid: 'orcid',
+      }
     },
   },
   checks: ['pkce'],
@@ -25,7 +32,7 @@ const Janeway: Provider = {
       first_name: profile.first_name,
       middle_name: profile.middle_name,
       last_name: profile.last_name,
-      orcid: profile.last_name,
+      orcid: profile.orcid,
     }
   },
 }
