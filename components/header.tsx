@@ -13,7 +13,7 @@ const Header = () => {
           <Box>
             <TextInput
               placeholder='Search'
-              handleChange={() => {}}
+              onChange={() => {}}
               backgroundColor='white'
               arrows={true}
             />
