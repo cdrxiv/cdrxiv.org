@@ -18,6 +18,7 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
       <Box
         sx={{
           height: '100%',
+          overflow: 'auto',
           bg: 'backgroundGray',
           p: 3,
           border: '1px solid',
