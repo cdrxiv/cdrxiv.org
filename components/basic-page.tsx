@@ -9,9 +9,15 @@ const margin = 12
 const BasicPage = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useThemeUI()
   return (
-    <Box sx={{ m: `${margin}px` }}>
+    <Box
+      sx={{
+        m: `${margin}px`,
+        height: `calc(100vh - 2 * ${margin}px)`,
+      }}
+    >
       <Box
         sx={{
+          height: '100%',
           bg: 'backgroundGray',
           p: 3,
           border: '1px solid',
