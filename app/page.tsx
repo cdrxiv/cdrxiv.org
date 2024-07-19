@@ -10,6 +10,7 @@ import Button from '../components/button'
 import Card from '../components/card'
 import Dropdown from '../components/dropdown'
 import TextInput from '../components/input'
+import Filter from '../components/filter'
 
 const Home = () => {
   return (
@@ -56,6 +57,21 @@ const Home = () => {
                 placeholder='Search'
                 title='Lookup'
                 onChange={(e) => console.log(e.target.value)}
+              />
+              <Filter
+                title='My Filter'
+                options={[
+                  { value: 'option1', label: 'Option 1' },
+                  { value: 'option2', label: 'Option 2' },
+                  { value: 'option3', label: 'Option 3' },
+                ]}
+                selectedValue={'option2'}
+                onChange={(e) => {
+                  console.log(e)
+                }}
+                label='My Filter'
+                showAll={true}
+                sx={{ mr: 4 }}
               />
             </Box>
           </Column>
