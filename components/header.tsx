@@ -1,12 +1,11 @@
 'use client'
 
-import { Box } from 'theme-ui'
-import Badge from './badge'
+import { Box, Flex } from 'theme-ui'
 import Link from './link'
-import Button from './button'
-import Card from './card'
-import Dropdown from './dropdown'
 import TextInput from './input'
+
+import Column from './column'
+import Row from './row'
 
 interface HeaderProps {
   numberArticles: number
@@ -15,32 +14,31 @@ interface HeaderProps {
 const Header = ({ numberArticles }: HeaderProps) => {
   return (
     <header>
-      <Box sx={{ variant: 'text.heading' }}>CDRXIV</Box>
-      <Box sx={{ fontSize: [1, 2, 3, 4], fontFamily: 'mono' }}>
-        <Badge color='articlePink'>article</Badge>
-        <Link showArrow={false} href=''>
-          about
-        </Link>
-        <Box sx={{ variant: 'text.body' }}>cdr study </Box>
-        <Button onClick={() => console.log('click')}>Submit</Button>
-        <Card
-          title='Enhanced weathering for unenhanced weather'
-          authors={['tyler et al']}
-          date={new Date()}
-          type='article'
-        ></Card>
-        <Dropdown
-          title='Filter by'
-          selectedOption='All'
-          options={['All', 'Articles', 'Data']}
-          handleOptionChange={(e) => console.log(e.target.value)}
-        />
-        <TextInput
-          placeholder='Search'
-          title='Lookup'
-          handleChange={(e) => console.log(e.target.value)}
-        />
-      </Box>
+      <Row columns={[12]} gap={4} sx={{ mt: 3 }}>
+        <Column start={1} width={3}>
+          <Box>
+            <TextInput
+              placeholder='Search'
+              handleChange={() => {}}
+              backgroundColor='white'
+              arrows={true}
+            />
+          </Box>
+        </Column>
+        <Column start={5} width={3}>
+          <Flex
+            sx={{
+              justifyContent: 'space-between',
+              height: '100%',
+              alignItems: 'center',
+            }}
+          >
+            <Link href=''>Home</Link>
+            <Link href=''>Channels</Link>
+            <Link href=''>Submit</Link>
+          </Flex>
+        </Column>
+      </Row>
     </header>
   )
 }

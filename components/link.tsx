@@ -14,7 +14,7 @@ const StyledLink: React.FC<LinkProps> = ({
   href,
   onClick,
   children,
-  showArrow = true,
+  showArrow = false,
 }) => {
   const commonStyles: ThemeUIStyleObject = {
     color: 'blue',
@@ -23,8 +23,8 @@ const StyledLink: React.FC<LinkProps> = ({
     background: 'none',
     border: 'none',
     padding: 0,
-    font: 'inherit',
     textDecoration: 'underline',
+    variant: 'text.body',
   }
 
   if (href !== undefined) {
