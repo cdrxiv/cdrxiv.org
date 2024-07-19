@@ -13,7 +13,7 @@ export const theme: Theme = {
   text: {
     heading: {
       fontFamily: 'heading',
-      fontSize: [5, 5, 5, 6],
+      fontSize: [4, 5, 5, 6],
     },
     body: {
       fontFamily: 'body',
@@ -41,4 +41,5 @@ export const theme: Theme = {
     dataGreen: '#74F889',
     visitedPurple: '#8032C7',
   },
+  breakpoints: ['40em', '64em', '102em'],
 }
