@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, ThemeUIStyleObject, useThemeUI } from 'theme-ui'
+import { Button, Link, ThemeUIStyleObject, useThemeUI } from 'theme-ui'
 
 type ButtonProps = {
   children: React.ReactNode
@@ -18,22 +18,34 @@ const StyledButton: React.FC<ButtonProps> = ({
   const grey = theme?.colors?.mediumGray ?? 'grey'
   const black = theme?.colors?.black ?? 'black'
 
-  const commonProps = {
-    sx: {
-      variant: 'text.monoCaps',
-      cursor: 'pointer',
-      color: 'blue',
-      background: 'white',
-      borderRadius: '0',
-      boxShadow: `1px 1px 0px 1px ${grey} inset, 
+  const commonStyles: ThemeUIStyleObject = {
+    variant: 'text.monoCaps',
+    cursor: 'pointer',
+    color: 'blue',
+    background: 'white',
+    borderRadius: '0',
+    boxShadow: `1px 1px 0px 1px ${grey} inset, 
                 -1px -1px 0px 1px ${black} inset`,
-      pb: [9, 9, 9, 11],
-      ...sx,
-    },
-    ...(href ? { as: 'a', href } : { onClick }),
+    pb: [9, 9, 9, 11],
+    ...sx,
   }
 
-  return <Button {...commonProps}>{children}</Button>
+  if (href !== undefined) {
+    return (
+      <Link
+        href={href}
+        sx={{ ...commonStyles, py: 2, px: 3, textDecoration: 'none' }}
+      >
+        {children}
+      </Link>
+    )
+  }
+
+  return (
+    <Button onClick={onClick} sx={commonStyles}>
+      {children}
+    </Button>
+  )
 }
 
 export default StyledButton

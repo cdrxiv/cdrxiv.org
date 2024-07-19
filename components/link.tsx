@@ -1,37 +1,46 @@
 import React from 'react'
-import { Link } from 'theme-ui'
+import { Link, Button, ThemeUIStyleObject } from 'theme-ui'
 
 type LinkProps = {
   href?: string
-  onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void
+  onClick?: (
+    event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>
+  ) => void
   children: React.ReactNode
   showArrow?: boolean
 }
 
-const StyledLink = ({
+const StyledLink: React.FC<LinkProps> = ({
   href,
   onClick,
   children,
   showArrow = true,
-}: LinkProps) => {
-  const linkProps = href ? { href } : { as: 'button', onClick }
+}) => {
+  const commonStyles: ThemeUIStyleObject = {
+    color: 'blue',
+    ':visited': { color: 'visitedPurple' },
+    cursor: 'pointer',
+    background: 'none',
+    border: 'none',
+    padding: 0,
+    font: 'inherit',
+    textDecoration: 'underline',
+  }
+
+  if (href !== undefined) {
+    return (
+      <Link href={href} sx={commonStyles}>
+        {children}
+        {showArrow && ' >>'}
+      </Link>
+    )
+  }
 
   return (
-    <Link
-      sx={{
-        color: 'blue',
-        ':visited': { color: 'visitedPurple' },
-        cursor: 'pointer',
-        background: 'none',
-        border: 'none',
-        padding: 0,
-        font: 'inherit',
-        textDecoration: 'underline',
-      }}
-      {...linkProps}
-    >
-      {children} {showArrow && '>>'}
-    </Link>
+    <Button onClick={onClick} sx={commonStyles}>
+      {children}
+      {showArrow && ' >>'}
+    </Button>
   )
 }
 
