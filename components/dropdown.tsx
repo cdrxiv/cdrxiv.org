@@ -15,7 +15,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   handleOptionChange,
 }) => {
   return (
-    <Box sx={{ mx: 2 }}>
+    <>
       <Box sx={{ variant: 'text.monoCaps', my: 2, fontSize: [1, 1, 1, 2] }}>
         {title}
       </Box>
@@ -50,7 +50,7 @@ const Dropdown: React.FC<DropdownProps> = ({
           </option>
         ))}
       </Select>
-    </Box>
+    </>
   )
 }
 
