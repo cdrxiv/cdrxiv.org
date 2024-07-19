@@ -69,7 +69,6 @@ const Home = () => {
                 onChange={(e) => {
                   console.log(e)
                 }}
-                label='My Filter'
                 showAll={true}
                 sx={{ mr: 4 }}
               />
