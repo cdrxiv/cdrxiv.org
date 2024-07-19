@@ -1,5 +1,3 @@
-'use client'
-
 import { Box, Flex } from 'theme-ui'
 import Link from './link'
 import TextInput from './input'
@@ -7,11 +5,7 @@ import TextInput from './input'
 import Column from './column'
 import Row from './row'
 
-interface HeaderProps {
-  numberArticles: number
-}
-
-const Header = ({ numberArticles }: HeaderProps) => {
+const Header = () => {
   return (
     <header>
       <Row columns={[12]} gap={4} sx={{ mt: 3 }}>

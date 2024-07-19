@@ -16,7 +16,7 @@ const TextInput: React.FC<TextInputProps> = ({
   backgroundColor,
   arrows,
 }) => (
-  <Box sx={{ mx: 2 }}>
+  <>
     {title && (
       <Box sx={{ variant: 'text.monoCaps', fontSize: [1, 1, 1, 2], my: 2 }}>
         {title}
@@ -52,7 +52,7 @@ const TextInput: React.FC<TextInputProps> = ({
         </Box>
       )}
     </Box>
-  </Box>
+  </>
 )
 
 export default TextInput

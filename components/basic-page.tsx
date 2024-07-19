@@ -2,12 +2,14 @@
 
 import React from 'react'
 import { Box, useThemeUI } from 'theme-ui'
+import Header from './header'
 
 const foldSize = 100
 const margin = 12
 
 const BasicPage = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useThemeUI()
+
   return (
     <Box
       sx={{
@@ -25,6 +27,7 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
           borderColor: 'black',
         }}
       >
+        <Header />
         <svg
           width={foldSize}
           height={foldSize}
