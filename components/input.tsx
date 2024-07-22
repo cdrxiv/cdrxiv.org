@@ -6,7 +6,6 @@ interface TextInputProps {
   title?: string
   placeholder?: string
   backgroundColor?: string
-  arrows?: boolean
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -14,7 +13,6 @@ const TextInput: React.FC<TextInputProps> = ({
   onChange,
   placeholder,
   backgroundColor,
-  arrows,
 }) => (
   <>
     {title && (
@@ -32,25 +30,10 @@ const TextInput: React.FC<TextInputProps> = ({
           borderColor: 'mediumGray',
           borderRadius: 0,
           background: backgroundColor ?? 'backgroundGray',
-          pl: 3,
-          pr: arrows ? 5 : 3,
+          px: 3,
           width: '100%',
         }}
       />
-      {arrows && (
-        <Box
-          sx={{
-            position: 'absolute',
-            right: 3,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            color: 'blue',
-            letterSpacing: '0.1em',
-          }}
-        >
-          &gt;&gt;
-        </Box>
-      )}
     </Box>
   </>
 )

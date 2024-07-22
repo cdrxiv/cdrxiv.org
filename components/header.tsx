@@ -1,6 +1,6 @@
 import { Box, Flex } from 'theme-ui'
 import Link from './link'
-import TextInput from './input'
+import TextInput from './search'
 
 import Column from './column'
 import Row from './row'
