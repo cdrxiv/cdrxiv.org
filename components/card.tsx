@@ -66,7 +66,9 @@ const Card: React.FC<CardProps> = ({ title, authors, type, date }) => {
         height='100%'
         viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
         stroke={
-          hovered ? theme?.colors?.blue : (theme?.colors?.black as string)
+          hovered
+            ? (theme?.colors?.blue as string)
+            : (theme?.colors?.black as string)
         }
         style={{
           position: 'absolute',
