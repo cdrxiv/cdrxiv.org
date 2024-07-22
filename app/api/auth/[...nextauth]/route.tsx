@@ -43,8 +43,7 @@ const handler = NextAuth({
     error: '/',
   },
   callbacks: {
-    async jwt({ token, account, ...rest }) {
-      console.log('jwt', account)
+    async jwt({ token, account }) {
       // Refresh token logic adapted from from https://authjs.dev/guides/refresh-token-rotation?_gl=1*116ih1f*_gcl_au*NDA1OTU5Mzg1LjE3MjEyMzMwMzguNDQ4ODcyNDc2LjE3MjEzMzM1OTkuMTcyMTMzNTY2NQ..
 
       if (account) {
