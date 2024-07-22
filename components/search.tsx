@@ -24,7 +24,8 @@ const Search: React.FC<SearchProps> = ({
         onChange={onChange}
         sx={{
           variant: 'text.monoCaps',
-          border: 0,
+          border: '1px solid',
+          borderColor: 'transparent',
           borderRadius: 1,
           boxShadow: `1px 1px 1px 1px ${black} inset, 
                 -1px -1px 1px 1px ${grey} inset`,
@@ -33,8 +34,12 @@ const Search: React.FC<SearchProps> = ({
           pl: 3,
           pr: arrows ? 5 : 3,
           width: '100%',
+          outline: 'none',
           '::placeholder': { color: 'black' },
-          ':focus': { '::placeholder': { color: 'mediumGray' } },
+          ':focus': {
+            '::placeholder': { color: 'mediumGray' },
+            borderColor: 'blue',
+          },
         }}
       />
       {arrows && (
