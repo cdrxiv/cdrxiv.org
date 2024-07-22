@@ -25,7 +25,7 @@ const formatDate = (date: Date): string => {
 
 const Card: React.FC<CardProps> = ({ title, authors, type, date }) => {
   const { theme } = useThemeUI()
-  const color = type === 'article' ? 'articlePink' : 'dataGreen'
+  const badgeColor = type === 'article' ? 'articlePink' : 'dataGreen'
   const [hovered, setHovered] = React.useState(false)
   const [dimensions, setDimensions] = useState({
     width: cardWidth,
@@ -65,6 +65,9 @@ const Card: React.FC<CardProps> = ({ title, authors, type, date }) => {
         width='100%'
         height='100%'
         viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
+        stroke={
+          hovered ? theme?.colors?.blue : (theme?.colors?.black as string)
+        }
         style={{
           position: 'absolute',
           top: 0,
@@ -78,7 +81,6 @@ const Card: React.FC<CardProps> = ({ title, authors, type, date }) => {
             dimensions.height - borderWidth
           } H ${borderWidth} Z`}
           fill={theme?.colors?.white as string}
-          stroke={theme?.colors?.black as string}
           strokeWidth={borderWidth}
         />
         <path
@@ -87,8 +89,7 @@ const Card: React.FC<CardProps> = ({ title, authors, type, date }) => {
           } ${cornerSize} M ${
             dimensions.width - cornerSize
           } ${borderWidth} V ${cornerSize} H ${dimensions.width - borderWidth}`}
-          fill='none'
-          stroke={theme?.colors?.black as string}
+          fill={hovered ? (theme?.colors?.backgroundGray as string) : 'none'}
           strokeWidth={borderWidth}
         />
       </svg>
@@ -103,7 +104,15 @@ const Card: React.FC<CardProps> = ({ title, authors, type, date }) => {
         }}
       >
         <Flex sx={{ flexDirection: 'column' }}>
-          <Box sx={{ variant: 'text.body', mb: 2 }}>{title}</Box>
+          <Box
+            sx={{
+              variant: 'text.body',
+              mb: 2,
+              color: hovered ? 'blue' : 'black',
+            }}
+          >
+            {title}
+          </Box>
           <Box sx={{ variant: 'text.mono' }}>{authors.join(', ')}</Box>
         </Flex>
 
@@ -114,7 +123,7 @@ const Card: React.FC<CardProps> = ({ title, authors, type, date }) => {
             mt: 3,
           }}
         >
-          <Badge color={color}>{type}</Badge>
+          <Badge color={badgeColor}>{type}</Badge>
           <Box sx={{ variant: 'text.monoCaps', fontSize: [1, 1, 1, 2] }}>
             {formatDate(date)}
           </Box>
