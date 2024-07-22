@@ -69,7 +69,6 @@ const Home = () => {
                 <option value='All'>All</option>
                 <option value='Articles'>Articles</option>
                 <option value='Data'>Data</option>
-                <div> test</div>
               </Dropdown>
               <TextInput
                 placeholder='Search'
