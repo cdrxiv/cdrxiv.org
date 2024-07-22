@@ -15,7 +15,7 @@ interface CardProps {
 const cardWidth = 420
 const cardHeight = 240
 const cornerSize = 40
-const borderWidth = 2
+const borderWidth = 1
 
 const formatDate = (date: Date): string => {
   const options: Intl.DateTimeFormatOptions = {
@@ -102,10 +102,9 @@ const Card: React.FC<CardProps> = ({
       }}
     >
       <svg
-        width='100%'
-        height='100%'
         viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
         stroke={color}
+        shapeRendering={'crispEdges'}
         style={{
           position: 'absolute',
           top: 0,
