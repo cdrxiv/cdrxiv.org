@@ -47,6 +47,20 @@ const Home = () => {
                 date={new Date()}
                 type='article'
               ></Card>
+              <Card
+                title='Enhanced weathering for unenhanced weather href'
+                authors={['tyler et al']}
+                date={new Date()}
+                type='article'
+                href='/submit'
+              ></Card>
+              <Card
+                title='Enhanced weathering for unenhanced weather onclick'
+                authors={['tyler et al']}
+                date={new Date()}
+                type='article'
+                onClick={() => console.log('click')}
+              ></Card>
               <Dropdown
                 title='Filter by'
                 selectedOption='All'

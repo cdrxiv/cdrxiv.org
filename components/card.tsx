@@ -1,12 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Box, Flex, useThemeUI } from 'theme-ui'
 import Badge from './badge'
+import { useRouter } from 'next/navigation'
 
 interface CardProps {
   title: string
   authors: Array<string>
   type: 'article' | 'data'
   date: Date
+  href?: string
+  onClick?: () => void
 }
 
 const cardWidth = 420
@@ -23,8 +26,17 @@ const formatDate = (date: Date): string => {
   return date.toLocaleDateString('en-US', options)
 }
 
-const Card: React.FC<CardProps> = ({ title, authors, type, date }) => {
+const Card: React.FC<CardProps> = ({
+  title,
+  authors,
+  type,
+  date,
+  href,
+  onClick,
+}) => {
   const { theme } = useThemeUI()
+  const router = useRouter()
+
   const [hovered, setHovered] = useState<boolean>(false)
   const [dimensions, setDimensions] = useState<{
     width: number
@@ -53,8 +65,17 @@ const Card: React.FC<CardProps> = ({ title, authors, type, date }) => {
     }
   }, [])
 
+  const handleClick = () => {
+    if (href) {
+      router.push(href)
+    } else if (onClick) {
+      onClick()
+    }
+  }
+
   return (
     <Box
+      onClick={handleClick}
       ref={ref}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
