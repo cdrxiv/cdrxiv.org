@@ -25,14 +25,15 @@ const formatDate = (date: Date): string => {
 
 const Card: React.FC<CardProps> = ({ title, authors, type, date }) => {
   const { theme } = useThemeUI()
-  const badgeColor = type === 'article' ? 'articlePink' : 'dataGreen'
   const [hovered, setHovered] = React.useState(false)
   const [dimensions, setDimensions] = useState({
     width: cardWidth,
     height: cardHeight,
   })
-
   const ref = React.useRef<HTMLDivElement>(null)
+
+  const badgeColor = type === 'article' ? 'articlePink' : 'dataGreen'
+  const color = hovered ? 'blue' : 'black'
 
   useEffect(() => {
     const handleResize = () => {
@@ -52,8 +53,8 @@ const Card: React.FC<CardProps> = ({ title, authors, type, date }) => {
   return (
     <Box
       ref={ref}
-      onMouseOver={() => setHovered(true)}
-      onMouseOut={() => setHovered(false)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       sx={{
         position: 'relative',
         width: ['100%', `${cardWidth}px`],
@@ -65,11 +66,7 @@ const Card: React.FC<CardProps> = ({ title, authors, type, date }) => {
         width='100%'
         height='100%'
         viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
-        stroke={
-          hovered
-            ? (theme?.colors?.blue as string)
-            : (theme?.colors?.black as string)
-        }
+        stroke={color}
         style={{
           position: 'absolute',
           top: 0,
@@ -110,7 +107,7 @@ const Card: React.FC<CardProps> = ({ title, authors, type, date }) => {
             sx={{
               variant: 'text.body',
               mb: 2,
-              color: hovered ? 'blue' : 'black',
+              color,
             }}
           >
             {title}
