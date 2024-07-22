@@ -68,8 +68,8 @@ const handler = NextAuth({
             {
               headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
               body: new URLSearchParams({
-                client_id: process.env.AUTH_CLIENT_ID,
-                client_secret: process.env.AUTH_CLIENT_SECRET,
+                client_id: process.env.AUTH_CLIENT_ID as string,
+                client_secret: process.env.AUTH_CLIENT_SECRET as string,
                 grant_type: 'refresh_token',
                 refresh_token: token.refreshToken as string,
               }),
