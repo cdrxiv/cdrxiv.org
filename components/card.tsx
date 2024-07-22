@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Box, Flex, useThemeUI } from 'theme-ui'
 import Badge from './badge'
 
@@ -25,15 +25,18 @@ const formatDate = (date: Date): string => {
 
 const Card: React.FC<CardProps> = ({ title, authors, type, date }) => {
   const { theme } = useThemeUI()
-  const [hovered, setHovered] = React.useState(false)
-  const [dimensions, setDimensions] = useState({
+  const [hovered, setHovered] = useState<boolean>(false)
+  const [dimensions, setDimensions] = useState<{
+    width: number
+    height: number
+  }>({
     width: cardWidth,
     height: cardHeight,
   })
-  const ref = React.useRef<HTMLDivElement>(null)
+  const ref = useRef<HTMLDivElement>(null)
 
-  const badgeColor = type === 'article' ? 'articlePink' : 'dataGreen'
-  const color = hovered ? 'blue' : 'black'
+  const badgeColor: string = type === 'article' ? 'articlePink' : 'dataGreen'
+  const color: string = hovered ? 'blue' : 'black'
 
   useEffect(() => {
     const handleResize = () => {
@@ -114,7 +117,6 @@ const Card: React.FC<CardProps> = ({ title, authors, type, date }) => {
           </Box>
           <Box sx={{ variant: 'text.mono' }}>{authors.join(', ')}</Box>
         </Flex>
-
         <Flex
           sx={{
             justifyContent: 'space-between',
