@@ -72,18 +72,33 @@ const Card: React.FC<CardProps> = ({
       onClick()
     }
   }
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      handleClick()
+    }
+  }
 
   return (
     <Box
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
       ref={ref}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
+      tabIndex={0}
+      role='button'
+      aria-label={`${type} titled ${title} by ${authors.join(', ')}, published on ${formatDate(
+        date,
+      )}`}
       sx={{
         position: 'relative',
         width: ['100%', `${cardWidth}px`],
         height: ['auto', `${cardHeight}px`],
         cursor: 'pointer',
+        outline: 'none', // use highlight style for focus instead
       }}
     >
       <svg
