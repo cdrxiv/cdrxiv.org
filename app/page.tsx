@@ -63,10 +63,14 @@ const Home = () => {
               ></Card>
               <Dropdown
                 title='Filter by'
-                selectedOption='All'
-                options={['All', 'Articles', 'Data']}
-                handleOptionChange={(e) => console.log(e.target.value)}
-              />
+                value='Data'
+                onChange={(e) => console.log(e.target.value)}
+              >
+                <option value='All'>All</option>
+                <option value='Articles'>Articles</option>
+                <option value='Data'>Data</option>
+                <div> test</div>
+              </Dropdown>
               <TextInput
                 placeholder='Search'
                 title='Lookup'

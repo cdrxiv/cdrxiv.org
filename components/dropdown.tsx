@@ -3,16 +3,18 @@ import { Box, Select } from 'theme-ui'
 
 interface DropdownProps {
   title: string
-  options: string[]
-  selectedOption: string
-  handleOptionChange: (event: React.ChangeEvent<HTMLSelectElement>) => void
+  value: string
+  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void
+  children:
+    | React.ReactElement<HTMLOptionElement>
+    | React.ReactElement<HTMLOptionElement>[]
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
   title,
-  options,
-  selectedOption,
-  handleOptionChange,
+  value,
+  onChange,
+  children,
 }) => {
   return (
     <>
@@ -20,8 +22,8 @@ const Dropdown: React.FC<DropdownProps> = ({
         {title}
       </Box>
       <Select
-        value={selectedOption}
-        onChange={handleOptionChange}
+        value={value}
+        onChange={onChange}
         arrow={
           <Box
             sx={{
@@ -44,11 +46,7 @@ const Dropdown: React.FC<DropdownProps> = ({
           px: 3,
         }}
       >
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
+        {children}
       </Select>
     </>
   )
