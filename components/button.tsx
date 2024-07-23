@@ -23,7 +23,7 @@ const StyledButton: React.FC<ButtonProps> = ({
     cursor: 'pointer',
     color: 'blue',
     background: 'white',
-    borderRadius: '0',
+    borderRadius: 0,
     boxShadow: `1px 1px 0px 1px ${grey} inset, 
                 -1px -1px 0px 1px ${black} inset`,
     pb: [9, 9, 9, 11],
