@@ -53,8 +53,14 @@ const Filter: React.FC<FilterProps> = ({
               borderBottomWidth: selectedValue === option.value ? '3px' : '1px',
               userSelect: 'none',
               mr: 2,
-              p: 0,
+              p: 1,
+              pb: 0,
               color: 'blue',
+              ':focus': {
+                boxShadow:
+                  'inset 0 3px 0 -2px blue, inset -3px 0 0 -2px blue, inset 3px 0 0 -2px blue',
+                outline: 'none',
+              },
               ...sx,
             }}
           >
