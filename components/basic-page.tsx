@@ -9,7 +9,6 @@ const margin = 12
 
 const BasicPage = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useThemeUI()
-
   return (
     <Box
       sx={{
@@ -39,13 +38,12 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
             right: `${margin}px`,
           }}
         >
-          <rect
-            width={foldSize}
-            height={foldSize}
+          <path
+            d={`M0 0 H${foldSize} V${foldSize} H0 L0 0`}
             fill={theme?.colors?.white as string}
           />
           <path
-            d='M0.5 1.20711L98.7929 99.5H0.5V1.20711Z'
+            d={`M0 ${foldSize} L0 0 L${foldSize} ${foldSize} Z`}
             fill={theme?.colors?.mediumGray as string}
             stroke={theme?.colors?.black as string}
           />
@@ -74,7 +72,7 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
             fill={theme?.colors?.black as string}
           />
         </svg>
-        {children}
+        <Box sx={{ mt: 100 }}>{children}</Box>
       </Box>
     </Box>
   )

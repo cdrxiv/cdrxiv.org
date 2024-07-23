@@ -1,23 +1,30 @@
-import { Box, Flex } from 'theme-ui'
+import { Flex, useThemeUI } from 'theme-ui'
 import Link from './link'
-import TextInput from './search'
-
+import Search from './search'
 import Column from './column'
 import Row from './row'
+
+const margin = 12
 
 const Header = () => {
   return (
     <header>
-      <Row columns={[12]} gap={4} sx={{ mt: 3 }}>
+      <Row
+        columns={[12]}
+        gap={4}
+        sx={{
+          position: 'fixed',
+          width: 'calc(100% - 2 * 13px)',
+          height: '100px',
+          top: margin + 1,
+          left: margin + 1,
+          px: 52,
+          alignContent: 'center',
+          backgroundColor: 'backgroundGray',
+        }}
+      >
         <Column start={1} width={3}>
-          <Box>
-            <TextInput
-              placeholder='Search'
-              onChange={() => {}}
-              backgroundColor='white'
-              arrows={true}
-            />
-          </Box>
+          <Search placeholder='Search' onChange={() => {}} arrows={true} />
         </Column>
         <Column start={5} width={3}>
           <Flex
