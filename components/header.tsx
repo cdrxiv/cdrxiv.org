@@ -84,7 +84,7 @@ const Header = () => {
           height: '100px',
           top: margin,
           left: margin,
-          px: 52,
+          px: 40,
           alignContent: 'center',
           backgroundColor: 'backgroundGray',
           zIndex: 2,

@@ -19,7 +19,7 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
           height: '100%',
           overflow: 'auto',
           bg: 'backgroundGray',
-          p: 3,
+          px: 2,
           borderLeft: '1px solid',
           borderBottom: '1px solid',
           borderRight: '1px solid',
@@ -28,7 +28,7 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
         }}
       >
         <Header />
-        <Box sx={{ mt: 80 }}>{children}</Box>
+        <Box sx={{ mt: 100 }}>{children}</Box>
       </Box>
     </Box>
   )
