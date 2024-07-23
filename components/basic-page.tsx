@@ -1,13 +1,12 @@
 'use client'
 
-import React, { SVGProps } from 'react'
-import { Box, BoxProps, useThemeUI } from 'theme-ui'
+import React from 'react'
+import { Box } from 'theme-ui'
 import Header from './header'
 
 const margin = 12
 
 const BasicPage = ({ children }: { children: React.ReactNode }) => {
-  const { theme } = useThemeUI()
   return (
     <Box
       sx={{
@@ -21,7 +20,9 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
           overflow: 'auto',
           bg: 'backgroundGray',
           p: 3,
-          border: '1px solid',
+          borderLeft: '1px solid',
+          borderBottom: '1px solid',
+          borderRight: '1px solid',
           borderColor: 'black',
           overscrollBehavior: 'none',
         }}
