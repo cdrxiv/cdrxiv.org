@@ -40,6 +40,8 @@ export const theme: Theme = {
     articlePink: '#FD89FF',
     dataGreen: '#74F889',
     visitedPurple: '#8032C7',
+    bezelGrayDark: '#CECECE',
+    bezelGrayLight: '#E8E8E8',
   },
   breakpoints: ['40em', '64em', '102em'],
 }
