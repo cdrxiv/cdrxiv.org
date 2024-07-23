@@ -1,7 +1,7 @@
 import React from 'react'
-import { Box, Select, useThemeUI } from 'theme-ui'
+import { Box, Select as ThemeUISelect, useThemeUI } from 'theme-ui'
 
-interface DropdownProps {
+interface SelectProps {
   title: string
   value: string
   onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void
@@ -10,7 +10,7 @@ interface DropdownProps {
     | React.ReactElement<HTMLOptionElement>[]
 }
 
-const Dropdown: React.FC<DropdownProps> = ({
+const Select: React.FC<SelectProps> = ({
   title,
   value,
   onChange,
@@ -22,7 +22,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       <Box sx={{ variant: 'text.monoCaps', my: 2, fontSize: [1, 1, 1, 2] }}>
         {title}
       </Box>
-      <Select
+      <ThemeUISelect
         value={value}
         onChange={onChange}
         arrow={
@@ -53,9 +53,9 @@ const Dropdown: React.FC<DropdownProps> = ({
         }}
       >
         {children}
-      </Select>
+      </ThemeUISelect>
     </>
   )
 }
 
-export default Dropdown
+export default Select
