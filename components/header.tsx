@@ -1,4 +1,4 @@
-import { Flex, useThemeUI } from 'theme-ui'
+import { Flex } from 'theme-ui'
 import Link from './link'
 import Search from './search'
 import Column from './column'
@@ -36,7 +36,7 @@ const Header = () => {
           >
             <Link href=''>Home</Link>
             <Link href=''>Channels</Link>
-            <Link href=''>Submit</Link>
+            <Link href='/submit'>Submit</Link>
           </Flex>
         </Column>
       </Row>
