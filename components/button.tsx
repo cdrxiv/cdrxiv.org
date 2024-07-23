@@ -40,23 +40,25 @@ const StyledButton: React.FC<ButtonProps> = ({
     ...sx,
   }
 
-  if (href !== undefined) {
-    return (
-      <Link
-        href={href}
-        sx={{ ...commonStyles, py: 2, px: 3, textDecoration: 'none' }}
-      >
-        {children}
-      </Link>
-    )
-  }
-
-  return (
-    <Button onClick={onClick} sx={commonStyles}>
+  const buttonContent = (
+    <Button onClick={href ? undefined : onClick} sx={commonStyles}>
       <Box sx={{ ':active': { transform: 'translate(1px, 1px)' } }}>
         {children}
       </Box>
     </Button>
+  )
+
+  return href ? (
+    <Link
+      href={href}
+      sx={{
+        textDecoration: 'none',
+      }}
+    >
+      {buttonContent}
+    </Link>
+  ) : (
+    buttonContent
   )
 }
 
