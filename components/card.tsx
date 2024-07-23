@@ -48,7 +48,9 @@ const Card: React.FC<CardProps> = ({
   const ref = useRef<HTMLDivElement>(null)
 
   const badgeColor: string = type === 'article' ? 'pink' : 'green'
-  const color = hovered ? theme?.rawColors?.blue : theme?.rawColors?.primary
+  const color = hovered
+    ? (theme?.rawColors?.blue ?? 'blue')
+    : (theme?.rawColors?.primary ?? 'black')
 
   useEffect(() => {
     const handleResize = () => {
@@ -103,7 +105,7 @@ const Card: React.FC<CardProps> = ({
     >
       <svg
         viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
-        stroke={color}
+        stroke={color as string}
         shapeRendering={'crispEdges'}
         style={{
           position: 'absolute',
