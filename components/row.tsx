@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, GridProps } from 'theme-ui'
+import { Grid, GridProps, ThemeUIStyleObject } from 'theme-ui'
 
 type ArrayInput = number | number[]
 
@@ -7,9 +7,16 @@ interface RowProps extends GridProps {
   columns?: ArrayInput
   gap?: ArrayInput
   children?: React.ReactNode
+  sx?: ThemeUIStyleObject
 }
 
-const Row: React.FC<RowProps> = ({ children, sx, columns, gap, ...props }) => {
+const Row: React.FC<RowProps> = ({
+  children,
+  columns,
+  gap,
+  sx = {},
+  ...props
+}) => {
   const makeArray = (input: ArrayInput): number[] => {
     if (!Array.isArray(input)) {
       return [input, input, input, input]
