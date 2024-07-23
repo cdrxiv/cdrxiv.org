@@ -23,8 +23,8 @@ const Search: React.FC<SearchProps> = ({
         sx={{
           variant: 'text.monoCaps',
           border: '1px solid',
-          borderColor: 'transparent',
-          borderRadius: 1,
+          borderColor: 'backgroundGray',
+          borderRadius: 0,
           boxShadow: `1px 1px 1px 1px ${black} inset, 
                 -1px -1px 1px 1px ${grey} inset`,
           background: 'white',
