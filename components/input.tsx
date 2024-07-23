@@ -36,7 +36,7 @@ const TextInput: React.FC<TextInputProps> = ({
             px: 3,
             width: '100%',
             outline: 'none',
-            ':focus': {
+            ':focus-visible': {
               '::placeholder': { color: 'mediumGray' },
               borderColor: 'blue',
             },

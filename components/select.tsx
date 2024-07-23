@@ -47,7 +47,7 @@ const Select: React.FC<SelectProps> = ({
           background: 'backgroundGray',
           px: 3,
           outline: 'none',
-          ':focus': {
+          ':focus-visible': {
             borderColor: 'blue',
           },
         }}
