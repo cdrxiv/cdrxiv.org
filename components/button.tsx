@@ -35,6 +35,9 @@ const StyledButton: React.FC<ButtonProps> = ({
     ':active': {
       boxShadow: `1px 1px 0px 1px ${black} inset, 
                   -1px -1px 0px 1px ${grey} inset`,
+      '& > div': {
+        transform: 'translate(1px, 1px)',
+      },
     },
     pb: [9, 9, 9, 11],
     ...sx,
@@ -42,9 +45,7 @@ const StyledButton: React.FC<ButtonProps> = ({
 
   const buttonContent = (
     <Button onClick={href ? undefined : onClick} sx={commonStyles}>
-      <Box sx={{ ':active': { transform: 'translate(1px, 1px)' } }}>
-        {children}
-      </Box>
+      <Box>{children}</Box>
     </Button>
   )
 
