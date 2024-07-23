@@ -13,7 +13,7 @@ export const theme: Theme = {
   text: {
     heading: {
       fontFamily: 'heading',
-      fontSize: [5, 5, 5, 6],
+      fontSize: [4, 5, 5, 6],
     },
     body: {
       fontFamily: 'body',
@@ -21,6 +21,7 @@ export const theme: Theme = {
     },
     mono: {
       fontFamily: 'mono',
+      fontSize: [1, 1, 1, 2],
     },
     monoCaps: {
       fontFamily: 'mono',
@@ -39,5 +40,8 @@ export const theme: Theme = {
     articlePink: '#FD89FF',
     dataGreen: '#74F889',
     visitedPurple: '#8032C7',
+    bezelGrayDark: '#CECECE',
+    bezelGrayLight: '#E8E8E8',
   },
+  breakpoints: ['40em', '64em', '102em'],
 }

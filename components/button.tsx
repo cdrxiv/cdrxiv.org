@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Link, ThemeUIStyleObject, useThemeUI } from 'theme-ui'
+import { Box, Button, Link, ThemeUIStyleObject, useThemeUI } from 'theme-ui'
 
 type ButtonProps = {
   children: React.ReactNode
@@ -23,9 +23,19 @@ const StyledButton: React.FC<ButtonProps> = ({
     cursor: 'pointer',
     color: 'blue',
     background: 'white',
-    borderRadius: '0',
+    borderRadius: 0,
+    border: '1px solid',
+    borderColor: 'backgroundGray',
     boxShadow: `1px 1px 0px 1px ${grey} inset, 
                 -1px -1px 0px 1px ${black} inset`,
+    outline: 'none',
+    ':focus': {
+      borderColor: 'blue',
+    },
+    ':active': {
+      boxShadow: `1px 1px 0px 1px ${black} inset, 
+                  -1px -1px 0px 1px ${grey} inset`,
+    },
     pb: [9, 9, 9, 11],
     ...sx,
   }
@@ -43,7 +53,9 @@ const StyledButton: React.FC<ButtonProps> = ({
 
   return (
     <Button onClick={onClick} sx={commonStyles}>
-      {children}
+      <Box sx={{ ':active': { transform: 'translate(1px, 1px)' } }}>
+        {children}
+      </Box>
     </Button>
   )
 }
