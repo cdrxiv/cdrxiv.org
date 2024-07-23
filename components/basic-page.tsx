@@ -37,7 +37,7 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
             width={foldSize}
             height={foldSize}
             viewBox={`0 0 ${foldSize} ${foldSize}`}
-            fill='none'
+            fill='transparent'
             style={{
               position: 'absolute',
               top: `${margin}px`,
@@ -51,7 +51,7 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
             <PathBox
               as='path'
               id='fold'
-              d={`M0 ${foldSize} L0 0 L${foldSize} ${foldSize} Z`}
+              d={`M0.5 ${foldSize - 0.5} L0.5 0.5 L${foldSize - 0.5} ${foldSize - 0.5} Z`}
               fill={theme?.colors?.mediumGray as string}
               stroke={theme?.colors?.black as string}
               sx={{
