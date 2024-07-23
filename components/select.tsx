@@ -40,8 +40,8 @@ const Select: React.FC<SelectProps> = ({
         }
         sx={{
           variant: 'text.body',
-          borderColor: 'mediumGray',
-          border: 0,
+          border: '1px solid',
+          borderColor: 'transparent',
           boxShadow: `1px 1px 0px 1px ${theme?.colors?.bezelGrayDark} inset, -1px -1px 0px 1px ${theme?.colors?.bezelGrayLight} inset`,
           borderRadius: 1,
           background: 'backgroundGray',
