@@ -56,7 +56,7 @@ const Filter: React.FC<FilterProps> = ({
               p: 1,
               pb: 0,
               color: 'blue',
-              ':focus': {
+              ':focus-visible': {
                 boxShadow:
                   'inset 0 3px 0 -2px blue, inset -3px 0 0 -2px blue, inset 3px 0 0 -2px blue',
                 outline: 'none',

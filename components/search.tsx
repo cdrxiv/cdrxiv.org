@@ -33,7 +33,7 @@ const Search: React.FC<SearchProps> = ({
           width: '100%',
           outline: 'none',
           '::placeholder': { color: 'black' },
-          ':focus': {
+          ':focus-visible': {
             '::placeholder': { color: 'mediumGray' },
             borderColor: 'blue',
           },
