@@ -4,7 +4,7 @@ import { Link, Button, ThemeUIStyleObject } from 'theme-ui'
 type LinkProps = {
   href?: string
   onClick?: (
-    event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>
+    event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>,
   ) => void
   children: React.ReactNode
   showArrow?: boolean
@@ -21,7 +21,13 @@ const StyledLink: React.FC<LinkProps> = ({
     ':visited': { color: 'visitedPurple' },
     cursor: 'pointer',
     background: 'none',
-    border: 'none',
+    border: '1px solid',
+    borderColor: 'transparent',
+    outline: 'none',
+    ':focus': {
+      '::placeholder': { color: 'mediumGray' },
+      borderColor: 'blue',
+    },
     padding: 0,
     textDecoration: 'underline',
     variant: 'text.body',

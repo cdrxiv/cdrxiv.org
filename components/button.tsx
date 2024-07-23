@@ -22,10 +22,17 @@ const StyledButton: React.FC<ButtonProps> = ({
     variant: 'text.monoCaps',
     cursor: 'pointer',
     color: 'blue',
-    background: 'white',
+    background: 'backgroundGray',
     borderRadius: 0,
+    border: '1px solid',
+    borderColor: 'transparent',
     boxShadow: `1px 1px 0px 1px ${grey} inset, 
                 -1px -1px 0px 1px ${black} inset`,
+    outline: 'none',
+    ':focus': {
+      '::placeholder': { color: 'mediumGray' },
+      borderColor: 'blue',
+    },
     pb: [9, 9, 9, 11],
     ...sx,
   }
