@@ -4,14 +4,12 @@ import { Box, Input, useThemeUI } from 'theme-ui'
 interface SearchProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   placeholder?: string
-  backgroundColor?: string
   arrows?: boolean
 }
 
 const Search: React.FC<SearchProps> = ({
   onChange,
   placeholder,
-  backgroundColor,
   arrows = true,
 }) => {
   const { theme } = useThemeUI()
@@ -29,8 +27,7 @@ const Search: React.FC<SearchProps> = ({
           borderRadius: 1,
           boxShadow: `1px 1px 1px 1px ${black} inset, 
                 -1px -1px 1px 1px ${grey} inset`,
-          pb: [9, 9, 9, 11],
-          background: backgroundColor ?? 'backgroundGray',
+          background: 'white',
           pl: 3,
           pr: arrows ? 5 : 3,
           width: '100%',
