@@ -72,7 +72,7 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
             fill={theme?.colors?.black as string}
           />
         </svg>
-        <Box sx={{ mt: 100 }}>{children}</Box>
+        <Box sx={{ mt: 80 }}>{children}</Box>
       </Box>
     </Box>
   )
