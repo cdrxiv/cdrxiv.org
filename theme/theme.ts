@@ -30,18 +30,38 @@ export const theme: Theme = {
       fontSize: [2, 2, 2, 3],
     },
   },
+  styles: {
+    root: {
+      variant: 'text.body',
+    },
+    h1: {
+      variant: 'text.heading',
+    },
+    h2: {
+      variant: 'text.heading',
+      fontSize: [3, 4, 4, 5],
+    },
+    h3: {
+      variant: 'text.heading',
+      fontSize: [2, 3, 3, 4],
+    },
+    h4: {
+      variant: 'text.heading',
+      fontSize: [1, 2, 2, 3],
+    },
+  },
   colors: {
-    backgroundGray: '#F4F5F6',
-    mediumGray: '#E3E6E8',
-    blue: '#0000FF',
+    primary: '#000',
     highlight: '#D2FF39',
-    black: '#000',
     white: '#FFFFFF',
-    articlePink: '#FD89FF',
-    dataGreen: '#74F889',
-    visitedPurple: '#8032C7',
-    bezelGrayDark: '#CECECE',
-    bezelGrayLight: '#E8E8E8',
+    blue: '#0000FF',
+    pink: '#FD89FF',
+    green: '#74F889',
+    purple: '#8032C7',
+    grey: '#F4F5F6',
+    mediumGrey: '#E3E6E8',
+    bezelGreyLight: '#E8E8E8',
+    bezelGreyDark: '#c5bbbb',
   },
   breakpoints: ['40em', '64em', '102em'],
 }

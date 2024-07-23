@@ -18,7 +18,7 @@ const StyledLink: React.FC<LinkProps> = ({
 }) => {
   const commonStyles: ThemeUIStyleObject = {
     color: 'blue',
-    ':visited': { color: 'visitedPurple' },
+    ':visited': { color: 'purple' },
     cursor: 'pointer',
     background: 'none',
     border: '1px solid',

@@ -59,14 +59,14 @@ export default function AuthTesting() {
           alignItems: 'center',
           justifyContent: 'space-between',
           px: 3,
-          background: 'backgroundGray',
+          background: 'grey',
         }}
       >
         <Box>CDRXIV</Box>
         <UserInfo />
       </Flex>
 
-      <Box sx={{ px: 3, background: 'backgroundGray', flexGrow: 1 }}>
+      <Box sx={{ px: 3, background: 'grey', flexGrow: 1 }}>
         Something about preparing a submission TK TK TK !
       </Box>
     </Flex>

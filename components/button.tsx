@@ -15,8 +15,8 @@ const StyledButton: React.FC<ButtonProps> = ({
   sx = {},
 }) => {
   const { theme } = useThemeUI()
-  const grey = theme?.colors?.mediumGray ?? 'grey'
-  const black = theme?.colors?.black ?? 'black'
+  const grey = theme?.colors?.mediumGrey ?? 'grey'
+  const black = theme?.colors?.primary ?? 'black'
 
   const commonStyles: ThemeUIStyleObject = {
     variant: 'text.monoCaps',
@@ -25,7 +25,7 @@ const StyledButton: React.FC<ButtonProps> = ({
     background: 'white',
     borderRadius: 0,
     border: '1px solid',
-    borderColor: 'backgroundGray',
+    borderColor: 'grey',
     boxShadow: `1px 1px 0px 1px ${grey} inset, 
                 -1px -1px 0px 1px ${black} inset`,
     outline: 'none',

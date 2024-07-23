@@ -19,16 +19,17 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
         sx={{
           height: '100%',
           overflow: 'auto',
-          bg: 'backgroundGray',
+          bg: 'grey',
           px: 2,
           borderLeft: '1px solid',
           borderBottom: '1px solid',
           borderRight: '1px solid',
-          borderColor: 'black',
+          borderColor: 'primary',
         }}
       >
         <Header />
         <Box sx={{ mt: 100 }}>{children}</Box>
+        <div> tslkjsdf</div>
       </Box>
     </Box>
   )

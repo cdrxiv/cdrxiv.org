@@ -13,8 +13,8 @@ const Search: React.FC<SearchProps> = ({
   arrows = true,
 }) => {
   const { theme } = useThemeUI()
-  const grey = theme?.colors?.mediumGray ?? 'grey'
-  const black = theme?.colors?.black ?? 'black'
+  const grey = theme?.colors?.mediumGrey ?? 'grey'
+  const black = theme?.colors?.primary ?? 'black'
   return (
     <Box sx={{ position: 'relative', width: '100%' }}>
       <Input
@@ -32,9 +32,9 @@ const Search: React.FC<SearchProps> = ({
           pr: arrows ? 5 : 3,
           width: '100%',
           outline: 'none',
-          '::placeholder': { color: 'black' },
+          '::placeholder': { color: 'primary' },
           ':focus-visible': {
-            '::placeholder': { color: 'mediumGray' },
+            '::placeholder': { color: 'mediumGrey' },
             borderColor: 'blue',
           },
         }}

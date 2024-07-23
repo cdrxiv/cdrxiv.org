@@ -30,14 +30,14 @@ const TextInput: React.FC<TextInputProps> = ({
             variant: 'text.body',
             border: '1px solid',
             borderColor: 'transparent',
-            boxShadow: `1px 1px 0px 1px ${theme?.colors?.bezelGrayDark} inset, -1px -1px 0px 1px ${theme?.colors?.bezelGrayLight} inset`,
+            boxShadow: `1px 1px 0px 1px ${theme?.colors?.bezelGreyDark} inset, -1px -1px 0px 1px ${theme?.colors?.bezelGreyLight} inset`,
             borderRadius: 1,
-            background: backgroundColor ?? 'backgroundGray',
+            background: backgroundColor ?? 'grey',
             px: 3,
             width: '100%',
             outline: 'none',
-            ':focus-visible': {
-              '::placeholder': { color: 'mediumGray' },
+            ':focus': {
+              '::placeholder': { color: 'mediumGrey' },
               borderColor: 'blue',
             },
           }}

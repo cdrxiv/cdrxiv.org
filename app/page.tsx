@@ -35,7 +35,7 @@ const Home = () => {
           <Column start={1} width={12}>
             playground:
             <Box sx={{ fontSize: [1, 2, 3, 4], fontFamily: 'mono' }}>
-              <Badge color='articlePink'>article</Badge>
+              <Badge color='pink'>article</Badge>
               <Link showArrow={false} href=''>
                 about
               </Link>
