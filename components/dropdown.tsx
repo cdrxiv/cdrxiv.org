@@ -44,6 +44,10 @@ const Dropdown: React.FC<DropdownProps> = ({
           borderRadius: 0,
           background: 'backgroundGray',
           px: 3,
+          outline: 'none',
+          ':focus': {
+            borderColor: 'blue',
+          },
         }}
       >
         {children}

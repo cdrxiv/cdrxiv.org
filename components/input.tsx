@@ -32,6 +32,11 @@ const TextInput: React.FC<TextInputProps> = ({
           background: backgroundColor ?? 'backgroundGray',
           px: 3,
           width: '100%',
+          outline: 'none',
+          ':focus': {
+            '::placeholder': { color: 'mediumGray' },
+            borderColor: 'blue',
+          },
         }}
       />
     </Box>
