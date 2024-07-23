@@ -42,6 +42,7 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
               position: 'absolute',
               top: `${margin}px`,
               right: `${margin}px`,
+              zIndex: 3,
             }}
           >
             <path

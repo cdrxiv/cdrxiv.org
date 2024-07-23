@@ -21,6 +21,7 @@ const Header = () => {
           px: 52,
           alignContent: 'center',
           backgroundColor: 'backgroundGray',
+          zIndex: 2,
         }}
       >
         <Column start={1} width={3}>
