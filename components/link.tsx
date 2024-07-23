@@ -25,7 +25,6 @@ const StyledLink: React.FC<LinkProps> = ({
     borderColor: 'transparent',
     outline: 'none',
     ':focus': {
-      '::placeholder': { color: 'mediumGray' },
       borderColor: 'blue',
     },
     padding: 0,

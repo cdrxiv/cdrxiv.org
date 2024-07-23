@@ -30,8 +30,12 @@ const StyledButton: React.FC<ButtonProps> = ({
                 -1px -1px 0px 1px ${black} inset`,
     outline: 'none',
     ':focus': {
-      '::placeholder': { color: 'mediumGray' },
       borderColor: 'blue',
+    },
+    ':active': {
+      boxShadow: `1px 1px 0px 1px ${black} inset, 
+                  -1px -1px 0px 1px ${grey} inset`,
+      transform: 'translate(1px, 1px)',
     },
     pb: [9, 9, 9, 11],
     ...sx,
