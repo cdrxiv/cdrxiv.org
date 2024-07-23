@@ -10,21 +10,33 @@ export const theme: Theme = {
     heading: quadrant.style.fontFamily,
     mono: pressura.style.fontFamily,
   },
+  fontSizes: [12, 14, 16, 18, 24, 32, 48, 64],
+  fontWeights: {
+    body: 400,
+    heading: 400,
+    mono: 400,
+    monoCaps: 400,
+  },
   text: {
     heading: {
       fontFamily: 'heading',
+      fontWeight: 'heading',
       fontSize: [4, 5, 5, 6],
     },
     body: {
       fontFamily: 'body',
-      fontSize: [2, 2, 2, 3],
+      fontWeight: 'body',
+      fontSize: [1, 1, 1, 2],
     },
     mono: {
       fontFamily: 'mono',
+      fontWeight: 'mono',
       fontSize: [1, 1, 1, 2],
+      lineHeight: '130%',
     },
     monoCaps: {
       fontFamily: 'mono',
+      fontWeight: 'monoCaps',
       textTransform: 'uppercase',
       letterSpacing: '0.03em',
       fontSize: [2, 2, 2, 3],
