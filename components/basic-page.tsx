@@ -12,6 +12,7 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
       sx={{
         m: `${margin}px`,
         height: `calc(100vh - 2 * ${margin}px)`,
+        position: 'fixed',
       }}
     >
       <Box
@@ -24,7 +25,6 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
           borderBottom: '1px solid',
           borderRight: '1px solid',
           borderColor: 'black',
-          overscrollBehavior: 'none',
         }}
       >
         <Header />
