@@ -21,17 +21,17 @@ export const theme: Theme = {
     heading: {
       fontFamily: 'heading',
       fontWeight: 'heading',
-      fontSize: [4, 5, 5, 6],
+      fontSize: [5, 5, 5, 6],
     },
     body: {
       fontFamily: 'body',
       fontWeight: 'body',
-      fontSize: [1, 1, 1, 2],
+      fontSize: [3, 3, 3, 3],
     },
     mono: {
       fontFamily: 'mono',
       fontWeight: 'mono',
-      fontSize: [1, 1, 1, 2],
+      fontSize: [0, 0, 0, 1],
       lineHeight: '130%',
     },
     monoCaps: {
@@ -39,7 +39,7 @@ export const theme: Theme = {
       fontWeight: 'monoCaps',
       textTransform: 'uppercase',
       letterSpacing: '0.03em',
-      fontSize: [2, 2, 2, 3],
+      fontSize: [1, 1, 1, 2],
     },
   },
   styles: {

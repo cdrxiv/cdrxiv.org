@@ -12,7 +12,9 @@ const Badge: React.FC<BadgeProps> = ({ children, color, sx = {} }) => {
     <Box
       sx={{
         variant: 'text.monoCaps',
-        display: 'inline-block',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         width: 'fit-content',
         height: ['24px', '24px', '24px', '28px'],
         px: [1, 1, 1, 2],

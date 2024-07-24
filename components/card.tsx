@@ -162,7 +162,12 @@ const Card: React.FC<CardProps> = ({
           }}
         >
           <Badge color={badgeColor}>{type}</Badge>
-          <Box sx={{ variant: 'text.monoCaps', fontSize: [1, 1, 1, 2] }}>
+          <Box
+            sx={{
+              variant: 'text.monoCaps',
+              alignSelf: 'center',
+            }}
+          >
             {formatDate(date)}
           </Box>
         </Flex>
