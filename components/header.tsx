@@ -114,7 +114,7 @@ const Header = () => {
               alignItems: 'center',
             }}
           >
-            <StyledLink href=''>Home</StyledLink>
+            <StyledLink href='/'>Home</StyledLink>
             <StyledLink href=''>Channels</StyledLink>
             <StyledLink href='/submit'>Submit</StyledLink>
           </Flex>
