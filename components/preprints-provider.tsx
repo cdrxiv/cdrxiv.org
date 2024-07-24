@@ -16,7 +16,6 @@ export default function PreprintsProvider({
   data: Preprints
   children: ReactNode
 }) {
-  console.log(data)
   return (
     <PreprintsContext.Provider value={data}>
       {children}

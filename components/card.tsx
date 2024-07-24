@@ -8,7 +8,7 @@ interface CardProps {
   title: string
   authors: Author[]
   type: 'article' | 'data'
-  date: Date
+  date: Date | null
   href?: string
   onClick?: () => void
   sx?: ThemeUIStyleObject
@@ -102,7 +102,7 @@ const Card: React.FC<CardProps> = ({
       onBlur={() => setHovered(false)}
       tabIndex={0}
       role='button'
-      aria-label={`${type} titled ${title} by ${authorList(authors)}, published on ${formatDate(date)}`}
+      aria-label={`${type} titled ${title} by ${authorList(authors)}, published on ${date ? formatDate(date) : 'unknown date'}`}
       sx={{
         position: 'relative',
         width: ['80%'],
@@ -175,9 +175,11 @@ const Card: React.FC<CardProps> = ({
           }}
         >
           <Badge color={badgeColor}>{type}</Badge>
-          <Box sx={{ variant: 'text.monoCaps', fontSize: [1, 1, 1, 2] }}>
-            {formatDate(date)}
-          </Box>
+          {date && (
+            <Box sx={{ variant: 'text.monoCaps', fontSize: [1, 1, 1, 2] }}>
+              {formatDate(date)}
+            </Box>
+          )}
         </Flex>
       </Flex>
     </Box>

@@ -42,7 +42,11 @@ const Stack: React.FC<StackProps> = ({ preprints }) => {
                         title={preprint.title}
                         authors={preprint.authors}
                         type={'article'}
-                        date={new Date(preprint.date_published)}
+                        date={
+                          preprint.date_published
+                            ? new Date(preprint.date_published)
+                            : null
+                        }
                         sx={{
                           position: 'absolute',
                           left: `${(groupSize - 1 - i) * 40}px`,

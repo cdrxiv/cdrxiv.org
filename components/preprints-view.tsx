@@ -1,20 +1,14 @@
-import { useParams } from 'next/navigation'
 import { usePreprints } from './preprints-provider'
 import Stack from './stack'
 import { Preprints } from '../types/preprint'
 
-const PreprintsView = ({ view: propView }: { view?: string }) => {
-  const params = useParams()
-  const view: string = propView || params.view || 'stack'
-
+const PreprintsView = ({ view }: { view?: string }) => {
   const preprints: Preprints | null = usePreprints()
 
-  if (!preprints) {
-    return <div>Loading...</div> // Or handle the null case appropriately
-  }
+  if (!preprints) return
 
   const renderData = () => {
-    switch (view.toLowerCase()) {
+    switch (view?.toLowerCase()) {
       case 'grid':
         return <div>Grid View of Data</div>
       case 'list':
