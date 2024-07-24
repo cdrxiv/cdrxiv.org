@@ -4,14 +4,18 @@ import React from 'react'
 import { Box } from 'theme-ui'
 import Header from './header'
 
-const margin = 12
+const margin = [2, 2, 3, 3]
 
 const BasicPage = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box
       sx={{
-        m: `${margin}px`,
-        height: `calc(100vh - 2 * ${margin}px)`,
+        m: margin,
+        height: (theme) =>
+          margin.map(
+            (space) =>
+              `calc(100vh - 2 * ${theme.space ? theme.space[space] : 0}px)`,
+          ),
         position: 'fixed',
       }}
     >
@@ -20,7 +24,6 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
           height: '100%',
           overflow: 'auto',
           bg: 'backgroundGray',
-          px: 2,
           borderLeft: '1px solid',
           borderBottom: '1px solid',
           borderRight: '1px solid',
@@ -28,7 +31,9 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
         }}
       >
         <Header />
-        <Box sx={{ mt: 100 }}>{children}</Box>
+        <Box sx={{ mt: 100, px: ['18px', '18px', '52px', '52px'] }}>
+          {children}
+        </Box>
       </Box>
     </Box>
   )
