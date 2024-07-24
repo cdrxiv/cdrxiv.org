@@ -36,7 +36,7 @@ const StyledButton: React.FC<ButtonProps> = ({
       boxShadow: `1px 1px 0px 1px ${black} inset, 
                   -1px -1px 0px 1px ${grey} inset`,
     },
-    pb: [9, 9, 9, 11],
+    pb: ['9px', '9px', '9px', '11px'],
     ...sx,
   }
 
