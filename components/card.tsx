@@ -135,7 +135,7 @@ const Card: React.FC<CardProps> = ({
           flexDirection: 'column',
           justifyContent: 'space-between',
           height: '100%',
-          p: 4,
+          p: [3, 3, 7, 7],
           position: 'relative',
           zIndex: 1,
         }}
@@ -144,7 +144,7 @@ const Card: React.FC<CardProps> = ({
           <Box
             sx={{
               variant: 'text.body',
-              mb: 2,
+              mb: [2, 2, 3, 3],
               color,
             }}
           >
