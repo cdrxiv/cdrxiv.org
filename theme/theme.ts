@@ -53,14 +53,6 @@ export const theme: Theme = {
       variant: 'text.heading',
       fontSize: [3, 4, 4, 5],
     },
-    h3: {
-      variant: 'text.heading',
-      fontSize: [2, 3, 3, 4],
-    },
-    h4: {
-      variant: 'text.heading',
-      fontSize: [1, 2, 2, 3],
-    },
   },
   colors: {
     primary: '#000',
