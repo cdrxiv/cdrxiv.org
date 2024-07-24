@@ -3,6 +3,7 @@
 import React from 'react'
 import { Box } from 'theme-ui'
 import Header from './header'
+import Guide from './guide'
 
 const margin = [2, 2, 3, 3]
 
@@ -31,6 +32,7 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
         }}
       >
         <Header />
+        <Guide />
         <Box sx={{ mt: 100, px: ['18px', '18px', '52px', '52px'] }}>
           {children}
         </Box>

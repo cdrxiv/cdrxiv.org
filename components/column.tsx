@@ -1,5 +1,6 @@
 import React from 'react'
 import { Box, BoxProps } from 'theme-ui'
+import type { Theme } from 'theme-ui'
 
 type ArrayInput = number | string | (number | string)[]
 
@@ -56,14 +57,14 @@ const Column: React.FC<ColumnProps> = ({
     if (![0.5, 1].includes(dl)) {
       throw new Error('dl must be 0.5 or 1')
     }
-    ml = dl === 0.5 ? ['-12px', -3, -3, -4] : [-4, -5, -5, -6]
+    ml = dl === 0.5 ? ['-10px', '-10px', '-20px', '-20px'] : [-5, -5, -8, -8]
   }
 
   if (dr) {
     if (![0.5, 1].includes(dr)) {
       throw new Error('dr must be 0.5 or 1')
     }
-    mr = dr === 0.5 ? ['-12px', -3, -3, -4] : [-4, -5, -5, -6]
+    mr = dr === 0.5 ? ['-10px', '-10px', '-20px', '-20px'] : [-5, -5, -8, -8]
   }
 
   return (
