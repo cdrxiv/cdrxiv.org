@@ -95,8 +95,8 @@ const Card: React.FC<CardProps> = ({
       )}`}
       sx={{
         position: 'relative',
-        width: ['100%', `${cardWidth}px`],
-        height: ['auto', `${cardHeight}px`],
+        width: '100%',
+        height: 'auto',
         cursor: 'pointer',
         outline: 'none', // use highlight style for focus instead
       }}
