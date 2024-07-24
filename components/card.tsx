@@ -1,18 +1,20 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Box, Flex, useThemeUI } from 'theme-ui'
+import { Box, Flex, ThemeUIStyleObject, useThemeUI } from 'theme-ui'
 import Badge from './badge'
 import { useRouter } from 'next/navigation'
+import type { Author } from '../types/preprint'
 
 interface CardProps {
   title: string
-  authors: Array<string>
+  authors: Author[]
   type: 'article' | 'data'
   date: Date
   href?: string
   onClick?: () => void
+  sx?: ThemeUIStyleObject
 }
 
-const cardWidth = 420
+const cardWidth = 350
 const cardHeight = 240
 const cornerSize = 40
 const borderWidth = 1
@@ -25,6 +27,14 @@ const formatDate = (date: Date): string => {
   }
   return date.toLocaleDateString('en-US', options)
 }
+const authorList = (authors: Author[]): string => {
+  return authors
+    .map(
+      (author) =>
+        `${author.first_name || ''} ${author.middle_name || ''} ${author.last_name || ''}`,
+    )
+    .join(', ')
+}
 
 const Card: React.FC<CardProps> = ({
   title,
@@ -33,6 +43,7 @@ const Card: React.FC<CardProps> = ({
   date,
   href,
   onClick,
+  sx = {},
 }) => {
   const { theme } = useThemeUI()
   const router = useRouter()
@@ -72,6 +83,7 @@ const Card: React.FC<CardProps> = ({
       onClick()
     }
   }
+
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
@@ -90,15 +102,18 @@ const Card: React.FC<CardProps> = ({
       onBlur={() => setHovered(false)}
       tabIndex={0}
       role='button'
-      aria-label={`${type} titled ${title} by ${authors.join(', ')}, published on ${formatDate(
-        date,
-      )}`}
+      aria-label={`${type} titled ${title} by ${authorList(authors)}, published on ${formatDate(date)}`}
       sx={{
         position: 'relative',
-        width: ['100%', `${cardWidth}px`],
+        width: ['80%'],
         height: ['auto', `${cardHeight}px`],
         cursor: 'pointer',
         outline: 'none', // use highlight style for focus instead
+        ':hover': {
+          transform: 'translate(4px, -20px)',
+          transition: 'transform 0.2s',
+        },
+        ...sx,
       }}
     >
       <svg
@@ -135,9 +150,8 @@ const Card: React.FC<CardProps> = ({
           flexDirection: 'column',
           justifyContent: 'space-between',
           height: '100%',
-          p: 4,
+          p: 3,
           position: 'relative',
-          zIndex: 1,
         }}
       >
         <Flex sx={{ flexDirection: 'column' }}>
@@ -145,12 +159,13 @@ const Card: React.FC<CardProps> = ({
             sx={{
               variant: 'text.body',
               mb: 2,
+              mr: 2,
               color,
             }}
           >
             {title}
           </Box>
-          <Box sx={{ variant: 'text.mono' }}>{authors.join(', ')}</Box>
+          <Box sx={{ variant: 'text.mono' }}>{authorList(authors)}</Box>
         </Flex>
         <Flex
           sx={{
