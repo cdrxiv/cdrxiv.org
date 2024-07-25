@@ -1,20 +1,20 @@
 import React from 'react'
-import { Box, Input, useThemeUI } from 'theme-ui'
+import { Box, ThemeUIStyleObject } from 'theme-ui'
+import Input from './input'
 
 interface SearchProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   placeholder?: string
   arrows?: boolean
+  sx?: ThemeUIStyleObject
 }
 
 const Search: React.FC<SearchProps> = ({
   onChange,
   placeholder,
   arrows = true,
+  sx = {},
 }) => {
-  const { theme } = useThemeUI()
-  const grey = theme?.colors?.mediumGray ?? 'grey'
-  const black = theme?.colors?.black ?? 'black'
   return (
     <Box sx={{ position: 'relative', width: '100%' }}>
       <Input
@@ -22,21 +22,12 @@ const Search: React.FC<SearchProps> = ({
         onChange={onChange}
         sx={{
           variant: 'text.monoCaps',
-          border: '1px solid',
-          borderColor: 'transparent',
-          borderRadius: 1,
-          boxShadow: `1px 1px 1px 1px ${black} inset, 
-                -1px -1px 1px 1px ${grey} inset`,
-          background: 'white',
-          pl: 3,
+          boxShadow: (theme) => `1px 1px 1px 1px ${theme?.colors?.text} inset, 
+                -1px -1px 1px 1px ${theme?.colors?.muted} inset`,
+          background: 'primary',
           pr: arrows ? 5 : 3,
-          width: '100%',
-          outline: 'none',
-          '::placeholder': { color: 'black' },
-          ':focus-visible': {
-            '::placeholder': { color: 'mediumGray' },
-            borderColor: 'blue',
-          },
+          '::placeholder': { color: 'text' },
+          ...sx,
         }}
       />
       {arrows && (

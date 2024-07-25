@@ -29,11 +29,11 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
         sx={{
           height: '100%',
           overflow: 'auto',
-          bg: 'backgroundGray',
+          bg: 'background',
           borderLeft: '1px solid',
           borderBottom: '1px solid',
           borderRight: '1px solid',
-          borderColor: 'black',
+          borderColor: 'text',
         }}
       >
         <Header />
