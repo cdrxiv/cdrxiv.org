@@ -4,7 +4,9 @@ import PreprintsProvider from '../components/preprints-provider'
 import BasicPage from '../components/basic-page'
 import { Preprints } from '../types/preprint'
 
-const API_URL = process.env.NEXTAUTH_URL || `https://${process.env.VERCEL_URL}`
+const API_URL = process.env.NEXT_PUBLIC_VERCEL_URL // TODO update for production
+  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+  : 'http://localhost:3000'
 
 async function fetchPreprints(): Promise<Preprints> {
   try {
