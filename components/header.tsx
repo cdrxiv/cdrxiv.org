@@ -96,7 +96,7 @@ const Header = () => {
           borderTop: '1px solid',
           borderLeft: '1px solid',
           borderColor: 'black',
-          px: ['18px', '18px', '52px', '52px'],
+          px: ['18px', '36px', '36px', '52px'],
         }}
       >
         <Column start={1} width={3}>

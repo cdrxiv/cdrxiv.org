@@ -40,7 +40,7 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
         <Box
           sx={{
             mt: 100,
-            px: ['18px', '18px', '52px', '52px'],
+            px: ['18px', '36px', '36px', '52px'],
           }}
         >
           <Box sx={{ contain: 'layout' }}>
