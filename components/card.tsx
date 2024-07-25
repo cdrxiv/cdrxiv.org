@@ -52,7 +52,7 @@ const Corner: React.FC<CornerProps> = ({
         top: `-${coverage}px`,
         right: `-${coverage}px`,
         overflow: 'visible',
-        stroke: hovered ? 'blue' : 'black',
+        stroke: hovered ? 'blue' : 'text',
         strokeWidth: borderWidth,
         ...sx,
       }}
@@ -63,14 +63,14 @@ const Corner: React.FC<CornerProps> = ({
         height={size + coverage}
         stroke='none'
         sx={{
-          fill: 'backgroundGray',
+          fill: 'background',
         }}
       />
       <ElBox
         as='polygon'
         points={`0,${coverage} 0,${size + coverage} ${size},${size + coverage}`}
         sx={{
-          fill: hovered ? 'mediumGray' : 'white',
+          fill: hovered ? 'muted' : 'primary',
         }}
       />
     </SVGBox>
@@ -89,7 +89,7 @@ const Card: React.FC<CardProps> = ({
 
   const [hovered, setHovered] = useState<boolean>(false)
 
-  const badgeColor: string = type === 'article' ? 'articlePink' : 'dataGreen'
+  const badgeColor: string = type === 'article' ? 'pink' : 'green'
   const color: string = hovered ? 'blue' : 'text'
 
   const handleClick = () => {
@@ -124,7 +124,7 @@ const Card: React.FC<CardProps> = ({
         width: '100%',
         height: 'auto',
         cursor: 'pointer',
-        background: 'white',
+        background: 'primary',
         borderColor: color,
         borderWidth,
         borderStyle: 'solid',

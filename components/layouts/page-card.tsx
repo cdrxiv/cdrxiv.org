@@ -33,7 +33,7 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
           borderLeft: '1px solid',
           borderBottom: '1px solid',
           borderRight: '1px solid',
-          borderColor: 'black',
+          borderColor: 'text',
         }}
       >
         <Header />
