@@ -46,7 +46,7 @@ export const theme: Theme = {
   styles: {
     root: {
       variant: 'text.body',
-      background: '#FFFFFF',
+      background: 'white',
     },
     h1: {
       variant: 'text.heading',
