@@ -41,7 +41,7 @@ const Row: React.FC<RowProps> = ({
     columnGap = processedGap
     rowGap = processedGap
   } else {
-    columnGap = [4, 5, 5, 6]
+    columnGap = [5, 6, 6, 8]
     rowGap = [0, 0, 0, 0]
   }
 
@@ -57,7 +57,6 @@ const Row: React.FC<RowProps> = ({
       sx={{
         columnGap,
         rowGap,
-        px: [0, 0, 4, 4],
         ...sx,
       }}
     >

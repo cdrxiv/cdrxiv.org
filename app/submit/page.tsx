@@ -1,10 +1,11 @@
 'use client'
 
-import { Box, Flex } from 'theme-ui'
+import { Box } from 'theme-ui'
 import { useState } from 'react'
 import { useSession, signIn, signOut } from 'next-auth/react'
 
 import StyledLink from '../../components/link'
+import PaneledPage from '../../components/layouts/paneled-page'
 
 const UserInfo = () => {
   const [expanded, setExpanded] = useState(false)
@@ -44,31 +45,10 @@ const UserInfo = () => {
 
 export default function AuthTesting() {
   return (
-    <Flex
-      sx={{
-        height: '100vh',
-        width: '100vw',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-      }}
-    >
-      <Flex
-        sx={{
-          width: '100%',
-          height: 56,
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          px: 3,
-          background: 'backgroundGray',
-        }}
-      >
-        <Box>CDRXIV</Box>
-        <UserInfo />
-      </Flex>
+    <>
+      <UserInfo />
 
-      <Box sx={{ px: 3, background: 'backgroundGray', flexGrow: 1 }}>
-        Something about preparing a submission TK TK TK !
-      </Box>
-    </Flex>
+      <PaneledPage>Submission Information</PaneledPage>
+    </>
   )
 }

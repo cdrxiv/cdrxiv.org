@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react'
-import { Box, Flex, useThemeUI } from 'theme-ui'
+import React, { useState, SVGProps } from 'react'
+import { Box, Flex, BoxProps } from 'theme-ui'
 import Badge from './badge'
 import { useRouter } from 'next/navigation'
 
@@ -12,9 +12,6 @@ interface CardProps {
   onClick?: () => void
 }
 
-const cardWidth = 420
-const cardHeight = 240
-const cornerSize = 40
 const borderWidth = 1
 
 const formatDate = (date: Date): string => {
@@ -26,6 +23,60 @@ const formatDate = (date: Date): string => {
   return date.toLocaleDateString('en-US', options)
 }
 
+type ElBoxProps = BoxProps & SVGProps<SVGGElement> & { as: string }
+const ElBox: React.FC<ElBoxProps> = (props) => <Box {...props} />
+
+type SVGBoxProps = BoxProps & SVGProps<SVGSVGElement>
+const SVGBox: React.FC<SVGBoxProps> = (props) => <Box as='svg' {...props} />
+
+interface CornerProps {
+  size: number
+  coverage?: number
+  hovered: boolean
+  sx: { display: string[] }
+}
+const Corner: React.FC<CornerProps> = ({
+  size = 40,
+  coverage = 2,
+  hovered,
+  sx,
+}) => {
+  return (
+    <SVGBox
+      as='svg'
+      viewBox={`0 0 ${size + coverage} ${size + coverage}`}
+      sx={{
+        width: `${size + coverage}px`,
+        height: 'auto',
+        position: 'absolute',
+        top: `-${coverage}px`,
+        right: `-${coverage}px`,
+        overflow: 'visible',
+        stroke: hovered ? 'blue' : 'black',
+        strokeWidth: borderWidth,
+        ...sx,
+      }}
+    >
+      <ElBox
+        as='rect'
+        width={size + coverage}
+        height={size + coverage}
+        stroke='none'
+        sx={{
+          fill: 'backgroundGray',
+        }}
+      />
+      <ElBox
+        as='polygon'
+        points={`0,${coverage} 0,${size + coverage} ${size},${size + coverage}`}
+        sx={{
+          fill: hovered ? 'mediumGray' : 'white',
+        }}
+      />
+    </SVGBox>
+  )
+}
+
 const Card: React.FC<CardProps> = ({
   title,
   authors,
@@ -34,36 +85,12 @@ const Card: React.FC<CardProps> = ({
   href,
   onClick,
 }) => {
-  const { theme } = useThemeUI()
   const router = useRouter()
 
   const [hovered, setHovered] = useState<boolean>(false)
-  const [dimensions, setDimensions] = useState<{
-    width: number
-    height: number
-  }>({
-    width: cardWidth,
-    height: cardHeight,
-  })
-  const ref = useRef<HTMLDivElement>(null)
 
   const badgeColor: string = type === 'article' ? 'articlePink' : 'dataGreen'
   const color: string = hovered ? 'blue' : 'black'
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (ref.current) {
-        const width = ref.current.offsetWidth
-        const height = ref.current.offsetHeight
-        setDimensions({ width, height })
-      }
-    }
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
 
   const handleClick = () => {
     if (href) {
@@ -83,7 +110,6 @@ const Card: React.FC<CardProps> = ({
     <Box
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      ref={ref}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onFocus={() => setHovered(true)}
@@ -95,47 +121,33 @@ const Card: React.FC<CardProps> = ({
       )}`}
       sx={{
         position: 'relative',
-        width: ['100%', `${cardWidth}px`],
-        height: ['auto', `${cardHeight}px`],
+        width: '100%',
+        height: 'auto',
         cursor: 'pointer',
+        background: 'white',
+        borderColor: color,
+        borderWidth,
+        borderStyle: 'solid',
         outline: 'none', // use highlight style for focus instead
       }}
     >
-      <svg
-        viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
-        stroke={color}
-        shapeRendering={'crispEdges'}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-        }}
-      >
-        <path
-          d={`M ${borderWidth} ${borderWidth} H ${
-            dimensions.width - cornerSize
-          } L ${dimensions.width - borderWidth} ${cornerSize} V ${
-            dimensions.height - borderWidth
-          } H ${borderWidth} Z`}
-          fill={theme?.colors?.white as string}
-          strokeWidth={borderWidth}
-        />
-        <path
-          d={`M ${dimensions.width - cornerSize} ${borderWidth} L ${
-            dimensions.width - borderWidth
-          } ${cornerSize} M ${
-            dimensions.width - cornerSize
-          } ${borderWidth} V ${cornerSize} H ${dimensions.width - borderWidth}`}
-          fill={hovered ? (theme?.colors?.backgroundGray as string) : 'none'}
-          strokeWidth={borderWidth}
-        />
-      </svg>
+      <Corner
+        hovered={hovered}
+        size={40}
+        sx={{ display: ['none', 'none', 'inherit', 'inherit'] }}
+      />
+      <Corner
+        hovered={hovered}
+        size={30}
+        sx={{ display: ['inherit', 'inherit', 'none', 'none'] }}
+      />
+
       <Flex
         sx={{
           flexDirection: 'column',
           justifyContent: 'space-between',
           height: '100%',
-          p: 4,
+          p: [3, 6, 6, 7],
           position: 'relative',
           zIndex: 1,
         }}
@@ -144,7 +156,7 @@ const Card: React.FC<CardProps> = ({
           <Box
             sx={{
               variant: 'text.body',
-              mb: 2,
+              mb: [3, 3, 3, 4],
               color,
             }}
           >
