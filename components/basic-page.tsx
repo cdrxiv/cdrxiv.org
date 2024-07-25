@@ -19,12 +19,12 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
         sx={{
           height: '100%',
           overflow: 'auto',
-          bg: 'grey',
+          bg: 'background',
           px: 2,
           borderLeft: '1px solid',
           borderBottom: '1px solid',
           borderRight: '1px solid',
-          borderColor: 'primary',
+          borderColor: 'text',
         }}
       >
         <Header />

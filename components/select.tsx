@@ -44,7 +44,7 @@ const Select: React.FC<SelectProps> = ({
           borderColor: 'transparent',
           boxShadow: `1px 1px 0px 1px ${theme?.colors?.bezelGreyDark} inset, -1px -1px 0px 1px ${theme?.colors?.bezelGreyLight} inset`,
           borderRadius: 1,
-          background: 'grey',
+          background: 'background',
           px: 3,
           outline: 'none',
           ':focus-visible': {

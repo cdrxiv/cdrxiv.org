@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button, Link, ThemeUIStyleObject, useThemeUI } from 'theme-ui'
+import { Box, Button, Link, ThemeUIStyleObject } from 'theme-ui'
 
 type ButtonProps = {
   children: React.ReactNode
@@ -14,27 +14,23 @@ const StyledButton: React.FC<ButtonProps> = ({
   href,
   sx = {},
 }) => {
-  const { theme } = useThemeUI()
-  const grey = theme?.colors?.mediumGrey ?? 'grey'
-  const black = theme?.colors?.primary ?? 'black'
-
   const commonStyles: ThemeUIStyleObject = {
     variant: 'text.monoCaps',
     cursor: 'pointer',
     color: 'blue',
-    background: 'white',
+    background: 'primary',
     borderRadius: 0,
     border: '1px solid',
-    borderColor: 'grey',
-    boxShadow: `1px 1px 0px 1px ${grey} inset, 
-                -1px -1px 0px 1px ${black} inset`,
+    borderColor: 'background',
+    boxShadow: (theme) => `1px 1px 0px 1px ${theme?.colors?.muted} inset, 
+                  -1px -1px 0px 1px ${theme?.colors?.text} inset`,
     outline: 'none',
     ':focus-visible': {
       borderColor: 'blue',
     },
     ':active': {
-      boxShadow: `1px 1px 0px 1px ${black} inset, 
-                  -1px -1px 0px 1px ${grey} inset`,
+      boxShadow: (theme) => `1px 1px 0px 1px ${theme?.colors?.text} inset, 
+                  -1px -1px 0px 1px ${theme?.colors?.muted} inset`,
     },
     pb: [9, 9, 9, 11],
     ...sx,

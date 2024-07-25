@@ -45,6 +45,7 @@ export const theme: Theme = {
   styles: {
     root: {
       variant: 'text.body',
+      background: '#FFFFFF',
     },
     h1: {
       variant: 'text.heading',
@@ -55,15 +56,16 @@ export const theme: Theme = {
     },
   },
   colors: {
-    primary: '#000',
+    text: '#000',
+    background: '#F4F5F6',
+    primary: '#FFFFFF',
+    secondary: '#8032C7',
+    muted: '#E3E6E8',
     highlight: '#D2FF39',
     white: '#FFFFFF',
     blue: '#0000FF',
     pink: '#FD89FF',
     green: '#74F889',
-    purple: '#8032C7',
-    grey: '#F4F5F6',
-    mediumGrey: '#E3E6E8',
     bezelGreyLight: '#E8E8E8',
     bezelGreyDark: '#c5bbbb',
   },

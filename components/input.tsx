@@ -32,12 +32,12 @@ const TextInput: React.FC<TextInputProps> = ({
             borderColor: 'transparent',
             boxShadow: `1px 1px 0px 1px ${theme?.colors?.bezelGreyDark} inset, -1px -1px 0px 1px ${theme?.colors?.bezelGreyLight} inset`,
             borderRadius: 1,
-            background: backgroundColor ?? 'grey',
+            background: backgroundColor ?? 'background',
             px: 3,
             width: '100%',
             outline: 'none',
             ':focus': {
-              '::placeholder': { color: 'mediumGrey' },
+              '::placeholder': { color: 'muted' },
               borderColor: 'blue',
             },
           }}
