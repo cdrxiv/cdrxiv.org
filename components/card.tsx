@@ -1,5 +1,5 @@
 import React, { useState, SVGProps } from 'react'
-import { Box, Flex, useThemeUI, BoxProps, SxProp } from 'theme-ui'
+import { Box, Flex, BoxProps } from 'theme-ui'
 import Badge from './badge'
 import { useRouter } from 'next/navigation'
 
@@ -32,13 +32,13 @@ const SVGBox: React.FC<SVGBoxProps> = (props) => <Box as='svg' {...props} />
 interface CornerProps {
   size: number
   coverage?: number
-  color: string
+  hovered: boolean
   sx: { display: string[] }
 }
 const Corner: React.FC<CornerProps> = ({
   size = 40,
   coverage = 2,
-  color,
+  hovered,
   sx,
 }) => {
   return (
@@ -52,7 +52,7 @@ const Corner: React.FC<CornerProps> = ({
         top: `-${coverage}px`,
         right: `-${coverage}px`,
         overflow: 'visible',
-        stroke: color,
+        stroke: hovered ? 'blue' : 'black',
         strokeWidth: borderWidth,
         ...sx,
       }}
@@ -70,7 +70,7 @@ const Corner: React.FC<CornerProps> = ({
         as='polygon'
         points={`0,${coverage} 0,${size + coverage} ${size},${size + coverage}`}
         sx={{
-          fill: 'white',
+          fill: hovered ? 'mediumGray' : 'white',
         }}
       />
     </SVGBox>
@@ -85,7 +85,6 @@ const Card: React.FC<CardProps> = ({
   href,
   onClick,
 }) => {
-  const { theme } = useThemeUI()
   const router = useRouter()
 
   const [hovered, setHovered] = useState<boolean>(false)
@@ -133,12 +132,12 @@ const Card: React.FC<CardProps> = ({
       }}
     >
       <Corner
-        color={color}
+        hovered={hovered}
         size={40}
         sx={{ display: ['none', 'none', 'inherit', 'inherit'] }}
       />
       <Corner
-        color={color}
+        hovered={hovered}
         size={30}
         sx={{ display: ['inherit', 'inherit', 'none', 'none'] }}
       />
