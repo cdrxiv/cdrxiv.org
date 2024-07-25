@@ -17,8 +17,17 @@ const PaneledPage: React.FC<{
       >
         Sidebar
       </Column>
-      <Column start={[1, 1, 4, 4]} width={[6, 6, 6, 6]} sx={{ py: 10 }}>
-        <Box sx={{ width: '100%', background: 'white', px: [5, 5, 8, 8] }}>
+      <Column start={[1, 1, 4, 4]} width={[6, 6, 6, 6]}>
+        <Box
+          sx={{
+            width: '100%',
+            background: 'white',
+            minHeight: '300px',
+            overflowY: 'scroll',
+            py: 10,
+            px: [0, 0, 6, 8],
+          }}
+        >
           <Box sx={{ contain: 'layout' }}>
             <Guide columns={[6, 6, 8, 8]} color='articlePink' opacity={0.2} />
             <Row columns={[6, 6, 8, 8]}>

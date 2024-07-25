@@ -41,7 +41,7 @@ const Row: React.FC<RowProps> = ({
     columnGap = processedGap
     rowGap = processedGap
   } else {
-    columnGap = [5, 5, 8, 8]
+    columnGap = [5, 6, 6, 8]
     rowGap = [0, 0, 0, 0]
   }
 
