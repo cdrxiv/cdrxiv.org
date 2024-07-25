@@ -1,16 +1,21 @@
 import type { Metadata } from 'next'
+import { headers } from 'next/headers'
 import ThemeWrapper from './theme-wrapper'
 import PreprintsProvider from '../components/preprints-provider'
 import BasicPage from '../components/basic-page'
 import { Preprints } from '../types/preprint'
 
-const API_URL = process.env.NEXT_PUBLIC_VERCEL_URL // TODO update for production
-  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-  : 'http://localhost:3000'
-
 async function fetchPreprints(): Promise<Preprints> {
   try {
-    const res = await fetch(`${API_URL}/api/preprints`)
+    const host = headers().get('host') || 'localhost:3000'
+    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https'
+    const apiUrl = `${protocol}://${host}/api/preprints`
+    const cookieHeader = headers().get('cookie') || ''
+    const res = await fetch(apiUrl, {
+      headers: {
+        cookie: cookieHeader,
+      },
+    })
     if (!res.ok) throw new Error('Failed to fetch preprints')
     const data = await res.json()
     return data.results
