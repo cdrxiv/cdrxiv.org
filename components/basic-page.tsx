@@ -56,7 +56,7 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
             </Flex>
           </Column>
         </Row>
-        <Box sx={{ mt: 100 }}>{children}</Box>
+        <Box sx={{ mt: 4 }}>{children}</Box>
       </Box>
     </Box>
   )

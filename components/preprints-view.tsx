@@ -1,3 +1,5 @@
+'use client'
+
 import { usePreprints } from './preprints-provider'
 import Stack from './stack'
 import { Preprints } from '../types/preprint'

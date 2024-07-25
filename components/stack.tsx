@@ -14,11 +14,11 @@ const Stack: React.FC<StackProps> = ({ preprints }) => {
   const groupsPerRow = 3
 
   return (
-    <Box sx={{ mt: 4 }}>
+    <Box>
       {Array.from(
         { length: Math.ceil(preprints.length / (groupSize * groupsPerRow)) },
         (_, rowIndex) => (
-          <Row key={rowIndex} columns={[12]} gap={4} sx={{ mt: 3 }}>
+          <Row key={rowIndex} columns={[12]} gap={4}>
             {Array.from({ length: groupsPerRow }, (_, groupIndex) => {
               const startIndex =
                 rowIndex * groupSize * groupsPerRow + groupIndex * groupSize
@@ -36,25 +36,34 @@ const Stack: React.FC<StackProps> = ({ preprints }) => {
                       height: '500px',
                     }}
                   >
-                    {[...groupPreprints].reverse().map((preprint, i) => (
-                      <Card
-                        key={preprint.title}
-                        title={preprint.title}
-                        authors={preprint.authors}
-                        type={'article'}
-                        date={
-                          preprint.date_published
-                            ? new Date(preprint.date_published)
-                            : null
-                        }
-                        sx={{
-                          position: 'absolute',
-                          left: `${(groupSize - 1 - i) * 40}px`,
-                          top: `${i * 40}px`, // Adjust this value to control vertical stacking
-                          zIndex: i + 1,
-                        }}
-                      />
-                    ))}
+                    {[...groupPreprints].reverse().map((preprint, i) => {
+                      const cardCount = groupPreprints.length
+                      const isFullStack = cardCount === groupSize
+                      const leftOffset = isFullStack
+                        ? (groupSize - 1 - i) * 40
+                        : (cardCount - 1 - i) * 40
+                      const topOffset = i * 40
+
+                      return (
+                        <Card
+                          key={preprint.title}
+                          title={preprint.title}
+                          authors={preprint.authors}
+                          type={'article'}
+                          date={
+                            preprint.date_published
+                              ? new Date(preprint.date_published)
+                              : null
+                          }
+                          sx={{
+                            position: 'absolute',
+                            left: `${leftOffset}px`,
+                            top: `${topOffset}px`,
+                            zIndex: i + 1,
+                          }}
+                        />
+                      )
+                    })}
                   </Flex>
                 </Column>
               ) : null
