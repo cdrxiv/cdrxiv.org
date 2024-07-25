@@ -1,5 +1,6 @@
 import React from 'react'
-import { Box, Input, ThemeUIStyleObject } from 'theme-ui'
+import { Box, ThemeUIStyleObject } from 'theme-ui'
+import Input from './input'
 
 interface SearchProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
@@ -21,21 +22,11 @@ const Search: React.FC<SearchProps> = ({
         onChange={onChange}
         sx={{
           variant: 'text.monoCaps',
-          border: '1px solid',
-          borderColor: 'background',
-          borderRadius: 1,
           boxShadow: (theme) => `1px 1px 1px 1px ${theme?.colors?.text} inset, 
                 -1px -1px 1px 1px ${theme?.colors?.muted} inset`,
           background: 'primary',
-          pl: 3,
           pr: arrows ? 5 : 3,
-          width: '100%',
-          outline: 'none',
           '::placeholder': { color: 'text' },
-          ':focus-visible': {
-            '::placeholder': { color: 'muted' },
-            borderColor: 'blue',
-          },
           ...sx,
         }}
       />
