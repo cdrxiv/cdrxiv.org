@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
-import ThemeWrapper from './theme-wrapper'
+import ThemeWrapper from '../components/theme-wrapper'
 import PreprintsProvider from '../components/preprints-provider'
 import BasicPage from '../components/basic-page'
-import { Preprints } from '../types/preprint'
+import type { Preprints } from '../types/preprint'
 
 async function fetchPreprints(): Promise<Preprints> {
   try {
