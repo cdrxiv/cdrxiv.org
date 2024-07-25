@@ -5,6 +5,7 @@ const quadrant = localFont({ src: './fonts/QuadrantText-Regular.woff2' })
 const pressura = localFont({ src: './fonts/GT-Pressura-Mono-Regular.woff2' })
 
 export const theme: Theme = {
+  space: [0, 4, 8, 12, 16, 20, 24, 32, 40, 50, 64, 100],
   fonts: {
     body: quadrant.style.fontFamily,
     heading: quadrant.style.fontFamily,

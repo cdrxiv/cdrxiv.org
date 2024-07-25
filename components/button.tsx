@@ -31,16 +31,17 @@ const StyledButton: React.FC<ButtonProps> = ({
     ':active': {
       boxShadow: (theme) => `1px 1px 0px 1px ${theme?.colors?.text} inset, 
                   -1px -1px 0px 1px ${theme?.colors?.muted} inset`,
+      '& > div': {
+        transform: 'translate(1px, 1px)',
+      },
     },
-    pb: [9, 9, 9, 11],
+    pb: ['9px', '9px', '9px', '11px'],
     ...sx,
   }
 
   const buttonContent = (
     <Button onClick={href ? undefined : onClick} sx={commonStyles}>
-      <Box sx={{ ':active': { transform: 'translate(1px, 1px)' } }}>
-        {children}
-      </Box>
+      <Box>{children}</Box>
     </Button>
   )
 
