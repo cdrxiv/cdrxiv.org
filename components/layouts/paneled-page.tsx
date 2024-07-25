@@ -7,7 +7,9 @@ import Guide from '../guide'
 
 const PaneledPage: React.FC<{
   children: React.ReactNode
-}> = ({ children }) => {
+  metadata?: React.ReactNode
+  sidebar: React.ReactNode
+}> = ({ children, sidebar, metadata }) => {
   return (
     <Row>
       <Column
@@ -15,7 +17,7 @@ const PaneledPage: React.FC<{
         width={3}
         sx={{ display: ['none', 'none', 'inherit', 'inherit'] }}
       >
-        Sidebar
+        {sidebar}
       </Column>
       <Column start={[1, 1, 4, 4]} width={[6, 6, 6, 6]}>
         <Box
@@ -43,7 +45,7 @@ const PaneledPage: React.FC<{
         width={[6, 6, 2, 2]}
         sx={{ display: ['none', 'none', 'inherit', 'inherit'] }}
       >
-        Metadata
+        {metadata}
       </Column>
     </Row>
   )
