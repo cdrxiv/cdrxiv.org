@@ -57,14 +57,14 @@ const Column: React.FC<ColumnProps> = ({
     if (![0.5, 1].includes(dl)) {
       throw new Error('dl must be 0.5 or 1')
     }
-    ml = dl === 0.5 ? ['-10px', '-10px', '-20px', '-20px'] : [-5, -5, -8, -8]
+    ml = dl === 0.5 ? ['-10px', '-12px', '-12px', '-20px'] : [-5, -6, -6, -8]
   }
 
   if (dr) {
     if (![0.5, 1].includes(dr)) {
       throw new Error('dr must be 0.5 or 1')
     }
-    mr = dr === 0.5 ? ['-10px', '-10px', '-20px', '-20px'] : [-5, -5, -8, -8]
+    mr = dr === 0.5 ? ['-10px', '-12px', '-12px', '-20px'] : [-5, -6, -6, -8]
   }
 
   return (
