@@ -4,18 +4,29 @@ import { Box } from 'theme-ui'
 import Row from './row'
 import Column from './column'
 
-type GuideColor = 'border' | 'solid'
+type GuideStyle = 'border' | 'solid'
+type Columns = [number, number, number, number]
 
 interface GuideProps {
-  style?: GuideColor
+  style?: GuideStyle
+  columns?: Columns
+  color?: string
+  opacity?: number
 }
 interface GuideColumnsProps {
-  indices: number[]
-  style: GuideColor
-  color?: 'highlight' | 'dataGreen'
+  count: number
+  columns: Columns
+  style: GuideStyle
+  color: string
+  opacity: number
 }
 
-const Guide: React.FC<GuideProps> = ({ style = 'solid' }) => {
+const Guide: React.FC<GuideProps> = ({
+  style = 'solid',
+  color = 'highlight',
+  columns = [6, 8, 12, 12],
+  opacity = 0.1,
+}) => {
   const [display, setDisplay] = useState(false)
 
   useEffect(() => {
@@ -42,50 +53,59 @@ const Guide: React.FC<GuideProps> = ({ style = 'solid' }) => {
         zIndex: 5000,
         pointerEvents: 'none',
         display: display ? 'initial' : 'none',
-        mx: ['26px', '26px', '64px', '64px'],
       }}
     >
-      <Box sx={{ display: ['none', 'none', 'initial', 'initial'] }}>
-        <GuideColumns
-          indices={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
-          style={style}
-        />
-      </Box>
-      <Box sx={{ display: ['none', 'initial', 'none', 'none'] }}>
-        <GuideColumns indices={[1, 2, 3, 4, 5, 6, 7, 8]} style={style} />
-      </Box>
-      <Box sx={{ display: ['initial', 'none', 'none', 'none'] }}>
-        <GuideColumns indices={[1, 2, 3, 4, 5, 6]} style={style} />
-      </Box>
+      {columns.map((count, index) => (
+        <Box
+          key={index}
+          sx={{
+            display: Array(4)
+              .fill(null)
+              .map((d, i) => (i === index ? 'initial' : 'none')),
+          }}
+        >
+          <GuideColumns
+            count={count}
+            style={style}
+            columns={columns}
+            color={color}
+            opacity={opacity}
+          />
+        </Box>
+      ))}
     </Box>
   )
 }
 
 const GuideColumns: React.FC<GuideColumnsProps> = ({
-  indices,
+  count,
+  columns,
   style,
-  color = 'highlight',
+  color,
+  opacity,
 }) => {
   return (
-    <Row>
-      {indices.map((i) => {
-        return (
-          <Column
-            key={i}
-            start={[i]}
-            width={[1]}
-            sx={{
-              height: '100vh',
-              bg: style === 'solid' ? color : 'transparent',
-              opacity: style == 'solid' ? 0.2 : 1,
-              borderStyle: 'solid',
-              borderWidth: '0px',
-              borderLeftWidth: style === 'solid' ? '0px' : '1px',
-              borderRightWidth: style === 'solid' ? '0px' : '1px',
-            }}
-          />
-        )
-      })}
+    <Row columns={columns}>
+      {Array(count)
+        .fill(null)
+        .map((d, i) => {
+          return (
+            <Column
+              key={i}
+              start={[i + 1]}
+              width={[1]}
+              sx={{
+                height: '100vh',
+                bg: style === 'solid' ? color : 'transparent',
+                opacity: style == 'solid' ? opacity : 1,
+                borderStyle: 'solid',
+                borderWidth: '0px',
+                borderLeftWidth: style === 'solid' ? '0px' : '1px',
+                borderRightWidth: style === 'solid' ? '0px' : '1px',
+              }}
+            />
+          )
+        })}
     </Row>
   )
 }

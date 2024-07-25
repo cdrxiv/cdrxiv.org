@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useSession, signIn, signOut } from 'next-auth/react'
 
 import StyledLink from '../../components/link'
+import PaneledPage from '../../components/layouts/paneled-page'
 
 const UserInfo = () => {
   const [expanded, setExpanded] = useState(false)
@@ -47,9 +48,7 @@ export default function AuthTesting() {
     <>
       <UserInfo />
 
-      <Box sx={{ px: 3, background: 'backgroundGray', flexGrow: 1 }}>
-        Something about preparing a submission TK TK TK !
-      </Box>
+      <PaneledPage>Testing</PaneledPage>
     </>
   )
 }

@@ -1,7 +1,6 @@
 'use client'
 
 import { Box } from 'theme-ui'
-import BasicPage from '../components/basic-page'
 import Row from '../components/row'
 import Column from '../components/column'
 import Badge from '../components/badge'

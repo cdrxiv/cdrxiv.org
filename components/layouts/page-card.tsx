@@ -2,12 +2,12 @@
 
 import React from 'react'
 import { Box } from 'theme-ui'
-import Header from './header'
-import Guide from './guide'
+import Header from '../header'
+import Guide from '../guide'
 
 const margin = [2, 2, 3, 3]
 
-const BasicPage = ({ children }: { children: React.ReactNode }) => {
+const PageCard = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box
       sx={{
@@ -37,13 +37,20 @@ const BasicPage = ({ children }: { children: React.ReactNode }) => {
         }}
       >
         <Header />
-        <Guide />
-        <Box sx={{ mt: 100, px: ['18px', '18px', '52px', '52px'] }}>
-          {children}
+        <Box
+          sx={{
+            mt: 100,
+            px: ['18px', '18px', '52px', '52px'],
+          }}
+        >
+          <Box sx={{ contain: 'layout' }}>
+            <Guide />
+            {children}
+          </Box>
         </Box>
       </Box>
     </Box>
   )
 }
 
-export default BasicPage
+export default PageCard

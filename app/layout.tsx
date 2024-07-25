@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import ThemeWrapper from './theme-wrapper'
-import BasicPage from '../components/basic-page'
+import PageCard from '../components/layouts/page-card'
 
 export const metadata: Metadata = {
   title: 'CDRXIV',
@@ -17,7 +17,7 @@ export default function RootLayout({
       <body>
         <ThemeWrapper>
           <main>
-            <BasicPage>{children}</BasicPage>
+            <PageCard>{children}</PageCard>
           </main>
         </ThemeWrapper>
       </body>
