@@ -48,7 +48,7 @@ export default function AuthTesting() {
     <>
       <UserInfo />
 
-      <PaneledPage>Testing</PaneledPage>
+      <PaneledPage>Submission Information</PaneledPage>
     </>
   )
 }
