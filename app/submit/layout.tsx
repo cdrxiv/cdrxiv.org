@@ -55,11 +55,16 @@ const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname()
   console.log(pathname)
 
+  const index = PATHS.findIndex((p) => p.href === pathname)
+  const active = PATHS[index ?? 0]
+
   return (
     <SessionProvider>
       <UserInfo />
 
       <PaneledPage
+        title={active.label}
+        corner={`Step ${index + 1} / ${PATHS.length}`}
         sidebar={
           <Box>
             <Box>Overview</Box>
