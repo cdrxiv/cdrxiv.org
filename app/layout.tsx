@@ -7,15 +7,17 @@ import type { Preprints } from '../types/preprint'
 
 async function fetchPreprints(): Promise<Preprints> {
   try {
-    const host = headers().get('host') || 'localhost:3000'
-    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https'
-    const apiUrl = `${protocol}://${host}/api/preprints`
-    const cookieHeader = headers().get('cookie') || ''
-    const res = await fetch(apiUrl, {
-      headers: {
-        cookie: cookieHeader,
-      },
-    })
+    // const host = headers().get('host') || 'localhost:3000'
+    // const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https'
+    // const apiUrl = `${protocol}://${host}/api/preprints`
+    // const cookieHeader = headers().get('cookie') || ''
+    // const res = await fetch(apiUrl, {
+    //   headers: {
+    //     cookie: cookieHeader,
+    //   },
+    // })
+
+    const res = await fetch('/api/preprints')
     if (!res.ok) throw new Error('Failed to fetch preprints')
     const data = await res.json()
     return data.results
