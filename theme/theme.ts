@@ -43,6 +43,7 @@ export const theme: Theme = {
     visitedPurple: '#8032C7',
     bezelGrayDark: '#CECECE',
     bezelGrayLight: '#E8E8E8',
+    listBorderGrey: '#888',
   },
   breakpoints: ['40em', '64em', '102em'],
 }

@@ -1,8 +1,9 @@
 import React, { useState, SVGProps } from 'react'
-import { Box, Flex, BoxProps } from 'theme-ui'
+import { Box, Flex, BoxProps, ThemeUIStyleObject } from 'theme-ui'
 import Badge from './badge'
 import { useRouter } from 'next/navigation'
 import type { Author } from '../types/preprint'
+import { formatDate, authorList } from '../utils/formatters'
 
 interface CardProps {
   title: string
@@ -15,23 +16,6 @@ interface CardProps {
 }
 
 const borderWidth = 1
-
-const formatDate = (date: Date): string => {
-  const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }
-  return date.toLocaleDateString('en-US', options)
-}
-const authorList = (authors: Author[]): string => {
-  return authors
-    .map(
-      (author) =>
-        `${author.first_name || ''} ${author.middle_name || ''} ${author.last_name || ''}`,
-    )
-    .join(', ')
-}
 
 type ElBoxProps = BoxProps & SVGProps<SVGGElement> & { as: string }
 const ElBox: React.FC<ElBoxProps> = (props) => <Box {...props} />

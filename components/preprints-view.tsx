@@ -4,6 +4,7 @@ import { usePreprints } from './preprints-provider'
 import Stack from './stack'
 import { Preprints } from '../types/preprint'
 import Grid from './grid'
+import List from './list'
 
 const PreprintsView = ({ view }: { view?: string }) => {
   const preprints: Preprints | null = usePreprints()
@@ -15,7 +16,7 @@ const PreprintsView = ({ view }: { view?: string }) => {
       case 'grid':
         return <Grid preprints={preprints} />
       case 'list':
-        return <div>List View of Data</div>
+        return <List preprints={preprints} />
       default:
         return <Stack preprints={preprints} />
     }
