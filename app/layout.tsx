@@ -16,8 +16,7 @@ async function fetchPreprints(): Promise<Preprints> {
       //   cookie: cookieHeader,
       // },
     })
-
-    if (!res.ok) throw new Error('Failed to fetch preprints')
+    if (!res.ok) throw new Error(res.statusText)
     const data = await res.json()
     return data.results
   } catch (err) {
