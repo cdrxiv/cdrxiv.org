@@ -1,18 +1,18 @@
 import React from 'react'
-import { Box, Input, useThemeUI } from 'theme-ui'
+import { Box, Input, ThemeUIStyleObject, useThemeUI } from 'theme-ui'
 
 interface TextInputProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   title?: string
   placeholder?: string
-  backgroundColor?: string
+  sx?: ThemeUIStyleObject
 }
 
 const TextInput: React.FC<TextInputProps> = ({
   title,
   onChange,
   placeholder,
-  backgroundColor,
+  sx = {},
 }) => {
   const { theme } = useThemeUI()
   return (
@@ -30,16 +30,17 @@ const TextInput: React.FC<TextInputProps> = ({
             variant: 'text.body',
             border: '1px solid',
             borderColor: 'transparent',
-            boxShadow: `1px 1px 0px 1px ${theme?.colors?.bezelGrayDark} inset, -1px -1px 0px 1px ${theme?.colors?.bezelGrayLight} inset`,
+            boxShadow: `1px 1px 0px 1px ${theme?.colors?.bezelGreyDark} inset, -1px -1px 0px 1px ${theme?.colors?.bezelGreyLight} inset`,
             borderRadius: 1,
-            background: backgroundColor ?? 'backgroundGray',
+            background: 'background',
             px: 3,
             width: '100%',
             outline: 'none',
-            ':focus-visible': {
-              '::placeholder': { color: 'mediumGray' },
+            ':focus': {
+              '::placeholder': { color: 'muted' },
               borderColor: 'blue',
             },
+            ...sx,
           }}
         />
       </Box>

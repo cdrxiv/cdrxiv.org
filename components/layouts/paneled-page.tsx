@@ -21,7 +21,7 @@ const PaneledPage: React.FC<{
         <Box
           sx={{
             width: '100%',
-            background: 'white',
+            background: 'primary',
             minHeight: '300px',
             overflowY: 'scroll',
             py: 10,
