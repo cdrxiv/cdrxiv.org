@@ -8,6 +8,7 @@ type LinkProps = {
   ) => void
   children: React.ReactNode
   showArrow?: boolean
+  sx?: ThemeUIStyleObject
 }
 
 const StyledLink: React.FC<LinkProps> = ({
@@ -15,6 +16,7 @@ const StyledLink: React.FC<LinkProps> = ({
   onClick,
   children,
   showArrow = false,
+  sx = {},
 }) => {
   const commonStyles: ThemeUIStyleObject = {
     color: 'blue',
@@ -30,6 +32,7 @@ const StyledLink: React.FC<LinkProps> = ({
     padding: 0,
     textDecoration: 'underline',
     variant: 'text.body',
+    ...sx,
   }
 
   if (href !== undefined) {
