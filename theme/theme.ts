@@ -79,6 +79,10 @@ export const theme: Theme = {
     select: {
       variant: 'forms.input',
     },
+    label: {
+      variant: 'text.monoCaps',
+      fontSize: [1, 1, 1, 2],
+    },
   },
   colors: {
     text: '#000',

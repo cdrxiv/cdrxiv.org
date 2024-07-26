@@ -16,11 +16,7 @@ const Field: React.FC<Props> = ({
 }) => {
   return (
     <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-      <Label htmlFor={id}>
-        <Box sx={{ variant: 'text.monoCaps', fontSize: [1, 1, 1, 2] }}>
-          {label}
-        </Box>
-      </Label>
+      <Label htmlFor={id}>{label}</Label>
       {children}
       {description && <Box sx={{ variant: 'text.mono' }}>{description}</Box>}
     </Flex>
