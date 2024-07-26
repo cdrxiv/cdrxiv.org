@@ -68,8 +68,10 @@ const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         corner={`Step ${index + 1} / ${PATHS.length}`}
         sidebar={
           <Box>
-            <Box>Overview</Box>
-            <Flex sx={{ flexDirection: 'column', gap: 3 }}>
+            <Box sx={{ variant: 'text.monoCaps', mb: [5, 5, 5, 6] }}>
+              Overview
+            </Box>
+            <Flex sx={{ flexDirection: 'column', gap: [5, 5, 5, 6] }}>
               {PATHS.map(({ label, href }) => (
                 <NavLink key={href} href={href} active={pathname === href}>
                   {label}

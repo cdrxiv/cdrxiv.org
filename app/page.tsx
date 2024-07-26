@@ -7,8 +7,6 @@ import Badge from '../components/badge'
 import Link from '../components/link'
 import Button from '../components/button'
 import Card from '../components/card'
-import Select from '../components/select'
-import TextInput from '../components/input'
 import Filter from '../components/filter'
 
 const Home = () => {
@@ -82,20 +80,6 @@ const Home = () => {
               about
             </Link>
             <Button onClick={() => console.log('click')}>Submit</Button>
-            <Select
-              title='Filter by'
-              value='Data'
-              onChange={(e) => console.log(e.target.value)}
-            >
-              <option value='All'>All</option>
-              <option value='Articles'>Articles</option>
-              <option value='Data'>Data</option>
-            </Select>
-            <TextInput
-              placeholder='Search'
-              title='Lookup'
-              onChange={(e) => console.log(e.target.value)}
-            />
           </Box>
         </Column>
       </Row>

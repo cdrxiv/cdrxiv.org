@@ -1,6 +1,5 @@
 import React from 'react'
-import { Box, ThemeUIStyleObject } from 'theme-ui'
-import Input from './input'
+import { Box, Input, ThemeUIStyleObject } from 'theme-ui'
 
 interface SearchProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void

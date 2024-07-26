@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box } from 'theme-ui'
+import { Box, Flex } from 'theme-ui'
 
 import Row from '../row'
 import Column from '../column'
@@ -22,37 +22,33 @@ const PaneledPage: React.FC<{
         {sidebar}
       </Column>
       <Column start={[1, 1, 4, 4]} width={[6, 6, 6, 6]}>
-        {corner && (
-          <Row columns={6} sx={{ display: ['none', 'none', 'grid', 'grid'] }}>
-            <Column start={6} width={1} sx={{ position: 'relative' }}>
-              <Box
-                sx={{
-                  variant: 'text.monoCaps',
-                  position: 'absolute',
-                  mt: 8,
-                }}
-              >
-                {corner}
-              </Box>
-            </Column>
-          </Row>
-        )}
-
         <Box
           sx={{
             width: '100%',
             background: 'primary',
             minHeight: '300px',
             overflowY: 'scroll',
-            py: 10,
             px: [0, 0, 6, 8],
+            pb: 8,
           }}
         >
           <Box sx={{ contain: 'layout' }}>
             <Guide columns={[6, 6, 8, 8]} color='pink' opacity={0.2} />
             <Row columns={[6, 6, 8, 8]}>
               <Column start={1} width={[6, 6, 8, 8]}>
-                <Box as='h1' sx={{ variant: 'text.heading', mb: 5 }}>
+                <Flex sx={{ width: '100%', justifyContent: 'flex-end' }}>
+                  <Box
+                    sx={{
+                      variant: 'text.monoCaps',
+                      mt: 8,
+                      mb: 7,
+                    }}
+                  >
+                    {corner}
+                  </Box>
+                </Flex>
+
+                <Box as='h1' sx={{ variant: 'text.heading', mb: 7 }}>
                   {title}
                 </Box>
 
