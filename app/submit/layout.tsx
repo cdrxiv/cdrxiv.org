@@ -16,7 +16,7 @@ const UserInfo = () => {
   if (status === 'authenticated' && session) {
     return (
       <Box sx={{ position: 'relative' }}>
-        <StyledLink onClick={() => setExpanded(!expanded)} showArrow={false}>
+        <StyledLink onClick={() => setExpanded(!expanded)}>
           Signed in as {session?.user?.email ?? 'Unknown'}{' '}
           <Box
             sx={{
@@ -30,10 +30,7 @@ const UserInfo = () => {
         </StyledLink>
         {expanded && (
           <Box sx={{ position: 'absolute', top: '28px' }}>
-            <StyledLink
-              onClick={() => signOut({ callbackUrl: '/' })}
-              showArrow={false}
-            >
+            <StyledLink onClick={() => signOut({ callbackUrl: '/' })}>
               Sign out
             </StyledLink>
           </Box>
@@ -54,7 +51,6 @@ const PATHS = [
 
 const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname()
-  console.log(pathname)
 
   const index = PATHS.findIndex((p) => p.href === pathname)
   const active = PATHS[index >= 0 ? index : 0]
@@ -82,6 +78,32 @@ const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         }
       >
         {children}
+
+        <Flex
+          sx={{
+            justifyContent: index > 0 ? 'space-between' : 'flex-end',
+            mt: 8,
+          }}
+        >
+          {index > 0 && (
+            <StyledLink
+              href={PATHS[index - 1].href}
+              backArrow
+              sx={{ variant: 'text.monoCaps' }}
+            >
+              Prev step
+            </StyledLink>
+          )}
+          {index < PATHS.length - 1 && (
+            <StyledLink
+              href={PATHS[index + 1].href}
+              forwardArrow
+              sx={{ variant: 'text.monoCaps' }}
+            >
+              Next step
+            </StyledLink>
+          )}
+        </Flex>
       </PaneledPage>
     </SessionProvider>
   )

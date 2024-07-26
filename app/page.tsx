@@ -76,9 +76,7 @@ const Home = () => {
         <Column start={1} width={[6, 8, 12, 12]}>
           <Box sx={{ fontSize: [1, 2, 3, 4], fontFamily: 'mono' }}>
             <Badge color='pink'>article</Badge>
-            <Link showArrow={false} href=''>
-              about
-            </Link>
+            <Link href=''>about</Link>
             <Button onClick={() => console.log('click')}>Submit</Button>
           </Box>
         </Column>

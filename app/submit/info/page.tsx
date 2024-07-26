@@ -6,7 +6,7 @@ import Select from '../../../components/select'
 
 const SubmissionInformation = () => {
   return (
-    <Flex sx={{ flexDirection: 'column', gap: 5 }}>
+    <Flex sx={{ flexDirection: 'column', gap: 7 }}>
       <Field label='Title' id='title'>
         <Input onChange={() => {}} id='title' />
       </Field>

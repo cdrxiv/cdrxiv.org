@@ -29,7 +29,7 @@ const PaneledPage: React.FC<{
             minHeight: '300px',
             overflowY: 'scroll',
             px: [0, 0, 6, 8],
-            pb: 8,
+            pb: 6,
           }}
         >
           <Box sx={{ contain: 'layout' }}>

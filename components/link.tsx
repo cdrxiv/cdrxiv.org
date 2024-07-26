@@ -6,14 +6,16 @@ export interface Props extends LinkProps {
   onClick?: (
     event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>,
   ) => void
-  showArrow?: boolean
+  forwardArrow?: boolean
+  backArrow?: boolean
 }
 
 const StyledLink: React.FC<Props> = ({
   href,
   onClick,
   children,
-  showArrow = false,
+  backArrow = false,
+  forwardArrow = false,
   sx,
   ...props
 }) => {
@@ -37,16 +39,18 @@ const StyledLink: React.FC<Props> = ({
   if (href !== undefined) {
     return (
       <Link href={href} sx={commonStyles} {...props}>
+        {backArrow && '<< '}
         {children}
-        {showArrow && ' >>'}
+        {forwardArrow && ' >>'}
       </Link>
     )
   }
 
   return (
     <Button onClick={onClick} sx={commonStyles} disabled={props.disabled}>
+      {backArrow && '<< '}
       {children}
-      {showArrow && ' >>'}
+      {forwardArrow && ' >>'}
     </Button>
   )
 }
