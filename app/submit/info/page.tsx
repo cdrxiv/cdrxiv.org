@@ -10,7 +10,11 @@ const SubmissionInformation = () => {
       <Field label='Title' id='title'>
         <Input onChange={() => {}} id='title' />
       </Field>
-      <Field label='Abstract' id='abstract'>
+      <Field
+        label='Abstract'
+        id='abstract'
+        description='Some info about abstract formatting'
+      >
         <Textarea onChange={() => {}} id='abstract' />
       </Field>
       <Field label='License' id='license'>
