@@ -11,7 +11,6 @@ interface ListViewProps {
 }
 
 const ListView: React.FC<ListViewProps> = ({ preprints }) => {
-  console.log('preprints', preprints)
   return (
     <>
       {preprints.map((preprint) => (
