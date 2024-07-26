@@ -10,11 +10,11 @@ async function fetchPreprints(): Promise<Preprints> {
     const host = headers().get('host') || 'localhost:3000'
     const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https'
     const apiUrl = `${protocol}://${host}/api/preprints`
-    // const cookieHeader = headers().get('cookie') || ''
+    const cookieHeader = headers().get('cookie') || ''
     const res = await fetch(apiUrl, {
-      // headers: {
-      //   cookie: cookieHeader,
-      // },
+      headers: {
+        cookie: cookieHeader,
+      },
     })
     if (!res.ok) throw new Error(res.statusText)
     const data = await res.json()
