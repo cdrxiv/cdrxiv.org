@@ -29,8 +29,8 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
             },
           }}
         >
-          {/* Non-mobile view */}
-          <Box sx={{ display: ['none', 'block'] }}>
+          {/* Desktop view */}
+          <Box sx={{ display: ['none', 'none', 'inherit'] }}>
             <Row columns={12} sx={{ alignItems: 'center' }}>
               <Column start={1} width={4}>
                 <Box id='title' sx={{ variant: 'text.body' }}>
@@ -66,7 +66,7 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
           </Box>
 
           {/* Mobile view */}
-          <Box sx={{ display: ['block', 'none'] }}>
+          <Box sx={{ display: ['inherit', 'inherit', 'none'] }}>
             <Box sx={{ variant: 'text.body', color: 'blue' }}>
               {preprint.title}
             </Box>
