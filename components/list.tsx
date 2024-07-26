@@ -15,8 +15,8 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
     <>
       {preprints.map((preprint) => (
         <Row
+          columns={12}
           key={preprint.title}
-          gap={4}
           sx={{
             borderTop: '1px solid',
             borderColor: 'listBorderGrey',
@@ -32,17 +32,17 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
               {authorList(preprint.authors)}
             </Box>
           </Column>
-          <Column start={7} width={1}>
+          <Column start={7} width={2}>
             <Badge color={'pink'}>Article</Badge>
           </Column>
-          <Column start={8} width={2}>
+          <Column start={9} width={2}>
             <Box sx={{ variant: 'text.monoCaps' }}>
               {preprint.date_published
                 ? formatDate(new Date(preprint.date_published))
                 : null}
             </Box>
           </Column>
-          <Column start={10} width={2}>
+          <Column start={11} width={2}>
             <Box sx={{ variant: 'text.mono' }}>
               {preprint.subject.map((sub, i) => (
                 <React.Fragment key={sub.name}>
