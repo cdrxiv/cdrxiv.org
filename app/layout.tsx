@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
 import ThemeWrapper from '../components/theme-wrapper'
+import PageCard from '../components/layouts/page-card'
 import PreprintsProvider from '../components/preprints-provider'
-import BasicPage from '../components/basic-page'
 import type { Preprints } from '../types/preprint'
 
 async function fetchPreprints(): Promise<Preprints> {
@@ -41,7 +41,9 @@ export default async function RootLayout({
       <body>
         <PreprintsProvider data={preprints}>
           <ThemeWrapper>
-            <BasicPage>{children}</BasicPage>
+            <main>
+              <PageCard>{children}</PageCard>
+            </main>
           </ThemeWrapper>
         </PreprintsProvider>
       </body>

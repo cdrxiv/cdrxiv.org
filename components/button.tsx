@@ -39,7 +39,7 @@ const StyledButton: React.FC<ButtonProps> = ({
         transform: 'translate(1px, 1px)',
       },
     },
-    pb: [9, 9, 9, 11],
+    pb: ['9px', '9px', '9px', '11px'],
     ...sx,
   }
 

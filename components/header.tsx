@@ -5,27 +5,31 @@ import Search from './search'
 import Column from './column'
 import Row from './row'
 import Link from 'next/link'
+import StyledButton from './button'
 
 type GBoxProps = BoxProps & SVGProps<SVGGElement>
 const GBox: React.FC<GBoxProps> = (props) => <Box as='g' {...props} />
 
+type SVGBoxProps = BoxProps & SVGProps<SVGSVGElement>
+const SVGBox: React.FC<SVGBoxProps> = (props) => <Box as='svg' {...props} />
+
 const foldSize = 100
-const margin = 12
+const margin = [2, 2, 3, 3]
 
 const Header = () => {
   const { theme } = useThemeUI()
   return (
     <header>
       <Link href='/'>
-        <svg
-          width={foldSize}
-          height={foldSize}
+        <SVGBox
           viewBox={`0 0 ${foldSize} ${foldSize}`}
           fill='transparent'
-          style={{
+          sx={{
+            width: [65, 65, 100, 100],
+            height: [65, 65, 100, 100],
             position: 'fixed',
-            top: `${margin}px`,
-            right: `${margin}px`,
+            top: margin,
+            right: margin,
             zIndex: 3,
           }}
         >
@@ -73,30 +77,36 @@ const Header = () => {
               fill={theme?.colors?.black as string}
             />
           </GBox>
-        </svg>
+        </SVGBox>
       </Link>
       <Row
-        columns={[12]}
-        gap={4}
         sx={{
           position: 'fixed',
-          width: 'calc(100% - 2 * 13px)',
-          height: '100px',
+          width: (theme) =>
+            margin.map(
+              (space) =>
+                `calc(100% - 2 * ${theme.space ? theme.space[space] : 0}px)`,
+            ),
+          height: [65, 65, 100, 100],
           top: margin,
           left: margin,
-          px: 40,
           alignContent: 'center',
           backgroundColor: 'backgroundGray',
           zIndex: 2,
           borderTop: '1px solid',
           borderLeft: '1px solid',
           borderColor: 'black',
+          px: ['18px', '36px', '36px', '52px'],
         }}
       >
         <Column start={1} width={3}>
           <Search placeholder='Search' onChange={() => {}} arrows={true} />
         </Column>
-        <Column start={5} width={3}>
+        <Column
+          start={5}
+          width={3}
+          sx={{ display: ['none', 'inherit', 'inherit', 'inherit'] }}
+        >
           <Flex
             sx={{
               justifyContent: 'space-between',
@@ -104,10 +114,17 @@ const Header = () => {
               alignItems: 'center',
             }}
           >
-            <StyledLink href=''>Home</StyledLink>
+            <StyledLink href='/'>Home</StyledLink>
             <StyledLink href=''>Channels</StyledLink>
             <StyledLink href='/submit'>Submit</StyledLink>
           </Flex>
+        </Column>
+        <Column
+          start={4}
+          width={2}
+          sx={{ display: ['inherit', 'none', 'none', 'none'] }}
+        >
+          <StyledButton sx={{ width: 'fit-content' }}>Menu</StyledButton>
         </Column>
       </Row>
     </header>
