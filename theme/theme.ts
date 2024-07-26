@@ -95,8 +95,6 @@ export const theme: Theme = {
     purple: '#8032C7',
     pink: '#FD89FF',
     green: '#74F889',
-    bezelGreyLight: '#E8E8E8',
-    bezelGreyDark: '#c5bbbb',
   },
   breakpoints: ['40em', '64em', '102em'],
 }
