@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation'
 
 import StyledLink from '../../components/link'
 import PaneledPage from '../../components/layouts/paneled-page'
+import NavLink from '../../components/nav-link'
 
 const UserInfo = () => {
   const [expanded, setExpanded] = useState(false)
@@ -70,10 +71,9 @@ const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <Box>Overview</Box>
             <Flex sx={{ flexDirection: 'column', gap: 3 }}>
               {PATHS.map(({ label, href }) => (
-                <StyledLink key={href} href={href}>
-                  {pathname === href ? '>' : ''}
+                <NavLink key={href} href={href} active={pathname === href}>
                   {label}
-                </StyledLink>
+                </NavLink>
               ))}
             </Flex>
           </Box>
