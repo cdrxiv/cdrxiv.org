@@ -56,7 +56,7 @@ const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   console.log(pathname)
 
   const index = PATHS.findIndex((p) => p.href === pathname)
-  const active = PATHS[index ?? 0]
+  const active = PATHS[index >= 0 ? index : 0]
 
   return (
     <SessionProvider>
