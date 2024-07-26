@@ -22,10 +22,19 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
             borderColor: 'listBorderGrey',
             py: 4,
             alignItems: 'center',
+            ':hover': {
+              cursor: 'pointer',
+              bg: 'white',
+              '#title': {
+                color: 'blue',
+              },
+            },
           }}
         >
           <Column start={1} width={4}>
-            <Box sx={{ variant: 'text.body' }}>{preprint.title}</Box>
+            <Box id='title' sx={{ variant: 'text.body' }}>
+              {preprint.title}
+            </Box>
           </Column>
           <Column start={5} width={2}>
             <Box sx={{ variant: 'text.mono' }}>
