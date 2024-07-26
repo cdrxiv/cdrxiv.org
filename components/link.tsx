@@ -1,5 +1,6 @@
 import React from 'react'
-import { Link, Button, ThemeUIStyleObject } from 'theme-ui'
+import { Link as ThemeUILink, Button, ThemeUIStyleObject } from 'theme-ui'
+import NextLink from 'next/link'
 
 type LinkProps = {
   href?: string
@@ -37,10 +38,12 @@ const StyledLink: React.FC<LinkProps> = ({
 
   if (href !== undefined) {
     return (
-      <Link href={href} sx={commonStyles}>
-        {children}
-        {showArrow && ' >>'}
-      </Link>
+      <NextLink href={href} passHref={true} legacyBehavior>
+        <ThemeUILink sx={commonStyles}>
+          {children}
+          {showArrow && ' >>'}
+        </ThemeUILink>
+      </NextLink>
     )
   }
 
