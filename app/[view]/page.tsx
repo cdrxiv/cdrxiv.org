@@ -41,11 +41,7 @@ export default function ViewPage({ params }: { params: { view: string } }) {
           </Flex>
         </Column>
       </Row>
-      <Row sx={{ mt: 3 }}>
-        <Column start={1} width={[6, 8, 12, 12]}>
-          <PreprintsView view={params.view} />
-        </Column>
-      </Row>
+      <PreprintsView view={params.view} />
     </>
   )
 }
