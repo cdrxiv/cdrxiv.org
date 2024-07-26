@@ -16,8 +16,10 @@ const PreprintsView = ({ view }: { view?: string }) => {
       return <Grid preprints={preprints} />
     case 'list':
       return <List preprints={preprints} />
-    default:
+    case 'stack':
       return <Stack preprints={preprints} />
+    default:
+      return <Grid preprints={preprints} />
   }
 }
 
