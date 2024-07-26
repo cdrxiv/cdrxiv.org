@@ -1,3 +1,5 @@
+import { Author } from '../types/preprint'
+
 export const formatDate = (date: Date): string => {
   const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
