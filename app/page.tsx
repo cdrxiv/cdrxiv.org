@@ -77,7 +77,7 @@ const Home = () => {
       <Row sx={{ mt: 10 }}>
         <Column start={1} width={[6, 8, 12, 12]}>
           <Box sx={{ fontSize: [1, 2, 3, 4], fontFamily: 'mono' }}>
-            <Badge color='articlePink'>article</Badge>
+            <Badge color='pink'>article</Badge>
             <Link showArrow={false} href=''>
               about
             </Link>
