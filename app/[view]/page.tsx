@@ -17,8 +17,14 @@ export default function ViewPage({ params }: { params: { view: string } }) {
     <>
       <Topics />
       <Row columns={12} sx={{ mt: 3 }}>
-        <Column start={1} width={[8, 6, 4, 4]}>
-          <Flex sx={{ my: 8, justifyContent: 'space-between' }}>
+        <Column start={1} width={[12, 8, 6, 4]}>
+          <Flex
+            sx={{
+              my: 8,
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
             <Box sx={{ variant: 'text.monoCaps' }}>Recent preprints</Box>
             {validViews.map((view) => (
               <StyledLink
