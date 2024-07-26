@@ -3,7 +3,7 @@ import Row from './row'
 import Column from './column'
 import { Flex, Box } from 'theme-ui'
 import Card from './card'
-import { Preprints } from '../types/preprint'
+import type { Preprints } from '../types/preprint'
 
 interface StackProps {
   preprints: Preprints

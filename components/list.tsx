@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box } from 'theme-ui'
-import { Preprints } from '../types/preprint'
+import type { Preprints } from '../types/preprint'
 import { formatDate, authorList } from '../utils/formatters'
 import Row from './row'
 import Column from './column'
