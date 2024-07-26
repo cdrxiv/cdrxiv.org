@@ -1,46 +1,44 @@
 'use client'
 
-import { notFound } from 'next/navigation'
 import PreprintsView from '../../components/preprints-view'
 import { Flex, Box } from 'theme-ui'
-import Column from '../../components/column'
 import StyledLink from '../../components/link'
-import Row from '../../components/row'
 import Topics from '../../components/topics'
 
+import { redirect } from 'next/navigation'
+
 export default function ViewPage({ params }: { params: { view: string } }) {
-  const validViews = ['stack', 'grid', 'list']
+  const validViews = ['grid', 'list']
   if (!validViews.includes(params.view)) {
-    notFound()
+    redirect(`/${validViews[0]}`)
   }
+
   return (
     <>
       <Topics />
-      <Row columns={12} sx={{ mt: 3 }}>
-        <Column start={1} width={[12, 8, 6, 4]}>
-          <Flex
+      <Flex
+        sx={{
+          my: [4, 4, 8],
+          justifyContent: 'flex-start',
+          gap: 6,
+        }}
+      >
+        <Box sx={{ variant: 'text.monoCaps' }}>Recent preprints</Box>
+        {validViews.map((view) => (
+          <StyledLink
+            key={view}
+            href={`/${view}`}
             sx={{
-              my: 8,
-              justifyContent: 'space-between',
-              alignItems: 'center',
+              variant: 'text.body',
+              fontSize: [2, 2, 2, 3],
+              textDecoration: params.view === view ? 'underline' : 'none',
+              textTransform: 'capitalize',
             }}
           >
-            <Box sx={{ variant: 'text.monoCaps' }}>Recent preprints</Box>
-            {validViews.map((view) => (
-              <StyledLink
-                key={view}
-                href={`/${view}`}
-                sx={{
-                  textDecoration: params.view === view ? 'underline' : 'none',
-                  textTransform: 'capitalize',
-                }}
-              >
-                {view}
-              </StyledLink>
-            ))}
-          </Flex>
-        </Column>
-      </Row>
+            {view}
+          </StyledLink>
+        ))}
+      </Flex>
       <PreprintsView view={params.view} />
     </>
   )
