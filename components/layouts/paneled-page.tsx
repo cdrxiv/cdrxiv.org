@@ -36,7 +36,13 @@ const PaneledPage: React.FC<{
             <Guide columns={[6, 6, 8, 8]} color='pink' opacity={0.2} />
             <Row columns={[6, 6, 8, 8]}>
               <Column start={1} width={[6, 6, 8, 8]}>
-                <Flex sx={{ width: '100%', justifyContent: 'flex-end' }}>
+                <Flex
+                  sx={{
+                    width: '100%',
+                    justifyContent: 'flex-end',
+                    display: ['none', 'none', 'flex', 'flex'],
+                  }}
+                >
                   <Box
                     sx={{
                       variant: 'text.monoCaps',
