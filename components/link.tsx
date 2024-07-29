@@ -1,20 +1,23 @@
 import React from 'react'
-import { Link, Button, ThemeUIStyleObject } from 'theme-ui'
+import { Link, Button, ThemeUIStyleObject, LinkProps } from 'theme-ui'
 
-type LinkProps = {
-  href?: string
+export interface Props extends LinkProps {
+  disabled?: boolean
   onClick?: (
     event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>,
   ) => void
-  children: React.ReactNode
-  showArrow?: boolean
+  forwardArrow?: boolean
+  backArrow?: boolean
 }
 
-const StyledLink: React.FC<LinkProps> = ({
+const StyledLink: React.FC<Props> = ({
   href,
   onClick,
   children,
-  showArrow = false,
+  backArrow = false,
+  forwardArrow = false,
+  sx,
+  ...props
 }) => {
   const commonStyles: ThemeUIStyleObject = {
     color: 'blue',
@@ -30,21 +33,24 @@ const StyledLink: React.FC<LinkProps> = ({
     padding: 0,
     textDecoration: 'underline',
     variant: 'text.body',
+    ...sx,
   }
 
   if (href !== undefined) {
     return (
-      <Link href={href} sx={commonStyles}>
+      <Link href={href} sx={commonStyles} {...props}>
+        {backArrow && '<< '}
         {children}
-        {showArrow && ' >>'}
+        {forwardArrow && ' >>'}
       </Link>
     )
   }
 
   return (
-    <Button onClick={onClick} sx={commonStyles}>
+    <Button onClick={onClick} sx={commonStyles} disabled={props.disabled}>
+      {backArrow && '<< '}
       {children}
-      {showArrow && ' >>'}
+      {forwardArrow && ' >>'}
     </Button>
   )
 }

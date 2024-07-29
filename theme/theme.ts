@@ -56,6 +56,34 @@ export const theme: Theme = {
       fontSize: [3, 4, 4, 5],
     },
   },
+  forms: {
+    input: {
+      variant: 'text.body',
+      border: '1px solid',
+      borderColor: 'transparent',
+      boxShadow:
+        '1px 1px 0px 1px #c5bbbb inset, -1px -1px 0px 1px #E8E8E8 inset',
+      borderRadius: 1,
+      background: 'background',
+      px: 3,
+      width: '100%',
+      outline: 'none',
+      ':focus': {
+        '::placeholder': { color: 'muted' },
+        borderColor: 'blue',
+      },
+    },
+    textarea: {
+      variant: 'forms.input',
+    },
+    select: {
+      variant: 'forms.input',
+    },
+    label: {
+      variant: 'text.monoCaps',
+      fontSize: [1, 1, 1, 2],
+    },
+  },
   colors: {
     text: '#000',
     background: '#F4F5F6',
@@ -67,8 +95,6 @@ export const theme: Theme = {
     purple: '#8032C7',
     pink: '#FD89FF',
     green: '#74F889',
-    bezelGreyLight: '#E8E8E8',
-    bezelGreyDark: '#c5bbbb',
   },
   breakpoints: ['40em', '64em', '102em'],
 }
