@@ -13,8 +13,6 @@ const ThemeWrapper = ({ children }: { children: React.ReactNode }) => {
             font-family: 'Quadrant Text Regular';
             src: url('https://fonts.carbonplan.org/quadrant/QuadrantText-Regular.woff2')
               format('woff2');
-            font-weight: 400;
-            font-style: normal;
             font-display: swap;
           }
 
@@ -22,8 +20,6 @@ const ThemeWrapper = ({ children }: { children: React.ReactNode }) => {
             font-family: 'GT Pressura Mono Regular';
             src: url('https://fonts.carbonplan.org/gt_pressura_mono/GT-Pressura-Mono-Regular.woff2')
               format('woff2');
-            font-weight: 400;
-            font-style: normal;
             font-display: swap;
           }
         `}
