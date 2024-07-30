@@ -1,13 +1,16 @@
 'use client'
 
-import { usePreprints } from './preprints-provider'
 import type { Preprints } from '../types/preprint'
 import Grid from './grid'
 import List from './list'
 
-const PreprintsView = ({ view }: { view?: string }) => {
-  const preprints: Preprints | null = usePreprints()
-
+const PreprintsView = ({
+  preprints,
+  view,
+}: {
+  preprints: Preprints
+  view?: string
+}) => {
   if (!preprints) return
 
   switch (view?.toLowerCase()) {
