@@ -31,7 +31,7 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
         >
           {/* Desktop view */}
           <Box sx={{ display: ['none', 'none', 'inherit'] }}>
-            <Row columns={12} sx={{ alignItems: 'center' }}>
+            <Row columns={12} sx={{ alignItems: 'baseline' }}>
               <Column start={1} width={4}>
                 <Box id='title' sx={{ variant: 'text.body' }}>
                   {preprint.title}
