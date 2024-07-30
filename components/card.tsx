@@ -123,10 +123,6 @@ const Card: React.FC<CardProps> = ({
         borderWidth,
         borderStyle: 'solid',
         outline: 'none', // use highlight style for focus instead
-        ':hover': {
-          transform: 'translate(2px, -10px)',
-          transition: 'transform 0.2s',
-        },
         ...sx,
       }}
     >
