@@ -39,7 +39,7 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
               </Column>
               <Column start={5} width={2}>
                 <Box sx={{ variant: 'text.mono' }}>
-                  {authorList(preprint.authors)}
+                  {authorList(preprint.authors, true)}
                 </Box>
               </Column>
               <Column start={7} width={2}>
@@ -71,7 +71,7 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
               {preprint.title}
             </Box>
             <Box sx={{ variant: 'text.mono', my: 2 }}>
-              {authorList(preprint.authors)}
+              {authorList(preprint.authors, true)}
             </Box>
             <Badge color={'pink'}>Article</Badge>
             <Box sx={{ variant: 'text.monoCaps', mt: 6 }}>
