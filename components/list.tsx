@@ -31,14 +31,17 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
         >
           {/* Desktop view */}
           <Box sx={{ display: ['none', 'none', 'inherit'] }}>
-            <Row columns={12} sx={{ alignItems: 'baseline' }}>
+            <Row columns={12} sx={{ alignItems: 'center' }}>
               <Column start={1} width={4}>
-                <Box id='title' sx={{ variant: 'text.body' }}>
+                <Box
+                  id='title'
+                  sx={{ variant: 'text.body', alignSelf: 'center' }}
+                >
                   {preprint.title}
                 </Box>
               </Column>
               <Column start={5} width={2}>
-                <Box sx={{ variant: 'text.mono' }}>
+                <Box sx={{ variant: 'text.mono', alignSelf: 'baseline' }}>
                   {authorList(preprint.authors, true)}
                 </Box>
               </Column>
@@ -46,14 +49,14 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
                 <Badge color={'pink'}>Article</Badge>
               </Column>
               <Column start={9} width={2}>
-                <Box sx={{ variant: 'text.monoCaps' }}>
+                <Box sx={{ variant: 'text.monoCaps', alignSelf: 'baseline' }}>
                   {preprint.date_published
                     ? formatDate(new Date(preprint.date_published))
                     : null}
                 </Box>
               </Column>
               <Column start={11} width={2}>
-                <Box sx={{ variant: 'text.mono' }}>
+                <Box sx={{ variant: 'text.mono', alignSelf: 'center' }}>
                   {preprint.subject.map((sub, i) => (
                     <React.Fragment key={sub.name}>
                       {sub.name}
