@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import PreprintsView from '../components/preprints-view'
 import { Flex, Box } from 'theme-ui'
 import StyledLink from '../components/link'
+import Link from 'next/link'
 
 import type { Preprints } from '../types/preprint'
 
@@ -26,9 +27,9 @@ function LandingPage({ preprints }: { preprints: Preprints }) {
 
   const handleViewChange = (view: ViewType) => {
     setCurrentView(view)
-    const url = new URL(window.location.href)
-    url.searchParams.set('view', view)
-    window.history.pushState({}, '', url)
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('view', view)
+    window.history.pushState(null, '', `?${params.toString()}`)
   }
 
   return (
@@ -48,8 +49,7 @@ function LandingPage({ preprints }: { preprints: Preprints }) {
             textDecoration: currentView === 'grid' ? 'underline' : 'none',
             textTransform: 'capitalize',
           }}
-          onClick={(e) => {
-            e.preventDefault()
+          onClick={() => {
             handleViewChange('grid')
           }}
         >
@@ -62,8 +62,7 @@ function LandingPage({ preprints }: { preprints: Preprints }) {
             textDecoration: currentView === 'list' ? 'underline' : 'none',
             textTransform: 'capitalize',
           }}
-          onClick={(e) => {
-            e.preventDefault()
+          onClick={() => {
             handleViewChange('list')
           }}
         >
