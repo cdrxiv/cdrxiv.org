@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation'
 import PreprintsView from '../components/preprints-view'
 import { Flex, Box } from 'theme-ui'
 import StyledLink from '../components/link'
-import Link from 'next/link'
 
 import type { Preprints } from '../types/preprint'
 
