@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import ThemeWrapper from './theme-wrapper'
 import PageCard from '../components/layouts/page-card'
+import '../components/fonts.css'
 
 export const metadata: Metadata = {
   title: 'CDRXIV',
