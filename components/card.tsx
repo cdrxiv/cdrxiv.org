@@ -37,7 +37,6 @@ const Corner: React.FC<CornerProps> = ({
 }) => {
   return (
     <SVGBox
-      as='svg'
       viewBox={`0 0 ${size + coverage} ${size + coverage}`}
       sx={{
         width: `${size + coverage}px`,
@@ -46,6 +45,7 @@ const Corner: React.FC<CornerProps> = ({
         top: `-${coverage}px`,
         right: `-${coverage}px`,
         overflow: 'visible',
+        fill: 'none',
         stroke: hovered ? 'blue' : 'text',
         strokeWidth: borderWidth,
         ...sx,

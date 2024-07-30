@@ -1,23 +1,29 @@
 import React from 'react'
-import { Link as ThemeUILink, Button, ThemeUIStyleObject } from 'theme-ui'
+import {
+  Link as ThemeUILink,
+  Button,
+  ThemeUIStyleObject,
+  LinkProps,
+} from 'theme-ui'
 import NextLink from 'next/link'
 
-type LinkProps = {
-  href?: string
+export interface Props extends LinkProps {
+  disabled?: boolean
   onClick?: (
     event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>,
   ) => void
-  children: React.ReactNode
-  showArrow?: boolean
-  sx?: ThemeUIStyleObject
+  forwardArrow?: boolean
+  backArrow?: boolean
 }
 
-const StyledLink: React.FC<LinkProps> = ({
+const StyledLink: React.FC<Props> = ({
   href,
   onClick,
   children,
-  showArrow = false,
-  sx = {},
+  backArrow = false,
+  forwardArrow = false,
+  sx,
+  ...props
 }) => {
   const commonStyles: ThemeUIStyleObject = {
     color: 'blue',
@@ -39,18 +45,20 @@ const StyledLink: React.FC<LinkProps> = ({
   if (href !== undefined) {
     return (
       <NextLink href={href} passHref={true} legacyBehavior>
-        <ThemeUILink sx={commonStyles}>
+        <ThemeUILink sx={commonStyles} {...props}>
+          {backArrow && '<< '}
           {children}
-          {showArrow && ' >>'}
+          {forwardArrow && ' >>'}
         </ThemeUILink>
       </NextLink>
     )
   }
 
   return (
-    <Button onClick={onClick} sx={commonStyles}>
+    <Button onClick={onClick} sx={commonStyles} disabled={props.disabled}>
+      {backArrow && '<< '}
       {children}
-      {showArrow && ' >>'}
+      {forwardArrow && ' >>'}
     </Button>
   )
 }
