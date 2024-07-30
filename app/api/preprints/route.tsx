@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server'
-import { fetchWithToken } from '../utils'
+import { fetchWithToken, getPreprints } from '../utils'
 
-const HARDCODED_RESPONSE = {
+export const HARDCODED_RESPONSE = {
   count: 14,
   next: null,
   previous: null,
@@ -1184,15 +1184,5 @@ const HARDCODED_RESPONSE = {
 }
 
 export async function GET(request: NextRequest) {
-  const result = await fetchWithToken(
-    request,
-    'https://carbonplan.endurance.janeway.systems/carbonplan/api/preprints/',
-  )
-  if (result.status === 200) {
-    // If authenticated, return actual result
-    return result
-  } else {
-    // Otherwise, return hardcoded response
-    return Response.json({ ...HARDCODED_RESPONSE, test_data: true })
-  }
+  return getPreprints(request)
 }

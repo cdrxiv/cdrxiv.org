@@ -4,20 +4,12 @@ import ThemeWrapper from '../components/theme-wrapper'
 import PageCard from '../components/layouts/page-card'
 import PreprintsProvider from '../components/preprints-provider'
 import type { Preprints } from '../types/preprint'
+import { getPreprints } from './api/utils'
 
 async function fetchPreprints(): Promise<Preprints> {
   try {
-    const host = headers().get('host') || 'localhost:3000'
-    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https'
-    const apiUrl = `${protocol}://${host}/api/preprints`
-    const cookieHeader = headers().get('cookie') || ''
-    const res = await fetch(apiUrl, {
-      headers: {
-        cookie: cookieHeader,
-      },
-    })
-    if (!res.ok) throw new Error(res.statusText)
-    const data = await res.json()
+    const headersList = headers()
+    const data = await getPreprints(headersList)
     return data.results
   } catch (err) {
     console.error(err)
