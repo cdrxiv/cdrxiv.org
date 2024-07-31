@@ -1,4 +1,4 @@
-import { SVGProps } from 'react'
+import { SVGProps, useState } from 'react'
 import { Flex, Box, BoxProps, useThemeUI } from 'theme-ui'
 import StyledLink from './link'
 import Search from './search'
@@ -6,6 +6,7 @@ import Column from './column'
 import Row from './row'
 import Link from 'next/link'
 import StyledButton from './button'
+import Menu from './menu'
 
 type GBoxProps = BoxProps & SVGProps<SVGGElement>
 const GBox: React.FC<GBoxProps> = (props) => <Box as='g' {...props} />
@@ -17,6 +18,7 @@ const foldSize = 100
 const margin = [2, 2, 3, 3]
 
 const Header = () => {
+  const [menuOpen, setMenuOpen] = useState(false)
   const { theme } = useThemeUI()
   return (
     <header>
@@ -124,7 +126,19 @@ const Header = () => {
           width={2}
           sx={{ display: ['inherit', 'none', 'none', 'none'] }}
         >
-          <StyledButton sx={{ width: 'fit-content' }}>Menu</StyledButton>
+          <StyledButton
+            onClick={() => setMenuOpen((open) => !open)}
+            sx={{ width: 'fit-content' }}
+          >
+            Menu
+          </StyledButton>
+          {menuOpen && (
+            <Menu setMenuOpen={setMenuOpen}>
+              <StyledLink href='/'>Home</StyledLink>
+              <StyledLink href=''>Channels</StyledLink>
+              <StyledLink href='/submit'>Submit</StyledLink>
+            </Menu>
+          )}
         </Column>
       </Row>
     </header>
