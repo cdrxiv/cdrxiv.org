@@ -11,7 +11,7 @@ import Grid from './grid'
 
 type ViewType = 'grid' | 'list'
 
-function PreprintsView({ preprints }: { preprints: Preprints }) {
+const PreprintsView = ({ preprints }: { preprints: Preprints }) => {
   const searchParams = useSearchParams()
 
   const [currentView, setCurrentView] = useState<ViewType>(
@@ -52,6 +52,7 @@ function PreprintsView({ preprints }: { preprints: Preprints }) {
           onClick={() => {
             handleViewChange('grid')
           }}
+          href={'?view=grid'}
         >
           Grid
         </StyledLink>
@@ -65,6 +66,7 @@ function PreprintsView({ preprints }: { preprints: Preprints }) {
           onClick={() => {
             handleViewChange('list')
           }}
+          href={'?view=list'}
         >
           List
         </StyledLink>

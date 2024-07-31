@@ -1,19 +1,12 @@
 import React from 'react'
-import {
-  Link as ThemeUILink,
-  Button,
-  ThemeUIStyleObject,
-  LinkProps,
-} from 'theme-ui'
+import { Link as ThemeUILink, ThemeUIStyleObject, LinkProps } from 'theme-ui'
 import NextLink from 'next/link'
 
 export interface Props extends LinkProps {
-  disabled?: boolean
-  onClick?: (
-    event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>,
-  ) => void
+  onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void
   forwardArrow?: boolean
   backArrow?: boolean
+  disabled?: boolean
 }
 
 const StyledLink: React.FC<Props> = ({
@@ -23,6 +16,7 @@ const StyledLink: React.FC<Props> = ({
   backArrow = false,
   forwardArrow = false,
   sx,
+  disabled = false,
   ...props
 }) => {
   const commonStyles: ThemeUIStyleObject = {
@@ -42,24 +36,31 @@ const StyledLink: React.FC<Props> = ({
     ...sx,
   }
 
-  if (href !== undefined) {
-    return (
-      <NextLink href={href} passHref={true} legacyBehavior>
-        <ThemeUILink sx={commonStyles} {...props}>
-          {backArrow && '<< '}
-          {children}
-          {forwardArrow && ' >>'}
-        </ThemeUILink>
-      </NextLink>
-    )
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (disabled) {
+      event.preventDefault()
+      return
+    }
+    if (onClick) {
+      event.preventDefault()
+      onClick(event)
+    }
   }
 
-  return (
-    <Button onClick={onClick} sx={commonStyles} disabled={props.disabled}>
+  const content = (
+    <>
       {backArrow && '<< '}
       {children}
       {forwardArrow && ' >>'}
-    </Button>
+    </>
+  )
+
+  return (
+    <NextLink href={disabled ? '#' : href || '#'} passHref legacyBehavior>
+      <ThemeUILink onClick={handleClick} sx={commonStyles} {...props}>
+        {content}
+      </ThemeUILink>
+    </NextLink>
   )
 }
 
