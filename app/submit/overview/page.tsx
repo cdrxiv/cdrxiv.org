@@ -1,8 +1,9 @@
 'use client'
 
 import { useSession, signIn, signOut } from 'next-auth/react'
-import { Box } from 'theme-ui'
+import { Box, Checkbox, Flex, Label } from 'theme-ui'
 
+import Field from '../../../components/field'
 import StyledLink from '../../../components/link'
 import Expander from '../../../components/expander'
 
@@ -28,9 +29,32 @@ const UserInfo = () => {
 
 const SubmissionOverview = () => {
   return (
-    <div>
+    <Flex sx={{ flexDirection: 'column', gap: 7 }}>
       <UserInfo />
-    </div>
+
+      <Field label='Submission agreement' id='agreement'>
+        <Label>
+          <Checkbox id='agreement' />
+          Authors grant us the right to publish, on this website, their uploaded
+          manuscript, supplementary materials and any supplied metadata.
+        </Label>
+      </Field>
+
+      <Field
+        label='Submission contents'
+        id='contents'
+        description='Select the content types you’d like to include in your submission.'
+      >
+        <Label>
+          <Checkbox value='article' />
+          Article
+        </Label>
+        <Label>
+          <Checkbox value='data' />
+          Data
+        </Label>
+      </Field>
+    </Flex>
   )
 }
 
