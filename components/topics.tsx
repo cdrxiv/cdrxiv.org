@@ -6,8 +6,24 @@ import Column from './column'
 import Row from './row'
 import { Subjects } from '../types/subject'
 
+const renderSubject = (name: string) => (
+  <Box
+    key={name}
+    sx={{
+      variant: 'text.body',
+      cursor: 'pointer',
+      width: 'fit-content',
+      ':hover': {
+        bg: 'highlight',
+      },
+    }}
+  >
+    {name}
+  </Box>
+)
+
 const Topics: React.FC<{ subjects: Subjects }> = ({ subjects }) => {
-  const midPoint = Math.ceil(subjects.length / 2) - 1
+  const midPoint = Math.ceil(subjects.length / 2) - 1 // -1 accounts for All option
 
   return (
     <Row sx={{ mt: 4 }}>
@@ -25,38 +41,14 @@ const Topics: React.FC<{ subjects: Subjects }> = ({ subjects }) => {
         <Row columns={8}>
           <Column start={1} width={4}>
             <Box sx={{ variant: 'text.body' }}>All</Box>
-            {subjects.slice(0, midPoint).map((subject, index) => (
-              <Box
-                key={index}
-                sx={{
-                  variant: 'text.body',
-                  cursor: 'pointer',
-                  width: 'fit-content',
-                  ':hover': {
-                    bg: 'highlight',
-                  },
-                }}
-              >
-                {subject.name}
-              </Box>
-            ))}
+            {subjects
+              .slice(0, midPoint)
+              .map((subject) => renderSubject(subject.name))}
           </Column>
           <Column start={5} width={4}>
-            {subjects.slice(midPoint).map((subject, index) => (
-              <Box
-                key={index}
-                sx={{
-                  variant: 'text.body',
-                  cursor: 'pointer',
-                  width: 'fit-content',
-                  ':hover': {
-                    bg: 'highlight',
-                  },
-                }}
-              >
-                {subject.name}
-              </Box>
-            ))}
+            {subjects
+              .slice(midPoint)
+              .map((subject) => renderSubject(subject.name))}
           </Column>
         </Row>
       </Column>
