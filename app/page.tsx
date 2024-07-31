@@ -1,25 +1,30 @@
-import { getPreprints } from './api/utils'
-import type { Preprints } from '../types/preprint'
+import { getPreprints, getSubjects } from './api/utils'
 import Topics from '../components/topics'
 import PreprintsView from '../components/preprints-view'
+import type { Subjects } from '../types/subject'
+import type { Preprints } from '../types/preprint'
 
 export const dynamic = 'force-dynamic'
 
-async function fetchPreprints(): Promise<Preprints> {
+async function fetchData(): Promise<[Preprints, Subjects]> {
   try {
-    const data = await getPreprints()
-    return data.results
+    const [preprintsData, subjectsData] = await Promise.all([
+      getPreprints(),
+      getSubjects(),
+    ])
+    return [preprintsData.results, subjectsData.results]
   } catch (err) {
     console.error(err)
-    return []
+    return [[], []]
   }
 }
+
 const Home = async () => {
-  const preprints = await fetchPreprints()
+  const [preprints, subjects] = await fetchData()
 
   return (
     <>
-      <Topics />
+      <Topics subjects={subjects} />
       <PreprintsView preprints={preprints} />
     </>
   )
