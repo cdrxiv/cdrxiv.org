@@ -1,27 +1,21 @@
 import React, { useState, SVGProps } from 'react'
-import { Box, Flex, BoxProps } from 'theme-ui'
+import { Box, Flex, BoxProps, ThemeUIStyleObject } from 'theme-ui'
 import Badge from './badge'
 import { useRouter } from 'next/navigation'
+import type { Author } from '../types/preprint'
+import { formatDate, authorList } from '../utils/formatters'
 
 interface CardProps {
   title: string
-  authors: Array<string>
+  authors: Author[]
   type: 'article' | 'data'
-  date: Date
+  date: Date | null
   href?: string
   onClick?: () => void
+  sx?: ThemeUIStyleObject
 }
 
 const borderWidth = 1
-
-const formatDate = (date: Date): string => {
-  const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }
-  return date.toLocaleDateString('en-US', options)
-}
 
 type ElBoxProps = BoxProps & SVGProps<SVGGElement> & { as: string }
 const ElBox: React.FC<ElBoxProps> = (props) => <Box {...props} />
@@ -84,6 +78,7 @@ const Card: React.FC<CardProps> = ({
   date,
   href,
   onClick,
+  sx = {},
 }) => {
   const router = useRouter()
 
@@ -99,6 +94,7 @@ const Card: React.FC<CardProps> = ({
       onClick()
     }
   }
+
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
@@ -116,9 +112,7 @@ const Card: React.FC<CardProps> = ({
       onBlur={() => setHovered(false)}
       tabIndex={0}
       role='button'
-      aria-label={`${type} titled ${title} by ${authors.join(', ')}, published on ${formatDate(
-        date,
-      )}`}
+      aria-label={`${type} titled ${title} by ${authorList(authors)}, published on ${date ? formatDate(date) : 'unknown date'}`}
       sx={{
         position: 'relative',
         width: '100%',
@@ -129,6 +123,7 @@ const Card: React.FC<CardProps> = ({
         borderWidth,
         borderStyle: 'solid',
         outline: 'none', // use highlight style for focus instead
+        ...sx,
       }}
     >
       <Corner
@@ -149,7 +144,6 @@ const Card: React.FC<CardProps> = ({
           height: '100%',
           p: [3, 6, 6, 7],
           position: 'relative',
-          zIndex: 1,
         }}
       >
         <Flex sx={{ flexDirection: 'column' }}>
@@ -162,7 +156,7 @@ const Card: React.FC<CardProps> = ({
           >
             {title}
           </Box>
-          <Box sx={{ variant: 'text.mono' }}>{authors.join(', ')}</Box>
+          <Box sx={{ variant: 'text.mono' }}>{authorList(authors)}</Box>
         </Flex>
         <Flex
           sx={{
@@ -172,14 +166,16 @@ const Card: React.FC<CardProps> = ({
           }}
         >
           <Badge color={badgeColor}>{type}</Badge>
-          <Box
-            sx={{
-              variant: 'text.monoCaps',
-              alignSelf: 'center',
-            }}
-          >
-            {formatDate(date)}
-          </Box>
+          {date && (
+            <Box
+              sx={{
+                variant: 'text.monoCaps',
+                alignSelf: 'center',
+              }}
+            >
+              {formatDate(date)}
+            </Box>
+          )}
         </Flex>
       </Flex>
     </Box>

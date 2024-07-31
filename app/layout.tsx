@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import ThemeWrapper from './theme-wrapper'
+import ThemeWrapper from '../components/theme-wrapper'
 import PageCard from '../components/layouts/page-card'
 import '../components/fonts.css'
 
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: 'CDRXIV',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode

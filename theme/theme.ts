@@ -91,6 +91,7 @@ export const theme: Theme = {
     purple: '#8032C7',
     pink: '#FD89FF',
     green: '#74F889',
+    listBorderGrey: '#888',
   },
   breakpoints: ['40em', '64em', '102em'],
 }
