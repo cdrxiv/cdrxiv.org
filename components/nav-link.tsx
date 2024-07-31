@@ -1,34 +1,35 @@
 import StyledLink from './link'
 import type { Props } from './link'
 
-const carrot = {
-  content: '">"',
-  position: 'absolute',
-  left: -3,
-}
-interface NavLinkProps extends Props {
+export interface NavLinkProps extends Props {
   active: boolean
 }
 const NavLink: React.FC<NavLinkProps> = ({
   children,
   active,
+  disabled,
   sx = {},
   ...props
 }) => {
+  const interactive = !disabled && !active
   return (
     <StyledLink
-      disabled={active}
+      disabled={!interactive}
       {...props}
       sx={{
         ...sx,
         color: 'text',
         ':visited': { color: 'text' },
-        ':hover': active ? {} : { color: 'blue' },
+        ':hover': interactive ? { color: 'blue' } : {},
+        cursor: interactive ? 'pointer' : 'default',
+        opacity: disabled ? 0.65 : 1,
         textDecoration: 'none',
         '::before': active
           ? { content: '">"', position: 'absolute', left: -3 }
           : {},
-        '&:hover::before': { content: '">"', position: 'absolute', left: -3 },
+        '&:hover::before': interactive
+          ? { content: '">"', position: 'absolute', left: -3 }
+          : {},
       }}
     >
       {children}
