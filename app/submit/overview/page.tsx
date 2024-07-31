@@ -14,7 +14,7 @@ const UserInfo = () => {
     return (
       <Box sx={{ position: 'relative' }}>
         <Expander label={`Signed in as ${session?.user?.email ?? 'Unknown'}`}>
-          <Box sx={{ position: 'absolute', top: '28px' }}>
+          <Box sx={{ top: '28px' }}>
             <StyledLink onClick={() => signOut({ callbackUrl: '/' })}>
               Sign out
             </StyledLink>
@@ -45,14 +45,16 @@ const SubmissionOverview = () => {
         id='contents'
         description='Select the content types you’d like to include in your submission.'
       >
-        <Label>
-          <Checkbox value='article' />
-          Article
-        </Label>
-        <Label>
-          <Checkbox value='data' />
-          Data
-        </Label>
+        <Flex sx={{ gap: 8 }}>
+          <Label sx={{ width: 'fit-content', alignItems: 'center' }}>
+            <Checkbox value='article' />
+            Article
+          </Label>
+          <Label sx={{ width: 'fit-content', alignItems: 'center' }}>
+            <Checkbox value='data' />
+            Data
+          </Label>
+        </Flex>
       </Field>
     </Flex>
   )
