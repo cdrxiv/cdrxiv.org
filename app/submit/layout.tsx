@@ -4,7 +4,7 @@ import { SessionProvider, useSession } from 'next-auth/react'
 import { Box, Flex } from 'theme-ui'
 import { redirect, usePathname } from 'next/navigation'
 
-import StyledLink from '../../components/link'
+import StyledLink, { Props as LinkProps } from '../../components/link'
 import PaneledPage from '../../components/layouts/paneled-page'
 import NavLink, { NavLinkProps } from '../../components/nav-link'
 
@@ -36,6 +36,16 @@ const AuthedNavLink: React.FC<NavLinkProps> = ({ children, active, href }) => {
       {children}
     </NavLink>
   )
+}
+
+const NextButton: React.FC<LinkProps> = ({ href, ...props }) => {
+  const { status } = useSession()
+
+  const disabled = status === 'unauthenticated' && href !== PATHS[0].href
+
+  if (disabled) return null
+
+  return <StyledLink href={href} {...props} />
 }
 
 const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -87,13 +97,13 @@ const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             </StyledLink>
           )}
           {index < PATHS.length - 1 && (
-            <StyledLink
+            <NextButton
               href={PATHS[index + 1].href}
               forwardArrow
               sx={{ variant: 'text.monoCaps' }}
             >
               Next step
-            </StyledLink>
+            </NextButton>
           )}
         </Flex>
       </PaneledPage>
