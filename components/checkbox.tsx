@@ -4,13 +4,11 @@ import { Box, CheckboxProps, ThemeUIStyleObject } from 'theme-ui'
 const CheckboxDisplay = ({ sx }: { sx?: ThemeUIStyleObject }) => {
   return (
     <Box
-      className='container'
       aria-hidden='true'
       sx={{
         variant: 'text.monoCaps',
         mr: 2,
         color: 'blue',
-        cursor: 'pointer',
         border: '1px solid',
         borderColor: 'transparent',
         outline: 'none',
@@ -23,13 +21,19 @@ const CheckboxDisplay = ({ sx }: { sx?: ThemeUIStyleObject }) => {
         '& .space': {
           display: 'initial',
         },
-        'input:checked ~ &, input:hover ~ &': {
+        'input:checked ~ &': {
           '.x': {
             display: 'initial',
           },
           '.space': {
             display: 'none',
           },
+        },
+        'input:enabled ~ &': {
+          cursor: 'pointer',
+        },
+        'input:hover:enabled ~ &': {
+          textDecoration: 'underline',
         },
         ...sx,
       }}

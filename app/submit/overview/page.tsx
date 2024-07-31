@@ -48,7 +48,7 @@ const SubmissionOverview = () => {
       >
         <Flex sx={{ gap: 8 }}>
           <Label sx={{ width: 'fit-content', alignItems: 'center' }}>
-            <Checkbox value='article' checked />
+            <Checkbox value='article' />
             Article
           </Label>
           <Label sx={{ width: 'fit-content', alignItems: 'center' }}>
