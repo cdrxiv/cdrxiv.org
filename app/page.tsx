@@ -1,7 +1,7 @@
 import { getPreprints } from './api/utils'
 import type { Preprints } from '../types/preprint'
 import Topics from '../components/topics'
-import LandingPage from '../components/landing-page'
+import PreprintsView from '../components/preprints-view'
 
 export const dynamic = 'force-dynamic'
 
@@ -20,7 +20,7 @@ const Home = async () => {
   return (
     <>
       <Topics />
-      <LandingPage preprints={preprints} />
+      <PreprintsView preprints={preprints} />
     </>
   )
 }
