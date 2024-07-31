@@ -1,8 +1,9 @@
 'use client'
 
 import { useSession, signIn, signOut } from 'next-auth/react'
-import { Box, Checkbox, Flex, Label } from 'theme-ui'
+import { Box, Flex, Label } from 'theme-ui'
 
+import Checkbox from '../../../components/checkbox'
 import Field from '../../../components/field'
 import StyledLink from '../../../components/link'
 import Expander from '../../../components/expander'
@@ -47,7 +48,7 @@ const SubmissionOverview = () => {
       >
         <Flex sx={{ gap: 8 }}>
           <Label sx={{ width: 'fit-content', alignItems: 'center' }}>
-            <Checkbox value='article' />
+            <Checkbox value='article' checked />
             Article
           </Label>
           <Label sx={{ width: 'fit-content', alignItems: 'center' }}>
