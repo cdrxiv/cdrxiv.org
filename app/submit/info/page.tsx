@@ -22,7 +22,11 @@ const SubmissionInformation = () => {
           <option value='CC-BY'>CC-BY</option>
         </Select>
       </Field>
-      <Field label='DOI' id='doi'>
+      <Field
+        label='DOI'
+        id='doi'
+        description="You can add a DOI linking to this item's published version using this field. Please provide the full DOI, e.g., https://doi.org/10.1017/CBO9781316161012."
+      >
         <Input onChange={() => {}} id='doi' />
       </Field>
     </Flex>
