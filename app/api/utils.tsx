@@ -1,7 +1,7 @@
 import { getToken } from 'next-auth/jwt'
 import { NextRequest } from 'next/server'
 import { cookies, headers } from 'next/headers'
-import { HARDCODED_RESPONSE } from './preprints/route'
+import { TEST_PREPRINTS } from './placeholder-data'
 
 export const fetchWithToken = async (
   reqOrHeaders: NextRequest | Headers,
@@ -53,6 +53,6 @@ export const getPreprints = async (reqOrHeaders?: NextRequest | Headers) => {
     return result
   } else {
     // Otherwise, return hardcoded response
-    return { ...HARDCODED_RESPONSE, test_data: true }
+    return { ...TEST_PREPRINTS, test_data: true }
   }
 }

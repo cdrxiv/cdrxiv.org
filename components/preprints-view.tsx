@@ -1,5 +1,3 @@
-'use client'
-
 import type { Preprints } from '../types/preprint'
 import Grid from './grid'
 import List from './list'

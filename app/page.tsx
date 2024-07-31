@@ -1,5 +1,5 @@
 import { getPreprints } from './api/utils'
-import { Preprints } from '../types/preprint'
+import type { Preprints } from '../types/preprint'
 import Topics from '../components/topics'
 import LandingPage from '../components/landing-page'
 
