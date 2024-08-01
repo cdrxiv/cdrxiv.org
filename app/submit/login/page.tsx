@@ -35,7 +35,6 @@ const SignIn = () => {
 
 const SubmissionLogin = () => {
   const { data: session, status } = useSession()
-  const searchParams = useSearchParams()
 
   return (
     <Flex sx={{ flexDirection: 'column', gap: 7 }}>
