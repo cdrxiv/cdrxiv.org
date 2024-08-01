@@ -3,6 +3,7 @@
 import { useSession, signIn, signOut } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import { Box, Flex } from 'theme-ui'
+import { Suspense } from 'react'
 
 import StyledLink from '../../../components/link'
 import Expander from '../../../components/expander'
@@ -10,6 +11,27 @@ import Field from '../../../components/field'
 import StyledButton from '../../../components/button'
 import Row from '../../../components/row'
 import Column from '../../../components/column'
+
+const SignIn = () => {
+  const searchParams = useSearchParams()
+
+  return (
+    <StyledButton
+      onClick={() =>
+        signIn(
+          'janeway',
+          searchParams.get('callbackUrl')
+            ? {
+                callbackUrl: searchParams.get('callbackUrl') as string,
+              }
+            : undefined,
+        )
+      }
+    >
+      Log in with Janeway
+    </StyledButton>
+  )
+}
 
 const SubmissionLogin = () => {
   const { data: session, status } = useSession()
@@ -40,22 +62,9 @@ const SubmissionLogin = () => {
         >
           <Row columns={6}>
             <Column start={1} width={[3, 4, 3, 3]}>
-              <StyledButton
-                onClick={() =>
-                  signIn(
-                    'janeway',
-                    searchParams.get('callbackUrl')
-                      ? {
-                          callbackUrl: searchParams.get(
-                            'callbackUrl',
-                          ) as string,
-                        }
-                      : undefined,
-                  )
-                }
-              >
-                Log in with Janeway
-              </StyledButton>
+              <Suspense>
+                <SignIn />
+              </Suspense>
             </Column>
           </Row>
         </Field>
