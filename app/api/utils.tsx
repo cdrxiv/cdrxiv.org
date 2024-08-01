@@ -40,16 +40,18 @@ export const fetchWithToken = async (
       status: 403,
     })
   }
-  return data
+  return Response.json(data)
 }
 
 export const getPreprints = async (reqOrHeaders?: NextRequest | Headers) => {
-  const result = await fetchWithToken(
+  const res = await fetchWithToken(
     reqOrHeaders || headers(), // For server components
     'https://carbonplan.endurance.janeway.systems/carbonplan/api/preprints/',
   )
-  if (result.status === 200) {
+
+  if (res.status === 200) {
     // If authenticated, return actual result
+    const result = await res.json()
     return result
   } else {
     // Otherwise, return hardcoded response
@@ -58,12 +60,14 @@ export const getPreprints = async (reqOrHeaders?: NextRequest | Headers) => {
 }
 
 export const getSubjects = async (reqOrHeaders?: NextRequest | Headers) => {
-  const result = await fetchWithToken(
+  const res = await fetchWithToken(
     reqOrHeaders || headers(), // For server components
     'https://carbonplan.endurance.janeway.systems/carbonplan/api/repository_subjects/',
   )
-  if (result.status === 200) {
+
+  if (res.status === 200) {
     // If authenticated, return actual result
+    const result = await res.json()
     return result
   } else {
     // Otherwise, return hardcoded response

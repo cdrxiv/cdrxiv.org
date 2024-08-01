@@ -1,6 +1,9 @@
 import type { NextRequest } from 'next/server'
-import { getSubjects } from '../utils'
+import { fetchWithToken } from '../utils'
 
 export async function GET(request: NextRequest) {
-  return getSubjects(request)
+  return fetchWithToken(
+    request,
+    'https://carbonplan.endurance.janeway.systems/carbonplan/api/repository_subjects/',
+  )
 }

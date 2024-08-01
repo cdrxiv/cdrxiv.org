@@ -1,6 +1,9 @@
 import type { NextRequest } from 'next/server'
-import { getPreprints } from '../utils'
+import { fetchWithToken } from '../utils'
 
 export async function GET(request: NextRequest) {
-  return getPreprints(request)
+  return fetchWithToken(
+    request,
+    'https://carbonplan.endurance.janeway.systems/carbonplan/api/preprints/',
+  )
 }
