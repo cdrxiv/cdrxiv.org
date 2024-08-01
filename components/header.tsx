@@ -7,6 +7,7 @@ import Row from './row'
 import Link from 'next/link'
 import StyledButton from './button'
 import Menu from './menu'
+import { usePathname } from 'next/navigation'
 
 type GBoxProps = BoxProps & SVGProps<SVGGElement>
 const GBox: React.FC<GBoxProps> = (props) => <Box as='g' {...props} />
@@ -17,9 +18,37 @@ const SVGBox: React.FC<SVGBoxProps> = (props) => <Box as='svg' {...props} />
 const foldSize = 100
 const margin = [2, 2, 3, 3]
 
+const PATHS: { name: string; path: string }[] = [
+  { name: 'Home', path: '/' },
+  { name: 'Channels', path: '/channels' },
+  { name: 'Submit', path: '/submit' },
+]
+
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const { theme } = useThemeUI()
+  const pathname = usePathname()
+
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return pathname === '/'
+    }
+    return pathname.startsWith(path)
+  }
+  const renderLinks = () => {
+    return PATHS.map(({ name, path }) => {
+      return (
+        <StyledLink
+          key={name}
+          href={path}
+          sx={{ textDecoration: isActive(path) ? 'underline' : 'none' }}
+        >
+          {name}
+        </StyledLink>
+      )
+    })
+  }
+
   return (
     <header>
       <Link href='/'>
@@ -116,9 +145,7 @@ const Header = () => {
               alignItems: 'center',
             }}
           >
-            <StyledLink href='/'>Home</StyledLink>
-            <StyledLink href=''>Channels</StyledLink>
-            <StyledLink href='/submit'>Submit</StyledLink>
+            {renderLinks()}
           </Flex>
         </Column>
         <Column
@@ -132,13 +159,7 @@ const Header = () => {
           >
             Menu
           </StyledButton>
-          {menuOpen && (
-            <Menu setMenuOpen={setMenuOpen}>
-              <StyledLink href='/'>Home</StyledLink>
-              <StyledLink href=''>Channels</StyledLink>
-              <StyledLink href='/submit'>Submit</StyledLink>
-            </Menu>
-          )}
+          {menuOpen && <Menu setMenuOpen={setMenuOpen}>{renderLinks()}</Menu>}
         </Column>
       </Row>
     </header>
