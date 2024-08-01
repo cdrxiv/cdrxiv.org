@@ -2,6 +2,7 @@ import { getToken } from 'next-auth/jwt'
 import { NextRequest } from 'next/server'
 import { cookies, headers } from 'next/headers'
 import { TEST_PREPRINTS, TEST_SUBJECTS } from './placeholder-data'
+import { Preprint } from '../../types/preprint'
 
 export const fetchWithToken = async (
   reqOrHeaders: NextRequest | Headers,
@@ -43,20 +44,42 @@ export const fetchWithToken = async (
   return Response.json(data)
 }
 
-export const getPreprints = async (reqOrHeaders?: NextRequest | Headers) => {
+export const getPreprints = async (
+  reqOrHeaders?: NextRequest | Headers,
+  params?: URLSearchParams,
+) => {
+  let url =
+    'https://carbonplan.endurance.janeway.systems/carbonplan/api/preprints/'
+
+  const subject = params?.get('subject')
+  if (subject) {
+    const queryString = `subject=${subject}`
+    url = `${url}?${queryString}`
+  }
+
   const res = await fetchWithToken(
     reqOrHeaders || headers(), // For server components
-    'https://carbonplan.endurance.janeway.systems/carbonplan/api/preprints/',
+    url,
   )
 
+  let data
   if (res.status === 200) {
-    // If authenticated, return actual result
-    const result = await res.json()
-    return result
+    // If authenticated, use actual result
+    data = await res.json()
   } else {
-    // Otherwise, return hardcoded response
-    return { ...TEST_PREPRINTS, test_data: true }
+    // Otherwise, use hardcoded response
+    data = { ...TEST_PREPRINTS, test_data: true }
   }
+
+  // TODO: remove when this is handled by the Janeway API
+  // If subject query provided, manually filter data.results
+  if (subject) {
+    data.results = data.results.filter((el: Preprint) =>
+      el.subject.find((s) => s.name === subject),
+    )
+  }
+
+  return data
 }
 
 export const getSubjects = async (reqOrHeaders?: NextRequest | Headers) => {
@@ -66,9 +89,9 @@ export const getSubjects = async (reqOrHeaders?: NextRequest | Headers) => {
   )
 
   if (res.status === 200) {
-    // If authenticated, return actual result
-    const result = await res.json()
-    return result
+    // If authenticated, return actual data
+    const data = await res.json()
+    return data
   } else {
     // Otherwise, return hardcoded response
     return { ...TEST_SUBJECTS, test_data: true }
