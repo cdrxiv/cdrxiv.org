@@ -2,7 +2,7 @@
 
 import { SessionProvider, useSession } from 'next-auth/react'
 import { Box, Flex } from 'theme-ui'
-import { redirect, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 
 import StyledLink, { Props as LinkProps } from '../../components/link'
 import PaneledPage from '../../components/layouts/paneled-page'
@@ -15,16 +15,6 @@ const PATHS = [
   { label: 'Author Information', href: '/submit/authors' },
   { label: 'Confirmation', href: '/submit/confirm' },
 ]
-
-const AuthRedirect = ({ active }: { active: string }) => {
-  const { status } = useSession()
-
-  if (status === 'unauthenticated' && active !== PATHS[0].href) {
-    redirect(PATHS[0].href)
-  }
-
-  return null
-}
 
 const AuthedNavLink: React.FC<NavLinkProps> = ({ children, active, href }) => {
   const { status } = useSession()
@@ -56,7 +46,6 @@ const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   return (
     <SessionProvider>
-      <AuthRedirect active={active.href} />
       <PaneledPage
         title={active.label}
         corner={`Step ${index} / ${PATHS.length - 1}`}
