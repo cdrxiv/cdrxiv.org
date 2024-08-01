@@ -44,23 +44,16 @@ export const fetchWithToken = async (
   return Response.json(data)
 }
 
-export const getPreprints = async (
-  reqOrHeaders?: NextRequest | Headers,
-  params?: URLSearchParams,
-) => {
+export const getPreprints = async (subject?: string) => {
   let url =
     'https://carbonplan.endurance.janeway.systems/carbonplan/api/preprints/'
 
-  const subject = params?.get('subject')
   if (subject) {
     const queryString = `subject=${subject}`
     url = `${url}?${queryString}`
   }
 
-  const res = await fetchWithToken(
-    reqOrHeaders || headers(), // For server components
-    url,
-  )
+  const res = await fetchWithToken(headers(), url)
 
   let data
   if (res.status === 200) {
@@ -82,9 +75,9 @@ export const getPreprints = async (
   return data
 }
 
-export const getSubjects = async (reqOrHeaders?: NextRequest | Headers) => {
+export const getSubjects = async () => {
   const res = await fetchWithToken(
-    reqOrHeaders || headers(), // For server components
+    headers(),
     'https://carbonplan.endurance.janeway.systems/carbonplan/api/repository_subjects/',
   )
 
