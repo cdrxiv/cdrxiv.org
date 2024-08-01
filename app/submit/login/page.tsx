@@ -1,6 +1,7 @@
 'use client'
 
 import { useSession, signIn, signOut } from 'next-auth/react'
+import { useSearchParams } from 'next/navigation'
 import { Box, Flex } from 'theme-ui'
 
 import StyledLink from '../../../components/link'
@@ -12,6 +13,7 @@ import Column from '../../../components/column'
 
 const SubmissionLogin = () => {
   const { data: session, status } = useSession()
+  const searchParams = useSearchParams()
 
   return (
     <Flex sx={{ flexDirection: 'column', gap: 7 }}>
@@ -38,7 +40,20 @@ const SubmissionLogin = () => {
         >
           <Row columns={6}>
             <Column start={1} width={[3, 4, 3, 3]}>
-              <StyledButton onClick={() => signIn('janeway')}>
+              <StyledButton
+                onClick={() =>
+                  signIn(
+                    'janeway',
+                    searchParams.get('callbackUrl')
+                      ? {
+                          callbackUrl: searchParams.get(
+                            'callbackUrl',
+                          ) as string,
+                        }
+                      : undefined,
+                  )
+                }
+              >
                 Log in with Janeway
               </StyledButton>
             </Column>
