@@ -2,6 +2,7 @@ import { getToken } from 'next-auth/jwt'
 import { NextRequest } from 'next/server'
 import { cookies, headers } from 'next/headers'
 import { TEST_PREPRINTS, TEST_SUBJECTS } from './placeholder-data'
+import { Preprint } from '../../types/preprint'
 
 export const fetchWithToken = async (
   reqOrHeaders: NextRequest | Headers,
@@ -40,31 +41,50 @@ export const fetchWithToken = async (
       status: 403,
     })
   }
+  return Response.json(data)
+}
+
+export const getPreprints = async (subject?: string) => {
+  let url =
+    'https://carbonplan.endurance.janeway.systems/carbonplan/api/preprints/'
+
+  if (subject) {
+    const queryString = `subject=${subject}`
+    url = `${url}?${queryString}`
+  }
+
+  const res = await fetchWithToken(headers(), url)
+
+  let data
+  if (res.status === 200) {
+    // If authenticated, use actual result
+    data = await res.json()
+  } else {
+    // Otherwise, use hardcoded response
+    data = { ...TEST_PREPRINTS, test_data: true }
+  }
+
+  // TODO: remove when this is handled by the Janeway API
+  // If subject query provided, manually filter data.results
+  if (subject) {
+    data.results = data.results.filter((el: Preprint) =>
+      el.subject.find((s) => s.name === subject),
+    )
+  }
+
   return data
 }
 
-export const getPreprints = async (reqOrHeaders?: NextRequest | Headers) => {
-  const result = await fetchWithToken(
-    reqOrHeaders || headers(), // For server components
-    'https://carbonplan.endurance.janeway.systems/carbonplan/api/preprints/',
-  )
-  if (result.status === 200) {
-    // If authenticated, return actual result
-    return result
-  } else {
-    // Otherwise, return hardcoded response
-    return { ...TEST_PREPRINTS, test_data: true }
-  }
-}
-
-export const getSubjects = async (reqOrHeaders?: NextRequest | Headers) => {
-  const result = await fetchWithToken(
-    reqOrHeaders || headers(), // For server components
+export const getSubjects = async () => {
+  const res = await fetchWithToken(
+    headers(),
     'https://carbonplan.endurance.janeway.systems/carbonplan/api/repository_subjects/',
   )
-  if (result.status === 200) {
-    // If authenticated, return actual result
-    return result
+
+  if (res.status === 200) {
+    // If authenticated, return actual data
+    const data = await res.json()
+    return data
   } else {
     // Otherwise, return hardcoded response
     return { ...TEST_SUBJECTS, test_data: true }
