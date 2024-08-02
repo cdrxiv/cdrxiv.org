@@ -1,8 +1,7 @@
 import { getPreprints, getSubjects } from './api/utils'
-import Topics from '../components/topics'
-import PreprintsView from '../components/preprints-view'
 import type { Subjects } from '../types/subject'
 import type { Preprints } from '../types/preprint'
+import LandingPage from '../components/landing-page'
 
 export const dynamic = 'force-dynamic'
 
@@ -22,12 +21,7 @@ async function fetchData(): Promise<[Preprints, Subjects]> {
 const Home = async () => {
   const [preprints, subjects] = await fetchData()
 
-  return (
-    <>
-      <Topics subjects={subjects} />
-      <PreprintsView preprints={preprints} />
-    </>
-  )
+  return <LandingPage preprints={preprints} subjects={subjects} />
 }
 
 export default Home
