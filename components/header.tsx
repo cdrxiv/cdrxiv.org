@@ -1,4 +1,4 @@
-import { SVGProps, useState } from 'react'
+import { SVGProps, useRef, useState } from 'react'
 import { Flex, Box, BoxProps, useThemeUI } from 'theme-ui'
 import StyledLink from './link'
 import Search from './search'
@@ -26,6 +26,9 @@ const PATHS: { name: string; path: string }[] = [
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 })
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+
   const { theme } = useThemeUI()
   const pathname = usePathname()
 
@@ -41,12 +44,26 @@ const Header = () => {
         <StyledLink
           key={name}
           href={path}
-          sx={{ textDecoration: isActive(path) ? 'underline' : 'none' }}
+          sx={{
+            textDecoration: isActive(path) ? 'underline' : 'none',
+            width: 'fit-content',
+          }}
         >
           {name}
         </StyledLink>
       )
     })
+  }
+
+  const handleMenuToggle = () => {
+    if (menuButtonRef.current) {
+      const rect = menuButtonRef.current.getBoundingClientRect()
+      setMenuPosition({
+        top: rect.bottom,
+        right: window.innerWidth - rect.right,
+      })
+    }
+    setMenuOpen((open) => !open)
   }
 
   return (
@@ -154,12 +171,17 @@ const Header = () => {
           sx={{ display: ['inherit', 'none', 'none', 'none'] }}
         >
           <StyledButton
-            onClick={() => setMenuOpen((open) => !open)}
+            ref={menuButtonRef}
+            onClick={handleMenuToggle}
             sx={{ width: 'fit-content' }}
           >
             Menu
           </StyledButton>
-          {menuOpen && <Menu setMenuOpen={setMenuOpen}>{renderLinks()}</Menu>}
+          {menuOpen && (
+            <Menu setMenuOpen={setMenuOpen} position={menuPosition}>
+              {renderLinks()}
+            </Menu>
+          )}
         </Column>
       </Row>
     </header>

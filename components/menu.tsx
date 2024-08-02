@@ -3,9 +3,10 @@ import { Box, Button, Flex } from 'theme-ui'
 interface MenuProps {
   setMenuOpen: (open: boolean) => void
   children: React.ReactNode
+  position: { top: number; right: number }
 }
 
-const Menu: React.FC<MenuProps> = ({ setMenuOpen, children }) => {
+const Menu: React.FC<MenuProps> = ({ setMenuOpen, children, position }) => {
   return (
     <Box
       onClick={() => setMenuOpen(false)}
@@ -22,13 +23,14 @@ const Menu: React.FC<MenuProps> = ({ setMenuOpen, children }) => {
         sx={{
           flexDirection: 'column',
           gap: 2,
-          position: 'absolute',
+          position: 'fixed',
           width: 200,
           bg: 'white',
           p: 3,
-          top: 60,
-          left: '50%',
-          transform: 'translateX(-50%)',
+          top: position.top,
+          right: position.right,
+          border: '1px solid',
+          borderColor: 'background',
           boxShadow: (theme) =>
             `1px 1px 1px 1px ${theme?.colors?.muted} inset, -1px -1px 1px 1px ${theme?.colors?.text} inset`,
         }}
