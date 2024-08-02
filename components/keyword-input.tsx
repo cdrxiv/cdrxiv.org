@@ -113,11 +113,12 @@ const KeywordInput: React.FC<Props> = ({
           border: 'none',
           boxShadow: 'none',
           background: 'none',
-          flex: 1,
+          flexGrow: 1,
           fontFamily: 'mono',
           fontWeight: 'mono',
           fontSize: [0, 0, 0, 1],
           p: 0,
+          width: `${inputValue.length}ch`,
         }}
         {...props}
       />
