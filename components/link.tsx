@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link as ThemeUILink, ThemeUIStyleObject, LinkProps } from 'theme-ui'
+import { Link as ThemeUILink, LinkProps } from 'theme-ui'
 import NextLink from 'next/link'
 
 export interface Props extends LinkProps {
