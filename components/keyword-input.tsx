@@ -70,9 +70,10 @@ const KeywordInput: React.FC<Props> = ({
       sx={{
         variant: 'forms.input',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'baseline',
         flexWrap: 'wrap',
         gap: 2,
+        minHeight: 36,
         maxHeight: 100,
         overflowY: 'scroll',
         borderColor: focused ? 'blue' : 'transparent',
