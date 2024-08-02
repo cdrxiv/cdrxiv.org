@@ -41,8 +41,9 @@ const NextButton: React.FC<LinkProps> = ({ href, ...props }) => {
 const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname()
 
-  const index = PATHS.findIndex((p) => p.href === pathname)
-  const active = PATHS[index >= 0 ? index : 0]
+  let index = PATHS.findIndex((p) => p.href === pathname)
+  index = index >= 0 ? index : 0
+  const active = PATHS[index]
 
   return (
     <SessionProvider>
