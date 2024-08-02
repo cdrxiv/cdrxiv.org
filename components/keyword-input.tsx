@@ -75,7 +75,7 @@ const KeywordInput: React.FC<Props> = ({
         gap: 2,
         minHeight: 36,
         maxHeight: 100,
-        overflowY: 'scroll',
+        overflowY: 'auto',
         borderColor: focused ? 'blue' : 'transparent',
         py: 2,
         ...sx,
