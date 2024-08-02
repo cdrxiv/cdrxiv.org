@@ -16,6 +16,7 @@ const KeywordInput: React.FC<Props> = ({
   ...props
 }) => {
   const [inputValue, setInputValue] = useState<string>('')
+  const [focused, setFocused] = useState<boolean>(false)
   const [values, setValues] = useState<string[]>(valuesProp ?? [])
 
   // Keep component state up-to-date with controlled value
@@ -66,13 +67,16 @@ const KeywordInput: React.FC<Props> = ({
 
   return (
     <Box
-      tabIndex={0}
       sx={{
         variant: 'forms.input',
         display: 'flex',
         alignItems: 'center',
         flexWrap: 'wrap',
         gap: 2,
+        maxHeight: 100,
+        overflowY: 'scroll',
+        borderColor: focused ? 'blue' : 'transparent',
+        py: 2,
         ...sx,
       }}
     >
@@ -83,6 +87,11 @@ const KeywordInput: React.FC<Props> = ({
           onClick={() =>
             handleValuesChange(values.filter((value) => value !== v))
           }
+          onKeyDown={(e) => {
+            if (e.key === 'Backspace') {
+              handleValuesChange(values.filter((value) => value !== v))
+            }
+          }}
           sx={{
             variant: 'styles.a',
             fontFamily: 'mono',
@@ -95,6 +104,8 @@ const KeywordInput: React.FC<Props> = ({
         </Box>
       ))}
       <Input
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
         onKeyDown={handleKeyDown}
         onChange={handleChange}
         value={inputValue}
@@ -106,7 +117,7 @@ const KeywordInput: React.FC<Props> = ({
           fontFamily: 'mono',
           fontWeight: 'mono',
           fontSize: [0, 0, 0, 1],
-          px: 0,
+          p: 0,
         }}
         {...props}
       />
