@@ -4,6 +4,7 @@ import { Flex, Input, Textarea } from 'theme-ui'
 import Field from '../../../components/field'
 import Select from '../../../components/select'
 import KeywordInput from '../../../components/keyword-input'
+import FundingSources from '../../../components/funding-sources'
 
 const SubmissionInformation = () => {
   return (
@@ -43,6 +44,10 @@ const SubmissionInformation = () => {
         description='Hit Enter to add a new keyword.'
       >
         <KeywordInput id='keywords' />
+      </Field>
+
+      <Field label='Funding sources' id='funding'>
+        <FundingSources />
       </Field>
     </Flex>
   )
