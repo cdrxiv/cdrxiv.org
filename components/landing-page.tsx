@@ -14,7 +14,7 @@ interface LandingPageProps {
 const LandingPage: React.FC<LandingPageProps> = ({ preprints, subjects }) => {
   const [filteredPreprints, setFilteredPreprints] =
     useState<Preprints>(preprints)
-  const [filter, setFilter] = useState('All')
+  const [filter, setFilter] = useState<string>('All')
 
   const handleFilterChange = async (newFilter: string) => {
     if (newFilter === 'All' || newFilter === filter) {

@@ -28,6 +28,7 @@ const Topics: React.FC<TopicsProps> = ({
         cursor: 'pointer',
         width: 'fit-content',
         bg: filter === name ? 'highlight' : 'transparent',
+        mb: '2px',
         ':hover': {
           bg: 'highlight',
         },
