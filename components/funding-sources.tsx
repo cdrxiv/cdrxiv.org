@@ -1,7 +1,7 @@
 import { Flex, Input } from 'theme-ui'
+import React, { useCallback, useEffect, useState } from 'react'
 import Column from './column'
 import Row from './row'
-import React, { useCallback, useState } from 'react'
 import StyledLink from './link'
 
 interface FundingEntry {
@@ -10,10 +10,43 @@ interface FundingEntry {
   _key: number
 }
 
-const FundingSources = ({}) => {
-  const [entries, setEntries] = useState<FundingEntry[]>([
-    { funder: '', award: '', _key: 0 },
-  ])
+export interface Props {
+  value?: string
+  setValue?: (value: string) => void
+}
+
+const initialize = (value?: string): FundingEntry[] => {
+  if (value) {
+    try {
+      const array = JSON.parse(value)
+      if (
+        array.length > 0 &&
+        array.every(
+          (el: any) =>
+            typeof el?.funder === 'string' && typeof el?.award === 'string',
+        )
+      ) {
+        return array.map(
+          (el: { funder: string; award: string }, i: number) => ({
+            funder: el.funder,
+            award: el.award,
+            _key: i,
+          }),
+        )
+      } else {
+        console.warn('Unexpected funding value:', value)
+      }
+    } catch {
+      console.warn('Unexpected funding value:', value)
+    }
+  }
+  return [{ funder: '', award: '', _key: 0 }]
+}
+
+const FundingSources: React.FC<Props> = ({ value, setValue }) => {
+  const [entries, setEntries] = useState<FundingEntry[]>(() =>
+    initialize(value),
+  )
 
   const addEntry = useCallback(() => {
     setEntries((prev) => [
@@ -21,6 +54,14 @@ const FundingSources = ({}) => {
       { _key: prev[prev.length - 1]._key + 1, funder: '', award: '' },
     ])
   }, [])
+
+  useEffect(() => {
+    if (setValue) {
+      setValue(
+        JSON.stringify(entries.map(({ funder, award }) => ({ funder, award }))),
+      )
+    }
+  }, [setValue, entries])
 
   return (
     <>
@@ -50,10 +91,32 @@ const FundingSources = ({}) => {
           <Column start={1} width={[6, 6, 7, 7]}>
             <Row columns={6}>
               <Column start={1} width={[6, 6, 3, 3]}>
-                <Input />
+                <Input
+                  value={funder}
+                  onChange={(e) =>
+                    setEntries((prev) =>
+                      prev.map((el) =>
+                        el._key === _key
+                          ? { ...el, funder: e.target.value }
+                          : el,
+                      ),
+                    )
+                  }
+                />
               </Column>
               <Column start={[1, 1, 4, 4]} width={[6, 6, 3, 3]}>
-                <Input />
+                <Input
+                  value={award}
+                  onChange={(e) =>
+                    setEntries((prev) =>
+                      prev.map((el) =>
+                        el._key === _key
+                          ? { ...el, award: e.target.value }
+                          : el,
+                      ),
+                    )
+                  }
+                />
               </Column>
             </Row>
           </Column>
