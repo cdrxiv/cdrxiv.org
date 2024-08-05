@@ -74,21 +74,13 @@ const FundingSources: React.FC<Props> = ({ value, setValue }) => {
 
   return (
     <>
-      <Row columns={[6, 6, 8, 8]}>
+      <Row columns={[6, 6, 8, 8]} sx={{ mt: [3, 3, 0, 0] }}>
         <Column start={1} width={[6, 6, 7, 7]}>
           <Row columns={6}>
-            <Column
-              start={1}
-              width={[3, 3, 3, 3]}
-              sx={{ variant: 'text.mono' }}
-            >
+            <Column start={1} width={3} sx={{ variant: 'text.mono' }}>
               Funder
             </Column>
-            <Column
-              start={[3, 3, 4, 4]}
-              width={[3, 3, 3, 3]}
-              sx={{ variant: 'text.mono' }}
-            >
+            <Column start={4} width={3} sx={{ variant: 'text.mono' }}>
               Award Number
             </Column>
           </Row>
@@ -96,10 +88,23 @@ const FundingSources: React.FC<Props> = ({ value, setValue }) => {
       </Row>
 
       {entries.map(({ funder, award, _key }) => (
-        <Row columns={[6, 6, 8, 8]} key={_key}>
+        <Row
+          columns={[6, 6, 8, 8]}
+          key={_key}
+          sx={{
+            position: 'relative',
+            overflow: 'visible',
+            borderWidth: 0,
+            borderStyle: 'solid',
+            borderColor: 'listBorderGrey',
+            borderTopWidth: ['1px', '1px', 0, 0],
+            pt: [4, 4, 0, 0],
+            mt: [3, 3, 0, 0],
+          }}
+        >
           <Column start={1} width={[6, 6, 7, 7]}>
             <Row columns={6}>
-              <Column start={1} width={[6, 6, 3, 3]}>
+              <Column start={1} width={[6, 6, 3, 3]} sx={{ mb: [4, 4, 0, 0] }}>
                 <Input
                   value={funder}
                   onChange={(e) =>
@@ -139,6 +144,9 @@ const FundingSources: React.FC<Props> = ({ value, setValue }) => {
                   variant: 'text.monoCaps',
                   textDecoration: 'none',
                   ml: -3,
+                  position: ['absolute', 'absolute', 'relative', 'relative'],
+                  right: 1,
+                  top: [6, 6, 0, 0],
                 }}
               >
                 (x)
