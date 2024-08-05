@@ -19,22 +19,23 @@ const initialize = (value?: string): FundingEntry[] => {
   if (value) {
     try {
       const array = JSON.parse(value)
-      if (
-        array.length > 0 &&
-        array.every(
-          (el: any) =>
-            typeof el?.funder === 'string' && typeof el?.award === 'string',
-        )
-      ) {
-        return array.map(
-          (el: { funder: string; award: string }, i: number) => ({
-            funder: el.funder,
-            award: el.award,
-            _key: i,
-          }),
-        )
-      } else {
-        console.warn('Unexpected funding value:', value)
+      if (array.length > 0) {
+        if (
+          array.every(
+            (el: any) =>
+              typeof el?.funder === 'string' && typeof el?.award === 'string',
+          )
+        ) {
+          return array.map(
+            (el: { funder: string; award: string }, i: number) => ({
+              funder: el.funder,
+              award: el.award,
+              _key: i,
+            }),
+          )
+        } else {
+          console.warn('Unexpected funding value:', value)
+        }
       }
     } catch {
       console.warn('Unexpected funding value:', value)
@@ -51,14 +52,22 @@ const FundingSources: React.FC<Props> = ({ value, setValue }) => {
   const addEntry = useCallback(() => {
     setEntries((prev) => [
       ...prev,
-      { _key: prev[prev.length - 1]._key + 1, funder: '', award: '' },
+      {
+        _key: prev.length ? prev[prev.length - 1]._key + 1 : 0,
+        funder: '',
+        award: '',
+      },
     ])
   }, [])
 
   useEffect(() => {
     if (setValue) {
       setValue(
-        JSON.stringify(entries.map(({ funder, award }) => ({ funder, award }))),
+        JSON.stringify(
+          entries
+            .filter((el) => el.funder || el.award)
+            .map(({ funder, award }) => ({ funder, award })),
+        ),
       )
     }
   }, [setValue, entries])
