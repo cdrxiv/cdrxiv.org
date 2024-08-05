@@ -5,18 +5,27 @@ import { Box } from 'theme-ui'
 import Column from './column'
 import Row from './row'
 import { Subjects } from '../types/subject'
+import { useSearchParams, useRouter } from 'next/navigation'
 
 interface TopicsProps {
   subjects: Subjects
-  handleFilterChange: (newFilter: string) => void
-  filter: string
 }
 
-const Topics: React.FC<TopicsProps> = ({
-  subjects,
-  handleFilterChange,
-  filter,
-}) => {
+const Topics: React.FC<TopicsProps> = ({ subjects }) => {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const currentSubject = searchParams.get('subject') || 'All'
+
+  const handleFilterChange = (newFilter: string) => {
+    const params = new URLSearchParams(searchParams)
+    if (newFilter === 'All' || newFilter === currentSubject) {
+      params.delete('subject')
+    } else {
+      params.set('subject', newFilter)
+    }
+    router.push(`/?${params.toString()}`)
+  }
+
   const midPoint = Math.ceil(subjects.length / 2) - 1 // -1 accounts for All option
 
   const renderSubject = (name: string) => (
@@ -27,7 +36,7 @@ const Topics: React.FC<TopicsProps> = ({
         variant: 'text.body',
         cursor: 'pointer',
         width: 'fit-content',
-        bg: filter === name ? 'highlight' : 'transparent',
+        bg: currentSubject === name ? 'highlight' : 'transparent',
         mb: '2px',
         ':hover': {
           bg: 'highlight',

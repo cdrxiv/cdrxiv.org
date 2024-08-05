@@ -1,6 +1,4 @@
-'use client'
-
-import React, { useState } from 'react'
+import React from 'react'
 import Topics from './topics'
 import PreprintsView from './preprints-view'
 import { Preprints } from '../types/preprint'
@@ -12,32 +10,10 @@ interface LandingPageProps {
 }
 
 const LandingPage: React.FC<LandingPageProps> = ({ preprints, subjects }) => {
-  const [filteredPreprints, setFilteredPreprints] =
-    useState<Preprints>(preprints)
-  const [filter, setFilter] = useState<string>('All')
-
-  const handleFilterChange = async (newFilter: string) => {
-    if (newFilter === 'All' || newFilter === filter) {
-      setFilter('All')
-      setFilteredPreprints(preprints)
-      return
-    } else {
-      setFilter(newFilter)
-    }
-    const res: Response = await fetch(`/api/preprints?subject=${newFilter}`)
-    const json = await res.json()
-    const data: Preprints = json.results
-    setFilteredPreprints(data)
-  }
-
   return (
     <>
-      <Topics
-        subjects={subjects}
-        handleFilterChange={handleFilterChange}
-        filter={filter}
-      />
-      <PreprintsView preprints={filteredPreprints} />
+      <Topics subjects={subjects} />
+      <PreprintsView preprints={preprints} />
     </>
   )
 }

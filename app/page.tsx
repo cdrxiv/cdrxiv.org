@@ -5,10 +5,13 @@ import LandingPage from '../components/landing-page'
 
 export const dynamic = 'force-dynamic'
 
-async function fetchData(): Promise<[Preprints, Subjects]> {
+async function fetchData(searchParams: {
+  [key: string]: string | string[] | undefined
+}): Promise<[Preprints, Subjects]> {
   try {
+    const subject = searchParams.subject as string | undefined
     const [preprintsData, subjectsData] = await Promise.all([
-      getPreprints(),
+      getPreprints(subject),
       getSubjects(),
     ])
     return [preprintsData.results, subjectsData.results]
@@ -18,9 +21,12 @@ async function fetchData(): Promise<[Preprints, Subjects]> {
   }
 }
 
-const Home = async () => {
-  const [preprints, subjects] = await fetchData()
+interface HomeProps {
+  searchParams: { [key: string]: string | string[] | undefined }
+}
 
+const Home = async ({ searchParams }: HomeProps) => {
+  const [preprints, subjects] = await fetchData(searchParams)
   return <LandingPage preprints={preprints} subjects={subjects} />
 }
 
