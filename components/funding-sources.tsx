@@ -44,6 +44,46 @@ const initialize = (value?: string): FundingEntry[] => {
   return [{ funder: '', award: '', _key: 0 }]
 }
 
+const EntryLabel = ({
+  label,
+  mobile,
+}: {
+  label?: 'funder' | 'award'
+  mobile?: boolean
+}) => {
+  const display = mobile
+    ? ['inherit', 'inherit', 'none', 'none']
+    : ['none', 'none', 'inherit', 'inherit']
+  return (
+    <>
+      {(!mobile || label === 'funder') && (
+        <Column
+          start={1}
+          width={[5, 5, 3, 3]}
+          sx={{
+            variant: 'text.mono',
+            display,
+          }}
+        >
+          Funder
+        </Column>
+      )}
+      {(!mobile || label === 'award') && (
+        <Column
+          start={[1, 1, 4, 4]}
+          width={[5, 5, 3, 3]}
+          sx={{
+            variant: 'text.mono',
+            display,
+          }}
+        >
+          Award Number
+        </Column>
+      )}
+    </>
+  )
+}
+
 const FundingSources: React.FC<Props> = ({ value, setValue }) => {
   const [entries, setEntries] = useState<FundingEntry[]>(() =>
     initialize(value),
@@ -74,20 +114,14 @@ const FundingSources: React.FC<Props> = ({ value, setValue }) => {
 
   return (
     <>
-      <Row columns={[6, 6, 8, 8]} sx={{ mt: [3, 3, 0, 0] }}>
+      <Row columns={[6, 6, 8, 8]} sx={{}}>
         <Column start={1} width={[6, 6, 7, 7]}>
           <Row columns={6}>
-            <Column start={1} width={3} sx={{ variant: 'text.mono' }}>
-              Funder
-            </Column>
-            <Column start={4} width={3} sx={{ variant: 'text.mono' }}>
-              Award Number
-            </Column>
+            <EntryLabel />
           </Row>
         </Column>
       </Row>
-
-      {entries.map(({ funder, award, _key }) => (
+      {entries.map(({ funder, award, _key }, i) => (
         <Row
           columns={[6, 6, 8, 8]}
           key={_key}
@@ -97,13 +131,33 @@ const FundingSources: React.FC<Props> = ({ value, setValue }) => {
             borderWidth: 0,
             borderStyle: 'solid',
             borderColor: 'listBorderGrey',
-            borderTopWidth: ['1px', '1px', 0, 0],
-            pt: [4, 4, 0, 0],
-            mt: [3, 3, 0, 0],
+            borderTopWidth: i === 0 ? 0 : ['1px', '1px', 0, 0],
+            pt: i === 0 ? 0 : [4, 4, 0, 0],
+            mt: i === 0 ? 0 : [3, 3, 0, 0],
           }}
         >
           <Column start={1} width={[6, 6, 7, 7]}>
             <Row columns={6}>
+              <EntryLabel mobile label='funder' />
+              <Column
+                start={[6, 6, 8, 8]}
+                width={1}
+                sx={{ mt: -1, display: ['initial', 'initial', 'none', 'none'] }}
+              >
+                <StyledLink
+                  onClick={() =>
+                    setEntries((prev) => prev.filter((el) => el._key !== _key))
+                  }
+                  sx={{
+                    variant: 'text.monoCaps',
+                    textDecoration: 'none',
+                    ml: 2,
+                  }}
+                >
+                  (x)
+                </StyledLink>
+              </Column>
+
               <Column start={1} width={[6, 6, 3, 3]} sx={{ mb: [4, 4, 0, 0] }}>
                 <Input
                   value={funder}
@@ -118,6 +172,8 @@ const FundingSources: React.FC<Props> = ({ value, setValue }) => {
                   }
                 />
               </Column>
+
+              <EntryLabel mobile label='award' />
               <Column start={[1, 1, 4, 4]} width={[6, 6, 3, 3]}>
                 <Input
                   value={award}
@@ -134,7 +190,11 @@ const FundingSources: React.FC<Props> = ({ value, setValue }) => {
               </Column>
             </Row>
           </Column>
-          <Column start={[1, 1, 8, 8]} width={1}>
+          <Column
+            start={[1, 1, 8, 8]}
+            width={1}
+            sx={{ display: ['none', 'none', 'initial', 'initial'] }}
+          >
             <Flex sx={{ height: '100%', alignItems: 'center' }}>
               <StyledLink
                 onClick={() =>
@@ -144,9 +204,6 @@ const FundingSources: React.FC<Props> = ({ value, setValue }) => {
                   variant: 'text.monoCaps',
                   textDecoration: 'none',
                   ml: -3,
-                  position: ['absolute', 'absolute', 'relative', 'relative'],
-                  right: 1,
-                  top: [6, 6, 0, 0],
                 }}
               >
                 (x)
