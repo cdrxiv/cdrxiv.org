@@ -21,7 +21,8 @@ type ViewType = 'grid' | 'list'
 const LandingPage: React.FC<LandingPageProps> = ({ preprints, subjects }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const currentSubject = searchParams.get('subject') || 'All'
+  const subjectParam = searchParams.get('subject') || 'All'
+  const [currentSubject, setCurrentSubject] = useState(subjectParam)
   const [subjectsMenuOpen, setSubjectsMenuOpen] = useState(false)
 
   const handleFilterChange = (newFilter: string) => {
@@ -31,6 +32,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ preprints, subjects }) => {
     } else {
       params.set('subject', newFilter)
     }
+    setCurrentSubject(newFilter)
     router.push(`/?${params.toString()}`)
   }
 
