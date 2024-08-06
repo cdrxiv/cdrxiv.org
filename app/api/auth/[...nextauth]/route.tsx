@@ -25,6 +25,7 @@ const Janeway: Provider = {
       middle_name: profile.middle_name,
       last_name: profile.last_name,
       orcid: profile.orcid,
+      is_active: profile.is_active,
     }
   },
 }
@@ -35,13 +36,14 @@ const handler = NextAuth({
     error: '/',
   },
   callbacks: {
-    async jwt({ token, account }) {
+    async jwt({ token, account, user }) {
       // Refresh token logic adapted from from https://authjs.dev/guides/refresh-token-rotation?_gl=1*116ih1f*_gcl_au*NDA1OTU5Mzg1LjE3MjEyMzMwMzguNDQ4ODcyNDc2LjE3MjEzMzM1OTkuMTcyMTMzNTY2NQ..
 
       if (account) {
-        // First login, save the `access_token`, `refresh_token`, and other details into the JWT
+        // First login, save the `user`, `access_token`, `refresh_token`, and other details into the JWT
         return {
           ...token,
+          user,
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
           expiresAt: account.expires_at as number,
@@ -91,7 +93,11 @@ const handler = NextAuth({
     },
     async session({ session, token }) {
       if (token?.accessToken) {
-        return { ...session, accessToken: token.accessToken }
+        return {
+          ...session,
+          accessToken: token.accessToken,
+          user: token.user ?? session.user,
+        }
       }
 
       return session

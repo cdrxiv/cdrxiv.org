@@ -40,7 +40,9 @@ const SubmissionLogin = () => {
     <Flex sx={{ flexDirection: 'column', gap: 7 }}>
       {status === 'authenticated' && session && (
         <Box sx={{ position: 'relative' }}>
-          <Expander label={`Signed in as ${session?.user?.email ?? 'Unknown'}`}>
+          <Expander
+            label={`Signed in as ${session?.user?.first_name ? `${session?.user?.first_name} ${session?.user?.last_name}` : 'Unknown'}`}
+          >
             <Box sx={{ top: '28px' }}>
               <StyledLink
                 onClick={() => signOut({ callbackUrl: '/' })}
