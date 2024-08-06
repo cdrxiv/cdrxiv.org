@@ -51,6 +51,21 @@ export const theme: Theme = {
       variant: 'text.heading',
       fontSize: [3, 4, 4, 5],
     },
+    a: {
+      variant: 'text.body',
+      color: 'blue',
+      ':visited': { color: 'purple' },
+      cursor: 'pointer',
+      background: 'none',
+      border: '1px solid',
+      borderColor: 'transparent',
+      outline: 'none',
+      ':focus-visible': {
+        borderColor: 'blue',
+      },
+      padding: 0,
+      textDecoration: 'underline',
+    },
   },
   forms: {
     input: {

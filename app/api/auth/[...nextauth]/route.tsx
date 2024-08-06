@@ -13,19 +13,11 @@ const Janeway: Provider = {
   },
   token: 'https://carbonplan.endurance.janeway.systems/carbonplan/o/token/',
   userinfo: {
-    request: async () => {
-      return {
-        pk: 'pk',
-        email: 'email',
-        first_name: 'first_name',
-        middle_name: 'middle_name',
-        last_name: 'last_name',
-        orcid: 'orcid',
-      }
-    },
+    url: 'https://carbonplan.endurance.janeway.systems/carbonplan/api/user_info/',
   },
   checks: ['pkce'],
-  profile(profile) {
+  profile(response) {
+    const profile = response.results[0]
     return {
       id: profile.pk,
       email: profile.email,
@@ -33,6 +25,7 @@ const Janeway: Provider = {
       middle_name: profile.middle_name,
       last_name: profile.last_name,
       orcid: profile.orcid,
+      is_active: profile.is_active,
     }
   },
 }
@@ -40,16 +33,18 @@ const Janeway: Provider = {
 const handler = NextAuth({
   providers: [Janeway],
   pages: {
+    signIn: '/submit/login',
     error: '/',
   },
   callbacks: {
-    async jwt({ token, account }) {
+    async jwt({ token, account, user }) {
       // Refresh token logic adapted from from https://authjs.dev/guides/refresh-token-rotation?_gl=1*116ih1f*_gcl_au*NDA1OTU5Mzg1LjE3MjEyMzMwMzguNDQ4ODcyNDc2LjE3MjEzMzM1OTkuMTcyMTMzNTY2NQ..
 
       if (account) {
-        // First login, save the `access_token`, `refresh_token`, and other details into the JWT
+        // First login, save the `user`, `access_token`, `refresh_token`, and other details into the JWT
         return {
           ...token,
+          user,
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
           expiresAt: account.expires_at as number,
@@ -99,7 +94,11 @@ const handler = NextAuth({
     },
     async session({ session, token }) {
       if (token?.accessToken) {
-        return { ...session, accessToken: token.accessToken }
+        return {
+          ...session,
+          accessToken: token.accessToken,
+          user: token.user ?? session.user,
+        }
       }
 
       return session

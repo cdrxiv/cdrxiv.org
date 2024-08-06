@@ -1,4 +1,4 @@
-import { SVGProps } from 'react'
+import { SVGProps, useRef, useState } from 'react'
 import { Flex, Box, BoxProps, useThemeUI } from 'theme-ui'
 import StyledLink from './link'
 import Search from './search'
@@ -6,6 +6,8 @@ import Column from './column'
 import Row from './row'
 import Link from 'next/link'
 import StyledButton from './button'
+import Menu from './menu'
+import { usePathname } from 'next/navigation'
 
 type GBoxProps = BoxProps & SVGProps<SVGGElement>
 const GBox: React.FC<GBoxProps> = (props) => <Box as='g' {...props} />
@@ -16,8 +18,54 @@ const SVGBox: React.FC<SVGBoxProps> = (props) => <Box as='svg' {...props} />
 const foldSize = 100
 const margin = [2, 2, 3, 3]
 
+const PATHS: { name: string; path: string }[] = [
+  { name: 'Home', path: '/' },
+  { name: 'Channels', path: '/channels' },
+  { name: 'Submit', path: '/submit' },
+]
+
 const Header = () => {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 })
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+
   const { theme } = useThemeUI()
+  const pathname = usePathname()
+
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return pathname === '/'
+    }
+    return pathname.startsWith(path)
+  }
+  const renderLinks = () => {
+    return PATHS.map(({ name, path }) => {
+      return (
+        <StyledLink
+          key={name}
+          href={path}
+          sx={{
+            textDecoration: isActive(path) ? 'underline' : 'none',
+            width: 'fit-content',
+          }}
+        >
+          {name}
+        </StyledLink>
+      )
+    })
+  }
+
+  const handleMenuToggle = () => {
+    if (menuButtonRef.current) {
+      const rect = menuButtonRef.current.getBoundingClientRect()
+      setMenuPosition({
+        top: rect.bottom,
+        right: window.innerWidth - rect.right,
+      })
+    }
+    setMenuOpen((open) => !open)
+  }
+
   return (
     <header>
       <Link href='/'>
@@ -114,9 +162,7 @@ const Header = () => {
               alignItems: 'center',
             }}
           >
-            <StyledLink href='/'>Home</StyledLink>
-            <StyledLink href=''>Channels</StyledLink>
-            <StyledLink href='/submit'>Submit</StyledLink>
+            {renderLinks()}
           </Flex>
         </Column>
         <Column
@@ -124,7 +170,18 @@ const Header = () => {
           width={2}
           sx={{ display: ['inherit', 'none', 'none', 'none'] }}
         >
-          <StyledButton sx={{ width: 'fit-content' }}>Menu</StyledButton>
+          <StyledButton
+            ref={menuButtonRef}
+            onClick={handleMenuToggle}
+            sx={{ width: 'fit-content' }}
+          >
+            Menu
+          </StyledButton>
+          {menuOpen && (
+            <Menu setMenuOpen={setMenuOpen} position={menuPosition}>
+              {renderLinks()}
+            </Menu>
+          )}
         </Column>
       </Row>
     </header>
