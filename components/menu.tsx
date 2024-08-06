@@ -1,12 +1,12 @@
-import { Box, Button, Flex } from 'theme-ui'
+import { Box, Button, Flex, ThemeUIStyleObject } from 'theme-ui'
 
 interface MenuProps {
   setMenuOpen: (open: boolean) => void
   children: React.ReactNode
-  position: { top: number; right: number }
+  sx?: ThemeUIStyleObject
 }
 
-const Menu: React.FC<MenuProps> = ({ setMenuOpen, children, position }) => {
+const Menu: React.FC<MenuProps> = ({ setMenuOpen, children, sx }) => {
   return (
     <Box
       onClick={() => setMenuOpen(false)}
@@ -17,6 +17,7 @@ const Menu: React.FC<MenuProps> = ({ setMenuOpen, children, position }) => {
         width: '100%',
         height: '100%',
         backgroundColor: 'transparent',
+        zIndex: 2,
       }}
     >
       <Flex
@@ -27,24 +28,32 @@ const Menu: React.FC<MenuProps> = ({ setMenuOpen, children, position }) => {
           width: 200,
           bg: 'white',
           p: 3,
-          top: position.top,
-          right: position.right,
           border: '1px solid',
           borderColor: 'background',
           boxShadow: (theme) =>
             `1px 1px 1px 1px ${theme?.colors?.muted} inset, -1px -1px 1px 1px ${theme?.colors?.text} inset`,
+          maxHeight: '100vh',
+          overflowY: 'auto',
+          ...sx,
         }}
       >
         <Button
-          onClick={() => setMenuOpen(false)}
+          onClick={(e) => {
+            e.stopPropagation()
+            setMenuOpen(false)
+          }}
           sx={{
             variant: 'text.monoCaps',
-            position: 'absolute',
+            position: 'sticky',
             top: 0,
             right: 0,
             color: 'blue',
             bg: 'transparent',
             cursor: 'pointer',
+            // zIndex: 1,
+            padding: 0,
+            mt: -6,
+            alignSelf: 'flex-end',
           }}
         >
           (x)
