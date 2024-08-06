@@ -39,20 +39,26 @@ const SubmissionLogin = () => {
   return (
     <Flex sx={{ flexDirection: 'column', gap: 7 }}>
       {status === 'authenticated' && session && (
-        <Box sx={{ position: 'relative' }}>
-          <Expander
-            label={`Signed in as ${session?.user?.first_name ? `${session?.user?.first_name} ${session?.user?.last_name}` : 'Unknown'}`}
-          >
-            <Box sx={{ top: '28px' }}>
-              <StyledLink
-                onClick={() => signOut({ callbackUrl: '/' })}
-                sx={{ position: 'absolute', variant: 'text.monoCaps' }}
-              >
-                Sign out
-              </StyledLink>
-            </Box>
-          </Expander>
-        </Box>
+        <Field label='Signed in' id='signin'>
+          <Box sx={{ position: 'relative' }}>
+            <Expander
+              label={
+                session?.user?.first_name
+                  ? `${session?.user?.first_name} ${session?.user?.last_name}`
+                  : 'Unknown'
+              }
+            >
+              <Box sx={{ top: '28px' }}>
+                <StyledLink
+                  onClick={() => signOut({ callbackUrl: '/' })}
+                  sx={{ position: 'absolute', variant: 'text.monoCaps' }}
+                >
+                  Sign out
+                </StyledLink>
+              </Box>
+            </Expander>
+          </Box>
+        </Field>
       )}
 
       {status === 'unauthenticated' && (
