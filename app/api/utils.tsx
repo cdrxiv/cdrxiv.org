@@ -1,8 +1,7 @@
 import { getToken } from 'next-auth/jwt'
 import { NextRequest } from 'next/server'
-import { cookies, headers } from 'next/headers'
-import { TEST_PREPRINTS, TEST_SUBJECTS } from './placeholder-data'
-import { Preprint } from '../../types/preprint'
+import { cookies } from 'next/headers'
+import { TEST_SUBJECTS } from './placeholder-data'
 
 export const fetchWithToken = async (
   reqOrHeaders: NextRequest | Headers,
@@ -46,47 +45,25 @@ export const fetchWithToken = async (
 
 export const getPreprints = async (subject?: string) => {
   let url =
-    'https://carbonplan.endurance.janeway.systems/carbonplan/api/preprints/'
-
+    'https://carbonplan.endurance.janeway.systems/carbonplan/api/published_preprints/'
   if (subject) {
     const queryString = `subject=${subject}`
     url = `${url}?${queryString}`
   }
-
-  const res = await fetchWithToken(headers(), url)
-
-  let data
+  const res = await fetch(url)
   if (res.status === 200) {
-    // If authenticated, use actual result
-    data = await res.json()
-  } else {
-    // Otherwise, use hardcoded response
-    data = { ...TEST_PREPRINTS, test_data: true }
+    return await res.json()
   }
-
-  // TODO: remove when this is handled by the Janeway API
-  // If subject query provided, manually filter data.results
-  if (subject) {
-    data.results = data.results.filter((el: Preprint) =>
-      el.subject.find((s) => s.name === subject),
-    )
-  }
-
-  return data
 }
 
 export const getSubjects = async () => {
-  const res = await fetchWithToken(
-    headers(),
+  const res = await fetch(
     'https://carbonplan.endurance.janeway.systems/carbonplan/api/repository_subjects/',
   )
 
   if (res.status === 200) {
-    // If authenticated, return actual data
-    const data = await res.json()
-    return data
+    return await res.json()
   } else {
-    // Otherwise, return hardcoded response
     return { ...TEST_SUBJECTS, test_data: true }
   }
 }

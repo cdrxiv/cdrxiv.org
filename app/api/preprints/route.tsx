@@ -5,7 +5,7 @@ import { Preprint } from '../../../types/preprint'
 
 export async function GET(request: NextRequest) {
   let url =
-    'https://carbonplan.endurance.janeway.systems/carbonplan/api/preprints/'
+    'https://carbonplan.endurance.janeway.systems/carbonplan/api/published_preprints/'
 
   const subject = request.nextUrl.searchParams.get('subject')
   if (subject) {
