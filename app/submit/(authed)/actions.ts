@@ -39,7 +39,6 @@ const PREPRINT_BASE = {
   versions: [],
   supplementary_files: [],
   additional_field_answers: [],
-  owner: 3,
   repository: 1,
 }
 
