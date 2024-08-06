@@ -142,20 +142,26 @@ const FundingSources: React.FC<Props> = ({ value, setValue }) => {
               <Column
                 start={[6, 6, 8, 8]}
                 width={1}
-                sx={{ mt: -1, display: ['initial', 'initial', 'none', 'none'] }}
+                sx={{ display: ['initial', 'initial', 'none', 'none'] }}
               >
-                <StyledLink
-                  onClick={() =>
-                    setEntries((prev) => prev.filter((el) => el._key !== _key))
-                  }
+                <Flex
                   sx={{
-                    variant: 'text.monoCaps',
-                    textDecoration: 'none',
-                    ml: 2,
+                    width: '100%',
+                    justifyContent: 'flex-end',
+                    mt: -1,
                   }}
                 >
-                  (x)
-                </StyledLink>
+                  <StyledLink
+                    onClick={() =>
+                      setEntries((prev) =>
+                        prev.filter((el) => el._key !== _key),
+                      )
+                    }
+                    sx={{ variant: 'text.monoCaps', textDecoration: 'none' }}
+                  >
+                    (x)
+                  </StyledLink>
+                </Flex>
               </Column>
 
               <Column start={1} width={[6, 6, 3, 3]} sx={{ mb: [4, 4, 0, 0] }}>
