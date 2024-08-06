@@ -1,15 +1,19 @@
 'use client'
 
-import React from 'react'
-import { Box } from 'theme-ui'
+import React, { useState } from 'react'
+import { Box, Flex } from 'theme-ui'
 import Column from './column'
 import Row from './row'
+import StyledLink from './link'
+
 import { Subjects } from '../types/subject'
 import { useSearchParams, useRouter } from 'next/navigation'
 
 interface TopicsProps {
   subjects: Subjects
 }
+
+type ViewType = 'grid' | 'list'
 
 const Topics: React.FC<TopicsProps> = ({ subjects }) => {
   const router = useRouter()
@@ -46,20 +50,32 @@ const Topics: React.FC<TopicsProps> = ({ subjects }) => {
       {name}
     </Box>
   )
+
+  const [currentView, setCurrentView] = useState<ViewType>(
+    () => (searchParams.get('view') as ViewType) || 'grid',
+  )
+
+  const handleViewChange = (view: ViewType) => {
+    setCurrentView(view)
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('view', view)
+    window.history.pushState(null, '', `?${params.toString()}`)
+  }
+
   return (
-    <Row sx={{ mt: 4 }}>
-      <Column start={1} width={3}>
-        <Box sx={{ variant: 'text.heading' }}>
+    <Row columns={12} sx={{ mt: 4, mb: 6 }}>
+      <Column start={1} width={[10, 10, 3, 3]}>
+        <Box sx={{ variant: 'text.heading', mb: 4 }}>
           Preprints and Data for Carbon Dioxide Removal
         </Box>
       </Column>
-      <Column start={5} width={8}>
+      <Column start={[1, 1, 5, 5]} width={[6, 6, 8, 8]}>
         <Row columns={8}>
           <Column start={1} width={4}>
-            <Box sx={{ variant: 'text.monoCaps', mb: 3 }}>Topics</Box>
+            <Box sx={{ variant: 'text.monoCaps', mb: 5 }}>Topics</Box>
           </Column>
         </Row>
-        <Row columns={8}>
+        <Row columns={8} sx={{ display: ['none', 'none', 'flex', 'flex'] }}>
           <Column start={1} width={4}>
             {renderSubject('All')}
             {subjects
@@ -72,6 +88,64 @@ const Topics: React.FC<TopicsProps> = ({ subjects }) => {
               .map((subject) => renderSubject(subject.name))}
           </Column>
         </Row>
+
+        {/* Mobile */}
+        <Row columns={8} sx={{ display: ['flex', 'flex', 'none', 'none'] }}>
+          <Column start={1} width={4}>
+            <StyledLink
+              onClick={() => {}}
+              sx={{
+                variant: 'text.body',
+                fontSize: [2, 2, 2, 3],
+                textDecoration: currentView === 'grid' ? 'underline' : 'none',
+                textTransform: 'capitalize',
+              }}
+            >
+              All
+            </StyledLink>
+          </Column>
+        </Row>
+      </Column>
+      <Column start={[7, 7, 1, 1]} width={6}>
+        <Flex
+          sx={{
+            justifyContent: 'flex-start',
+            gap: 6,
+            flexDirection: ['column', 'column', 'row', 'row'],
+          }}
+        >
+          <Box sx={{ variant: 'text.monoCaps' }}>Recent preprints</Box>
+          <Flex sx={{ gap: 3 }}>
+            <StyledLink
+              sx={{
+                variant: 'text.body',
+                fontSize: [2, 2, 2, 3],
+                textDecoration: currentView === 'grid' ? 'underline' : 'none',
+                textTransform: 'capitalize',
+              }}
+              onClick={() => {
+                handleViewChange('grid')
+              }}
+              href={'?view=grid'}
+            >
+              Grid
+            </StyledLink>
+            <StyledLink
+              sx={{
+                variant: 'text.body',
+                fontSize: [2, 2, 2, 3],
+                textDecoration: currentView === 'list' ? 'underline' : 'none',
+                textTransform: 'capitalize',
+              }}
+              onClick={() => {
+                handleViewChange('list')
+              }}
+              href={'?view=list'}
+            >
+              List
+            </StyledLink>
+          </Flex>
+        </Flex>
       </Column>
     </Row>
   )

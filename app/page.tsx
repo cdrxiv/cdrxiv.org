@@ -3,8 +3,6 @@ import type { Subjects } from '../types/subject'
 import type { Preprints } from '../types/preprint'
 import LandingPage from '../components/landing-page'
 
-export const dynamic = 'force-dynamic'
-
 async function fetchData(searchParams: {
   [key: string]: string | string[] | undefined
 }): Promise<[Preprints, Subjects]> {
