@@ -33,6 +33,7 @@ const Janeway: Provider = {
 const handler = NextAuth({
   providers: [Janeway],
   pages: {
+    signIn: '/submit/login',
     error: '/',
   },
   callbacks: {
