@@ -1,5 +1,5 @@
 import React from 'react'
-import Topics from './topics'
+import Controls from './controls'
 import PreprintsView from './preprints-view'
 import { Preprints } from '../types/preprint'
 import { Subjects } from '../types/subject'
@@ -12,7 +12,7 @@ interface LandingPageProps {
 const LandingPage: React.FC<LandingPageProps> = ({ preprints, subjects }) => {
   return (
     <>
-      <Topics subjects={subjects} />
+      <Controls subjects={subjects} />
       <PreprintsView preprints={preprints} />
     </>
   )

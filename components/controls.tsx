@@ -9,13 +9,13 @@ import StyledLink from './link'
 import { Subjects } from '../types/subject'
 import { useSearchParams, useRouter } from 'next/navigation'
 
-interface TopicsProps {
+interface ControlsProps {
   subjects: Subjects
 }
 
 type ViewType = 'grid' | 'list'
 
-const Topics: React.FC<TopicsProps> = ({ subjects }) => {
+const Controls: React.FC<ControlsProps> = ({ subjects }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const currentSubject = searchParams.get('subject') || 'All'
@@ -151,4 +151,4 @@ const Topics: React.FC<TopicsProps> = ({ subjects }) => {
   )
 }
 
-export default Topics
+export default Controls
