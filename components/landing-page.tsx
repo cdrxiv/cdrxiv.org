@@ -1,16 +1,15 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { Box, Flex } from 'theme-ui'
 import Column from './column'
 import Row from './row'
 import StyledLink from './link'
-
-import { Subjects } from '../types/subject'
-import { useSearchParams, useRouter } from 'next/navigation'
+import PreprintsView from './preprints-view'
 import Menu from './menu'
 import type { Preprints } from '../types/preprint'
-import PreprintsView from './preprints-view'
+import type { Subjects } from '../types/subject'
 
 interface LandingPageProps {
   preprints: Preprints
