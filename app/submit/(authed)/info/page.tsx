@@ -1,10 +1,10 @@
 'use client'
 
 import { Flex, Input, Textarea } from 'theme-ui'
-import Field from '../../../components/field'
-import Select from '../../../components/select'
-import KeywordInput from '../../../components/keyword-input'
-import FundingSources from '../../../components/funding-sources'
+import Field from '../../../../components/field'
+import Select from '../../../../components/select'
+import KeywordInput from '../../../../components/keyword-input'
+import FundingSources from '../../../../components/funding-sources'
 
 const SubmissionInformation = () => {
   return (

@@ -2,10 +2,13 @@
 
 import { Flex, Label } from 'theme-ui'
 
-import Checkbox from '../../../components/checkbox'
-import Field from '../../../components/field'
+import Checkbox from '../../../../components/checkbox'
+import Field from '../../../../components/field'
+import { usePreprint } from '../preprint-context'
 
 const SubmissionOverview = () => {
+  const preprint = usePreprint()
+  console.log(preprint)
   return (
     <Flex sx={{ flexDirection: 'column', gap: 7 }}>
       <Field label='Submission agreement' id='agreement'>
