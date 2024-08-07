@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Preprint } from '../../../types/preprint'
 
 export const getAdditionalField = (
@@ -27,18 +27,23 @@ export function useForm<T>(
 ) {
   const [data, setData] = useState<T>(initialize)
   const [errors, setErrors] = useState<Errors<T>>({})
+  const [showErrors, setShowErrors] = useState<boolean>(false)
+  const empty: Errors<T> = useMemo(() => ({}), [])
+
+  useEffect(() => {
+    setErrors(validate(data))
+  }, [data, validate])
 
   const handleValidate = useCallback(() => {
-    const updatedErrors = validate(data)
-    setErrors(updatedErrors)
+    setShowErrors(true)
 
-    return Object.keys(updatedErrors).length === 0
-  }, [data, validate])
+    return Object.keys(errors).length === 0
+  }, [errors])
 
   return {
     data,
     setData,
-    errors,
+    errors: showErrors ? errors : empty,
     onSubmit: handleValidate,
   }
 }
