@@ -21,10 +21,9 @@ export async function updatePreprint(
         body: JSON.stringify({ ...rest, ...params, repository: 1 }),
       },
     )
-    return true
+    return null
   } catch (e) {
-    console.error('Error updating preprint', e)
-    return false
+    return `Error updating preprint: $${e}`
   }
 }
 

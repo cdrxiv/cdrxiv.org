@@ -33,10 +33,11 @@ type Errors<T> = Partial<{ [K in keyof T]: string }>
 export function useForm<T>(
   initialize: () => T,
   validate: (values: T) => Errors<T>,
-  submit: (values: T) => Promise<boolean>,
+  submit: (values: T) => Promise<string | null>,
 ) {
   const [data, setData] = useState<T>(initialize)
   const [errors, setErrors] = useState<Errors<T>>({})
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const [showErrors, setShowErrors] = useState<boolean>(false)
   const empty: Errors<T> = useMemo(() => ({}), [])
 
@@ -46,12 +47,20 @@ export function useForm<T>(
 
   const handleSubmit = useCallback(() => {
     setShowErrors(true)
+    setSubmitError(null)
 
     const valid = Object.keys(errors).length === 0
     if (!valid) {
       return false
     } else {
-      return submit(data)
+      return submit(data).then((err) => {
+        if (err) {
+          setSubmitError(err)
+          return false
+        } else {
+          return true
+        }
+      })
     }
   }, [errors, data, submit])
 
@@ -60,5 +69,6 @@ export function useForm<T>(
     setData,
     errors: showErrors ? errors : empty,
     onSubmit: handleSubmit,
+    submitError,
   }
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { Flex, Label } from 'theme-ui'
+import { Box, Flex, Label } from 'theme-ui'
 import { useCallback } from 'react'
 
 import Checkbox from '../../../../components/checkbox'
@@ -65,7 +65,7 @@ const submitForm = (preprint: Preprint | null, { data, article }: FormData) => {
 
 const SubmissionOverview = () => {
   const preprint = usePreprint()
-  const { data, setData, errors, onSubmit } = useForm<FormData>(
+  const { data, setData, errors, onSubmit, submitError } = useForm<FormData>(
     () => initializeForm(preprint),
     validateForm,
     submitForm.bind(null, preprint),
@@ -84,6 +84,7 @@ const SubmissionOverview = () => {
   return (
     <>
       <Flex sx={{ flexDirection: 'column', gap: 7 }}>
+        {submitError && <Box sx={{ color: 'red' }}>{submitError}</Box>}
         <Field
           label='Submission agreement'
           id='agreement'
