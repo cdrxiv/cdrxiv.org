@@ -1,13 +1,12 @@
 import { getToken } from 'next-auth/jwt'
 import { NextRequest } from 'next/server'
-import { RequestOptions } from 'http'
 import { cookies, headers } from 'next/headers'
 import { TEST_PREPRINTS } from './placeholder-data'
 
 export const fetchWithToken = async (
   reqOrHeaders: NextRequest | Headers,
   url: string,
-  options?: RequestOptions,
+  options?: RequestInit,
 ) => {
   let token
   if (reqOrHeaders instanceof NextRequest) {
