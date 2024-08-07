@@ -50,7 +50,7 @@ export const getPreprints = async (subject?: string) => {
     const queryString = `subject=${subject}`
     url = `${url}?${queryString}`
   }
-  const res = await fetch(url)
+  const res = await fetch(url, { next: { revalidate: 3600 } })
   if (res.status === 200) {
     return await res.json()
   }
