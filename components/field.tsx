@@ -19,6 +19,7 @@ const Field: React.FC<Props> = ({
       <Label htmlFor={id}>{label}</Label>
       {children}
       {description && <Box sx={{ variant: 'text.mono' }}>{description}</Box>}
+      {error && <Box sx={{ variant: 'text.mono', color: 'red' }}>{error}</Box>}
     </Flex>
   )
 }
