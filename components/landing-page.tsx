@@ -41,6 +41,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
         <Column start={[7, 7, 1, 1]} width={6}>
           <Flex
             sx={{
+              gap: [0, 0, 6, 6],
               justifyContent: 'flex-start',
               flexDirection: ['column', 'column', 'row', 'row'],
             }}
