@@ -8,17 +8,18 @@ import Row from './row'
 import StyledLink from './link'
 import PreprintsView from './preprints-view'
 import Menu from './menu'
-import type { Preprints } from '../types/preprint'
+import { useSubjects } from '../app/subjects-provider'
 import type { Subjects } from '../types/subject'
+import type { Preprints } from '../types/preprint'
 
 interface LandingPageProps {
   preprints: Preprints
-  subjects: Subjects
 }
 
 type ViewType = 'grid' | 'list'
 
-const LandingPage: React.FC<LandingPageProps> = ({ preprints, subjects }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ preprints }) => {
+  const subjects: Subjects = useSubjects()
   const router = useRouter()
   const searchParams = useSearchParams()
   const subjectParam = searchParams.get('subject') || 'All'

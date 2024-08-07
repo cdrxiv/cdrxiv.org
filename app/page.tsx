@@ -1,33 +1,13 @@
-import { getPreprints, getSubjects } from './api/utils'
-import type { Subjects } from '../types/subject'
-import type { Preprints } from '../types/preprint'
+import { getPreprints } from './api/utils'
 import LandingPage from '../components/landing-page'
-
-export const dynamic = 'force-dynamic'
-
-async function fetchData(searchParams: {
-  [key: string]: string | string[] | undefined
-}): Promise<[Preprints, Subjects]> {
-  try {
-    const subject = searchParams.subject as string | undefined
-    const [preprintsData, subjectsData] = await Promise.all([
-      getPreprints(subject),
-      getSubjects(),
-    ])
-    return [preprintsData.results, subjectsData.results]
-  } catch (err) {
-    console.error(err)
-    return [[], []]
-  }
-}
-
 interface HomeProps {
   searchParams: { [key: string]: string | string[] | undefined }
 }
 
 const Home = async ({ searchParams }: HomeProps) => {
-  const [preprints, subjects] = await fetchData(searchParams)
-  return <LandingPage preprints={preprints} subjects={subjects} />
+  const subject = searchParams.subject as string | undefined
+  const preprints = await getPreprints(subject)
+  return <LandingPage preprints={preprints.results} />
 }
 
 export default Home
