@@ -24,15 +24,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ preprints, subjects }) => {
   const subjectParam = searchParams.get('subject') || 'All'
   const [currentSubject, setCurrentSubject] = useState(subjectParam)
   const [subjectsMenuOpen, setSubjectsMenuOpen] = useState(false)
+  const [currentView, setCurrentView] = useState<ViewType>(
+    () => (searchParams.get('view') as ViewType) || 'grid',
+  )
 
   const handleFilterChange = (newFilter: string) => {
     const params = new URLSearchParams(searchParams)
     if (newFilter === 'All' || newFilter === currentSubject) {
       params.delete('subject')
+      setCurrentSubject('All')
     } else {
       params.set('subject', newFilter)
+      setCurrentSubject(newFilter)
     }
-    setCurrentSubject(newFilter)
     router.push(`/?${params.toString()}`)
   }
 
@@ -55,10 +59,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ preprints, subjects }) => {
     >
       {name}
     </Box>
-  )
-
-  const [currentView, setCurrentView] = useState<ViewType>(
-    () => (searchParams.get('view') as ViewType) || 'grid',
   )
 
   const handleViewChange = (view: ViewType) => {
