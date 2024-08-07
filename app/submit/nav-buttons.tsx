@@ -2,22 +2,64 @@
 
 import { useSession } from 'next-auth/react'
 import { Flex } from 'theme-ui'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
-import StyledLink, { Props as LinkProps } from '../../components/link'
+import StyledLink from '../../components/link'
 import { PATHS } from './constants'
 
-const NextButton: React.FC<LinkProps> = ({ href, ...props }) => {
+interface Props {
+  onClick?: () => boolean
+}
+
+interface ButtonProps extends Props {
+  href: string
+  direction: 'forward' | 'back'
+  children: React.ReactNode
+}
+
+const NavButton: React.FC<ButtonProps> = ({
+  onClick,
+  href,
+  direction,
+  children,
+}) => {
+  const router = useRouter()
+  const props = {
+    [direction === 'forward' ? 'forwardArrow' : 'backArrow']: true,
+  }
+
+  const onClickProp = onClick
+    ? () => {
+        if (onClick()) {
+          router.push(href)
+        }
+      }
+    : undefined
+  const hrefProp = onClick ? undefined : href
+
+  return (
+    <StyledLink
+      {...props}
+      onClick={onClickProp}
+      href={hrefProp}
+      sx={{ variant: 'text.monoCaps' }}
+    >
+      {children}
+    </StyledLink>
+  )
+}
+
+const NextButton: React.FC<ButtonProps> = ({ href, ...props }) => {
   const { status } = useSession()
 
   const disabled = status === 'unauthenticated' && href !== PATHS[0].href
 
   if (disabled) return null
 
-  return <StyledLink href={href} {...props} />
+  return <NavButton href={href} {...props} />
 }
 
-const NavButtons: React.FC<{}> = () => {
+const NavButtons: React.FC<Props> = ({ onClick }) => {
   const pathname = usePathname()
 
   let index = PATHS.findIndex((p) => p.href === pathname)
@@ -31,19 +73,19 @@ const NavButtons: React.FC<{}> = () => {
       }}
     >
       {index > 0 && (
-        <StyledLink
+        <NavButton
           href={PATHS[index - 1].href}
-          backArrow
-          sx={{ variant: 'text.monoCaps' }}
+          onClick={onClick}
+          direction='back'
         >
           Prev step
-        </StyledLink>
+        </NavButton>
       )}
       {index < PATHS.length - 1 && (
         <NextButton
           href={PATHS[index + 1].href}
-          forwardArrow
-          sx={{ variant: 'text.monoCaps' }}
+          onClick={onClick}
+          direction='forward'
         >
           Next step
         </NextButton>
