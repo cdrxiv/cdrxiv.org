@@ -1,16 +1,12 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { Box, Flex } from 'theme-ui'
 import Column from './column'
 import Row from './row'
 import StyledLink from './link'
-import PreprintsView from './preprints-view'
-import Menu from './menu'
-import { useSubjects } from '../app/subjects-provider'
-import type { Subjects } from '../types/subject'
-import type { Preprints } from '../types/preprint'
+import Topics from './topics'
 
 interface LandingPageProps {
   children?: React.ReactNode
@@ -19,47 +15,9 @@ interface LandingPageProps {
 type ViewType = 'grid' | 'list'
 
 const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
-  const subjects: Subjects = useSubjects()
-  const router = useRouter()
   const searchParams = useSearchParams()
-  const subjectParam = searchParams.get('subject') || 'All'
-  const [currentSubject, setCurrentSubject] = useState(subjectParam)
-  const [subjectsMenuOpen, setSubjectsMenuOpen] = useState(false)
   const [currentView, setCurrentView] = useState<ViewType>(
     () => (searchParams.get('view') as ViewType) || 'grid',
-  )
-
-  const handleFilterChange = (newFilter: string) => {
-    const params = new URLSearchParams(searchParams)
-    if (newFilter === 'All' || newFilter === currentSubject) {
-      params.delete('subject')
-      setCurrentSubject('All')
-    } else {
-      params.set('subject', newFilter)
-      setCurrentSubject(newFilter)
-    }
-    router.push(`/?${params.toString()}`)
-  }
-
-  const midPoint = Math.ceil(subjects.length / 2) - 1 // -1 accounts for All option
-
-  const renderSubject = (name: string) => (
-    <Box
-      onClick={() => handleFilterChange(name)}
-      key={name}
-      sx={{
-        variant: 'text.body',
-        cursor: 'pointer',
-        width: 'fit-content',
-        bg: currentSubject === name ? 'highlight' : 'transparent',
-        mb: '2px',
-        ':hover': {
-          bg: 'highlight',
-        },
-      }}
-    >
-      {name}
-    </Box>
   )
 
   const handleViewChange = (view: ViewType) => {
@@ -77,52 +35,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
             Preprints and Data for Carbon Dioxide Removal
           </Box>
         </Column>
-        <Column start={[1, 1, 5, 5]} width={[6, 6, 8, 8]}>
-          <Row columns={8}>
-            <Column start={1} width={4}>
-              <Box sx={{ variant: 'text.monoCaps', mb: 5 }}>Topics</Box>
-            </Column>
-          </Row>
-          <Row columns={8} sx={{ display: ['none', 'none', 'flex', 'flex'] }}>
-            <Column start={1} width={4}>
-              {renderSubject('All')}
-              {subjects
-                .slice(0, midPoint)
-                .map((subject) => renderSubject(subject.name))}
-            </Column>
-            <Column start={5} width={4}>
-              {subjects
-                .slice(midPoint)
-                .map((subject) => renderSubject(subject.name))}
-            </Column>
-          </Row>
 
-          {/* Mobile */}
-          <Row columns={8} sx={{ display: ['flex', 'flex', 'none', 'none'] }}>
-            <Column start={1} width={4}>
-              <StyledLink
-                onClick={() => setSubjectsMenuOpen(true)}
-                sx={{
-                  variant: 'text.body',
-                  fontSize: [2, 2, 2, 3],
-                  textDecoration: currentView === 'grid' ? 'underline' : 'none',
-                  textTransform: 'capitalize',
-                }}
-              >
-                {currentSubject}
-              </StyledLink>
-            </Column>
-          </Row>
-        </Column>
+        <Topics />
+
         <Column start={[7, 7, 1, 1]} width={6}>
           <Flex
             sx={{
               justifyContent: 'flex-start',
-              gap: 6,
               flexDirection: ['column', 'column', 'row', 'row'],
             }}
           >
-            <Box sx={{ variant: 'text.monoCaps' }}>Recent preprints</Box>
+            <Box sx={{ variant: 'text.monoCaps', mb: 3 }}>Recent preprints</Box>
             <Flex sx={{ gap: 3 }}>
               <StyledLink
                 sx={{
@@ -156,16 +79,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
           </Flex>
         </Column>
       </Row>
-      {subjectsMenuOpen && (
-        <Menu
-          setMenuOpen={setSubjectsMenuOpen}
-          sx={{ top: 180, left: 0, height: '50vh', overflowY: 'auto' }}
-        >
-          {renderSubject('All')}
-          {subjects.map((subject) => renderSubject(subject.name))}
-        </Menu>
-      )}
-      {/* <PreprintsView preprints={preprints} /> */}
       {children}
     </>
   )
