@@ -20,10 +20,20 @@ export const getAdditionalField = (
   return additionalField.answer
 }
 
+export const createAdditionalField = (fieldName: string, value: string) => {
+  return {
+    answer: value,
+    field: {
+      name: fieldName,
+    },
+  }
+}
+
 type Errors<T> = Partial<{ [K in keyof T]: string }>
 export function useForm<T>(
   initialize: () => T,
   validate: (values: T) => Errors<T>,
+  submit: (values: T) => Promise<boolean>,
 ) {
   const [data, setData] = useState<T>(initialize)
   const [errors, setErrors] = useState<Errors<T>>({})
@@ -34,16 +44,21 @@ export function useForm<T>(
     setErrors(validate(data))
   }, [data, validate])
 
-  const handleValidate = useCallback(() => {
+  const handleSubmit = useCallback(() => {
     setShowErrors(true)
 
-    return Object.keys(errors).length === 0
-  }, [errors])
+    const valid = Object.keys(errors).length === 0
+    if (!valid) {
+      return false
+    } else {
+      return submit(data)
+    }
+  }, [errors, data, submit])
 
   return {
     data,
     setData,
     errors: showErrors ? errors : empty,
-    onSubmit: handleValidate,
+    onSubmit: handleSubmit,
   }
 }

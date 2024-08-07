@@ -35,10 +35,10 @@ export type SupplementaryFile = {
 }
 
 export type AdditionalFieldAnswer = {
-  pk: number
+  pk?: number
   answer: string
   field: {
-    pk: number
+    pk?: number
     name: string
   } | null
 }

@@ -8,7 +8,7 @@ import StyledLink from '../../components/link'
 import { PATHS } from './constants'
 
 interface Props {
-  onClick?: () => boolean
+  onClick?: () => Promise<boolean> | boolean
 }
 
 interface ButtonProps extends Props {
@@ -29,8 +29,9 @@ const NavButton: React.FC<ButtonProps> = ({
   }
 
   const onClickProp = onClick
-    ? () => {
-        if (onClick()) {
+    ? async () => {
+        const result = await onClick()
+        if (result) {
           router.push(href)
         }
       }

@@ -6,21 +6,26 @@ import { Preprint } from '../../../types/preprint'
 import { fetchWithToken } from '../../api/utils'
 
 export async function updatePreprint(
-  preprint: Preprint | null,
-  params: { title: string },
+  preprint: Preprint,
+  params: Partial<Preprint>,
 ) {
-  const res = await fetchWithToken(
-    headers(),
-    `https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/${preprint.pk}/`,
-    {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...params }),
-    },
-  )
+  const { pk, ...rest } = preprint
 
-  console.log('RES', res)
-  return
+  try {
+    await fetchWithToken(
+      headers(),
+      `https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/${pk}/`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...rest, ...params, repository: 1 }),
+      },
+    )
+    return true
+  } catch (e) {
+    console.error('Error updating preprint', e)
+    return false
+  }
 }
 
 const PREPRINT_BASE = {
@@ -55,7 +60,7 @@ export async function createPreprint() {
     throw new Error('Tried to createPreprint() without authenticating')
   }
 
-  const res = await fetchWithToken(
+  await fetchWithToken(
     headers(),
     'https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/',
     {
@@ -64,7 +69,4 @@ export async function createPreprint() {
       body: JSON.stringify({ ...PREPRINT_BASE, owner: token.user.id }),
     },
   )
-
-  console.log('RES', res)
-  return
 }

@@ -8,7 +8,8 @@ import Field from '../../../../components/field'
 import NavButtons from '../../nav-buttons'
 import { Preprint } from '../../../../types/preprint'
 import { usePreprint } from '../preprint-context'
-import { getAdditionalField, useForm } from '../utils'
+import { createAdditionalField, getAdditionalField, useForm } from '../utils'
+import { updatePreprint } from '../actions'
 
 type FormData = {
   agreement: boolean
@@ -40,13 +41,35 @@ const validateForm = ({ agreement, data, article }: FormData) => {
   return result
 }
 
+const submitForm = (preprint: Preprint | null, { data, article }: FormData) => {
+  if (!preprint) {
+    throw new Error('Tried to submit without active preprint')
+  }
+
+  let submissionType
+  if (data && article) {
+    submissionType = 'Both'
+  } else if (data) {
+    submissionType = 'Data'
+  } else {
+    submissionType = 'Article'
+  }
+  const params = {
+    additional_field_answers: [
+      createAdditionalField('Submission type', submissionType),
+    ],
+  }
+
+  return updatePreprint(preprint, params)
+}
+
 const SubmissionOverview = () => {
   const preprint = usePreprint()
-  const { data, setData, errors, onSubmit } = useForm<{
-    agreement: boolean
-    data: boolean
-    article: boolean
-  }>(() => initializeForm(preprint), validateForm)
+  const { data, setData, errors, onSubmit } = useForm<FormData>(
+    () => initializeForm(preprint),
+    validateForm,
+    submitForm.bind(null, preprint),
+  )
 
   const handleFieldCheck = useCallback(
     (field: string, e: React.ChangeEvent<HTMLInputElement>) => {
