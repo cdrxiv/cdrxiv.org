@@ -59,6 +59,7 @@ export const getPreprints = async (subject?: string) => {
 export const getSubjects = async () => {
   const res = await fetch(
     'https://carbonplan.endurance.janeway.systems/carbonplan/api/repository_subjects/',
+    { next: { revalidate: 3600 } },
   )
 
   if (res.status === 200) {
