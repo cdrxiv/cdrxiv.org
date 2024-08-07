@@ -13,12 +13,12 @@ import type { Subjects } from '../types/subject'
 import type { Preprints } from '../types/preprint'
 
 interface LandingPageProps {
-  preprints: Preprints
+  children?: React.ReactNode
 }
 
 type ViewType = 'grid' | 'list'
 
-const LandingPage: React.FC<LandingPageProps> = ({ preprints }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
   const subjects: Subjects = useSubjects()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -165,7 +165,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ preprints }) => {
           {subjects.map((subject) => renderSubject(subject.name))}
         </Menu>
       )}
-      <PreprintsView preprints={preprints} />
+      {/* <PreprintsView preprints={preprints} /> */}
+      {children}
     </>
   )
 }
