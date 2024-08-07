@@ -16,7 +16,7 @@ type FormData = {
   data: boolean
   article: boolean
 }
-const initializeForm = (preprint: Preprint | null) => {
+const initializeForm = (preprint: Preprint) => {
   const submissionType = getAdditionalField(preprint, 'Submission type') ?? ''
   return {
     agreement: false,
@@ -41,7 +41,7 @@ const validateForm = ({ agreement, data, article }: FormData) => {
   return result
 }
 
-const submitForm = (preprint: Preprint | null, { data, article }: FormData) => {
+const submitForm = (preprint: Preprint, { data, article }: FormData) => {
   if (!preprint) {
     throw new Error('Tried to submit without active preprint')
   }

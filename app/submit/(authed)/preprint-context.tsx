@@ -24,5 +24,9 @@ export const PreprintProvider: React.FC<ProviderProps> = ({
 export const usePreprint = () => {
   const preprint = useContext(PreprintContext)
 
+  if (!preprint) {
+    throw new Error('Tried to usePreprint() before context was instantiated')
+  }
+
   return preprint
 }
