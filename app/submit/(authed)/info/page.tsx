@@ -75,7 +75,7 @@ const submitForm = (
   const params = {
     title,
     abstract,
-    license: { pk: license as number },
+    license,
     doi: doi ? doi : null,
     subject: subject.map((name) => ({ name })),
     keywords: keywords.map((word) => ({ word })),
@@ -144,6 +144,7 @@ const SubmissionInformation = () => {
         </Field>
         <Field label='Subject' id='subject' error={errors.subject}>
           <Select
+            value={data.subject[0] ?? ''}
             onChange={(e) =>
               setters.subject(e.target.value ? [e.target.value] : [])
             }
