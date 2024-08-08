@@ -6,17 +6,21 @@ const Select: React.FC<SelectProps> = (props) => {
     <ThemeUISelect
       {...props}
       arrow={
-        <Box
-          sx={{
-            variant: 'text.body',
-            color: 'blue',
-            ml: -28,
-            alignSelf: 'center',
-            pointerEvents: 'none',
-          }}
-        >
-          {'>'}
-        </Box>
+        props.multiple ? (
+          <></>
+        ) : (
+          <Box
+            sx={{
+              variant: 'text.body',
+              color: 'blue',
+              ml: -28,
+              alignSelf: 'center',
+              pointerEvents: 'none',
+            }}
+          >
+            {'>'}
+          </Box>
+        )
       }
     />
   )

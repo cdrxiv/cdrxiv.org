@@ -10,6 +10,7 @@ import { usePreprint } from '../preprint-context'
 import { createAdditionalField, getAdditionalField, useForm } from '../utils'
 import { Preprint } from '../../../../types/preprint'
 import { updatePreprint } from '../actions'
+import { useSubjects } from '../../../subjects-context'
 
 type FormData = {
   title: string
@@ -92,6 +93,7 @@ const submitForm = (
 
 const SubmissionInformation = () => {
   const { preprint, setPreprint } = usePreprint()
+  const subjects = useSubjects()
   const { data, setters, errors, onSubmit, submitError } = useForm<FormData>(
     () => initializeForm(preprint),
     validateForm,
@@ -146,16 +148,23 @@ const SubmissionInformation = () => {
         </Field>
         <Field label='Subject' id='subject' error={errors.subject}>
           <Select
-            value={data.subject[0] ?? ''}
+            value={data.subject}
             onChange={(e) =>
-              setters.subject(e.target.value ? [e.target.value] : [])
+              setters.subject(
+                subjects
+                  .filter((el, i) => e.target.options[i].selected)
+                  .map((el) => el.name),
+              )
             }
             id='subject'
+            multiple
+            size={3}
           >
-            <option value=''>Select one</option>
-            <option value='Alkaline waste mineralization'>
-              Alkaline waste mineralization
-            </option>
+            {subjects.map(({ name }) => (
+              <option value={name} key={name}>
+                {name}
+              </option>
+            ))}
           </Select>
         </Field>
         <Field
