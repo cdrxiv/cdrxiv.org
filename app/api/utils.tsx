@@ -6,6 +6,7 @@ import { TEST_SUBJECTS } from './placeholder-data'
 export const fetchWithToken = async (
   reqOrHeaders: NextRequest | Headers,
   url: string,
+  options?: RequestInit,
 ) => {
   let token
   if (reqOrHeaders instanceof NextRequest) {
@@ -29,18 +30,14 @@ export const fetchWithToken = async (
       status: 403,
     })
   }
-  const res = await fetch(url, {
+
+  return fetch(url, {
+    ...options,
     headers: {
+      ...options?.headers,
       Authorization: `Bearer ${token.accessToken}`,
     },
   })
-  const data = await res.json()
-  if (!data.results) {
-    return new Response(data.detail ?? 'Request not completed', {
-      status: 403,
-    })
-  }
-  return Response.json(data)
 }
 
 export const getSubjects = async () => {
