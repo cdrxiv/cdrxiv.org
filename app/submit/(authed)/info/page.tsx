@@ -14,7 +14,7 @@ import { updatePreprint } from '../actions'
 type FormData = {
   title: string
   abstract: string
-  license?: number
+  license: number
   doi: string
   subject: string[]
   keywords: string[]
@@ -123,10 +123,11 @@ const SubmissionInformation = () => {
         <Field label='License' id='license' error={errors.license}>
           <Select
             value={data.license}
-            onChange={(e) => setters.license(e.target.value)}
+            onChange={(e) => setters.license(Number(e.target.value))}
             id='license'
           >
-            <option value='CC-BY'>CC-BY</option>
+            <option value={0}>Select one</option>
+            <option value={1}>CC BY 4.0</option>
           </Select>
         </Field>
         <Field
@@ -141,8 +142,14 @@ const SubmissionInformation = () => {
             id='doi'
           />
         </Field>
-        <Field label='Subject' id='subject'>
-          <Select onChange={() => {}} id='subject'>
+        <Field label='Subject' id='subject' error={errors.subject}>
+          <Select
+            onChange={(e) =>
+              setters.subject(e.target.value ? [e.target.value] : [])
+            }
+            id='subject'
+          >
+            <option value=''>Select one</option>
             <option value='Alkaline waste mineralization'>
               Alkaline waste mineralization
             </option>
