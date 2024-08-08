@@ -37,12 +37,13 @@ export const fetchWithToken = async (
       Authorization: `Bearer ${token.accessToken}`,
     },
   })
-  const data = await res.json()
-  if (!data.results) {
-    return new Response(data.detail ?? 'Request not completed', {
-      status: 403,
+
+  if (res.status !== 200) {
+    return new Response(res.statusText ?? 'Request not completed', {
+      status: res.status,
     })
   }
+  const data = await res.json()
   return data
 }
 
