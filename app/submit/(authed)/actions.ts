@@ -2,12 +2,12 @@
 
 import { headers, cookies } from 'next/headers'
 import { getToken } from 'next-auth/jwt'
-import { Preprint } from '../../../types/preprint'
+import { Preprint, PreprintParams } from '../../../types/preprint'
 import { fetchWithToken } from '../../api/utils'
 
 export async function updatePreprint(
   preprint: Preprint,
-  params: Partial<Preprint>,
+  params: PreprintParams,
 ): Promise<Preprint> {
   const { pk, ...rest } = preprint
 

@@ -66,4 +66,15 @@ export type Preprint = {
   owner: number
 }
 
+type Modify<T, R> = Omit<T, keyof R> & R
+
+export type PreprintParams = Partial<
+  Modify<
+    Preprint,
+    {
+      license: number
+    }
+  >
+>
+
 export type Preprints = Preprint[]
