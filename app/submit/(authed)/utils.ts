@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Preprint } from '../../../types/preprint'
 
 export const getAdditionalField = (
@@ -30,12 +30,28 @@ export const createAdditionalField = (fieldName: string, value: string) => {
 }
 
 type Errors<T> = Partial<{ [K in keyof T]: string }>
+type Setter<T> = {
+  [K in keyof T]: (value: T[K]) => void
+}
+
 export function useForm<T>(
   initialize: () => T,
   validate: (values: T) => Errors<T>,
   submit: (values: T) => Promise<void>,
 ) {
   const [data, setData] = useState<T>(initialize)
+  const keys = useRef(Object.keys(data ?? {}))
+  const setters = useMemo<Setter<T>>(() => {
+    return keys.current.reduce((accum, key) => {
+      accum[key as keyof T] = (value: T[keyof T]) =>
+        setData((prev) => ({
+          ...prev,
+          [key]: value,
+        }))
+      return accum
+    }, {} as Setter<T>)
+  }, [])
+
   const [errors, setErrors] = useState<Errors<T>>({})
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [showErrors, setShowErrors] = useState<boolean>(false)
@@ -67,6 +83,7 @@ export function useForm<T>(
 
   return {
     data,
+    setters,
     setData,
     errors: showErrors ? errors : empty,
     onSubmit: handleSubmit,
