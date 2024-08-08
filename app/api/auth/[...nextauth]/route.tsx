@@ -1,4 +1,4 @@
-import NextAuth, { User } from 'next-auth'
+import NextAuth from 'next-auth'
 import type { Provider } from 'next-auth/providers/index'
 
 const Janeway: Provider = {
@@ -78,14 +78,12 @@ const handler = NextAuth({
           return {
             // Keep the previous token properties
             ...token,
-            accessToken: responseTokens.access_token as string,
+            accessToken: responseTokens.access_token,
             expiresAt: Math.floor(
               Date.now() / 1000 + (responseTokens.expires_in as number),
             ),
             // Fall back to old refresh token, but note that many providers may only allow using a refresh token once.
-            refreshToken:
-              (responseTokens.refresh_token as string) ??
-              (token.refresh_token as string),
+            refreshToken: responseTokens.refresh_token ?? token.refresh_token,
           }
         } catch (error) {
           console.error('Error refreshing access token', error)
