@@ -8,6 +8,7 @@ import Link from 'next/link'
 import StyledButton from './button'
 import Menu from './menu'
 import { usePathname } from 'next/navigation'
+import useBackgroundColors from '../hooks/useBackgroundColors'
 
 type GBoxProps = BoxProps & SVGProps<SVGGElement>
 const GBox: React.FC<GBoxProps> = (props) => <Box as='g' {...props} />
@@ -15,19 +16,23 @@ const GBox: React.FC<GBoxProps> = (props) => <Box as='g' {...props} />
 type SVGBoxProps = BoxProps & SVGProps<SVGSVGElement>
 const SVGBox: React.FC<SVGBoxProps> = (props) => <Box as='svg' {...props} />
 
+type PathBoxProps = BoxProps & SVGProps<SVGPathElement>
+const PathBox: React.FC<PathBoxProps> = (props) => <Box as='path' {...props} />
+
 const foldSize = 100
 const margin = [2, 2, 3, 3]
 
 const PATHS: { name: string; path: string }[] = [
   { name: 'Home', path: '/' },
   { name: 'Channels', path: '/channels' },
-  { name: 'Submit', path: '/submit' },
+  { name: 'Submit', path: '/submit/overview' },
 ]
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 })
   const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const { cardBackground, overallBackground } = useBackgroundColors()
 
   const { theme } = useThemeUI()
   const pathname = usePathname()
@@ -81,9 +86,9 @@ const Header = () => {
             zIndex: 3,
           }}
         >
-          <path
+          <PathBox
             d={`M0 0 H${foldSize} V${foldSize} H0 L0 0`}
-            fill={theme?.colors?.primary as string}
+            sx={{ fill: overallBackground }}
           />
           <GBox
             sx={{
@@ -139,7 +144,7 @@ const Header = () => {
           top: margin,
           left: margin,
           alignContent: 'center',
-          backgroundColor: 'background',
+          bg: cardBackground,
           zIndex: 2,
           borderTop: '1px solid',
           borderLeft: '1px solid',
