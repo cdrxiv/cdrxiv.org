@@ -1,7 +1,7 @@
 import { getToken } from 'next-auth/jwt'
 import { NextRequest } from 'next/server'
-import { cookies, headers } from 'next/headers'
-import { TEST_PREPRINTS } from './placeholder-data'
+import { cookies } from 'next/headers'
+import { TEST_SUBJECTS } from './placeholder-data'
 
 export const fetchWithToken = async (
   reqOrHeaders: NextRequest | Headers,
@@ -40,17 +40,15 @@ export const fetchWithToken = async (
   })
 }
 
-export const getPreprints = async (reqOrHeaders?: NextRequest | Headers) => {
-  const res = await fetchWithToken(
-    reqOrHeaders || headers(), // For server components
-    'https://carbonplan.endurance.janeway.systems/carbonplan/api/preprints/',
+export const getSubjects = async () => {
+  const res = await fetch(
+    'https://carbonplan.endurance.janeway.systems/carbonplan/api/repository_subjects/',
+    { next: { revalidate: 3600 } },
   )
+
   if (res.status === 200) {
-    // If authenticated, return actual result
-    const result = await res.json()
-    return result
+    return await res.json()
   } else {
-    // Otherwise, return hardcoded response
-    return { ...TEST_PREPRINTS, test_data: true }
+    return { ...TEST_SUBJECTS, test_data: true }
   }
 }

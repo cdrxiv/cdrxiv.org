@@ -178,7 +178,10 @@ const Header = () => {
             Menu
           </StyledButton>
           {menuOpen && (
-            <Menu setMenuOpen={setMenuOpen} position={menuPosition}>
+            <Menu
+              setMenuOpen={setMenuOpen}
+              sx={{ top: menuPosition.top, right: menuPosition.right }}
+            >
               {renderLinks()}
             </Menu>
           )}
