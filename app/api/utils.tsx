@@ -30,30 +30,24 @@ export const fetchWithToken = async (
       status: 403,
     })
   }
-  const res = await fetch(url, {
+
+  return fetch(url, {
     ...options,
     headers: {
       ...options?.headers,
       Authorization: `Bearer ${token.accessToken}`,
     },
   })
-
-  if (res.status !== 200) {
-    return new Response(res.statusText ?? 'Request not completed', {
-      status: res.status,
-    })
-  }
-  const data = await res.json()
-  return data
 }
 
 export const getPreprints = async (reqOrHeaders?: NextRequest | Headers) => {
-  const result = await fetchWithToken(
+  const res = await fetchWithToken(
     reqOrHeaders || headers(), // For server components
     'https://carbonplan.endurance.janeway.systems/carbonplan/api/preprints/',
   )
-  if (result.status === 200) {
+  if (res.status === 200) {
     // If authenticated, return actual result
+    const result = await res.json()
     return result
   } else {
     // Otherwise, return hardcoded response

@@ -11,20 +11,24 @@ export async function updatePreprint(
 ) {
   const { pk, ...rest } = preprint
 
-  try {
-    await fetchWithToken(
-      headers(),
-      `https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/${pk}/`,
-      {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...rest, ...params, repository: 1 }),
-      },
+  const res = await fetchWithToken(
+    headers(),
+    `https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/${pk}/`,
+    {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...rest, ...params, repository: 1 }),
+    },
+  )
+
+  if (res.status !== 200) {
+    throw new Error(
+      `Status ${res.status}: Unable to update preprint ${pk}. ${res.statusText}`,
     )
-    return null
-  } catch (e) {
-    return `Error updating preprint: $${e}`
   }
+
+  const updatedPreprint = res.json()
+  return updatedPreprint
 }
 
 const PREPRINT_BASE = {
@@ -59,7 +63,7 @@ export async function createPreprint() {
     throw new Error('Tried to createPreprint() without authenticating')
   }
 
-  await fetchWithToken(
+  const res = await fetchWithToken(
     headers(),
     'https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/',
     {
@@ -68,4 +72,13 @@ export async function createPreprint() {
       body: JSON.stringify({ ...PREPRINT_BASE, owner: token.user.id }),
     },
   )
+
+  if (res.status !== 200) {
+    throw new Error(
+      `Status ${res.status}: Unable to create preprint. ${res.statusText}`,
+    )
+  }
+
+  const preprint = res.json()
+  return preprint
 }

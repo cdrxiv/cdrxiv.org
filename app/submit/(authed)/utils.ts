@@ -53,14 +53,15 @@ export function useForm<T>(
     if (!valid) {
       return false
     } else {
-      return submit(data).then((err) => {
-        if (err) {
-          setSubmitError(err)
-          return false
-        } else {
+      return submit(data).then(
+        (res) => {
           return true
-        }
-      })
+        },
+        (err) => {
+          setSubmitError(err.message ?? 'Error submitting form.')
+          return false
+        },
+      )
     }
   }, [errors, data, submit])
 

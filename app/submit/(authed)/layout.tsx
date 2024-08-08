@@ -4,6 +4,7 @@ import React from 'react'
 import { fetchWithToken } from '../../api/utils'
 import { PreprintProvider } from './preprint-context'
 import { createPreprint } from './actions'
+import { redirect } from 'next/navigation'
 
 interface Props {
   children: React.ReactNode
@@ -14,15 +15,15 @@ const SubmissionOverview: React.FC<Props> = async ({ children }) => {
     'https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/?stage=preprint_unsubmitted',
   )
 
-  let preprint = res.results[0] ?? null
+  if (res.status !== 200) {
+    redirect('/submit/login')
+  }
+
+  const data = await res.json()
+  let preprint = data.results[0] ?? null
 
   if (!preprint) {
-    await createPreprint()
-    const secondRes = await fetchWithToken(
-      headers(),
-      'https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/?stage=preprint_unsubmitted',
-    )
-    preprint = secondRes.results[0] ?? null
+    preprint = await createPreprint()
   }
 
   return <PreprintProvider preprint={preprint}>{children}</PreprintProvider>
