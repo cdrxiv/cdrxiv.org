@@ -43,19 +43,6 @@ export const fetchWithToken = async (
   return Response.json(data)
 }
 
-export const getPreprints = async (subject?: string) => {
-  let url =
-    'https://carbonplan.endurance.janeway.systems/carbonplan/api/published_preprints/'
-  if (subject) {
-    const queryString = `subject=${subject}`
-    url = `${url}?${queryString}`
-  }
-  const res = await fetch(url, { next: { revalidate: 3600 } })
-  if (res.status === 200) {
-    return await res.json()
-  }
-}
-
 export const getSubjects = async () => {
   const res = await fetch(
     'https://carbonplan.endurance.janeway.systems/carbonplan/api/repository_subjects/',

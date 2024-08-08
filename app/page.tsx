@@ -1,5 +1,4 @@
 import { Suspense } from 'react'
-import { getPreprints } from './api/utils'
 import LandingPage from '../components/landing-page'
 import PreprintsView from '../components/preprints-view'
 interface HomeProps {
@@ -7,8 +6,16 @@ interface HomeProps {
 }
 
 const Preprints = async ({ subject }: { subject: string | undefined }) => {
-  const preprints = await getPreprints(subject)
-  return <PreprintsView preprints={preprints.results} />
+  let url =
+    'https://carbonplan.endurance.janeway.systems/carbonplan/api/published_preprints/'
+  if (subject) {
+    const queryString = `subject=${subject}`
+    url = `${url}?${queryString}`
+  }
+  const res = await fetch(url, { next: { revalidate: 3600 } })
+  const preprints = await res.json()
+  const results = preprints.results || []
+  return <PreprintsView preprints={results} />
 }
 
 const Home = async ({ searchParams }: HomeProps) => {
