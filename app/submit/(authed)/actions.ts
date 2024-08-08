@@ -22,8 +22,19 @@ export async function updatePreprint(
   )
 
   if (res.status !== 200) {
+    let keyErrors
+    try {
+      const data = await res.json()
+      keyErrors = Object.keys(data).map(
+        (key) => `${key} (${data[key].join(', ')})`,
+      )
+    } catch {
+      console.warn('Unable to extract error message from response')
+    }
     throw new Error(
-      `Status ${res.status}: Unable to update preprint ${pk}. ${res.statusText}`,
+      keyErrors
+        ? `Status ${res.status}: Unable to update preprint. Error updating field(s): ${keyErrors.join('; ')}.`
+        : `Status ${res.status}: Unable to update preprint ${pk}. ${res.statusText}`,
     )
   }
 
