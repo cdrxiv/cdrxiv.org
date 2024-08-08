@@ -1,20 +1,10 @@
-import { NextResponse } from 'next/server'
 import { withAuth } from 'next-auth/middleware'
-import type { NextRequestWithAuth } from 'next-auth/middleware'
 
-export const middleware = withAuth(
-  function middleware(request: NextRequestWithAuth) {
-    if (request.nextUrl.pathname === '/submit') {
-      return NextResponse.redirect(new URL('/submit/overview', request.url))
-    }
-    return NextResponse.next()
+export const middleware = withAuth({
+  pages: {
+    signIn: '/submit/login',
   },
-  {
-    pages: {
-      signIn: '/submit/login',
-    },
-  },
-)
+})
 
 export const config = {
   matcher: [
