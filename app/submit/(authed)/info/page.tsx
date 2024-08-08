@@ -10,7 +10,6 @@ import { usePreprint } from '../preprint-context'
 import { createAdditionalField, getAdditionalField, useForm } from '../utils'
 import { Preprint } from '../../../../types/preprint'
 import { updatePreprint } from '../actions'
-import { useCallback } from 'react'
 
 type FormData = {
   title: string
@@ -93,24 +92,10 @@ const submitForm = (
 
 const SubmissionInformation = () => {
   const { preprint, setPreprint } = usePreprint()
-  const { data, setData, setters, errors, onSubmit, submitError } =
-    useForm<FormData>(
-      () => initializeForm(preprint),
-      validateForm,
-      submitForm.bind(null, preprint, setPreprint),
-    )
-
-  const handleFieldChange = useCallback(
-    (
-      field: string,
-      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    ) => {
-      setData((prev) => ({
-        ...prev,
-        [field]: e.target.value,
-      }))
-    },
-    [setData],
+  const { data, setters, errors, onSubmit, submitError } = useForm<FormData>(
+    () => initializeForm(preprint),
+    validateForm,
+    submitForm.bind(null, preprint, setPreprint),
   )
 
   return (
@@ -119,7 +104,7 @@ const SubmissionInformation = () => {
         <Field label='Title' id='title' error={errors.title}>
           <Input
             value={data.title}
-            onChange={handleFieldChange.bind(null, 'title')}
+            onChange={(e) => setters.title(e.target.value)}
             id='title'
           />
         </Field>
@@ -131,14 +116,14 @@ const SubmissionInformation = () => {
         >
           <Textarea
             value={data.abstract}
-            onChange={handleFieldChange.bind(null, 'abstract')}
+            onChange={(e) => setters.abstract(e.target.value)}
             id='abstract'
           />
         </Field>
         <Field label='License' id='license' error={errors.license}>
           <Select
             value={data.license}
-            // onChange={handleFieldChange.bind(null, 'license')}
+            onChange={(e) => setters.license(e.target.value)}
             id='license'
           >
             <option value='CC-BY'>CC-BY</option>
@@ -152,7 +137,7 @@ const SubmissionInformation = () => {
         >
           <Input
             value={data.doi}
-            onChange={handleFieldChange.bind(null, 'doi')}
+            onChange={(e) => setters.doi(e.target.value)}
             id='doi'
           />
         </Field>
