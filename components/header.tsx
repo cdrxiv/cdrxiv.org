@@ -25,7 +25,7 @@ const margin = [2, 2, 3, 3]
 const PATHS: { name: string; path: string }[] = [
   { name: 'Home', path: '/' },
   { name: 'Channels', path: '/channels' },
-  { name: 'Submit', path: '/submit' },
+  { name: 'Submit', path: '/submit/overview' },
 ]
 
 const Header = () => {
