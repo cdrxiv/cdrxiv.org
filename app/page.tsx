@@ -1,27 +1,31 @@
-import { getPreprints } from './api/utils'
-import type { Preprints } from '../types/preprint'
-import Topics from '../components/topics'
-import PreprintsView from '../components/preprints-view'
-
-export const dynamic = 'force-dynamic'
-
-async function fetchPreprints(): Promise<Preprints> {
-  try {
-    const data = await getPreprints()
-    return data.results
-  } catch (err) {
-    console.error(err)
-    return []
-  }
+import { Suspense } from 'react'
+import LandingPage from './landing-page'
+import PreprintsView from './preprints-view'
+interface HomeProps {
+  searchParams: { [key: string]: string | string[] | undefined }
 }
-const Home = async () => {
-  const preprints = await fetchPreprints()
 
+const Preprints = async ({ subject }: { subject: string | undefined }) => {
+  let url =
+    'https://carbonplan.endurance.janeway.systems/carbonplan/api/published_preprints/'
+  if (subject) {
+    const queryString = `subject=${subject}`
+    url = `${url}?${queryString}`
+  }
+  const res = await fetch(url, { next: { revalidate: 3600 } })
+  const preprints = await res.json()
+  const results = preprints.results || []
+  return <PreprintsView preprints={results} />
+}
+
+const Home = async ({ searchParams }: HomeProps) => {
+  const subject = searchParams.subject as string | undefined
   return (
-    <>
-      <Topics />
-      <PreprintsView preprints={preprints} />
-    </>
+    <LandingPage>
+      <Suspense key={subject} fallback={<div>Loading...</div>}>
+        <Preprints subject={subject} />
+      </Suspense>
+    </LandingPage>
   )
 }
 
