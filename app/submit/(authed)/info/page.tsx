@@ -124,7 +124,7 @@ const SubmissionInformation = () => {
         </Field>
         <Field label='License' id='license' error={errors.license}>
           <Select
-            value={data.license}
+            value={String(data.license)}
             onChange={(e) => setters.license(Number(e.target.value))}
             id='license'
           >
