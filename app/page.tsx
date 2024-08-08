@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
-import LandingPage from '../components/landing-page'
-import PreprintsView from '../components/preprints-view'
+import LandingPage from './landing-page'
+import PreprintsView from './preprints-view'
 interface HomeProps {
   searchParams: { [key: string]: string | string[] | undefined }
 }

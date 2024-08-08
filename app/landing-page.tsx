@@ -3,9 +3,9 @@
 import React, { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Box, Flex } from 'theme-ui'
-import Column from './column'
-import Row from './row'
-import StyledLink from './link'
+import Column from '../components/column'
+import Row from '../components/row'
+import StyledLink from '../components/link'
 import Topics from './topics'
 
 interface LandingPageProps {

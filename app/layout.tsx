@@ -3,7 +3,7 @@ import ThemeWrapper from '../components/theme-wrapper'
 import PageCard from '../components/layouts/page-card'
 import '../components/fonts.css'
 import { getSubjects } from './api/utils'
-import { SubjectsProvider } from './subjects-provider'
+import { SubjectsProvider } from './subjects-context'
 
 export const metadata: Metadata = {
   title: 'CDRXIV',

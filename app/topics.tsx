@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react'
 import { Box } from 'theme-ui'
-import Column from './column'
-import Row from './row'
-import Menu from './menu'
-import StyledLink from './link'
+import Column from '../components/column'
+import Row from '../components/row'
+import Menu from '../components/menu'
+import StyledLink from '../components/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useSubjects } from '../app/subjects-provider'
+import { useSubjects } from './subjects-context'
 import type { Subjects } from '../types/subject'
 
 const Topics: React.FC = () => {
