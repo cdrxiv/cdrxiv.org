@@ -33,7 +33,7 @@ type Errors<T> = Partial<{ [K in keyof T]: string }>
 export function useForm<T>(
   initialize: () => T,
   validate: (values: T) => Errors<T>,
-  submit: (values: T) => Promise<string | null>,
+  submit: (values: T) => Promise<void>,
 ) {
   const [data, setData] = useState<T>(initialize)
   const [errors, setErrors] = useState<Errors<T>>({})

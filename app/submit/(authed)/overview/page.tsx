@@ -41,7 +41,11 @@ const validateForm = ({ agreement, data, article }: FormData) => {
   return result
 }
 
-const submitForm = (preprint: Preprint, { data, article }: FormData) => {
+const submitForm = (
+  preprint: Preprint,
+  setPreprint: (p: Preprint) => void,
+  { data, article }: FormData,
+) => {
   if (!preprint) {
     throw new Error('Tried to submit without active preprint')
   }
@@ -60,15 +64,17 @@ const submitForm = (preprint: Preprint, { data, article }: FormData) => {
     ],
   }
 
-  return updatePreprint(preprint, params)
+  return updatePreprint(preprint, params).then((updated) =>
+    setPreprint(updated),
+  )
 }
 
 const SubmissionOverview = () => {
-  const preprint = usePreprint()
+  const { preprint, setPreprint } = usePreprint()
   const { data, setData, errors, onSubmit, submitError } = useForm<FormData>(
     () => initializeForm(preprint),
     validateForm,
-    submitForm.bind(null, preprint),
+    submitForm.bind(null, preprint, setPreprint),
   )
 
   const handleFieldCheck = useCallback(

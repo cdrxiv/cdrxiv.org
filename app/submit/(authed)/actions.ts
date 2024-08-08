@@ -8,7 +8,7 @@ import { fetchWithToken } from '../../api/utils'
 export async function updatePreprint(
   preprint: Preprint,
   params: Partial<Preprint>,
-) {
+): Promise<Preprint> {
   const { pk, ...rest } = preprint
 
   const res = await fetchWithToken(
@@ -50,7 +50,7 @@ const PREPRINT_BASE = {
   repository: 1,
 }
 
-export async function createPreprint() {
+export async function createPreprint(): Promise<Preprint> {
   const token = await getToken({
     req: {
       headers: headers(),
