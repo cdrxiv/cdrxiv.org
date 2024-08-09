@@ -9,7 +9,7 @@ export async function updatePreprint(
   preprint: Preprint,
   params: PreprintParams,
 ): Promise<Preprint> {
-  const { pk, ...rest } = preprint
+  const { pk, license, ...rest } = preprint
 
   const res = await fetchWithToken(
     headers(),
@@ -17,7 +17,13 @@ export async function updatePreprint(
     {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...rest, ...params, repository: 1 }),
+      body: JSON.stringify({
+        // Convert license into PreprintParams format
+        license: license?.pk,
+        ...rest,
+        ...params,
+        repository: 1,
+      }),
     },
   )
 
