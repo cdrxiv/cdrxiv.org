@@ -20,6 +20,9 @@ export type Author = {
 export type Subject = {
   name: string
 }
+export type Keyword = {
+  word: string
+}
 
 export type Version = {
   version: number
@@ -49,7 +52,7 @@ export type Preprint = {
   abstract: string
   stage: string
   license: License
-  keywords: string[]
+  keywords: Keyword[]
   date_submitted: string | null
   date_accepted: string | null
   date_published: string | null
@@ -62,5 +65,16 @@ export type Preprint = {
   additional_field_answers: AdditionalFieldAnswer[]
   owner: number
 }
+
+type Modify<T, R> = Omit<T, keyof R> & R
+
+export type PreprintParams = Partial<
+  Modify<
+    Preprint,
+    {
+      license: number
+    }
+  >
+>
 
 export type Preprints = Preprint[]

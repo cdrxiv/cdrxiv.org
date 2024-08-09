@@ -1,7 +1,6 @@
 'use client'
 
 import { Box, Flex, Label } from 'theme-ui'
-import { useCallback } from 'react'
 
 import Checkbox from '../../../../components/checkbox'
 import Field from '../../../../components/field'
@@ -71,20 +70,10 @@ const submitForm = (
 
 const SubmissionOverview = () => {
   const { preprint, setPreprint } = usePreprint()
-  const { data, setData, errors, onSubmit, submitError } = useForm<FormData>(
+  const { data, setters, errors, onSubmit, submitError } = useForm<FormData>(
     () => initializeForm(preprint),
     validateForm,
     submitForm.bind(null, preprint, setPreprint),
-  )
-
-  const handleFieldCheck = useCallback(
-    (field: string, e: React.ChangeEvent<HTMLInputElement>) => {
-      setData((prev) => ({
-        ...prev,
-        [field]: e.target.checked,
-      }))
-    },
-    [setData],
   )
 
   return (
@@ -100,7 +89,7 @@ const SubmissionOverview = () => {
             <Checkbox
               id='agreement'
               checked={data.agreement}
-              onChange={handleFieldCheck.bind(null, 'agreement')}
+              onChange={(e) => setters.agreement(e.target.checked)}
             />
             Authors grant us the right to publish, on this website, their
             uploaded manuscript, supplementary materials and any supplied
@@ -119,7 +108,7 @@ const SubmissionOverview = () => {
               <Checkbox
                 value='article'
                 checked={data.article}
-                onChange={handleFieldCheck.bind(null, 'article')}
+                onChange={(e) => setters.article(e.target.checked)}
               />
               Article
             </Label>
@@ -127,7 +116,7 @@ const SubmissionOverview = () => {
               <Checkbox
                 value='data'
                 checked={data.data}
-                onChange={handleFieldCheck.bind(null, 'data')}
+                onChange={(e) => setters.data(e.target.checked)}
               />
               Data
             </Label>

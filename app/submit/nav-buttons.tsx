@@ -74,11 +74,7 @@ const NavButtons: React.FC<Props> = ({ onClick }) => {
       }}
     >
       {index > 0 && (
-        <NavButton
-          href={PATHS[index - 1].href}
-          onClick={onClick}
-          direction='back'
-        >
+        <NavButton href={PATHS[index - 1].href} direction='back'>
           Prev step
         </NavButton>
       )}

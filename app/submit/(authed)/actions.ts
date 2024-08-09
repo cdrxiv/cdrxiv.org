@@ -2,14 +2,14 @@
 
 import { headers, cookies } from 'next/headers'
 import { getToken } from 'next-auth/jwt'
-import { Preprint } from '../../../types/preprint'
+import { Preprint, PreprintParams } from '../../../types/preprint'
 import { fetchWithToken } from '../../api/utils'
 
 export async function updatePreprint(
   preprint: Preprint,
-  params: Partial<Preprint>,
+  params: PreprintParams,
 ): Promise<Preprint> {
-  const { pk, ...rest } = preprint
+  const { pk, license, ...rest } = preprint
 
   const res = await fetchWithToken(
     headers(),
@@ -17,13 +17,30 @@ export async function updatePreprint(
     {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...rest, ...params, repository: 1 }),
+      body: JSON.stringify({
+        // Convert license into PreprintParams format
+        license: license?.pk,
+        ...rest,
+        ...params,
+        repository: 1,
+      }),
     },
   )
 
   if (res.status !== 200) {
+    let keyErrors
+    try {
+      const data = await res.json()
+      keyErrors = Object.keys(data).map(
+        (key) => `${key} (${data[key].join(', ')})`,
+      )
+    } catch {
+      console.warn('Unable to extract error message from response')
+    }
     throw new Error(
-      `Status ${res.status}: Unable to update preprint ${pk}. ${res.statusText}`,
+      keyErrors
+        ? `Status ${res.status}: Unable to update preprint. Error updating field(s): ${keyErrors.join('; ')}.`
+        : `Status ${res.status}: Unable to update preprint ${pk}. ${res.statusText}`,
     )
   }
 
