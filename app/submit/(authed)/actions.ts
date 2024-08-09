@@ -2,7 +2,7 @@
 
 import { headers, cookies } from 'next/headers'
 import { getToken } from 'next-auth/jwt'
-import { Preprint, PreprintParams } from '../../../types/preprint'
+import { Author, Preprint, PreprintParams } from '../../../types/preprint'
 import { fetchWithToken } from '../../api/utils'
 
 export async function updatePreprint(
@@ -93,6 +93,27 @@ export async function createPreprint(): Promise<Preprint> {
   if (![200, 201].includes(res.status)) {
     throw new Error(
       `Status ${res.status}: Unable to create preprint. ${res.statusText}`,
+    )
+  }
+
+  const preprint = res.json()
+  return preprint
+}
+
+export async function createAuthor(author: Author): Promise<Preprint> {
+  const res = await fetchWithToken(
+    headers(),
+    'https://carbonplan.endurance.janeway.systems/carbonplan/api/accounts/',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(author),
+    },
+  )
+
+  if (![200, 201].includes(res.status)) {
+    throw new Error(
+      `Status ${res.status}: Unable to create author. ${res.statusText}`,
     )
   }
 

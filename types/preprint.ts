@@ -7,14 +7,14 @@ export type License = {
 }
 
 export type Author = {
-  pk: number
+  pk?: number
   email: string
   first_name: string
-  middle_name: string | null
+  middle_name?: string | null
   last_name: string
-  salutation: string | null
-  orcid: string | null
-  institution: string | null
+  salutation?: string | null
+  orcid?: string | null
+  institution?: string | null
 }
 
 export type Subject = {
