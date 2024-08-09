@@ -90,7 +90,7 @@ export async function createPreprint(): Promise<Preprint> {
     },
   )
 
-  if (res.status !== 200) {
+  if (![200, 201].includes(res.status)) {
     throw new Error(
       `Status ${res.status}: Unable to create preprint. ${res.statusText}`,
     )

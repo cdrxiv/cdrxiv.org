@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation'
 
 import StyledLink from '../../components/link'
 import { PATHS } from './constants'
+import { useLinkWithWarning, useNavigation } from './navigation-context'
 
 interface Props {
   onClick?: () => Promise<boolean> | boolean
@@ -24,6 +25,8 @@ const NavButton: React.FC<ButtonProps> = ({
   children,
 }) => {
   const router = useRouter()
+  const { onClick: onClickWithWarning } = useLinkWithWarning(href)
+
   const props = {
     [direction === 'forward' ? 'forwardArrow' : 'backArrow']: true,
   }
@@ -35,14 +38,12 @@ const NavButton: React.FC<ButtonProps> = ({
           router.push(href)
         }
       }
-    : undefined
-  const hrefProp = onClick ? undefined : href
+    : onClickWithWarning
 
   return (
     <StyledLink
       {...props}
       onClick={onClickProp}
-      href={hrefProp}
       sx={{ variant: 'text.monoCaps' }}
     >
       {children}
