@@ -2,37 +2,20 @@
 
 import { SessionProvider, useSession } from 'next-auth/react'
 import { Box, Flex } from 'theme-ui'
-import { usePathname, useRouter } from 'next/navigation'
-import { useCallback } from 'react'
+import { usePathname } from 'next/navigation'
 
 import { PATHS } from './constants'
-import { NavigationProvider, useNavigation } from './navigation-context'
+import { NavigationProvider, useLinkWithWarning } from './navigation-context'
 import PaneledPage from '../../components/layouts/paneled-page'
 import NavLink, { NavLinkProps } from '../../components/nav-link'
 
 const AuthedNavLink: React.FC<NavLinkProps> = ({ children, active, href }) => {
   const { status } = useSession()
-  const { shouldWarn } = useNavigation()
-  const router = useRouter()
+  const { onClick } = useLinkWithWarning(href as string)
   const disabled = status === 'unauthenticated' && href !== PATHS[0].href
 
-  const handleClick = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement>) => {
-      e.preventDefault()
-      if (
-        shouldWarn &&
-        !window.confirm('You have unsaved changes. Do you still want to leave?')
-      ) {
-        return
-      } else {
-        router.push(href as string)
-      }
-    },
-    [shouldWarn, href, router],
-  )
-
   return (
-    <NavLink onClick={handleClick} active={active} disabled={disabled}>
+    <NavLink onClick={onClick} active={active} disabled={disabled}>
       {children}
     </NavLink>
   )
