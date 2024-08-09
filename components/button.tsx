@@ -1,7 +1,7 @@
 import React from 'react'
-import { Box, Button, Link, ThemeUIStyleObject } from 'theme-ui'
+import { Box, Button, Link, ButtonProps, ThemeUIStyleObject } from 'theme-ui'
 
-type ButtonProps = {
+interface Props extends ButtonProps {
   children: React.ReactNode
   onClick?: () => void
   href?: string
@@ -10,8 +10,8 @@ type ButtonProps = {
 
 type Ref = HTMLButtonElement | HTMLAnchorElement
 
-const StyledButton = React.forwardRef<Ref, ButtonProps>(
-  ({ children, onClick, href, sx = {} }, ref) => {
+const StyledButton = React.forwardRef<Ref, Props>(
+  ({ children, onClick, href, sx = {}, ...props }, ref) => {
     const commonStyles: ThemeUIStyleObject = {
       variant: 'text.monoCaps',
       cursor: 'pointer',
@@ -34,6 +34,12 @@ const StyledButton = React.forwardRef<Ref, ButtonProps>(
         },
       },
       pb: ['9px', '9px', '9px', '11px'],
+      '&:disabled': {
+        background: 'background',
+        boxShadow:
+          '1px 1px 0px 1px #c5bbbb inset, -1px -1px 0px 1px #E8E8E8 inset',
+        cursor: 'not-allowed',
+      },
       ...sx,
     }
 
@@ -42,6 +48,7 @@ const StyledButton = React.forwardRef<Ref, ButtonProps>(
         ref={ref as React.Ref<HTMLButtonElement>}
         onClick={href ? undefined : onClick}
         sx={commonStyles}
+        {...props}
       >
         <Box>{children}</Box>
       </Button>

@@ -2,6 +2,7 @@
 
 import { Box, Flex } from 'theme-ui'
 import { useSession } from 'next-auth/react'
+import { useCallback } from 'react'
 
 import NavButtons from '../../nav-buttons'
 import Field from '../../../../components/field'
@@ -12,9 +13,17 @@ import { usePreprint } from '../preprint-context'
 import { Author } from '../../../../types/preprint'
 import Row from '../../../../components/row'
 import StyledLink from '../../../../components/link'
+import { updatePreprint } from '../actions'
 
 const AuthorCard = ({ author }: { author: Author }) => {
   const { data: session } = useSession()
+  const { preprint, setPreprint } = usePreprint()
+
+  const handleClick = useCallback(() => {
+    updatePreprint(preprint, {
+      authors: preprint.authors.filter(({ pk }) => pk !== author.pk),
+    }).then((updatedPreprint) => setPreprint(updatedPreprint))
+  }, [preprint, author])
 
   return (
     <Box
@@ -35,7 +44,10 @@ const AuthorCard = ({ author }: { author: Author }) => {
             {author.first_name} {author.last_name}
             {author.pk === session?.user?.id ? ' (owner)' : ''}
           </Box>
-          <StyledLink sx={{ variant: 'text.monoCaps', textDecoration: 'none' }}>
+          <StyledLink
+            sx={{ variant: 'text.monoCaps', textDecoration: 'none' }}
+            onClick={handleClick}
+          >
             (X)
           </StyledLink>
         </Flex>
@@ -43,6 +55,28 @@ const AuthorCard = ({ author }: { author: Author }) => {
         {author.institution && <Box>{author.institution}</Box>}
       </Flex>
     </Box>
+  )
+}
+
+const AddSelf = () => {
+  const { data: session } = useSession()
+  const { preprint, setPreprint } = usePreprint()
+
+  const handleClick = useCallback(() => {
+    updatePreprint(preprint, {
+      authors: [...preprint.authors, session?.user],
+    }).then((updatedPreprint) => setPreprint(updatedPreprint))
+  }, [preprint, session?.user])
+
+  const isAdded = !!preprint.authors.find(({ pk }) => pk === session?.user?.id)
+  return (
+    <StyledButton
+      sx={{ width: 'fit-content' }}
+      onClick={handleClick}
+      disabled={isAdded}
+    >
+      {isAdded ? 'Added' : 'Add self as author'}
+    </StyledButton>
   )
 }
 
@@ -93,9 +127,7 @@ const Authors = () => {
             </>
           }
         >
-          <StyledButton sx={{ width: 'fit-content' }}>
-            Add self as author
-          </StyledButton>
+          <AddSelf />
         </Field>
 
         <Field
