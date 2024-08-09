@@ -66,9 +66,9 @@ export function useForm<T>(
   const [showErrors, setShowErrors] = useState<boolean>(false)
   const empty: Errors<T> = useMemo(() => ({}), [])
 
-  // Turn off navigation warning on initial mount
+  // Turn off navigation warning on unmount
   useEffect(() => {
-    setNavigationWarning(false)
+    return () => setNavigationWarning(false)
   }, [setNavigationWarning])
 
   useEffect(() => {
