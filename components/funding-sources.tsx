@@ -102,15 +102,16 @@ const FundingSources: React.FC<Props> = ({ value, setValue }) => {
 
   useEffect(() => {
     if (setValue) {
-      setValue(
-        JSON.stringify(
-          entries
-            .filter((el) => el.funder || el.award)
-            .map(({ funder, award }) => ({ funder, award })),
-        ),
+      const updatedValue = JSON.stringify(
+        entries
+          .filter((el) => el.funder || el.award)
+          .map(({ funder, award }) => ({ funder, award })),
       )
+      if (updatedValue !== value) {
+        setValue(updatedValue)
+      }
     }
-  }, [setValue, entries])
+  }, [setValue, entries, value])
 
   return (
     <>
