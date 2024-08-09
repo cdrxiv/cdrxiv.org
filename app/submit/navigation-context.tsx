@@ -14,7 +14,6 @@ interface ProviderProps {
 
 export const NavigationProvider: React.FC<ProviderProps> = ({ children }) => {
   const [value, setValue] = useState(false)
-  const handleClick = useCallback((href: string) => {}, [])
 
   return (
     <NavigationContext.Provider
