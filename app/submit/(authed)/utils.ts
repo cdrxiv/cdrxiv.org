@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Preprint } from '../../../types/preprint'
+import { useNavigation } from '../navigation-context'
 
 export const getAdditionalField = (
   preprint: Preprint | null,
@@ -40,22 +41,35 @@ export function useForm<T>(
   submit: (values: T) => Promise<void>,
 ) {
   const [data, setData] = useState<T>(initialize)
+  const { setNavigationWarning } = useNavigation()
+  const setDataWrapper = useCallback(
+    (value: T | ((prev: T) => T)) => {
+      setNavigationWarning(true)
+      return setData(value)
+    },
+    [setNavigationWarning],
+  )
   const keys = useRef(Object.keys(data ?? {}))
   const setters = useMemo<Setter<T>>(() => {
     return keys.current.reduce((accum, key) => {
       accum[key as keyof T] = (value: T[keyof T]) =>
-        setData((prev) => ({
+        setDataWrapper((prev) => ({
           ...prev,
           [key]: value,
         }))
       return accum
     }, {} as Setter<T>)
-  }, [])
+  }, [setDataWrapper])
 
   const [errors, setErrors] = useState<Errors<T>>({})
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [showErrors, setShowErrors] = useState<boolean>(false)
   const empty: Errors<T> = useMemo(() => ({}), [])
+
+  // Turn off navigation warning on initial mount
+  useEffect(() => {
+    setNavigationWarning(false)
+  }, [setNavigationWarning])
 
   useEffect(() => {
     setErrors(validate(data))
@@ -83,7 +97,7 @@ export function useForm<T>(
   return {
     data,
     setters,
-    setData,
+    setData: setDataWrapper,
     errors: showErrors ? errors : empty,
     onSubmit: handleSubmit,
     submitError,
