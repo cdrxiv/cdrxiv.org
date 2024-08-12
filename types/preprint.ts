@@ -1,3 +1,10 @@
+export interface Pagination<T> {
+  count: number
+  next: string | null
+  previous: string | null
+  results: T[]
+}
+
 export type License = {
   pk: number
   name: string
@@ -7,7 +14,7 @@ export type License = {
 }
 
 export type Author = {
-  pk?: number
+  pk: number
   email: string
   first_name: string
   middle_name?: string | null
