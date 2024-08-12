@@ -1,6 +1,7 @@
 'use client'
 
 import { Box, Input } from 'theme-ui'
+import { useCallback } from 'react'
 
 import Field from '../../../../components/field'
 import { usePreprint } from '../preprint-context'
@@ -70,14 +71,26 @@ const submitForm = async (
 
 const AuthorForm = () => {
   const { preprint, setPreprint } = usePreprint()
-  const { data, setters, errors, onSubmit, submitError } = useForm<FormData>(
-    initializeForm,
-    validateForm,
-    submitForm.bind(null, preprint, setPreprint),
+  const { data, setters, setData, errors, onSubmit, submitError } =
+    useForm<FormData>(
+      initializeForm,
+      validateForm,
+      submitForm.bind(null, preprint, setPreprint),
+    )
+
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault()
+      const result = await onSubmit()
+      if (result) {
+        setData(initializeForm(), true)
+      }
+    },
+    [onSubmit, setData],
   )
 
   return (
-    <>
+    <form onSubmit={handleSubmit}>
       {submitError && <Box sx={{ color: 'red' }}>{submitError}</Box>}
       <Box>
         <Row columns={[6, 6, 9, 9]} sx={{ mt: 3 }}>
@@ -142,10 +155,10 @@ const AuthorForm = () => {
           </Column>
         </Row>
       </Box>
-      <StyledButton onClick={onSubmit} sx={{ width: 'fit-content' }}>
+      <StyledButton sx={{ width: 'fit-content', mt: 3 }}>
         Add author
       </StyledButton>
-    </>
+    </form>
   )
 }
 

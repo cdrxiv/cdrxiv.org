@@ -43,8 +43,12 @@ export function useForm<T>(
   const [data, setData] = useState<T>(initialize)
   const { setNavigationWarning } = useNavigation()
   const setDataWrapper = useCallback(
-    (value: T | ((prev: T) => T)) => {
-      setNavigationWarning(true)
+    (value: T | ((prev: T) => T), internal?: boolean) => {
+      if (internal) {
+        setShowErrors(false)
+      } else {
+        setNavigationWarning(true)
+      }
       return setData(value)
     },
     [setNavigationWarning],
