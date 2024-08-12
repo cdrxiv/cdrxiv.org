@@ -7,13 +7,13 @@ import { useCallback } from 'react'
 import NavButtons from '../../nav-buttons'
 import Field from '../../../../components/field'
 import StyledButton from '../../../../components/button'
-import Search from '../../../../components/search'
 import AuthorForm from './author-form'
 import { usePreprint } from '../preprint-context'
 import { Author } from '../../../../types/preprint'
 import Row from '../../../../components/row'
 import StyledLink from '../../../../components/link'
 import { updatePreprint } from '../actions'
+import AuthorSearch from './author-search'
 
 const AuthorCard = ({ author }: { author: Author }) => {
   const { data: session } = useSession()
@@ -135,7 +135,7 @@ const Authors = () => {
           id='search'
           description='You can search by email or ORCID'
         >
-          <Search id='search' onChange={() => {}} />
+          <AuthorSearch />
         </Field>
 
         <Field label='Add new author' id='new'>
