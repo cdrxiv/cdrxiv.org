@@ -1,89 +1,15 @@
 'use client'
 
-import { Box, Flex } from 'theme-ui'
-import { useSession } from 'next-auth/react'
-import { useCallback } from 'react'
+import { Flex } from 'theme-ui'
 
 import NavButtons from '../../nav-buttons'
 import Field from '../../../../components/field'
-import StyledButton from '../../../../components/button'
 import AuthorForm from './author-form'
 import { usePreprint } from '../preprint-context'
-import { Author } from '../../../../types/preprint'
 import Row from '../../../../components/row'
-import StyledLink from '../../../../components/link'
-import { updatePreprint } from '../actions'
 import AuthorSearch from './author-search'
-
-const AuthorCard = ({ author }: { author: Author }) => {
-  const { data: session } = useSession()
-  const { preprint, setPreprint } = usePreprint()
-
-  const handleClick = useCallback(() => {
-    updatePreprint(preprint, {
-      authors: preprint.authors.filter(({ pk }) => pk !== author.pk),
-    }).then((updatedPreprint) => setPreprint(updatedPreprint))
-  }, [preprint, author])
-
-  return (
-    <Box
-      sx={{
-        variant: 'text.mono',
-        width: '100%',
-        height: 'auto',
-        p: [3, 6, 6, 7],
-        borderColor: 'text',
-        borderWidth: '1px',
-        borderStyle: 'solid',
-        outline: 'none', // use highlight style for focus instead
-      }}
-    >
-      <Flex sx={{ flexDirection: 'column', gap: 1 }}>
-        <Flex sx={{ justifyContent: 'space-between' }}>
-          <Box>
-            {author.first_name} {author.last_name}
-            {author.pk === session?.user?.id ? ' (owner)' : ''}
-          </Box>
-          <StyledLink
-            sx={{ variant: 'text.monoCaps', textDecoration: 'none' }}
-            onClick={handleClick}
-          >
-            (X)
-          </StyledLink>
-        </Flex>
-        <Box>{author.email}</Box>
-        {author.institution && <Box>{author.institution}</Box>}
-      </Flex>
-    </Box>
-  )
-}
-
-const AddSelf = () => {
-  const { data: session } = useSession()
-  const { preprint, setPreprint } = usePreprint()
-
-  const handleClick = useCallback(() => {
-    if (session?.user && session?.user.email) {
-      updatePreprint(preprint, {
-        authors: [
-          ...preprint.authors,
-          { pk: session?.user.id, email: session?.user.email },
-        ],
-      }).then((updatedPreprint) => setPreprint(updatedPreprint))
-    }
-  }, [preprint, session?.user])
-
-  const isAdded = !!preprint.authors.find(({ pk }) => pk === session?.user?.id)
-  return (
-    <StyledButton
-      sx={{ width: 'fit-content' }}
-      onClick={handleClick}
-      disabled={isAdded}
-    >
-      {isAdded ? 'Added' : 'Add self as author'}
-    </StyledButton>
-  )
-}
+import AuthorCard from './author-card'
+import AddSelf from './add-self'
 
 const Authors = () => {
   const { preprint } = usePreprint()
