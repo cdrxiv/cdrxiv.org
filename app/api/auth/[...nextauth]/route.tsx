@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth'
+import NextAuth, { User } from 'next-auth'
 import type { Provider } from 'next-auth/providers/index'
 
 const Janeway: Provider = {
@@ -44,7 +44,7 @@ const handler = NextAuth({
         // First login, save the `user`, `access_token`, `refresh_token`, and other details into the JWT
         return {
           ...token,
-          user,
+          user: user as User, // AdapterUser is not used
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
           expiresAt: account.expires_at as number,

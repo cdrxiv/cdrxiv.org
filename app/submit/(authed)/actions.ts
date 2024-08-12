@@ -2,7 +2,13 @@
 
 import { headers, cookies } from 'next/headers'
 import { getToken } from 'next-auth/jwt'
-import { Preprint, PreprintParams } from '../../../types/preprint'
+import {
+  Author,
+  AuthorParams,
+  Pagination,
+  Preprint,
+  PreprintParams,
+} from '../../../types/preprint'
 import { fetchWithToken } from '../../api/utils'
 
 export async function updatePreprint(
@@ -98,4 +104,59 @@ export async function createPreprint(): Promise<Preprint> {
 
   const preprint = res.json()
   return preprint
+}
+
+export async function createAuthor(author: AuthorParams): Promise<Author> {
+  const res = await fetchWithToken(
+    headers(),
+    'https://carbonplan.endurance.janeway.systems/carbonplan/api/accounts/',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(author),
+    },
+  )
+
+  if (![200, 201].includes(res.status)) {
+    throw new Error(
+      `Status ${res.status}: Unable to create author. ${res.statusText}`,
+    )
+  }
+
+  const result = res.json()
+  return result
+}
+
+export async function searchAuthor(
+  search: string,
+): Promise<Pagination<Author>> {
+  const res = await fetchWithToken(
+    headers(),
+    `https://carbonplan.endurance.janeway.systems/carbonplan/api/submission_account_search/?search=${search}`,
+  )
+
+  if (res.status !== 200) {
+    throw new Error(
+      `Status ${res.status}: Unable to search author. ${res.statusText}`,
+    )
+  }
+
+  const result = res.json()
+  return result
+}
+
+export async function fetchAccount(pk: number): Promise<Author> {
+  const res = await fetchWithToken(
+    headers(),
+    `https://carbonplan.endurance.janeway.systems/carbonplan/api/accounts/${pk}`,
+  )
+
+  if (res.status !== 200) {
+    throw new Error(
+      `Status ${res.status}: Unable to fetch account. ${res.statusText}`,
+    )
+  }
+
+  const result = res.json()
+  return result
 }

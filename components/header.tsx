@@ -153,7 +153,12 @@ const Header = () => {
         }}
       >
         <Column start={1} width={3}>
-          <Search placeholder='Search' onChange={() => {}} arrows={true} />
+          <Search
+            placeholder='Search'
+            onChange={() => {}}
+            arrows={true}
+            inverted
+          />
         </Column>
         <Column
           start={5}

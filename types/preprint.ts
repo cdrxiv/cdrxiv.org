@@ -1,3 +1,10 @@
+export interface Pagination<T> {
+  count: number
+  next: string | null
+  previous: string | null
+  results: T[]
+}
+
 export type License = {
   pk: number
   name: string
@@ -10,11 +17,11 @@ export type Author = {
   pk: number
   email: string
   first_name: string
-  middle_name: string | null
+  middle_name?: string | null
   last_name: string
-  salutation: string | null
-  orcid: string | null
-  institution: string | null
+  salutation?: string | null
+  orcid?: string | null
+  institution?: string | null
 }
 
 export type Subject = {
@@ -73,6 +80,16 @@ export type PreprintParams = Partial<
     Preprint,
     {
       license: number
+      authors: Array<Author | { pk: number; email: string }>
+    }
+  >
+>
+
+export type AuthorParams = Partial<
+  Modify<
+    Author,
+    {
+      pk?: number // Not included on create request
     }
   >
 >
