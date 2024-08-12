@@ -63,9 +63,14 @@ const AddSelf = () => {
   const { preprint, setPreprint } = usePreprint()
 
   const handleClick = useCallback(() => {
-    updatePreprint(preprint, {
-      authors: [...preprint.authors, session?.user],
-    }).then((updatedPreprint) => setPreprint(updatedPreprint))
+    if (session?.user && session?.user.email) {
+      updatePreprint(preprint, {
+        authors: [
+          ...preprint.authors,
+          { pk: session?.user.id, email: session?.user.email },
+        ],
+      }).then((updatedPreprint) => setPreprint(updatedPreprint))
+    }
   }, [preprint, session?.user])
 
   const isAdded = !!preprint.authors.find(({ pk }) => pk === session?.user?.id)

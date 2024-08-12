@@ -80,6 +80,16 @@ export type PreprintParams = Partial<
     Preprint,
     {
       license: number
+      authors: Array<Author | { pk: number; email: string }>
+    }
+  >
+>
+
+export type AuthorParams = Partial<
+  Modify<
+    Author,
+    {
+      pk?: number // Not included on create request
     }
   >
 >

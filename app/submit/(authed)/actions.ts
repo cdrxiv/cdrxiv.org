@@ -4,6 +4,7 @@ import { headers, cookies } from 'next/headers'
 import { getToken } from 'next-auth/jwt'
 import {
   Author,
+  AuthorParams,
   Pagination,
   Preprint,
   PreprintParams,
@@ -105,7 +106,7 @@ export async function createPreprint(): Promise<Preprint> {
   return preprint
 }
 
-export async function createAuthor(author: Author): Promise<Author> {
+export async function createAuthor(author: AuthorParams): Promise<Author> {
   const res = await fetchWithToken(
     headers(),
     'https://carbonplan.endurance.janeway.systems/carbonplan/api/accounts/',
