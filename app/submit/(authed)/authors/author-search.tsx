@@ -37,6 +37,7 @@ const AuthorSearch = () => {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onSubmit={handleSubmit}
+        sx={{ variant: 'text.body' }}
       />
     </>
   )
