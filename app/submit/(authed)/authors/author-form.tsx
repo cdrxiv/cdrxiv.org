@@ -60,7 +60,7 @@ const submitForm = async (
     first_name,
     middle_name,
     last_name,
-    // institution,
+    institution,
   })
 
   return updatePreprint(preprint, {
