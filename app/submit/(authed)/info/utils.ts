@@ -16,7 +16,10 @@ export const initializeForm = (preprint: Preprint): FormData => {
   return {
     title: preprint.title === 'Placeholder' ? '' : preprint.title,
     abstract: preprint.abstract ?? '',
-    license: preprint.license?.pk,
+    license:
+      typeof preprint.license === 'number'
+        ? preprint.license
+        : preprint.license?.pk,
     doi: preprint.doi ?? '',
     subject: preprint.subject.map(({ name }) => name),
     keywords: preprint.keywords.map(({ word }) => word),
