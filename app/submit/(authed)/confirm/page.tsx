@@ -9,6 +9,7 @@ import StyledButton from '../../../../components/button'
 import { PATHS } from '../../constants'
 import { usePreprint } from '../preprint-context'
 import StyledLink from '../../../../components/link'
+import { getAdditionalField } from '../utils'
 
 const SummaryCard = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -55,11 +56,15 @@ const SectionWrapper = ({
 
 const SubmissionConfirmation = () => {
   const { preprint } = usePreprint()
+  const submissionType = getAdditionalField(preprint, 'Submission type') ?? ''
 
   return (
     <div>
       <Flex sx={{ flexDirection: 'column', gap: 7 }}>
-        <SectionWrapper index={1}>TK</SectionWrapper>
+        <SectionWrapper index={1}>
+          {['Article', 'Both'].includes(submissionType) && 'Article TK'}
+          {['Data', 'Both'].includes(submissionType) && 'Data TK'}
+        </SectionWrapper>
 
         <SectionWrapper index={2}>
           <SummaryCard>
