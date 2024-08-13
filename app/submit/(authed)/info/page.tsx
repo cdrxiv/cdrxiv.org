@@ -21,7 +21,7 @@ type FormData = {
   keywords: string[]
   funding: string
 }
-const initializeForm = (preprint: Preprint) => {
+export const initializeForm = (preprint: Preprint): FormData => {
   return {
     title: preprint.title === 'Placeholder' ? '' : preprint.title,
     abstract: preprint.abstract ?? '',
@@ -34,7 +34,7 @@ const initializeForm = (preprint: Preprint) => {
   }
 }
 
-const validateForm = ({
+export const validateForm = ({
   title,
   abstract,
   license,

@@ -15,17 +15,16 @@ type FormData = {
   data: boolean
   article: boolean
 }
-const initializeForm = (preprint: Preprint) => {
+export const initializeForm = (preprint: Preprint): FormData => {
   const submissionType = getAdditionalField(preprint, 'Submission type') ?? ''
   return {
     agreement: false,
     data: ['Data', 'Both'].includes(submissionType),
     article: ['Article', 'Both'].includes(submissionType),
-    files: {},
   }
 }
 
-const validateForm = ({ agreement, data, article }: FormData) => {
+export const validateForm = ({ agreement, data, article }: FormData) => {
   let result: Partial<{ [K in keyof FormData]: string }> = {}
 
   if (!agreement) {
@@ -33,8 +32,8 @@ const validateForm = ({ agreement, data, article }: FormData) => {
   }
 
   if (!data && !article) {
-    result.data = 'Please select at least one content type.'
-    result.article = 'Please select at least one content type.'
+    result.data = 'You must include at least one content type.'
+    result.article = 'You must include at least one content type.'
   }
 
   return result

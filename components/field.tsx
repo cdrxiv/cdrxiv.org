@@ -5,7 +5,7 @@ interface Props {
   id: string
   children?: React.ReactNode
   description?: React.ReactNode
-  error?: string
+  error?: React.ReactNode
 }
 const Field: React.FC<Props> = ({
   label,

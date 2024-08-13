@@ -1,18 +1,26 @@
 'use client'
 
 import { Box, Flex } from 'theme-ui'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 
 import Field from '../../../../components/field'
 import NavButtons from '../../nav-buttons'
-import AuthorsList from '../authors/authors-list'
 import StyledButton from '../../../../components/button'
 import { PATHS } from '../../constants'
 import { usePreprint } from '../preprint-context'
 import StyledLink from '../../../../components/link'
-import { getAdditionalField, getFormattedDate } from '../utils'
+import { getFormattedDate } from '../utils'
 import { updatePreprint } from '../actions'
+import {
+  initializeForm as initializeInfo,
+  validateForm as validateInfo,
+} from '../info/page'
+import {
+  initializeForm as initializeOverview,
+  validateForm as validateOverview,
+} from '../overview/page'
+import AuthorsList from '../authors/authors-list'
 
 const SummaryCard = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -36,12 +44,15 @@ const SummaryCard = ({ children }: { children: React.ReactNode }) => {
 const SectionWrapper = ({
   children,
   index,
+  error,
 }: {
   children: React.ReactNode
   index: number
+  error?: React.ReactNode
 }) => {
   return (
     <Field
+      error={error}
       label={
         <Flex sx={{ gap: 2, alignItems: 'baseline' }}>
           {PATHS[index].label}
@@ -60,7 +71,6 @@ const SectionWrapper = ({
 const SubmissionConfirmation = () => {
   const { preprint } = usePreprint()
   const router = useRouter()
-  const submissionType = getAdditionalField(preprint, 'Submission type') ?? ''
 
   const handleSubmit = useCallback(() => {
     updatePreprint(preprint, {
@@ -71,22 +81,42 @@ const SubmissionConfirmation = () => {
     })
   }, [preprint])
 
+  const { info, overview, authors } = useMemo(() => {
+    const info = initializeInfo(preprint)
+    const overview = initializeOverview(preprint)
+    const { agreement, ...overviewErrors } = validateOverview(overview)
+
+    return {
+      overview: { data: overview, error: Object.values(overviewErrors)[0] },
+      info: { data: info, error: Object.values(validateInfo(info))[0] },
+      authors: {
+        data: null,
+        error:
+          preprint.authors.length < 1
+            ? 'You must include at least one author.'
+            : null,
+      },
+    }
+  }, [preprint])
+
   return (
     <div>
       <Flex sx={{ flexDirection: 'column', gap: 7 }}>
-        <SectionWrapper index={1}>
-          {['Article', 'Both'].includes(submissionType) && 'Article TK'}
-          {['Data', 'Both'].includes(submissionType) && 'Data TK'}
+        <SectionWrapper index={1} error={overview.error}>
+          {overview.data.article && 'Article TK'}
+          {overview.data.data && 'Data TK'}
         </SectionWrapper>
 
-        <SectionWrapper index={2}>
+        <SectionWrapper index={2} error={info.error}>
           <SummaryCard>
-            <Box sx={{ variant: 'text.body' }}>{preprint.title}</Box>
-            <Box>{preprint.abstract}</Box>
+            <Box sx={{ variant: 'text.body' }}>
+              {info.data.title || 'No title'}
+            </Box>
+            <Box>{info.data.abstract || 'No abstract'}</Box>
             <Flex sx={{ gap: 2 }}>
-              {preprint.subject.map(({ name }) => (
+              {info.data.subject.map((subject) => (
                 <Box
-                  key={name}
+                  key={subject}
                   sx={{
                     variant: 'styles.a',
                     fontFamily: 'mono',
@@ -94,18 +124,23 @@ const SubmissionConfirmation = () => {
                     fontSize: [0, 0, 0, 1],
                   }}
                 >
-                  {name}
+                  {subject}
                 </Box>
               ))}
             </Flex>
           </SummaryCard>
         </SectionWrapper>
 
-        <SectionWrapper index={3}>
+        <SectionWrapper index={3} error={authors.error}>
           <AuthorsList removable={false} />
         </SectionWrapper>
 
-        <StyledButton onClick={handleSubmit}>Submit</StyledButton>
+        <StyledButton
+          onClick={handleSubmit}
+          disabled={!!(info.error || info.error || authors.error)}
+        >
+          Submit
+        </StyledButton>
       </Flex>
 
       <NavButtons />
