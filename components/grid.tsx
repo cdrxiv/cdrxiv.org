@@ -16,7 +16,6 @@ const GridView: React.FC<GridViewProps> = ({ preprints }) => {
               answer?.field?.name === 'Submission type' &&
               answer.answer === 'Article',
           )
-          console.log('isPreprint', isPreprint, additional_field_answers)
           return (
             <Card
               key={title}

@@ -84,7 +84,6 @@ const Topics: React.FC = () => {
               onClick={() => {
                 if (topicsBoxRef.current) {
                   const rect = topicsBoxRef.current.getBoundingClientRect()
-                  console.log(rect)
                   setMenuPosition({ top: rect.top, left: rect.left })
                 }
                 setSubjectsMenuOpen(true)
