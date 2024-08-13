@@ -5,14 +5,11 @@ import { Flex } from 'theme-ui'
 import NavButtons from '../../nav-buttons'
 import Field from '../../../../components/field'
 import AuthorForm from './author-form'
-import { usePreprint } from '../preprint-context'
-import Row from '../../../../components/row'
 import AuthorSearch from './author-search'
-import AuthorCard from './author-card'
 import AddSelf from './add-self'
+import AuthorsList from './authors-list'
 
 const Authors = () => {
-  const { preprint } = usePreprint()
   return (
     <div>
       <Flex sx={{ flexDirection: 'column', gap: 8 }}>
@@ -36,11 +33,7 @@ const Authors = () => {
             </ol>
           }
         >
-          <Row columns={[1, 1, 2, 2]} gap={[5, 6, 6, 8]}>
-            {preprint.authors.map((a) => (
-              <AuthorCard key={a.email} author={a} />
-            ))}
-          </Row>
+          <AuthorsList />
         </Field>
 
         <Field
