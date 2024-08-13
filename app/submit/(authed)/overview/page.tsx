@@ -7,6 +7,7 @@ import NavButtons from '../../nav-buttons'
 import { usePreprint } from '../preprint-context'
 import { useForm } from '../utils'
 import { FormData, initializeForm, validateForm, submitForm } from './utils'
+import UploadButton from './upload-button'
 
 const SubmissionOverview = () => {
   const { preprint, setPreprint } = usePreprint()
@@ -61,6 +62,28 @@ const SubmissionOverview = () => {
             </Label>
           </Flex>
         </Field>
+
+        {data.article && (
+          <Field
+            label='Article upload'
+            id='article'
+            description='Your article must be submitted as a PDF.'
+            error={errors.article ?? errors.data}
+          >
+            <UploadButton />
+          </Field>
+        )}
+
+        {data.data && (
+          <Field
+            label='Data upload'
+            id='data'
+            description='Your submission can by represented by a single file of any format, including ZIP, up to [TK] MB.'
+            error={errors.article ?? errors.data}
+          >
+            <UploadButton />
+          </Field>
+        )}
       </Form>
 
       <NavButtons onClick={onSubmit} />

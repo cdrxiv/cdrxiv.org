@@ -5,9 +5,11 @@ import { getToken } from 'next-auth/jwt'
 import {
   Author,
   AuthorParams,
+  PreprintFileParams,
   Pagination,
   Preprint,
   PreprintParams,
+  PreprintFile,
 } from '../../../types/preprint'
 import { fetchWithToken } from '../../api/utils'
 
@@ -154,6 +156,30 @@ export async function fetchAccount(pk: number): Promise<Author> {
   if (res.status !== 200) {
     throw new Error(
       `Status ${res.status}: Unable to fetch account. ${res.statusText}`,
+    )
+  }
+
+  const result = res.json()
+  return result
+}
+
+export async function createPreprintFile(
+  formData: FormData,
+): Promise<PreprintFile> {
+  const res = await fetchWithToken(
+    headers(),
+    `https://carbonplan.endurance.janeway.systems/carbonplan/api/preprint_files/`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'multipart/form-data' },
+      body: formData,
+    },
+  )
+
+  if (res.status !== 200) {
+    console.log(res)
+    throw new Error(
+      `Status ${res.status}: Unable to create file. ${res.statusText}`,
     )
   }
 

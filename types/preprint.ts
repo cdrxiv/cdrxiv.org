@@ -120,4 +120,23 @@ export type AuthorParams = Partial<
   >
 >
 
+export type PreprintFile = {
+  pk: number
+  preprint: number
+  mime_type: string
+  original_filename: string
+  public_download_url: string
+  manager_download_url: string
+}
+
+export type PreprintFileParams = Modify<
+  PreprintFile,
+  {
+    pk?: number // Not included on create request
+    public_download_url?: string
+    manager_download_url?: string
+    file: ArrayBuffer
+  }
+>
+
 export type Preprints = Preprint[]
