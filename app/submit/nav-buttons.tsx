@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation'
 
 import StyledLink from '../../components/link'
 import { PATHS } from './constants'
-import { useLinkWithWarning, useNavigation } from './navigation-context'
+import { useLinkWithWarning } from './navigation-context'
 
 interface Props {
   onClick?: () => Promise<boolean> | boolean

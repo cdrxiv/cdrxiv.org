@@ -7,7 +7,13 @@ import { Author } from '../../../../types/preprint'
 import StyledLink from '../../../../components/link'
 import { updatePreprint } from '../actions'
 
-const AuthorCard = ({ author }: { author: Author }) => {
+const AuthorCard = ({
+  author,
+  removable,
+}: {
+  author: Author
+  removable: boolean
+}) => {
   const { data: session } = useSession()
   const { preprint, setPreprint } = usePreprint()
 
@@ -36,12 +42,14 @@ const AuthorCard = ({ author }: { author: Author }) => {
             {author.first_name} {author.last_name}
             {author.pk === session?.user?.id ? ' (owner)' : ''}
           </Box>
-          <StyledLink
-            sx={{ variant: 'text.monoCaps', textDecoration: 'none' }}
-            onClick={handleClick}
-          >
-            (X)
-          </StyledLink>
+          {removable && (
+            <StyledLink
+              sx={{ variant: 'text.monoCaps', textDecoration: 'none' }}
+              onClick={handleClick}
+            >
+              (X)
+            </StyledLink>
+          )}
         </Flex>
         <Box>{author.email}</Box>
         {author.institution && <Box>{author.institution}</Box>}

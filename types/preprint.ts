@@ -53,11 +53,16 @@ export type AdditionalFieldAnswer = {
   } | null
 }
 
+export type Stage =
+  | 'preprint_unsubmitted'
+  | 'preprint_review'
+  | 'preprint_published'
+
 export type Preprint = {
   pk: number
   title: string
   abstract: string
-  stage: string
+  stage: Stage
   license: License
   keywords: Keyword[]
   date_submitted: string | null
