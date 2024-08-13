@@ -1,8 +1,8 @@
 import { Flex, Input } from 'theme-ui'
 import React, { useCallback, useEffect, useState } from 'react'
-import Column from './column'
-import Row from './row'
-import StyledLink from './link'
+import Column from '../../../../components/column'
+import Row from '../../../../components/row'
+import StyledLink from '../../../../components/link'
 
 interface FundingEntry {
   funder: string

@@ -2,9 +2,9 @@ import React from 'react'
 import { Box } from 'theme-ui'
 import type { Preprints } from '../types/preprint'
 import { formatDate, authorList } from '../utils/formatters'
-import Row from './row'
-import Column from './column'
-import Badge from './badge'
+import Row from '../components/row'
+import Column from '../components/column'
+import Badge from '../components/badge'
 
 interface ListViewProps {
   preprints: Preprints
