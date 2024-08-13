@@ -15,11 +15,11 @@ import { updatePreprint } from '../actions'
 import {
   initializeForm as initializeInfo,
   validateForm as validateInfo,
-} from '../info/page'
+} from '../info'
 import {
   initializeForm as initializeOverview,
   validateForm as validateOverview,
-} from '../overview/page'
+} from '../overview'
 import AuthorsList from '../authors/authors-list'
 
 const SummaryCard = ({ children }: { children: React.ReactNode }) => {
