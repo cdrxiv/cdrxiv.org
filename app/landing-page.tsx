@@ -3,9 +3,7 @@
 import React, { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Box, Flex } from 'theme-ui'
-import Column from '../components/column'
-import Row from '../components/row'
-import StyledLink from '../components/link'
+import { Column, Row, Link } from '../components'
 import Topics from './topics'
 
 interface LandingPageProps {
@@ -48,7 +46,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
           >
             <Box sx={{ variant: 'text.monoCaps', mb: 3 }}>Recent preprints</Box>
             <Flex sx={{ gap: 3 }}>
-              <StyledLink
+              <Link
                 sx={{
                   variant: 'text.body',
                   fontSize: [2, 2, 2, 3],
@@ -61,8 +59,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
                 href={'?view=grid'}
               >
                 Grid
-              </StyledLink>
-              <StyledLink
+              </Link>
+              <Link
                 sx={{
                   variant: 'text.body',
                   fontSize: [2, 2, 2, 3],
@@ -75,7 +73,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
                 href={'?view=list'}
               >
                 List
-              </StyledLink>
+              </Link>
             </Flex>
           </Flex>
         </Column>

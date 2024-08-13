@@ -2,8 +2,8 @@
 
 import { Flex } from 'theme-ui'
 
+import { Field } from '../../../../components'
 import NavButtons from '../../nav-buttons'
-import Field from '../../../../components/field'
 import AuthorForm from './author-form'
 import AuthorSearch from './author-search'
 import AddSelf from './add-self'

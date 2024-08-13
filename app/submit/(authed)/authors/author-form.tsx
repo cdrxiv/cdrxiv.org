@@ -3,14 +3,11 @@
 import { Box, Input } from 'theme-ui'
 import { useCallback } from 'react'
 
-import Field from '../../../../components/field'
+import { Button, Column, Field, Row } from '../../../../components'
 import { usePreprint } from '../preprint-context'
 import { useForm } from '../utils'
 import { Preprint } from '../../../../types/preprint'
 import { createAuthor, updatePreprint } from '../actions'
-import Row from '../../../../components/row'
-import Column from '../../../../components/column'
-import StyledButton from '../../../../components/button'
 
 type FormData = {
   email: string
@@ -161,9 +158,7 @@ const AuthorForm = () => {
           </Column>
         </Row>
       </Box>
-      <StyledButton sx={{ width: 'fit-content', mt: 3 }}>
-        Add author
-      </StyledButton>
+      <Button sx={{ width: 'fit-content', mt: 3 }}>Add author</Button>
     </form>
   )
 }

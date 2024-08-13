@@ -4,10 +4,10 @@ import { SessionProvider, useSession } from 'next-auth/react'
 import { Box, Flex } from 'theme-ui'
 import { usePathname } from 'next/navigation'
 
+import { NavLink, NavLinkProps } from '../../components'
 import { PATHS } from './constants'
 import { NavigationProvider, useLinkWithWarning } from './navigation-context'
 import PaneledPage from '../../components/layouts/paneled-page'
-import NavLink, { NavLinkProps } from '../../components/nav-link'
 
 const AuthedNavLink: React.FC<NavLinkProps> = ({
   children,

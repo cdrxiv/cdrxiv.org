@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react'
 import { Flex } from 'theme-ui'
 import { usePathname, useRouter } from 'next/navigation'
 
-import StyledLink from '../../components/link'
+import { Link } from '../../components'
 import { PATHS } from './constants'
 import { useLinkWithWarning } from './navigation-context'
 
@@ -41,13 +41,9 @@ const NavButton: React.FC<ButtonProps> = ({
     : onClickWithWarning
 
   return (
-    <StyledLink
-      {...props}
-      onClick={onClickProp}
-      sx={{ variant: 'text.monoCaps' }}
-    >
+    <Link {...props} onClick={onClickProp} sx={{ variant: 'text.monoCaps' }}>
       {children}
-    </StyledLink>
+    </Link>
   )
 }
 

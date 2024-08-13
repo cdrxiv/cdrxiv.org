@@ -1,8 +1,6 @@
 import { Flex, Input } from 'theme-ui'
 import React, { useCallback, useEffect, useState } from 'react'
-import Column from '../../../../components/column'
-import Row from '../../../../components/row'
-import StyledLink from '../../../../components/link'
+import { Column, Link, Row } from '../../../../components'
 
 interface FundingEntry {
   funder: string
@@ -152,7 +150,7 @@ const FundingSources: React.FC<Props> = ({ value, setValue }) => {
                     mt: -1,
                   }}
                 >
-                  <StyledLink
+                  <Link
                     onClick={() =>
                       setEntries((prev) =>
                         prev.filter((el) => el._key !== _key),
@@ -161,7 +159,7 @@ const FundingSources: React.FC<Props> = ({ value, setValue }) => {
                     sx={{ variant: 'text.monoCaps', textDecoration: 'none' }}
                   >
                     (x)
-                  </StyledLink>
+                  </Link>
                 </Flex>
               </Column>
 
@@ -203,7 +201,7 @@ const FundingSources: React.FC<Props> = ({ value, setValue }) => {
             sx={{ display: ['none', 'none', 'initial', 'initial'] }}
           >
             <Flex sx={{ height: '100%', alignItems: 'center' }}>
-              <StyledLink
+              <Link
                 onClick={() =>
                   setEntries((prev) => prev.filter((el) => el._key !== _key))
                 }
@@ -214,15 +212,15 @@ const FundingSources: React.FC<Props> = ({ value, setValue }) => {
                 }}
               >
                 (x)
-              </StyledLink>
+              </Link>
             </Flex>
           </Column>
         </Row>
       ))}
 
-      <StyledLink onClick={addEntry} sx={{ variant: 'text.mono' }}>
+      <Link onClick={addEntry} sx={{ variant: 'text.mono' }}>
         + Add Funding Source
-      </StyledLink>
+      </Link>
     </>
   )
 }

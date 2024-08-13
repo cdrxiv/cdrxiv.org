@@ -1,9 +1,7 @@
 'use client'
 
 import { Box, Flex, Input, Textarea } from 'theme-ui'
-import Field from '../../../../components/field'
-import Select from '../../../../components/select'
-import KeywordInput from '../../../../components/keyword-input'
+import { Field, KeywordInput, Select } from '../../../../components'
 import FundingSources from './funding-sources'
 import NavButtons from '../../nav-buttons'
 import { usePreprint } from '../preprint-context'

@@ -4,12 +4,10 @@ import { Box, Flex } from 'theme-ui'
 import { useCallback, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import Field from '../../../../components/field'
+import { Button, Field, Link } from '../../../../components'
 import NavButtons from '../../nav-buttons'
-import StyledButton from '../../../../components/button'
 import { PATHS } from '../../constants'
 import { usePreprint } from '../preprint-context'
-import StyledLink from '../../../../components/link'
 import { getFormattedDate } from '../utils'
 import { updatePreprint } from '../actions'
 import {
@@ -56,9 +54,9 @@ const SectionWrapper = ({
       label={
         <Flex sx={{ gap: 2, alignItems: 'baseline' }}>
           {PATHS[index].label}
-          <StyledLink href={PATHS[index].href} sx={{ variant: 'forms.label' }}>
+          <Link href={PATHS[index].href} sx={{ variant: 'forms.label' }}>
             Edit
-          </StyledLink>
+          </Link>
         </Flex>
       }
       id={PATHS[index].label}
@@ -145,12 +143,12 @@ const SubmissionConfirmation = () => {
           <AuthorsList removable={false} />
         </SectionWrapper>
 
-        <StyledButton
+        <Button
           onClick={handleSubmit}
           disabled={!!(info.error || info.error || authors.error)}
         >
           Submit
-        </StyledButton>
+        </Button>
       </Flex>
 
       <NavButtons />

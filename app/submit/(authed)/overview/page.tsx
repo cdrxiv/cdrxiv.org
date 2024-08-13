@@ -2,8 +2,7 @@
 
 import { Box, Flex, Label } from 'theme-ui'
 
-import Checkbox from '../../../../components/checkbox'
-import Field from '../../../../components/field'
+import { Checkbox, Field } from '../../../../components'
 import NavButtons from '../../nav-buttons'
 import { usePreprint } from '../preprint-context'
 import { useForm } from '../utils'
