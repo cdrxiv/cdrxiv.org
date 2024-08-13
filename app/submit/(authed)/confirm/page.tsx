@@ -1,6 +1,8 @@
 'use client'
 
 import { Box, Flex } from 'theme-ui'
+import { useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 
 import Field from '../../../../components/field'
 import NavButtons from '../../nav-buttons'
@@ -9,7 +11,8 @@ import StyledButton from '../../../../components/button'
 import { PATHS } from '../../constants'
 import { usePreprint } from '../preprint-context'
 import StyledLink from '../../../../components/link'
-import { getAdditionalField } from '../utils'
+import { getAdditionalField, getFormattedDate } from '../utils'
+import { updatePreprint } from '../actions'
 
 const SummaryCard = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -56,7 +59,17 @@ const SectionWrapper = ({
 
 const SubmissionConfirmation = () => {
   const { preprint } = usePreprint()
+  const router = useRouter()
   const submissionType = getAdditionalField(preprint, 'Submission type') ?? ''
+
+  const handleSubmit = useCallback(() => {
+    updatePreprint(preprint, {
+      stage: 'preprint_review',
+      date_submitted: getFormattedDate(),
+    }).then(() => {
+      router.replace('/submit/success')
+    })
+  }, [preprint])
 
   return (
     <div>
@@ -92,7 +105,7 @@ const SubmissionConfirmation = () => {
           <AuthorsList removable={false} />
         </SectionWrapper>
 
-        <StyledButton>Submit</StyledButton>
+        <StyledButton onClick={handleSubmit}>Submit</StyledButton>
       </Flex>
 
       <NavButtons />
