@@ -1,7 +1,7 @@
 'use client'
 
 import { Box, Flex } from 'theme-ui'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 import Field from '../../../../components/field'
@@ -71,14 +71,22 @@ const SectionWrapper = ({
 const SubmissionConfirmation = () => {
   const { preprint } = usePreprint()
   const router = useRouter()
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const handleSubmit = useCallback(() => {
     updatePreprint(preprint, {
       stage: 'preprint_review',
       date_submitted: getFormattedDate(),
-    }).then(() => {
-      router.replace('/submit/success')
     })
+      .then(() => {
+        router.push('/submit/success')
+      })
+      .catch((err) => {
+        setSubmitError(
+          err.message ??
+            'Unable to complete submission. Please check submission contents and try again.',
+        )
+      })
   }, [preprint])
 
   const { info, overview, authors } = useMemo(() => {
@@ -102,6 +110,8 @@ const SubmissionConfirmation = () => {
   return (
     <div>
       <Flex sx={{ flexDirection: 'column', gap: 7 }}>
+        {submitError && <Box sx={{ color: 'red' }}>{submitError}</Box>}
+
         <SectionWrapper index={1} error={overview.error}>
           {overview.data.article && 'Article TK'}
           {overview.data.data && 'Data TK'}
