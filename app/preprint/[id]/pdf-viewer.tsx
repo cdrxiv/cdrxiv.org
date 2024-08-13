@@ -10,7 +10,6 @@ import PaneledPage from '../../../components/layouts/paneled-page'
 import StyledLink from '../../../components/link'
 import { authorList, formatDate } from '../../../utils/formatters'
 import type { Preprint } from '../../../types/preprint'
-import StyledButton from '../../../components/button'
 import MetadataView from './metadata-view'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`

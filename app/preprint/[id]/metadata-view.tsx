@@ -1,3 +1,4 @@
+import React from 'react'
 import { Box } from 'theme-ui'
 import StyledButton from '../../../components/button'
 import StyledLink from '../../../components/link'
