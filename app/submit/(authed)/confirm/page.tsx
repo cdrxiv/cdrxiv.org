@@ -123,7 +123,7 @@ const SubmissionConfirmation = () => {
               {info.data.title || 'No title'}
             </Box>
             <Box>{info.data.abstract || 'No abstract'}</Box>
-            <Flex sx={{ gap: 2 }}>
+            <Flex sx={{ gap: 2, flexWrap: 'wrap' }}>
               {info.data.subject.map((subject) => (
                 <Box
                   key={subject}
