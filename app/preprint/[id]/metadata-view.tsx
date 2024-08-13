@@ -5,12 +5,23 @@ import StyledLink from '../../../components/link'
 import { formatDate } from '../../../utils/formatters'
 import type { Preprint } from '../../../types/preprint'
 
-const MetadataView = ({ preprint }: { preprint: Preprint }) => {
+interface MetadataItemProps {
+  title: string
+  children: React.ReactNode
+}
+
+const MetadataItem: React.FC<MetadataItemProps> = ({ title, children }) => (
+  <Box sx={{ mb: 5 }}>
+    <Box sx={{ variant: 'text.monoCaps', mb: 2 }}>{title}</Box>
+    {children}
+  </Box>
+)
+
+const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
   return (
-    <>
+    <Box sx={{ mt: 5 }}>
       {preprint.subject.length > 0 && (
-        <>
-          <Box sx={{ variant: 'text.monoCaps', mt: 5, mb: 2 }}>Pathways</Box>
+        <MetadataItem title='Pathways'>
           {preprint.subject.map(({ name }) => (
             <StyledLink
               key={name}
@@ -19,46 +30,43 @@ const MetadataView = ({ preprint }: { preprint: Preprint }) => {
               sx={{
                 variant: 'text.mono',
                 mb: 1,
+                display: 'block',
               }}
             >
               {name}
             </StyledLink>
           ))}
-        </>
+        </MetadataItem>
       )}
 
-      <Box sx={{ mt: 6 }}>
+      <Box sx={{ mb: 5 }}>
         <StyledButton href={preprint.versions[0].public_download_url}>
           Download (PDF)
         </StyledButton>
       </Box>
 
       {preprint.versions.length > 1 && (
-        <>
-          <Box sx={{ variant: 'text.monoCaps', mt: 5, mb: 2 }}>
-            Older Versions
-          </Box>
+        <MetadataItem title='Older Versions'>
           {preprint.versions.slice(1).map((version) => (
             <StyledLink
               key={version.version}
               href={version.public_download_url}
               forwardArrow
-              sx={{ variant: 'text.mono', mb: 1 }}
+              sx={{ variant: 'text.mono', mb: 1, display: 'block' }}
             >
               {formatDate(new Date(version.date_time))}, v{version.version}
             </StyledLink>
           ))}
-        </>
+        </MetadataItem>
       )}
 
-      {/* TODO: funders are coming in with a mix of formats */}
       {preprint.additional_field_answers.find(
         (answer) =>
           answer?.field?.name === 'Funder(s) and award numbers' &&
           answer.answer !== '',
       ) && (
-        <>
-          <Box sx={{ variant: 'text.monoCaps', mt: 5, mb: 2 }}>Funders</Box>
+        //   TODO: funders are coming back in different formats
+        <MetadataItem title='Funders'>
           {preprint.additional_field_answers
             .filter(
               (answer) => answer?.field?.name === 'Funder(s) and award numbers',
@@ -68,17 +76,17 @@ const MetadataView = ({ preprint }: { preprint: Preprint }) => {
                 {answer.answer}
               </Box>
             ))}
-        </>
+        </MetadataItem>
       )}
 
-      <Box sx={{ variant: 'text.monoCaps', mt: 5, mb: 2 }}>License</Box>
-      <StyledLink href={preprint.license.url} sx={{ variant: 'text.mono' }}>
-        {preprint.license.short_name}
-      </StyledLink>
+      <MetadataItem title='License'>
+        <StyledLink href={preprint.license.url} sx={{ variant: 'text.mono' }}>
+          {preprint.license.short_name}
+        </StyledLink>
+      </MetadataItem>
 
       {preprint.keywords.length > 0 && (
-        <>
-          <Box sx={{ variant: 'text.monoCaps', mt: 5, mb: 2 }}>Keywords</Box>
+        <MetadataItem title='Keywords'>
           <Box sx={{ variant: 'text.mono', mb: 1 }}>
             {preprint.keywords.map(({ word }, index, array) => (
               <React.Fragment key={word}>
@@ -92,9 +100,10 @@ const MetadataView = ({ preprint }: { preprint: Preprint }) => {
               </React.Fragment>
             ))}
           </Box>
-        </>
+        </MetadataItem>
       )}
-    </>
+    </Box>
   )
 }
+
 export default MetadataView
