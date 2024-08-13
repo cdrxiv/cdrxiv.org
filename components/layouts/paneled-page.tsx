@@ -17,15 +17,12 @@ const PaneledPage: React.FC<{
   corner?: string
 }> = ({ children, sidebar, metadata, title, corner }) => {
   return (
-    <Row
-      sx={{ height: `calc(100vh - ${HEADER_HEIGHT}px)`, overflow: 'hidden' }}
-    >
+    <Row sx={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
       <Column
         start={1}
         width={3}
         sx={{
           display: ['none', 'none', 'inherit', 'inherit'],
-          height: 'fit-content',
         }}
       >
         {sidebar}
@@ -34,7 +31,6 @@ const PaneledPage: React.FC<{
         start={[1, 1, 4, 4]}
         width={[6, 6, 6, 6]}
         sx={{
-          height: '100%',
           overflowY: 'auto',
         }}
       >
@@ -83,7 +79,6 @@ const PaneledPage: React.FC<{
         width={[6, 6, 2, 2]}
         sx={{
           display: ['none', 'none', 'inherit', 'inherit'],
-          height: 'fit-content',
         }}
       >
         {metadata}
