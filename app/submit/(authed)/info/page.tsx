@@ -130,8 +130,8 @@ const SubmissionInformation = () => {
             onChange={(e) => setters.license(Number(e.target.value))}
             id='license'
           >
-            <option value={0}>Select one</option>
-            <option value={1}>CC BY 4.0</option>
+            <option value={'0'}>Select one</option>
+            <option value={'1'}>CC BY 4.0</option>
           </Select>
         </Field>
         <Field
