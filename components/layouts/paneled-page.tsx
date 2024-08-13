@@ -7,6 +7,8 @@ import Row from '../row'
 import Column from '../column'
 import Guide from '../guide'
 
+const HEADER_HEIGHT = 125
+
 const PaneledPage: React.FC<{
   children: React.ReactNode
   metadata?: React.ReactNode
@@ -15,21 +17,31 @@ const PaneledPage: React.FC<{
   corner?: string
 }> = ({ children, sidebar, metadata, title, corner }) => {
   return (
-    <Row>
+    <Row
+      sx={{ height: `calc(100vh - ${HEADER_HEIGHT}px)`, overflow: 'hidden' }}
+    >
       <Column
         start={1}
         width={3}
-        sx={{ display: ['none', 'none', 'inherit', 'inherit'] }}
+        sx={{
+          display: ['none', 'none', 'inherit', 'inherit'],
+          height: 'fit-content',
+        }}
       >
         {sidebar}
       </Column>
-      <Column start={[1, 1, 4, 4]} width={[6, 6, 6, 6]}>
+      <Column
+        start={[1, 1, 4, 4]}
+        width={[6, 6, 6, 6]}
+        sx={{
+          height: '100%',
+          overflowY: 'auto',
+        }}
+      >
         <Box
           sx={{
             width: '100%',
             background: 'primary',
-            minHeight: '300px',
-            overflowY: 'scroll',
             px: [0, 0, 6, 8],
             pb: 6,
           }}
@@ -69,7 +81,10 @@ const PaneledPage: React.FC<{
       <Column
         start={[1, 1, 11, 11]}
         width={[6, 6, 2, 2]}
-        sx={{ display: ['none', 'none', 'inherit', 'inherit'] }}
+        sx={{
+          display: ['none', 'none', 'inherit', 'inherit'],
+          height: 'fit-content',
+        }}
       >
         {metadata}
       </Column>

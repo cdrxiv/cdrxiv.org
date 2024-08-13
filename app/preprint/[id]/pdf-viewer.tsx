@@ -8,8 +8,10 @@ import 'react-pdf/dist/Page/AnnotationLayer.css'
 import { Box } from 'theme-ui'
 import PaneledPage from '../../../components/layouts/paneled-page'
 import StyledLink from '../../../components/link'
-import { authorList } from '../../../utils/formatters'
+import { authorList, formatDate } from '../../../utils/formatters'
 import type { Preprint } from '../../../types/preprint'
+import StyledButton from '../../../components/button'
+import MetadataView from './metadata-view'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
@@ -46,24 +48,30 @@ const PdfViewer = ({ preprint }: { preprint: Preprint }) => {
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages)
+    setContainerWidth(containerRef.current?.getBoundingClientRect().width)
   }
 
   return (
-    <PaneledPage sidebar={<></>} title={preprint.title}>
-      {preprint.doi && (
-        <StyledLink
-          href={preprint.doi}
-          forwardArrow
-          sx={{ variant: 'text.mono' }}
-        >
-          {preprint.doi}
-        </StyledLink>
-      )}
-      <Box sx={{ variant: 'text.mono', mt: 3, mb: 4 }}>
-        {authorList(preprint.authors)}
-      </Box>
-      <div ref={containerRef} style={{ width: '100%' }}>
-        <Document file={pdfProxyUrl} onLoadSuccess={onDocumentLoadSuccess}>
+    <PaneledPage
+      title={preprint.title}
+      sidebar={<> </>} //TODO: try to use <Outline /> here
+      metadata={<MetadataView preprint={preprint} />}
+    >
+      <Document file={pdfProxyUrl} onLoadSuccess={onDocumentLoadSuccess}>
+        <div ref={containerRef} style={{ width: '100%' }}>
+          {preprint.doi && (
+            <StyledLink
+              href={preprint.doi}
+              forwardArrow
+              sx={{ variant: 'text.mono' }}
+            >
+              {preprint.doi}
+            </StyledLink>
+          )}
+          <Box sx={{ variant: 'text.mono', mt: 3, mb: 4 }}>
+            {authorList(preprint.authors)}
+          </Box>
+
           {numPages > 0 &&
             Array.from(new Array(numPages), (_, index) => (
               <Page
@@ -73,8 +81,8 @@ const PdfViewer = ({ preprint }: { preprint: Preprint }) => {
                 loading={''}
               />
             ))}
-        </Document>
-      </div>
+        </div>
+      </Document>
     </PaneledPage>
   )
 }

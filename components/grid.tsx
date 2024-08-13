@@ -9,16 +9,26 @@ interface GridViewProps {
 const GridView: React.FC<GridViewProps> = ({ preprints }) => {
   return (
     <Row columns={[1, 2, 3, 4]} gap={[5, 6, 6, 8]}>
-      {preprints.map(({ title, authors, date_published, pk }) => (
-        <Card
-          key={title}
-          title={title}
-          authors={authors}
-          type={'article'}
-          date={date_published ? new Date(date_published) : null}
-          href={'/preprint/' + pk} //TODO: check if preprint
-        />
-      ))}
+      {preprints.map(
+        ({ title, authors, date_published, pk, additional_field_answers }) => {
+          const isPreprint = additional_field_answers.find(
+            (answer) =>
+              answer?.field?.name === 'Submission type' &&
+              answer.answer === 'Article',
+          )
+          console.log('isPreprint', isPreprint, additional_field_answers)
+          return (
+            <Card
+              key={title}
+              title={title}
+              authors={authors}
+              type={'article'}
+              date={date_published ? new Date(date_published) : null}
+              href={isPreprint ? '/preprint/' + pk : undefined}
+            />
+          )
+        },
+      )}
     </Row>
   )
 }
