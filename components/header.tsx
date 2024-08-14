@@ -1,4 +1,4 @@
-import { SVGProps, useRef, useState } from 'react'
+import { SVGProps, useEffect, useRef, useState } from 'react'
 import { Box, BoxProps, useThemeUI } from 'theme-ui'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -32,6 +32,7 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 })
   const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const searchRef = useRef<HTMLInputElement>(null)
   const { cardBackground, overallBackground } = useBackgroundColors()
 
   const { theme } = useThemeUI()
@@ -74,6 +75,12 @@ const Header = () => {
     }
     setMenuOpen((open) => !open)
   }
+
+  useEffect(() => {
+    if (!pathname.startsWith('/search') && searchRef.current) {
+      searchRef.current.value = ''
+    }
+  }, [pathname])
 
   return (
     <header>
@@ -158,12 +165,10 @@ const Header = () => {
       >
         <Column start={1} width={3}>
           <Search
+            ref={searchRef}
             placeholder='Search'
-            onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-              const query = new FormData(e.target as HTMLFormElement).get(
-                'search',
-              )
-              router.push(`/search?query=${query}`)
+            onSubmit={() => {
+              router.push(`/search?query=${searchRef.current?.value ?? ''}`)
             }}
             arrows={true}
             inverted
