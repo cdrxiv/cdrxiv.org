@@ -9,11 +9,12 @@ import { formatDate, authorList } from '../utils/formatters'
 interface CardProps {
   title: string
   authors: Author[]
-  type: string | null
+  badges: { label: string; color: string }[]
   date: Date | null
   href?: string
   onClick?: () => void
   sx?: ThemeUIStyleObject
+  background?: 'background' | 'primary'
 }
 
 const borderWidth = 1
@@ -29,12 +30,14 @@ interface CornerProps {
   coverage?: number
   hovered: boolean
   sx: { display: string[] }
+  background: 'background' | 'primary'
 }
 const Corner: React.FC<CornerProps> = ({
   size = 40,
   coverage = 2,
   hovered,
   sx,
+  background,
 }) => {
   return (
     <SVGBox
@@ -58,7 +61,7 @@ const Corner: React.FC<CornerProps> = ({
         height={size + coverage}
         stroke='none'
         sx={{
-          fill: 'background',
+          fill: background,
         }}
       />
       <ElBox
@@ -75,22 +78,17 @@ const Corner: React.FC<CornerProps> = ({
 const Card: React.FC<CardProps> = ({
   title,
   authors,
-  type,
+  badges,
   date,
   href,
   onClick,
+  background = 'background',
   sx = {},
 }) => {
   const router = useRouter()
 
   const [hovered, setHovered] = useState<boolean>(false)
 
-  const badges = [
-    { type: 'Article', color: 'pink' },
-    { type: 'Data', color: 'green' },
-  ].filter((badge) =>
-    [badge.type, 'Both'].find((el) => type?.match(new RegExp(el, 'i'))),
-  )
   const color = hovered ? 'blue' : 'text'
 
   const handleClick = () => {
@@ -118,7 +116,7 @@ const Card: React.FC<CardProps> = ({
       onBlur={() => setHovered(false)}
       tabIndex={0}
       role='button'
-      aria-label={`${type} titled ${title} by ${authorList(authors)}, published on ${date ? formatDate(date) : 'unknown date'}`}
+      aria-label={`${title} by ${authorList(authors)}, published on ${date ? formatDate(date) : 'unknown date'}`}
       sx={{
         position: 'relative',
         width: '100%',
@@ -134,11 +132,13 @@ const Card: React.FC<CardProps> = ({
     >
       <Corner
         hovered={hovered}
+        background={background}
         size={40}
         sx={{ display: ['none', 'none', 'inherit', 'inherit'] }}
       />
       <Corner
         hovered={hovered}
+        background={background}
         size={30}
         sx={{ display: ['inherit', 'inherit', 'none', 'none'] }}
       />
@@ -174,8 +174,8 @@ const Card: React.FC<CardProps> = ({
         >
           <Flex sx={{ gap: 2 }}>
             {badges.map((badge) => (
-              <Badge key={badge.type} color={badge.color}>
-                {badge.type}
+              <Badge key={badge.label} color={badge.color}>
+                {badge.label}
               </Badge>
             ))}
           </Flex>

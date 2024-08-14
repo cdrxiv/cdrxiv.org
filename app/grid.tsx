@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, Row } from '../components'
 import type { Preprints } from '../types/preprint'
-import { getAdditionalField } from '../utils/data'
+import { submissionTypes } from '../utils/formatters'
 
 interface GridViewProps {
   preprints: Preprints
@@ -17,7 +17,7 @@ const GridView: React.FC<GridViewProps> = ({ preprints }) => {
             key={title}
             title={title}
             authors={authors}
-            type={getAdditionalField(preprint, 'Submission type')}
+            badges={submissionTypes(preprint)}
             date={date_published ? new Date(date_published) : null}
           />
         )
