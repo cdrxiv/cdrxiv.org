@@ -11,11 +11,12 @@ interface ListViewProps {
 const ListView: React.FC<ListViewProps> = ({ preprints }) => {
   return (
     <>
-      {preprints.map((preprint) => (
+      {preprints.map((preprint, i) => (
         <Box
           key={preprint.title}
           sx={{
             borderTop: '1px solid',
+            borderBottom: i === preprints.length - 1 ? '1px solid' : 0,
             borderColor: 'listBorderGrey',
             py: 4,
             ':hover': {
