@@ -4,6 +4,7 @@ import Column from './column'
 import { Flex, Box } from 'theme-ui'
 import Card from './card'
 import type { Preprints } from '../types/preprint'
+import { submissionTypes } from '../utils/formatters'
 
 interface StackProps {
   preprints: Preprints
@@ -49,7 +50,7 @@ const Stack: React.FC<StackProps> = ({ preprints }) => {
                           key={preprint.title}
                           title={preprint.title}
                           authors={preprint.authors}
-                          type={'article'}
+                          badges={submissionTypes(preprint)}
                           date={
                             preprint.date_published
                               ? new Date(preprint.date_published)
