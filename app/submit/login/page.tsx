@@ -28,8 +28,7 @@ const SignIn = () => {
   )
 }
 
-const SubmissionLogin = () => {
-  const { data: session, status } = useSession()
+const SignOutListener = () => {
   const searchParams = useSearchParams()
 
   useEffect(() => {
@@ -46,8 +45,18 @@ const SubmissionLogin = () => {
     }
   }, [searchParams])
 
+  return null
+}
+
+const SubmissionLogin = () => {
+  const { data: session, status } = useSession()
+
   return (
     <Flex sx={{ flexDirection: 'column', gap: 7 }}>
+      <Suspense>
+        <SignOutListener />
+      </Suspense>
+
       {status === 'authenticated' && session && (
         <Field label='Signed in' id='signin'>
           <Box sx={{ position: 'relative' }}>
