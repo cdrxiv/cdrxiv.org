@@ -7,6 +7,8 @@ import { Column, Row, Link } from '../../components'
 
 interface ResultsWrapperProps {
   count: number
+  next: string | null
+  previous: string | null
   search: string
   children?: React.ReactNode
 }
@@ -15,6 +17,8 @@ type ViewType = 'grid' | 'list'
 
 const ResultsWrapper: React.FC<ResultsWrapperProps> = ({
   count,
+  next,
+  previous,
   search,
   children,
 }) => {
@@ -53,10 +57,8 @@ const ResultsWrapper: React.FC<ResultsWrapperProps> = ({
             <Flex sx={{ gap: 3 }}>
               <Link
                 sx={{
-                  variant: 'text.body',
                   fontSize: [2, 2, 2, 3],
                   textDecoration: currentView === 'grid' ? 'underline' : 'none',
-                  textTransform: 'capitalize',
                 }}
                 onClick={() => {
                   handleViewChange('grid')
@@ -66,10 +68,8 @@ const ResultsWrapper: React.FC<ResultsWrapperProps> = ({
               </Link>
               <Link
                 sx={{
-                  variant: 'text.body',
                   fontSize: [2, 2, 2, 3],
                   textDecoration: currentView === 'list' ? 'underline' : 'none',
-                  textTransform: 'capitalize',
                 }}
                 onClick={() => {
                   handleViewChange('list')
@@ -82,6 +82,26 @@ const ResultsWrapper: React.FC<ResultsWrapperProps> = ({
         </Column>
       </Row>
       {children}
+      {(next || previous) && (
+        <Flex sx={{ gap: 3, mt: 3 }}>
+          <Link
+            sx={{ fontSize: [2, 2, 2, 3] }}
+            backArrow
+            disabled={!previous}
+            href={previous ? `/search${new URL(previous).search}` : '#'}
+          >
+            Previous
+          </Link>
+          <Link
+            sx={{ fontSize: [2, 2, 2, 3] }}
+            forwardArrow
+            disabled={!next}
+            href={next ? `/search${new URL(next).search}` : '#'}
+          >
+            Next
+          </Link>
+        </Flex>
+      )}
     </>
   )
 }
