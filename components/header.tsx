@@ -41,7 +41,10 @@ const Header = () => {
   const isActive = (path: string) => {
     if (path === '/') {
       return pathname === '/'
+    } else if (path.startsWith('/submit')) {
+      return pathname.startsWith('/submit')
     }
+
     return pathname.startsWith(path)
   }
   const renderLinks = () => {
