@@ -171,13 +171,7 @@ const Header = () => {
           width={1}
           sx={{ display: ['none', 'inherit', 'inherit', 'inherit'] }}
         >
-          <StyledLink
-            href={PATHS[0].path}
-            sx={{
-              textDecoration: isActive(PATHS[0].path) ? 'underline' : 'none',
-              width: 'fit-content',
-            }}
-          >
+          <StyledLink href={PATHS[0].path} sx={{ width: 'fit-content' }}>
             {PATHS[0].name}
           </StyledLink>
         </Column>
@@ -186,13 +180,7 @@ const Header = () => {
           width={1}
           sx={{ display: ['none', 'inherit', 'inherit', 'inherit'] }}
         >
-          <StyledLink
-            href={PATHS[1].path}
-            sx={{
-              textDecoration: isActive(PATHS[1].path) ? 'underline' : 'none',
-              width: 'fit-content',
-            }}
-          >
+          <StyledLink href={PATHS[1].path} sx={{ width: 'fit-content' }}>
             {PATHS[1].name}
           </StyledLink>
         </Column>
