@@ -9,7 +9,7 @@ import { formatDate, authorList } from '../utils/formatters'
 interface CardProps {
   title: string
   authors: Author[]
-  type: 'article' | 'data'
+  type: string | null
   date: Date | null
   href?: string
   onClick?: () => void
@@ -85,8 +85,13 @@ const Card: React.FC<CardProps> = ({
 
   const [hovered, setHovered] = useState<boolean>(false)
 
-  const badgeColor: string = type === 'article' ? 'pink' : 'green'
-  const color: string = hovered ? 'blue' : 'text'
+  const badges = [
+    { type: 'Article', color: 'pink' },
+    { type: 'Data', color: 'green' },
+  ].filter((badge) =>
+    [badge.type, 'Both'].find((el) => type?.match(new RegExp(el, 'i'))),
+  )
+  const color = hovered ? 'blue' : 'text'
 
   const handleClick = () => {
     if (href) {
@@ -167,7 +172,13 @@ const Card: React.FC<CardProps> = ({
             mt: 3,
           }}
         >
-          <Badge color={badgeColor}>{type}</Badge>
+          <Flex sx={{ gap: 2 }}>
+            {badges.map((badge) => (
+              <Badge key={badge.type} color={badge.color}>
+                {badge.type}
+              </Badge>
+            ))}
+          </Flex>
           {date && (
             <Box
               sx={{
