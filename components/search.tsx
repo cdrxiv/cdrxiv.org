@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { Box, Input, InputProps, ThemeUIStyleObject } from 'theme-ui'
 
 interface SearchProps extends Omit<InputProps, 'onSubmit'> {
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
   onSubmit?: React.FormEventHandler<HTMLFormElement>
   placeholder?: string
   arrows?: boolean
@@ -48,6 +48,7 @@ const Search: React.FC<SearchProps> = ({
             '::placeholder': { color: 'text' },
             ...sx,
           }}
+          name='search'
           {...props}
         />
         {arrows && (

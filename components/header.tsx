@@ -1,13 +1,14 @@
 import { SVGProps, useRef, useState } from 'react'
-import { Flex, Box, BoxProps, useThemeUI } from 'theme-ui'
+import { Box, BoxProps, useThemeUI } from 'theme-ui'
+import { usePathname, useRouter } from 'next/navigation'
+import Link from 'next/link'
+
 import StyledLink from './link'
 import Search from './search'
 import Column from './column'
 import Row from './row'
-import Link from 'next/link'
 import StyledButton from './button'
 import Menu from './menu'
-import { usePathname } from 'next/navigation'
 import useBackgroundColors from '../hooks/useBackgroundColors'
 
 type GBoxProps = BoxProps & SVGProps<SVGGElement>
@@ -35,6 +36,7 @@ const Header = () => {
 
   const { theme } = useThemeUI()
   const pathname = usePathname()
+  const router = useRouter()
 
   const isActive = (path: string) => {
     if (path === '/') {
@@ -154,7 +156,12 @@ const Header = () => {
         <Column start={1} width={3}>
           <Search
             placeholder='Search'
-            onChange={() => {}}
+            onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+              const query = new FormData(e.target as HTMLFormElement).get(
+                'search',
+              )
+              router.push(`/search?query=${query}`)
+            }}
             arrows={true}
             inverted
           />
