@@ -3,7 +3,7 @@
 import { useSession, signIn, signOut } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import { Box, Flex } from 'theme-ui'
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 
 import { Button, Column, Expander, Field, Link, Row } from '../../../components'
 
@@ -28,11 +28,35 @@ const SignIn = () => {
   )
 }
 
+const SignOutListener = () => {
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    if (searchParams.get('signOut')) {
+      signOut()
+      const params = new URLSearchParams(searchParams.toString())
+      params.delete('signOut')
+      const filteredParams = params.toString()
+      window.history.replaceState(
+        null,
+        '',
+        `${window.location.pathname}${filteredParams ? `?${filteredParams}` : ''}`,
+      )
+    }
+  }, [searchParams])
+
+  return null
+}
+
 const SubmissionLogin = () => {
   const { data: session, status } = useSession()
 
   return (
     <Flex sx={{ flexDirection: 'column', gap: 7 }}>
+      <Suspense>
+        <SignOutListener />
+      </Suspense>
+
       {status === 'authenticated' && session && (
         <Field label='Signed in' id='signin'>
           <Box sx={{ position: 'relative' }}>

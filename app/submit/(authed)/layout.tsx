@@ -1,10 +1,10 @@
 import { headers } from 'next/headers'
 import React from 'react'
+import { redirect } from 'next/navigation'
 
 import { fetchWithToken } from '../../api/utils'
 import { PreprintProvider } from './preprint-context'
 import { createPreprint } from './actions'
-import { redirect } from 'next/navigation'
 
 interface Props {
   children: React.ReactNode
@@ -16,7 +16,7 @@ const SubmissionOverview: React.FC<Props> = async ({ children }) => {
   )
 
   if (res.status !== 200) {
-    redirect('/submit/login')
+    redirect('/submit/login?signOut=true')
   }
 
   const data = await res.json()
