@@ -1,13 +1,14 @@
-import { SVGProps, useRef, useState } from 'react'
-import { Flex, Box, BoxProps, useThemeUI } from 'theme-ui'
+import { SVGProps, useEffect, useRef, useState } from 'react'
+import { Box, BoxProps, useThemeUI } from 'theme-ui'
+import { usePathname, useRouter } from 'next/navigation'
+import Link from 'next/link'
+
 import StyledLink from './link'
 import Search from './search'
 import Column from './column'
 import Row from './row'
-import Link from 'next/link'
 import StyledButton from './button'
 import Menu from './menu'
-import { usePathname } from 'next/navigation'
 import useBackgroundColors from '../hooks/useBackgroundColors'
 
 type GBoxProps = BoxProps & SVGProps<SVGGElement>
@@ -31,15 +32,20 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 })
   const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const searchRef = useRef<HTMLInputElement>(null)
   const { cardBackground, overallBackground } = useBackgroundColors()
 
   const { theme } = useThemeUI()
   const pathname = usePathname()
+  const router = useRouter()
 
   const isActive = (path: string) => {
     if (path === '/') {
       return pathname === '/'
+    } else if (path.startsWith('/submit')) {
+      return pathname.startsWith('/submit')
     }
+
     return pathname.startsWith(path)
   }
   const renderLinks = () => {
@@ -69,6 +75,12 @@ const Header = () => {
     }
     setMenuOpen((open) => !open)
   }
+
+  useEffect(() => {
+    if (!pathname.startsWith('/search') && searchRef.current) {
+      searchRef.current.value = ''
+    }
+  }, [pathname])
 
   return (
     <header>
@@ -153,8 +165,11 @@ const Header = () => {
       >
         <Column start={1} width={3}>
           <Search
+            ref={searchRef}
             placeholder='Search'
-            onChange={() => {}}
+            onSubmit={() => {
+              router.push(`/search?query=${searchRef.current?.value ?? ''}`)
+            }}
             arrows={true}
             inverted
           />
@@ -164,13 +179,7 @@ const Header = () => {
           width={1}
           sx={{ display: ['none', 'inherit', 'inherit', 'inherit'] }}
         >
-          <StyledLink
-            href={PATHS[0].path}
-            sx={{
-              textDecoration: isActive(PATHS[0].path) ? 'underline' : 'none',
-              width: 'fit-content',
-            }}
-          >
+          <StyledLink href={PATHS[0].path} sx={{ width: 'fit-content' }}>
             {PATHS[0].name}
           </StyledLink>
         </Column>
@@ -179,13 +188,7 @@ const Header = () => {
           width={1}
           sx={{ display: ['none', 'inherit', 'inherit', 'inherit'] }}
         >
-          <StyledLink
-            href={PATHS[1].path}
-            sx={{
-              textDecoration: isActive(PATHS[1].path) ? 'underline' : 'none',
-              width: 'fit-content',
-            }}
-          >
+          <StyledLink href={PATHS[1].path} sx={{ width: 'fit-content' }}>
             {PATHS[1].name}
           </StyledLink>
         </Column>
