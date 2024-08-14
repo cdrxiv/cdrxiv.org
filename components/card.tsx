@@ -1,7 +1,8 @@
 import React, { useState, SVGProps } from 'react'
 import { Box, Flex, BoxProps, ThemeUIStyleObject } from 'theme-ui'
-import Badge from './badge'
 import { useRouter } from 'next/navigation'
+
+import Badge from './badge'
 import type { Author } from '../types/preprint'
 import { formatDate, authorList } from '../utils/formatters'
 
@@ -151,6 +152,7 @@ const Card: React.FC<CardProps> = ({
             sx={{
               variant: 'text.body',
               mb: [3, 3, 3, 4],
+              pr: [36, 36, 48, 48],
               color,
             }}
           >

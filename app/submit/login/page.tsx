@@ -5,18 +5,13 @@ import { useSearchParams } from 'next/navigation'
 import { Box, Flex } from 'theme-ui'
 import { Suspense } from 'react'
 
-import StyledLink from '../../../components/link'
-import Expander from '../../../components/expander'
-import Field from '../../../components/field'
-import StyledButton from '../../../components/button'
-import Row from '../../../components/row'
-import Column from '../../../components/column'
+import { Button, Column, Expander, Field, Link, Row } from '../../../components'
 
 const SignIn = () => {
   const searchParams = useSearchParams()
 
   return (
-    <StyledButton
+    <Button
       onClick={() =>
         signIn(
           'janeway',
@@ -29,7 +24,7 @@ const SignIn = () => {
       }
     >
       Log in with Janeway
-    </StyledButton>
+    </Button>
   )
 }
 
@@ -49,12 +44,12 @@ const SubmissionLogin = () => {
               }
             >
               <Box sx={{ top: '28px' }}>
-                <StyledLink
+                <Link
                   onClick={() => signOut({ callbackUrl: '/' })}
                   sx={{ position: 'absolute', variant: 'text.monoCaps' }}
                 >
                   Sign out
-                </StyledLink>
+                </Link>
               </Box>
             </Expander>
           </Box>

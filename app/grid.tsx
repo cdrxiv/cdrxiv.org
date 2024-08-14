@@ -1,7 +1,7 @@
 import React from 'react'
-import Card from './card'
-import Row from './row'
+import { Card, Row } from '../components'
 import type { Preprints } from '../types/preprint'
+
 interface GridViewProps {
   preprints: Preprints
 }

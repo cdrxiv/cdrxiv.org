@@ -2,7 +2,7 @@
 
 import { Box, Flex } from 'theme-ui'
 
-import StyledLink from '../../../components/link'
+import { Link } from '../../../components'
 import { useEffect, useRef, useState } from 'react'
 
 const Success = () => {
@@ -31,9 +31,9 @@ const Success = () => {
         {decoration.split('').reverse().join('')}
       </Box>
 
-      <StyledLink href='/' forwardArrow>
+      <Link href='/' forwardArrow>
         Home
-      </StyledLink>
+      </Link>
     </Flex>
   )
 }

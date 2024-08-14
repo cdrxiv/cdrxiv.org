@@ -4,7 +4,7 @@ import { useCallback } from 'react'
 
 import { usePreprint } from '../preprint-context'
 import { Author } from '../../../../types/preprint'
-import StyledLink from '../../../../components/link'
+import { Link } from '../../../../components'
 import { updatePreprint } from '../actions'
 
 const AuthorCard = ({
@@ -43,12 +43,12 @@ const AuthorCard = ({
             {author.pk === session?.user?.id ? ' (owner)' : ''}
           </Box>
           {removable && (
-            <StyledLink
+            <Link
               sx={{ variant: 'text.monoCaps', textDecoration: 'none' }}
               onClick={handleClick}
             >
               (X)
-            </StyledLink>
+            </Link>
           )}
         </Flex>
         <Box>{author.email}</Box>

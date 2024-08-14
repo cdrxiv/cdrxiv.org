@@ -1,7 +1,7 @@
 'use client'
 
 import { usePreprint } from '../preprint-context'
-import Row from '../../../../components/row'
+import { Row } from '../../../../components'
 import AuthorCard from './author-card'
 
 type Props = {

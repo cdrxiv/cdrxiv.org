@@ -3,7 +3,7 @@
 import { Box } from 'theme-ui'
 import { useCallback, useState } from 'react'
 
-import Search from '../../../../components/search'
+import { Search } from '../../../../components'
 import { usePreprint } from '../preprint-context'
 import { fetchAccount, searchAuthor, updatePreprint } from '../actions'
 

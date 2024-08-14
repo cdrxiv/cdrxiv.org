@@ -24,7 +24,6 @@ const margin = [2, 2, 3, 3]
 
 const PATHS: { name: string; path: string }[] = [
   { name: 'Home', path: '/' },
-  { name: 'Channels', path: '/channels' },
   { name: 'Submit', path: '/submit/overview' },
 ]
 
@@ -162,18 +161,33 @@ const Header = () => {
         </Column>
         <Column
           start={5}
-          width={3}
+          width={1}
           sx={{ display: ['none', 'inherit', 'inherit', 'inherit'] }}
         >
-          <Flex
+          <StyledLink
+            href={PATHS[0].path}
             sx={{
-              justifyContent: 'space-between',
-              height: '100%',
-              alignItems: 'center',
+              textDecoration: isActive(PATHS[0].path) ? 'underline' : 'none',
+              width: 'fit-content',
             }}
           >
-            {renderLinks()}
-          </Flex>
+            {PATHS[0].name}
+          </StyledLink>
+        </Column>
+        <Column
+          start={6}
+          width={1}
+          sx={{ display: ['none', 'inherit', 'inherit', 'inherit'] }}
+        >
+          <StyledLink
+            href={PATHS[1].path}
+            sx={{
+              textDecoration: isActive(PATHS[1].path) ? 'underline' : 'none',
+              width: 'fit-content',
+            }}
+          >
+            {PATHS[1].name}
+          </StyledLink>
         </Column>
         <Column
           start={4}
