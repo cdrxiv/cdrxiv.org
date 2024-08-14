@@ -22,7 +22,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
     setCurrentView(view)
     const params = new URLSearchParams(searchParams.toString())
     params.set('view', view)
-    window.history.pushState(null, '', `?${params.toString()}`)
+    window.history.replaceState(null, '', `?${params.toString()}`)
   }
 
   return (
@@ -56,7 +56,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
                 onClick={() => {
                   handleViewChange('grid')
                 }}
-                href={'?view=grid'}
               >
                 Grid
               </Link>
@@ -70,7 +69,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
                 onClick={() => {
                   handleViewChange('list')
                 }}
-                href={'?view=list'}
               >
                 List
               </Link>
