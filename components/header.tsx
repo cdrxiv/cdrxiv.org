@@ -1,7 +1,8 @@
 import { SVGProps, useEffect, useRef, useState } from 'react'
-import { Box, BoxProps, Flex, useThemeUI } from 'theme-ui'
+import { Box, BoxProps, ThemeUIStyleObject, useThemeUI } from 'theme-ui'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 
 import StyledLink from './link'
 import Search from './search'
@@ -35,7 +36,7 @@ const UserProfile = () => {
       as='svg'
       xmlns='http://www.w3.org/2000/svg'
       viewBox='0 0 448 512'
-      sx={{ height: '40%', minWidth: '12px' }}
+      sx={{ height: '12px', ml: '-20px' }}
     >
       {/* Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc. */}
       <path
@@ -43,6 +44,31 @@ const UserProfile = () => {
         d='M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z'
       />
     </SVGBox>
+  )
+}
+
+const LoginLink = ({ sx }: { sx?: ThemeUIStyleObject }) => {
+  const { data: session, status } = useSession()
+
+  return (
+    <StyledLink
+      href={PATHS[2].path}
+      sx={{
+        width: 'fit-content',
+        display: 'flex',
+        alignItems: 'baseline',
+        gap: 2,
+        ...sx,
+      }}
+    >
+      <Box as='span'>
+        {status === 'authenticated' && session
+          ? `${session.user.first_name} ${session.user.last_name}`
+          : PATHS[2].name}
+        &nbsp;&nbsp;&nbsp;&nbsp;
+      </Box>
+      <UserProfile />
+    </StyledLink>
   )
 }
 
@@ -67,17 +93,20 @@ const Header = () => {
     return pathname.startsWith(path)
   }
   const renderLinks = () => {
-    return PATHS.map(({ name, path }) => {
-      return (
+    return PATHS.map(({ name, path }, i) => {
+      const textDecoration = isActive(path) ? 'underline' : 'none'
+      return i === 2 ? (
+        <LoginLink key={name} sx={{ textDecoration }} />
+      ) : (
         <StyledLink
           key={name}
           href={path}
           sx={{
-            textDecoration: isActive(path) ? 'underline' : 'none',
+            textDecoration,
             width: 'fit-content',
           }}
         >
-          {name}
+          {i === 2 ? <LoginLink key={name} /> : name}
         </StyledLink>
       )
     })
@@ -193,7 +222,7 @@ const Header = () => {
           />
         </Column>
         <Column
-          start={5}
+          start={[4, 4, 5, 5]}
           width={1}
           sx={{ display: ['none', 'inherit', 'inherit', 'inherit'] }}
         >
@@ -202,7 +231,7 @@ const Header = () => {
           </StyledLink>
         </Column>
         <Column
-          start={6}
+          start={[5, 5, 6, 6]}
           width={1}
           sx={{ display: ['none', 'inherit', 'inherit', 'inherit'] }}
         >
@@ -211,22 +240,11 @@ const Header = () => {
           </StyledLink>
         </Column>
         <Column
-          start={7}
-          width={1}
+          start={[6, 6, 7, 7]}
+          width={2}
           sx={{ display: ['none', 'inherit', 'inherit', 'inherit'] }}
         >
-          <StyledLink
-            href={PATHS[2].path}
-            sx={{
-              width: 'fit-content',
-              display: 'flex',
-              alignItems: 'baseline',
-              gap: 2,
-            }}
-          >
-            {PATHS[2].name}
-            <UserProfile />
-          </StyledLink>
+          <LoginLink />
         </Column>
         <Column
           start={4}
