@@ -178,6 +178,11 @@ const Card: React.FC<CardProps> = ({
                 {badge.label}
               </Badge>
             ))}
+            {badges.length === 0 && (
+              <Box sx={{ variant: 'text.monoCaps', color: 'listBorderGrey' }}>
+                Not labeled
+              </Box>
+            )}
           </Flex>
           {date && (
             <Box

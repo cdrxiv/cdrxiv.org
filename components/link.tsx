@@ -12,7 +12,7 @@ export interface Props extends LinkProps {
 const sx = {
   disabled: {
     cursor: 'text',
-    color: 'grey',
+    color: 'listBorderGrey',
     textDecoration: 'none',
   },
 }
