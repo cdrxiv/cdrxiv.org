@@ -2,7 +2,7 @@ import { headers } from 'next/headers'
 import React from 'react'
 import { redirect } from 'next/navigation'
 
-import PreprintsList from './preprints-list'
+import SubmissionsView from './submissions-view'
 import { fetchWithToken } from '../../api/utils'
 
 interface Props {
@@ -32,7 +32,7 @@ const SubmissionOverview: React.FC<Props> = async ({ children }) => {
   )
 
   return (
-    <PreprintsList
+    <SubmissionsView
       published={published.results}
       review={review.results}
       rejected={rejected.results}
