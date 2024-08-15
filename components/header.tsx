@@ -49,10 +49,11 @@ const UserProfile = () => {
 
 const LoginLink = ({ sx }: { sx?: ThemeUIStyleObject }) => {
   const { data: session, status } = useSession()
+  const authenticated = status === 'authenticated' && !!session
 
   return (
     <StyledLink
-      href={PATHS[2].path}
+      href={authenticated ? '/submissions' : PATHS[2].path}
       sx={{
         width: 'fit-content',
         display: 'flex',
@@ -62,7 +63,7 @@ const LoginLink = ({ sx }: { sx?: ThemeUIStyleObject }) => {
       }}
     >
       <Box as='span'>
-        {status === 'authenticated' && session
+        {authenticated
           ? `${session.user.first_name} ${session.user.last_name}`
           : PATHS[2].name}
         &nbsp;&nbsp;&nbsp;&nbsp;
