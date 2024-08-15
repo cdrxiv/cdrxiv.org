@@ -2,7 +2,7 @@
 
 import { Box, Flex } from 'theme-ui'
 import { Preprints } from '../../../types/preprint'
-import ListView from './preprints-table'
+import PreprintsTable from './preprints-table'
 
 type Props = {
   published: Preprints
@@ -14,17 +14,17 @@ const SubmissionsView: React.FC<Props> = ({ published, review, rejected }) => {
     <Flex sx={{ flexDirection: 'column', gap: 9, pb: 7 }}>
       <Box>
         <Box sx={{ variant: 'styles.h2' }}>Published</Box>
-        <ListView preprints={published} date='date_published' />
+        <PreprintsTable preprints={published} date='date_published' />
       </Box>
 
       <Box>
         <Box sx={{ variant: 'styles.h2' }}>Under review</Box>
-        <ListView preprints={review} date='date_submitted' />
+        <PreprintsTable preprints={review} date='date_submitted' />
       </Box>
 
       <Box>
         <Box sx={{ variant: 'styles.h2' }}>Rejected</Box>
-        <ListView preprints={rejected} date='date_submitted' />
+        <PreprintsTable preprints={rejected} date='date_submitted' />
       </Box>
     </Flex>
   )

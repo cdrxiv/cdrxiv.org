@@ -11,6 +11,9 @@ interface PreprintsTableProps {
 }
 
 const PreprintsTable: React.FC<PreprintsTableProps> = ({ preprints, date }) => {
+  if (preprints.length === 0) {
+    return <Box sx={{ variant: 'text.monoCaps', my: 3 }}>None</Box>
+  }
   return (
     <>
       <Row
