@@ -5,10 +5,7 @@ import { redirect } from 'next/navigation'
 import SubmissionsView from './submissions-view'
 import { fetchWithToken } from '../../api/utils'
 
-interface Props {
-  children: React.ReactNode
-}
-const SubmissionOverview: React.FC<Props> = async ({ children }) => {
+const SubmissionOverview = async () => {
   const responses = await Promise.all([
     fetchWithToken(
       headers(),
