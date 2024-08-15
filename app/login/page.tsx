@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { Box, Flex } from 'theme-ui'
 import { Suspense, useEffect } from 'react'
 
-import { Button, Column, Expander, Field, Link, Row } from '../../../components'
+import { Button, Column, Expander, Field, Link, Row } from '../../components'
 
 const SignIn = () => {
   const searchParams = useSearchParams()
