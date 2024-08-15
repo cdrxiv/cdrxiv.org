@@ -2,12 +2,12 @@
 
 import { Flex } from 'theme-ui'
 
-import { Field } from '../../../../components'
-import NavButtons from '../../nav-buttons'
-import AuthorForm from './author-form'
-import AuthorSearch from './author-search'
-import AddSelf from './add-self'
-import AuthorsList from './authors-list'
+import { Field } from '../../../../../components'
+import NavButtons from '../../../nav-buttons'
+import AuthorForm from '../author-form'
+import AuthorSearch from '../author-search'
+import AddSelf from '../add-self'
+import AuthorsList from '../authors-list'
 
 const Authors = () => {
   return (

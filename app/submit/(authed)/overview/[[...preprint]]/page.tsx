@@ -2,11 +2,11 @@
 
 import { Box, Flex, Label } from 'theme-ui'
 
-import { Checkbox, Field } from '../../../../components'
-import NavButtons from '../../nav-buttons'
-import { usePreprint } from '../preprint-context'
-import { useForm } from '../utils'
-import { FormData, initializeForm, validateForm, submitForm } from './utils'
+import { Checkbox, Field } from '../../../../../components'
+import NavButtons from '../../../nav-buttons'
+import { usePreprint } from '../../preprint-context'
+import { useForm } from '../../utils'
+import { FormData, initializeForm, validateForm, submitForm } from '../utils'
 
 const SubmissionOverview = () => {
   const { preprint, setPreprint } = usePreprint()

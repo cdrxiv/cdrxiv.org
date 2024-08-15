@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react'
 import { Flex } from 'theme-ui'
-import { usePathname, useRouter } from 'next/navigation'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 
 import { Link } from '../../components'
 import { PATHS } from './constants'
@@ -47,6 +47,10 @@ const NavButton: React.FC<ButtonProps> = ({
   )
 }
 
+const stripParams = (pathname: string): string => {
+  return pathname.replace(/\/\d+/g, '')
+}
+
 const NextButton: React.FC<ButtonProps> = ({ href, ...props }) => {
   const { status } = useSession()
 
@@ -59,8 +63,8 @@ const NextButton: React.FC<ButtonProps> = ({ href, ...props }) => {
 
 const NavButtons: React.FC<Props> = ({ onClick }) => {
   const pathname = usePathname()
-
-  let index = PATHS.findIndex((p) => p.href === pathname)
+  const params = useParams()
+  let index = PATHS.findIndex((p) => p.href === stripParams(pathname))
   index = index >= 0 ? index : 0
 
   return (
@@ -71,13 +75,16 @@ const NavButtons: React.FC<Props> = ({ onClick }) => {
       }}
     >
       {index > 0 && (
-        <NavButton href={PATHS[index - 1].href} direction='back'>
+        <NavButton
+          href={`${PATHS[index - 1].href}${params.preprint ? `/${params.preprint[0]}` : ''}`}
+          direction='back'
+        >
           Prev step
         </NavButton>
       )}
       {index < PATHS.length - 1 && (
         <NextButton
-          href={PATHS[index + 1].href}
+          href={`${PATHS[index + 1].href}${params.preprint ? `/${params.preprint[0]}` : ''}`}
           onClick={onClick}
           direction='forward'
         >

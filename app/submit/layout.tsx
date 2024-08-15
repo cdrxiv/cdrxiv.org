@@ -2,12 +2,16 @@
 
 import { SessionProvider, useSession } from 'next-auth/react'
 import { Box, Flex } from 'theme-ui'
-import { usePathname } from 'next/navigation'
+import { useParams, usePathname } from 'next/navigation'
 
 import { NavLink, NavLinkProps } from '../../components'
 import { PATHS } from './constants'
 import { NavigationProvider, useLinkWithWarning } from './navigation-context'
 import PaneledPage from '../../components/layouts/paneled-page'
+
+const stripParams = (pathname: string): string => {
+  return pathname.replace(/\/\d+/g, '')
+}
 
 const AuthedNavLink: React.FC<NavLinkProps> = ({
   children,
@@ -17,7 +21,9 @@ const AuthedNavLink: React.FC<NavLinkProps> = ({
 }) => {
   const { status } = useSession()
   const { onClick } = useLinkWithWarning(href as string)
-  const disabled = status === 'unauthenticated' && href !== PATHS[0].href
+  const disabled =
+    status === 'unauthenticated' &&
+    stripParams(href as string) !== PATHS[0].href
 
   return (
     <NavLink
@@ -32,8 +38,8 @@ const AuthedNavLink: React.FC<NavLinkProps> = ({
 
 const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname()
-
-  let index = PATHS.findIndex((p) => p.href === pathname)
+  const params = useParams()
+  let index = PATHS.findIndex((p) => p.href === stripParams(pathname))
   index = index >= 0 ? index : 0
   const active = PATHS[index]
 
@@ -58,7 +64,7 @@ const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 {visiblePaths.map(({ label, href }) => (
                   <AuthedNavLink
                     key={href}
-                    href={href}
+                    href={`${href}${params.preprint ? `/${params.preprint[0]}` : ''}`}
                     active={pathname === href}
                     disabled={active.hidden}
                   >

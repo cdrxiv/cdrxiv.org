@@ -2,12 +2,15 @@ import { Flex } from 'theme-ui'
 import { Card, Field, Row } from '../../../components'
 import { Preprint, Preprints } from '../../../types/preprint'
 import { submissionTypes } from '../../../utils/formatters'
+import { usePathname } from 'next/navigation'
 
 type Props = {
   preprints: Preprints
   setPreprint: (preprint: Preprint) => void
 }
 const SelectPreprint: React.FC<Props> = ({ preprints, setPreprint }) => {
+  const pathname = usePathname()
+
   return (
     <>
       <Flex sx={{ flexDirection: 'column', gap: 7 }}>
@@ -20,7 +23,7 @@ const SelectPreprint: React.FC<Props> = ({ preprints, setPreprint }) => {
                 authors={preprint.authors}
                 badges={submissionTypes(preprint)}
                 date={null}
-                onClick={() => setPreprint(preprint)}
+                href={`${pathname.replace(/\/\d+/g, '')}/${preprint.pk}`}
                 background='primary'
               />
             ))}

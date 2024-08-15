@@ -1,13 +1,13 @@
 'use client'
 
 import { Box, Flex, Input, Textarea } from 'theme-ui'
-import { Field, KeywordInput, Select } from '../../../../components'
-import FundingSources from './funding-sources'
-import NavButtons from '../../nav-buttons'
-import { usePreprint } from '../preprint-context'
-import { useForm } from '../utils'
-import { useSubjects } from '../../../subjects-context'
-import { FormData, initializeForm, validateForm, submitForm } from './utils'
+import { Field, KeywordInput, Select } from '../../../../../components'
+import FundingSources from './../funding-sources'
+import NavButtons from '../../../nav-buttons'
+import { usePreprint } from '../../preprint-context'
+import { useForm } from '../../utils'
+import { useSubjects } from '../../../../subjects-context'
+import { FormData, initializeForm, validateForm, submitForm } from './../utils'
 
 const SubmissionInformation = () => {
   const { preprint, setPreprint } = usePreprint()

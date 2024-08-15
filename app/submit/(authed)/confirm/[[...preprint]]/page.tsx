@@ -4,21 +4,21 @@ import { Box, Flex } from 'theme-ui'
 import { useCallback, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import { Button, Field, Link } from '../../../../components'
-import NavButtons from '../../nav-buttons'
-import { PATHS } from '../../constants'
-import { usePreprint } from '../preprint-context'
-import { getFormattedDate } from '../utils'
-import { updatePreprint } from '../actions'
+import { Button, Field, Link } from '../../../../../components'
+import NavButtons from '../../../nav-buttons'
+import { PATHS } from '../../../constants'
+import { usePreprint } from '../../preprint-context'
+import { getFormattedDate } from '../../utils'
+import { updatePreprint } from '../../actions'
 import {
   initializeForm as initializeInfo,
   validateForm as validateInfo,
-} from '../info'
+} from '../../info'
 import {
   initializeForm as initializeOverview,
   validateForm as validateOverview,
-} from '../overview'
-import AuthorsList from '../authors/authors-list'
+} from '../../overview'
+import AuthorsList from '../../authors/authors-list'
 
 const SummaryCard = ({ children }: { children: React.ReactNode }) => {
   return (
