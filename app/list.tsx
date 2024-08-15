@@ -1,7 +1,7 @@
 import React from 'react'
-import { Box } from 'theme-ui'
+import { Box, Flex } from 'theme-ui'
 import type { Preprints } from '../types/preprint'
-import { formatDate, authorList } from '../utils/formatters'
+import { formatDate, authorList, submissionTypes } from '../utils/formatters'
 import { Badge, Column, Row } from '../components'
 
 interface ListViewProps {
@@ -52,9 +52,15 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
               </Box>
             </Column>
             <Column start={[1, 1, 7, 7]} width={[12, 12, 2, 2]}>
-              <Box sx={{ mb: [6, 6, 0, 0] }}>
-                <Badge color={'pink'}>Article</Badge>
-              </Box>
+              <Flex sx={{ gap: 2, mb: [6, 6, 0, 0] }}>
+                <Flex sx={{ gap: 2 }}>
+                  {submissionTypes(preprint).map((badge) => (
+                    <Badge key={badge.label} color={badge.color}>
+                      {badge.label}
+                    </Badge>
+                  ))}
+                </Flex>
+              </Flex>
             </Column>
             <Column start={[1, 1, 9, 9]} width={[12, 12, 2, 2]}>
               <Box

@@ -1,5 +1,6 @@
 import { Preprint } from '../../../../types/preprint'
-import { createAdditionalField, getAdditionalField, useForm } from '../utils'
+import { getAdditionalField } from '../../../../utils/data'
+import { createAdditionalField } from '../utils'
 import { updatePreprint } from '../actions'
 
 export type FormData = {

@@ -20,13 +20,14 @@ const SubmissionOverview: React.FC<Props> = async ({ children }) => {
   }
 
   const data = await res.json()
-  let preprint = data.results[0] ?? null
+  let preprints = data.results
 
-  if (!preprint) {
-    preprint = await createPreprint()
+  if (preprints.length === 0) {
+    const preprint = await createPreprint()
+    preprints = [preprint]
   }
 
-  return <PreprintProvider preprint={preprint}>{children}</PreprintProvider>
+  return <PreprintProvider preprints={preprints}>{children}</PreprintProvider>
 }
 
 export default SubmissionOverview

@@ -1,4 +1,5 @@
-import type { Author } from '../types/preprint'
+import type { Author, Preprint } from '../types/preprint'
+import { getAdditionalField } from './data'
 
 export const formatDate = (date: Date): string => {
   const options: Intl.DateTimeFormatOptions = {
@@ -27,4 +28,17 @@ export const authorList = (
       `${author.first_name || ''} ${author.middle_name || ''} ${author.last_name || ''}`.trim(),
     )
     .join(', ')
+}
+
+export const submissionTypes = (
+  preprint: Preprint,
+): { label: string; color: string }[] => {
+  const type = getAdditionalField(preprint, 'Submission type')
+
+  return [
+    { label: 'Article', color: 'pink' },
+    { label: 'Data', color: 'green' },
+  ].filter((badge) =>
+    [badge.label, 'Both'].find((el) => type?.match(new RegExp(el, 'i'))),
+  )
 }
