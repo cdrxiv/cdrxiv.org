@@ -59,6 +59,13 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
                       {badge.label}
                     </Badge>
                   ))}
+                  {submissionTypes(preprint).length === 0 && (
+                    <Box
+                      sx={{ variant: 'text.monoCaps', color: 'listBorderGrey' }}
+                    >
+                      Not labeled
+                    </Box>
+                  )}
                 </Flex>
               </Flex>
             </Column>

@@ -1,6 +1,6 @@
 'use client'
 
-import { SessionProvider, useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { Box, Flex } from 'theme-ui'
 import { usePathname } from 'next/navigation'
 
@@ -40,39 +40,37 @@ const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const visiblePaths = PATHS.filter((p) => !p.hidden)
 
   return (
-    <SessionProvider>
-      <NavigationProvider>
-        <PaneledPage
-          title={active.label}
-          corner={
-            active.hidden
-              ? 'Success!'
-              : `Step ${index} / ${visiblePaths.length - 1}`
-          }
-          sidebar={
-            <Box>
-              <Box sx={{ variant: 'text.monoCaps', mb: [5, 5, 5, 6] }}>
-                Overview
-              </Box>
-              <Flex sx={{ flexDirection: 'column', gap: [5, 5, 5, 6] }}>
-                {visiblePaths.map(({ label, href }) => (
-                  <AuthedNavLink
-                    key={href}
-                    href={href}
-                    active={pathname === href}
-                    disabled={active.hidden}
-                  >
-                    {label}
-                  </AuthedNavLink>
-                ))}
-              </Flex>
+    <NavigationProvider>
+      <PaneledPage
+        title={active.label}
+        corner={
+          active.hidden
+            ? 'Success!'
+            : `Step ${index} / ${visiblePaths.length - 1}`
+        }
+        sidebar={
+          <Box>
+            <Box sx={{ variant: 'text.monoCaps', mb: [5, 5, 5, 6] }}>
+              Overview
             </Box>
-          }
-        >
-          {children}
-        </PaneledPage>
-      </NavigationProvider>
-    </SessionProvider>
+            <Flex sx={{ flexDirection: 'column', gap: [5, 5, 5, 6] }}>
+              {visiblePaths.map(({ label, href }) => (
+                <AuthedNavLink
+                  key={href}
+                  href={href}
+                  active={pathname === href}
+                  disabled={active.hidden}
+                >
+                  {label}
+                </AuthedNavLink>
+              ))}
+            </Flex>
+          </Box>
+        }
+      >
+        {children}
+      </PaneledPage>
+    </NavigationProvider>
   )
 }
 

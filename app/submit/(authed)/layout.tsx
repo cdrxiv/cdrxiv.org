@@ -16,7 +16,7 @@ const SubmissionOverview: React.FC<Props> = async ({ children }) => {
   )
 
   if (res.status !== 200) {
-    redirect('/submit/login?signOut=true')
+    redirect('/login?signOut=true')
   }
 
   const data = await res.json()

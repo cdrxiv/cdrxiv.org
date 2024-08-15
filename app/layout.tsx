@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
-import ThemeWrapper from '../components/theme-wrapper'
 import PageCard from '../components/layouts/page-card'
 import '../components/fonts.css'
 import { getSubjects } from './api/utils'
 import { SubjectsProvider } from './subjects-context'
+import Providers from './providers'
 
 export const metadata: Metadata = {
   title: 'CDRXIV',
@@ -35,13 +35,13 @@ export default async function RootLayout({
         />
       </head>
       <body>
-        <ThemeWrapper>
+        <Providers>
           <SubjectsProvider subjects={subjects.results}>
             <main>
               <PageCard>{children}</PageCard>
             </main>
           </SubjectsProvider>
-        </ThemeWrapper>
+        </Providers>
       </body>
     </html>
   )
