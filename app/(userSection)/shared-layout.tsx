@@ -10,12 +10,14 @@ const SharedLayout: React.FC<{
   back?: boolean
   title: string
   children: React.ReactNode
-}> = ({ back, title, children }) => {
+  metadata?: React.ReactNode
+}> = ({ back, title, children, metadata }) => {
   const router = useRouter()
 
   return (
     <PaneledPage
       title={title}
+      metadata={metadata}
       leftCorner={
         back && (
           <Link
