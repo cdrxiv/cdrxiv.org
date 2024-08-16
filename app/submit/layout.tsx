@@ -43,7 +43,7 @@ const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <NavigationProvider>
       <PaneledPage
         title={active.label}
-        corner={
+        rightCorner={
           active.hidden
             ? 'Success!'
             : `Step ${index} / ${visiblePaths.length - 1}`

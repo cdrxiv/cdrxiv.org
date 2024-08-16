@@ -10,8 +10,9 @@ const PaneledPage: React.FC<{
   metadata?: React.ReactNode
   sidebar: React.ReactNode
   title?: string
-  corner?: string
-}> = ({ children, sidebar, metadata, title, corner }) => {
+  leftCorner?: React.ReactNode
+  rightCorner?: React.ReactNode
+}> = ({ children, sidebar, metadata, title, leftCorner, rightCorner }) => {
   return (
     <Row>
       <Column
@@ -39,7 +40,7 @@ const PaneledPage: React.FC<{
                 <Flex
                   sx={{
                     width: '100%',
-                    justifyContent: 'flex-end',
+                    justifyContent: 'space-between',
                     display: ['none', 'none', 'flex', 'flex'],
                   }}
                 >
@@ -50,7 +51,16 @@ const PaneledPage: React.FC<{
                       mb: 7,
                     }}
                   >
-                    {corner}
+                    {leftCorner}
+                  </Box>
+                  <Box
+                    sx={{
+                      variant: 'text.monoCaps',
+                      mt: 8,
+                      mb: 7,
+                    }}
+                  >
+                    {rightCorner}
                   </Box>
                 </Flex>
 

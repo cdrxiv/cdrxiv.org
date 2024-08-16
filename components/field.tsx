@@ -2,7 +2,7 @@ import { Box, Flex, Label } from 'theme-ui'
 
 interface Props {
   label: React.ReactNode
-  id: string
+  id?: string
   children?: React.ReactNode
   description?: React.ReactNode
   error?: React.ReactNode

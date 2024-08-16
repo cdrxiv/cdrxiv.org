@@ -78,6 +78,18 @@ export type Preprint = {
   owner: number
 }
 
+export type VersionQueue = {
+  preprint: number
+  update_type: 'correction' | 'metadata_correction' | 'version'
+  title: string
+  abstract: string
+  date_submitted: string
+  date_decision: string | null
+  published_doi: string | null
+  approved: boolean
+  file: null
+}
+
 type Modify<T, R> = Omit<T, keyof R> & R
 
 export type PreprintParams = Partial<

@@ -4,6 +4,7 @@ import { Box, Flex } from 'theme-ui'
 import { formatDate, submissionTypes } from '../../../utils/formatters'
 import { Badge, Column, Row } from '../../../components'
 import { Preprints } from '../../../types/preprint'
+import { useRouter } from 'next/navigation'
 
 interface PreprintsTableProps {
   preprints: Preprints
@@ -11,6 +12,8 @@ interface PreprintsTableProps {
 }
 
 const PreprintsTable: React.FC<PreprintsTableProps> = ({ preprints, date }) => {
+  const router = useRouter()
+
   if (preprints.length === 0) {
     return <Box sx={{ variant: 'text.monoCaps', my: 3 }}>None</Box>
   }
@@ -37,6 +40,9 @@ const PreprintsTable: React.FC<PreprintsTableProps> = ({ preprints, date }) => {
 
       {preprints.map((preprint, i) => (
         <Box
+          role='button'
+          onClick={() => router.push(`/submissions/edit/${preprint.pk}`)}
+          aria-label={`Edit "${preprint.title}"`}
           key={preprint.title}
           sx={{
             borderTop: '1px solid',
