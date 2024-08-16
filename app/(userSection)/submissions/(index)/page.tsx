@@ -2,8 +2,8 @@ import { headers } from 'next/headers'
 import React from 'react'
 import { redirect } from 'next/navigation'
 
-import SubmissionsView from './submissions-view'
-import { fetchWithToken } from '../../api/utils'
+import SubmissionsView from '../submissions-view'
+import { fetchWithToken } from '../../../api/utils'
 
 const SubmissionOverview = async () => {
   const responses = await Promise.all([

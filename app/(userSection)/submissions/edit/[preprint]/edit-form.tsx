@@ -3,6 +3,7 @@
 import { Box } from 'theme-ui'
 import { Preprint, VersionQueue } from '../../../../../types/preprint'
 import VersionsTable from './versions-table'
+import SharedLayout from '../../../shared-layout'
 
 type Props = {
   preprint: Preprint
@@ -10,10 +11,10 @@ type Props = {
 }
 const EditForm: React.FC<Props> = ({ versions, preprint }) => {
   return (
-    <Box>
+    <SharedLayout title={preprint.title} back>
       <Box sx={{ variant: 'styles.h2' }}>Previous updates</Box>
       <VersionsTable versions={versions} />
-    </Box>
+    </SharedLayout>
   )
 }
 
