@@ -55,7 +55,7 @@ const UploadButton = () => {
   return (
     <form onSubmit={handleSubmit}>
       <Flex sx={{ alignItems: 'baseline', gap: 3 }}>
-        <Button sx={{ display: !file ? 'none' : 'inherit' }}>
+        <Button sx={{ display: !file ? 'none' : 'inherit', flexShrink: 0 }}>
           Upload file
         </Button>
         <Button as='label' sx={{ display: file ? 'none' : 'inherit' }}>
