@@ -1,18 +1,19 @@
 'use client'
 
 import { Box, Flex, Input, Textarea } from 'theme-ui'
-import { Preprint, VersionQueue } from '../../../../../types/preprint'
+import {
+  Preprint,
+  VersionQueue,
+  UpdateType,
+} from '../../../../../types/preprint'
 import VersionsList from './versions-list'
 import SharedLayout from '../../../shared-layout'
 import { Button, Field, Link, Select } from '../../../../../components'
 import { formatDate } from '../../../../../utils/formatters'
 import { useForm } from '../../../../../hooks/use-form'
-import {
-  UPDATE_TYPE_DESCRIPTIONS,
-  UPDATE_TYPE_LABELS,
-  UpdateType,
-} from './constants'
+import { UPDATE_TYPE_DESCRIPTIONS, UPDATE_TYPE_LABELS } from './constants'
 import { useMemo } from 'react'
+import { createVersionQueue } from './actions'
 
 type Props = {
   preprint: Preprint
@@ -20,25 +21,27 @@ type Props = {
 }
 
 type FormData = {
-  type: UpdateType
+  preprint: number
+  update_type: UpdateType
   title: string
   abstract: string
-  doi: string
+  published_doi: string
   file: string
 }
 const initializeForm = (preprint: Preprint) => {
   return {
-    type: 'correction' as UpdateType,
+    preprint: preprint.pk,
+    update_type: 'correction' as UpdateType,
     title: preprint.title,
     abstract: preprint.abstract,
-    doi: preprint.doi ?? '',
+    published_doi: preprint.doi ?? '',
     file: '',
   }
 }
 
 const validateForm = (
   preprint: Preprint,
-  { type, title, abstract, doi, file }: FormData,
+  { update_type, title, abstract, published_doi, file }: FormData,
 ) => {
   let result: Partial<{ [K in keyof FormData]: string }> = {}
   if (!title || title === 'Placeholder') {
@@ -49,30 +52,43 @@ const validateForm = (
     result.abstract = 'You must provide abstract for your submission.'
   }
 
-  if (doi && !doi.startsWith('https://doi.org/')) {
-    result.doi = 'Provided DOI invalid.'
+  if (published_doi && !published_doi.startsWith('https://doi.org/')) {
+    result.published_doi = 'Provided DOI invalid.'
   }
 
-  if (type === 'metadata_correction') {
+  if (update_type === 'metadata_correction') {
     if (
       preprint.title === title &&
       preprint.abstract === abstract &&
-      (preprint.doi ?? '') === doi
+      (preprint.doi ?? '') === published_doi
     ) {
       result.title =
         'Metadata corrections must include an update to the title, abstract, and/or DOI.'
     }
   }
 
-  if (type !== 'metadata_correction' && !file) {
+  if (update_type !== 'metadata_correction' && !file) {
     result.file = 'You must provide a new file for your update.'
   }
 
   return result
 }
 
-const submitForm = async (values: FormData) => {
-  return
+const submitForm = async ({
+  preprint,
+  update_type,
+  title,
+  abstract,
+  published_doi,
+  file,
+}: FormData) => {
+  return createVersionQueue({
+    preprint,
+    update_type,
+    title,
+    abstract,
+    published_doi: published_doi || null,
+  })
 }
 
 const EditForm: React.FC<Props> = ({ versions, preprint }) => {
@@ -117,14 +133,14 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
       <Flex sx={{ flexDirection: 'column', gap: 7 }}>
         <Field
           label='Type'
-          id='type'
-          error={errors.type}
-          description={UPDATE_TYPE_DESCRIPTIONS[data.type]}
+          id='update_type'
+          error={errors.update_type}
+          description={UPDATE_TYPE_DESCRIPTIONS[data.update_type]}
         >
           <Select
-            value={data.type}
-            onChange={(e) => setters.type(e.target.value as UpdateType)}
-            id='type'
+            value={data.update_type}
+            onChange={(e) => setters.update_type(e.target.value as UpdateType)}
+            id='update_type'
           >
             {Object.keys(UPDATE_TYPE_LABELS).map((value) => (
               <option key={value} value={value}>
@@ -156,17 +172,17 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
         </Field>
         <Field
           label='DOI'
-          id='doi'
+          id='published_doi'
           description="You can add a DOI linking to this item's published version using this field. Please provide the full DOI, e.g., https://doi.org/10.1017/CBO9781316161012."
-          error={errors.doi}
+          error={errors.published_doi}
         >
           <Input
-            value={data.doi}
-            onChange={(e) => setters.doi(e.target.value)}
-            id='doi'
+            value={data.published_doi}
+            onChange={(e) => setters.published_doi(e.target.value)}
+            id='published_doi'
           />
         </Field>
-        {data.type !== 'metadata_correction' && (
+        {data.update_type !== 'metadata_correction' && (
           <Field label='File' id='file' error={errors.file}>
             <Input
               value={data.file}

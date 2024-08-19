@@ -1,5 +1,3 @@
-export type UpdateType = 'correction' | 'metadata_correction' | 'version'
-
 export const UPDATE_TYPE_LABELS = {
   correction: 'Text correction',
   metadata_correction: 'Metadata correction',
