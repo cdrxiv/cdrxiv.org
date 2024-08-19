@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react'
 import { useCallback } from 'react'
 
-import StyledButton from '../../../../components/button'
+import { Button } from '../../../../components'
 import { usePreprint } from '../preprint-context'
 import { updatePreprint } from '../actions'
 
@@ -22,13 +22,13 @@ const AddSelf = () => {
 
   const isAdded = !!preprint.authors.find(({ pk }) => pk === session?.user?.id)
   return (
-    <StyledButton
+    <Button
       sx={{ width: 'fit-content' }}
       onClick={handleClick}
       disabled={isAdded}
     >
       {isAdded ? 'Added' : 'Add self as author'}
-    </StyledButton>
+    </Button>
   )
 }
 

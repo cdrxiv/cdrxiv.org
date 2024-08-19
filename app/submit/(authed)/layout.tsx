@@ -1,10 +1,10 @@
 import { headers } from 'next/headers'
 import React from 'react'
+import { redirect } from 'next/navigation'
 
 import { fetchWithToken } from '../../api/utils'
 import { PreprintProvider } from './preprint-context'
 import { createPreprint } from './actions'
-import { redirect } from 'next/navigation'
 
 interface Props {
   children: React.ReactNode
@@ -16,17 +16,18 @@ const SubmissionOverview: React.FC<Props> = async ({ children }) => {
   )
 
   if (res.status !== 200) {
-    redirect('/submit/login')
+    redirect('/login?signOut=true')
   }
 
   const data = await res.json()
-  let preprint = data.results[0] ?? null
+  let preprints = data.results
 
-  if (!preprint) {
-    preprint = await createPreprint()
+  if (preprints.length === 0) {
+    const preprint = await createPreprint()
+    preprints = [preprint]
   }
 
-  return <PreprintProvider preprint={preprint}>{children}</PreprintProvider>
+  return <PreprintProvider preprints={preprints}>{children}</PreprintProvider>
 }
 
 export default SubmissionOverview

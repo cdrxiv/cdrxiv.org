@@ -1,10 +1,8 @@
 import React from 'react'
-import { Box } from 'theme-ui'
+import { Box, Flex } from 'theme-ui'
 import type { Preprints } from '../types/preprint'
-import { formatDate, authorList } from '../utils/formatters'
-import Row from './row'
-import Column from './column'
-import Badge from './badge'
+import { formatDate, authorList, submissionTypes } from '../utils/formatters'
+import { Badge, Column, Row } from '../components'
 
 interface ListViewProps {
   preprints: Preprints
@@ -13,11 +11,12 @@ interface ListViewProps {
 const ListView: React.FC<ListViewProps> = ({ preprints }) => {
   return (
     <>
-      {preprints.map((preprint) => (
+      {preprints.map((preprint, i) => (
         <Box
           key={preprint.title}
           sx={{
             borderTop: '1px solid',
+            borderBottom: i === preprints.length - 1 ? '1px solid' : 0,
             borderColor: 'listBorderGrey',
             py: 4,
             ':hover': {
@@ -53,9 +52,22 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
               </Box>
             </Column>
             <Column start={[1, 1, 7, 7]} width={[12, 12, 2, 2]}>
-              <Box sx={{ mb: [6, 6, 0, 0] }}>
-                <Badge color={'pink'}>Article</Badge>
-              </Box>
+              <Flex sx={{ gap: 2, mb: [6, 6, 0, 0] }}>
+                <Flex sx={{ gap: 2 }}>
+                  {submissionTypes(preprint).map((badge) => (
+                    <Badge key={badge.label} color={badge.color}>
+                      {badge.label}
+                    </Badge>
+                  ))}
+                  {submissionTypes(preprint).length === 0 && (
+                    <Box
+                      sx={{ variant: 'text.monoCaps', color: 'listBorderGrey' }}
+                    >
+                      Not labeled
+                    </Box>
+                  )}
+                </Flex>
+              </Flex>
             </Column>
             <Column start={[1, 1, 9, 9]} width={[12, 12, 2, 2]}>
               <Box

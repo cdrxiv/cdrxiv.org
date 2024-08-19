@@ -1,7 +1,8 @@
 'use client'
 
 import React, { createContext, useContext, useState } from 'react'
-import { Preprint } from '../../../types/preprint'
+import { Preprint, Preprints } from '../../../types/preprint'
+import SelectPreprint from './select-preprint'
 
 const PreprintContext = createContext<{
   preprint: Preprint | null
@@ -10,19 +11,25 @@ const PreprintContext = createContext<{
 
 interface ProviderProps {
   children: React.ReactNode
-  preprint: Preprint
+  preprints: Preprints
 }
 
 export const PreprintProvider: React.FC<ProviderProps> = ({
   children,
-  preprint,
+  preprints,
 }) => {
-  const [value, setValue] = useState(preprint)
+  const [value, setValue] = useState(
+    preprints.length === 1 ? preprints[0] : null,
+  )
   return (
     <PreprintContext.Provider
       value={{ preprint: value, setPreprint: setValue }}
     >
-      {children}
+      {value ? (
+        children
+      ) : (
+        <SelectPreprint preprints={preprints} setPreprint={setValue} />
+      )}
     </PreprintContext.Provider>
   )
 }

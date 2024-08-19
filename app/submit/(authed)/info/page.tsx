@@ -1,95 +1,13 @@
 'use client'
 
 import { Box, Flex, Input, Textarea } from 'theme-ui'
-import Field from '../../../../components/field'
-import Select from '../../../../components/select'
-import KeywordInput from '../../../../components/keyword-input'
-import FundingSources from '../../../../components/funding-sources'
+import { Field, KeywordInput, Select } from '../../../../components'
+import FundingSources from './funding-sources'
 import NavButtons from '../../nav-buttons'
 import { usePreprint } from '../preprint-context'
-import { createAdditionalField, getAdditionalField, useForm } from '../utils'
-import { Preprint } from '../../../../types/preprint'
-import { updatePreprint } from '../actions'
+import { useForm } from '../utils'
 import { useSubjects } from '../../../subjects-context'
-
-type FormData = {
-  title: string
-  abstract: string
-  license: number
-  doi: string
-  subject: string[]
-  keywords: string[]
-  funding: string
-}
-const initializeForm = (preprint: Preprint) => {
-  return {
-    title: preprint.title === 'Placeholder' ? '' : preprint.title,
-    abstract: preprint.abstract ?? '',
-    license: preprint.license?.pk,
-    doi: preprint.doi ?? '',
-    subject: preprint.subject.map(({ name }) => name),
-    keywords: preprint.keywords.map(({ word }) => word),
-    funding:
-      getAdditionalField(preprint, 'Funder(s) and award numbers') ?? '[]',
-  }
-}
-
-const validateForm = ({
-  title,
-  abstract,
-  license,
-  doi,
-  subject,
-  keywords,
-  funding,
-}: FormData) => {
-  let result: Partial<{ [K in keyof FormData]: string }> = {}
-
-  if (!title || title === 'Placeholder') {
-    result.title = 'You must provide title for your submission.'
-  }
-
-  if (!abstract) {
-    result.abstract = 'You must provide abstract for your submission.'
-  }
-
-  if (!license) {
-    result.license = 'You must provide license for your submission.'
-  }
-
-  if (doi && !doi.startsWith('https://doi.org/')) {
-    result.doi = 'Provided DOI invalid.'
-  }
-
-  if (subject.length === 0) {
-    result.subject = 'Please select at least one subject.'
-  }
-
-  return result
-}
-
-const submitForm = (
-  preprint: Preprint,
-  setPreprint: (p: Preprint) => void,
-  { title, abstract, license, doi, subject, keywords, funding }: FormData,
-) => {
-  const params = {
-    title,
-    abstract,
-    license,
-    doi: doi ? doi : null,
-    subject: subject.map((name) => ({ name })),
-    keywords: keywords.map((word) => ({ word })),
-    additional_field_answers: [
-      ...preprint.additional_field_answers,
-      createAdditionalField('Funder(s) and award numbers', funding),
-    ],
-  }
-
-  return updatePreprint(preprint, params).then((updated) =>
-    setPreprint(updated),
-  )
-}
+import { FormData, initializeForm, validateForm, submitForm } from './utils'
 
 const SubmissionInformation = () => {
   const { preprint, setPreprint } = usePreprint()
@@ -130,8 +48,8 @@ const SubmissionInformation = () => {
             onChange={(e) => setters.license(Number(e.target.value))}
             id='license'
           >
-            <option value={0}>Select one</option>
-            <option value={1}>CC BY 4.0</option>
+            <option value={'0'}>Select one</option>
+            <option value={'1'}>CC BY 4.0</option>
           </Select>
         </Field>
         <Field

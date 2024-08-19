@@ -66,6 +66,19 @@ export const theme: Theme = {
       padding: 0,
       textDecoration: 'underline',
     },
+    ul: { padding: 0, listStyle: 'none' },
+    li: {
+      padding: 0,
+      listStyle: 'none',
+      '&::before': {
+        fontFamily: 'mono',
+        fontWeight: 'mono',
+        fontSize: [0, 0, 0, 1],
+        lineHeight: '130%',
+        color: 'blue',
+        content: '"> "',
+      },
+    },
   },
   forms: {
     input: {

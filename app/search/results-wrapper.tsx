@@ -3,16 +3,25 @@
 import React, { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Box, Flex } from 'theme-ui'
-import { Column, Row, Link } from '../components'
-import Topics from './topics'
+import { Column, Row, Link } from '../../components'
 
-interface LandingPageProps {
+interface ResultsWrapperProps {
+  count: number
+  next: string | null
+  previous: string | null
+  search: string
   children?: React.ReactNode
 }
 
 type ViewType = 'grid' | 'list'
 
-const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
+const ResultsWrapper: React.FC<ResultsWrapperProps> = ({
+  count,
+  next,
+  previous,
+  search,
+  children,
+}) => {
   const searchParams = useSearchParams()
   const [currentView, setCurrentView] = useState<ViewType>(
     () => (searchParams.get('view') as ViewType) || 'grid',
@@ -28,15 +37,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
   return (
     <>
       <Row columns={12} sx={{ mt: 4, mb: 6 }}>
-        <Column start={1} width={[10, 10, 3, 3]}>
+        <Column start={1} width={[10, 10, 8, 8]}>
           <Box sx={{ variant: 'text.heading', mb: 4 }}>
-            Preprints and Data for Carbon Dioxide Removal
+            Search for “{search}”
           </Box>
         </Column>
 
-        <Topics />
-
-        <Column start={[7, 7, 1, 1]} width={6}>
+        <Column start={1} width={6}>
           <Flex
             sx={{
               gap: [0, 0, 6, 6],
@@ -44,14 +51,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
               flexDirection: ['column', 'column', 'row', 'row'],
             }}
           >
-            <Box sx={{ variant: 'text.monoCaps', mb: 3 }}>Recent preprints</Box>
+            <Box sx={{ variant: 'text.monoCaps', mb: 3 }}>
+              Results ({count} total)
+            </Box>
             <Flex sx={{ gap: 3 }}>
               <Link
                 sx={{
-                  variant: 'text.body',
                   fontSize: [2, 2, 2, 3],
                   textDecoration: currentView === 'grid' ? 'underline' : 'none',
-                  textTransform: 'capitalize',
                 }}
                 onClick={() => {
                   handleViewChange('grid')
@@ -61,10 +68,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
               </Link>
               <Link
                 sx={{
-                  variant: 'text.body',
                   fontSize: [2, 2, 2, 3],
                   textDecoration: currentView === 'list' ? 'underline' : 'none',
-                  textTransform: 'capitalize',
                 }}
                 onClick={() => {
                   handleViewChange('list')
@@ -77,8 +82,28 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
         </Column>
       </Row>
       {children}
+      {(next || previous) && (
+        <Flex sx={{ gap: 3, mt: 3 }}>
+          <Link
+            sx={{ fontSize: [2, 2, 2, 3] }}
+            backArrow
+            disabled={!previous}
+            href={previous ? `/search${new URL(previous).search}` : '#'}
+          >
+            Previous
+          </Link>
+          <Link
+            sx={{ fontSize: [2, 2, 2, 3] }}
+            forwardArrow
+            disabled={!next}
+            href={next ? `/search${new URL(next).search}` : '#'}
+          >
+            Next
+          </Link>
+        </Flex>
+      )}
     </>
   )
 }
 
-export default LandingPage
+export default ResultsWrapper

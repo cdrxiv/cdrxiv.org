@@ -9,13 +9,21 @@ export interface Props extends LinkProps {
   disabled?: boolean
 }
 
+const sx = {
+  disabled: {
+    cursor: 'text',
+    color: 'listBorderGrey',
+    textDecoration: 'none',
+  },
+}
+
 const StyledLink: React.FC<Props> = ({
   href,
   onClick,
   children,
   backArrow = false,
   forwardArrow = false,
-  sx,
+  sx: sxProp,
   disabled = false,
   ...props
 }) => {
@@ -40,7 +48,11 @@ const StyledLink: React.FC<Props> = ({
 
   return (
     <NextLink href={disabled ? '#' : href || '#'} passHref legacyBehavior>
-      <ThemeUILink onClick={handleClick} sx={sx} {...props}>
+      <ThemeUILink
+        onClick={handleClick}
+        sx={{ ...(disabled ? sx.disabled : {}), ...sxProp }}
+        {...props}
+      >
         {content}
       </ThemeUILink>
     </NextLink>

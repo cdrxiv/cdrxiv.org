@@ -1,10 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { Box } from 'theme-ui'
-import Column from '../components/column'
-import Row from '../components/row'
-import Menu from '../components/menu'
-import StyledLink from '../components/link'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { Column, Link, Menu, Row } from '../components'
 import { useSubjects } from './subjects-context'
 import type { Subjects } from '../types/subject'
 
@@ -80,7 +77,7 @@ const Topics: React.FC = () => {
         {/* Mobile */}
         <Row columns={8} sx={{ display: ['flex', 'flex', 'none', 'none'] }}>
           <Column start={1} width={4}>
-            <StyledLink
+            <Link
               onClick={() => {
                 if (topicsBoxRef.current) {
                   const rect = topicsBoxRef.current.getBoundingClientRect()
@@ -95,7 +92,7 @@ const Topics: React.FC = () => {
               }}
             >
               {currentSubject}
-            </StyledLink>
+            </Link>
           </Column>
         </Row>
       </Column>
