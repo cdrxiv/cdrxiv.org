@@ -64,6 +64,7 @@ const PdfViewer = ({ preprint }: { preprint: Preprint }) => {
                 marginBottom: 5,
                 position: 'relative',
                 ':hover': {
+                  color: 'blue',
                   ':before': {
                     content: '">"',
                     position: 'absolute',
