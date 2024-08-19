@@ -54,35 +54,38 @@ const PdfViewer = ({ preprint }: { preprint: Preprint }) => {
       title={preprint.title}
       sidebar={
         pdf ? (
-          <Box
-            sx={{
-              ul: {
-                listStyleType: 'none',
-                paddingLeft: 0,
-              },
-              li: {
-                marginBottom: 5,
-                position: 'relative',
-                ':hover': {
-                  color: 'blue',
-                  ':before': {
-                    content: '">"',
-                    position: 'absolute',
-                    left: -4,
+          <Box>
+            <Box sx={{ variant: 'text.monoCaps' }}>Overview</Box>
+            <Box
+              sx={{
+                height: 'fit-content',
+                ul: {
+                  listStyleType: 'none',
+                  paddingLeft: 0,
+                },
+                li: {
+                  marginBottom: 5,
+                  ':hover': {
+                    color: 'blue',
+                    ':before': {
+                      content: '">"',
+                      position: 'absolute',
+                      left: -4,
+                    },
                   },
                 },
-              },
-              a: {
-                color: 'text',
-                ':hover': {
-                  color: 'blue',
+                a: {
+                  color: 'text',
+                  ':hover': {
+                    color: 'blue',
+                  },
+                  textDecoration: 'none',
+                  marginBottom: 2,
                 },
-                textDecoration: 'none',
-                marginBottom: 2,
-              },
-            }}
-          >
-            <Outline pdf={pdf} onItemClick={onItemClicked} />
+              }}
+            >
+              <Outline pdf={pdf} onItemClick={onItemClicked} />
+            </Box>
           </Box>
         ) : null
       }

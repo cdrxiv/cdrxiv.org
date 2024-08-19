@@ -24,6 +24,7 @@ const PaneledPage: React.FC<{
         width={3}
         sx={{
           display: ['none', 'none', 'inherit', 'inherit'],
+          overflowY: 'auto',
         }}
       >
         {sidebar}
@@ -89,6 +90,7 @@ const PaneledPage: React.FC<{
         width={[6, 6, 2, 2]}
         sx={{
           display: ['none', 'none', 'inherit', 'inherit'],
+          overflowY: 'auto',
         }}
       >
         {metadata}
