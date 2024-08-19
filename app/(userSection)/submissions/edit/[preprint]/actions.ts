@@ -1,6 +1,7 @@
 'use server'
 
 import { headers } from 'next/headers'
+import { revalidatePath } from 'next/cache'
 
 import { VersionQueueParams } from '../../../../../types/preprint'
 import { fetchWithToken } from '../../../../api/utils'
@@ -21,6 +22,8 @@ export async function createVersionQueue(versionQueue: VersionQueueParams) {
       `Status ${res.status}: Unable to create revision. ${res.statusText}`,
     )
   }
+
+  revalidatePath(`/submissions/edit/${versionQueue.preprint}`)
 
   const result = res.json()
   return result
