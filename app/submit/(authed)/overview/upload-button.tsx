@@ -3,8 +3,7 @@
 import { useCallback, useRef, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 
-import StyledButton from '../../../../components/button'
-import StyledLink from '../../../../components/link'
+import { Button, Link } from '../../../../components'
 import { createPreprintFile, updatePreprint } from '../actions'
 import { usePreprint } from '../preprint-context'
 
@@ -56,10 +55,10 @@ const UploadButton = () => {
   return (
     <form onSubmit={handleSubmit}>
       <Flex sx={{ alignItems: 'baseline', gap: 3 }}>
-        <StyledButton sx={{ display: !file ? 'none' : 'inherit' }}>
+        <Button sx={{ display: !file ? 'none' : 'inherit' }}>
           Upload file
-        </StyledButton>
-        <StyledButton as='label' sx={{ display: file ? 'none' : 'inherit' }}>
+        </Button>
+        <Button as='label' sx={{ display: file ? 'none' : 'inherit' }}>
           Choose file
           <input
             name='file'
@@ -69,10 +68,10 @@ const UploadButton = () => {
             hidden
             onChange={handleChange}
           />
-        </StyledButton>
+        </Button>
 
         {file && (
-          <StyledLink
+          <Link
             sx={{ variant: 'text.monoCaps', textTransform: 'none' }}
             onClick={() => setFile(null)}
           >
@@ -83,7 +82,7 @@ const UploadButton = () => {
             >
               &nbsp;(X)
             </Box>
-          </StyledLink>
+          </Link>
         )}
       </Flex>
     </form>
