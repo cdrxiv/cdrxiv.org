@@ -4,15 +4,10 @@ import React from 'react'
 import { Badge, Expander, Field } from '../../../../../components'
 import { VersionQueue } from '../../../../../types/preprint'
 import { formatDate } from '../../../../../utils/formatters'
+import { UPDATE_TYPE_LABELS } from './constants'
 
 type Props = {
   versions: VersionQueue[]
-}
-
-const LABELS = {
-  metadata_correction: 'Metadata correction',
-  correction: 'Text correction',
-  version: 'New version',
 }
 
 const getStatus = ({ date_decision, approved }: VersionQueue) => {
@@ -53,7 +48,7 @@ const VersionsList: React.FC<Props> = ({ versions }) => {
               </Field>
               <Field label='type'>
                 <Box sx={{ variant: 'text.mono' }}>
-                  {LABELS[version.update_type]}
+                  {UPDATE_TYPE_LABELS[version.update_type]}
                 </Box>
               </Field>
               <Field label='title'>
