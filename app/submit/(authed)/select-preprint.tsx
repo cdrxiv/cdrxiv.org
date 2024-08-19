@@ -1,5 +1,4 @@
-import { Flex } from 'theme-ui'
-import { Card, Field, Row } from '../../../components'
+import { Card, Field, Form, Row } from '../../../components'
 import { Preprint, Preprints } from '../../../types/preprint'
 import { submissionTypes } from '../../../utils/formatters'
 
@@ -10,7 +9,7 @@ type Props = {
 const SelectPreprint: React.FC<Props> = ({ preprints, setPreprint }) => {
   return (
     <>
-      <Flex sx={{ flexDirection: 'column', gap: 7 }}>
+      <Form>
         <Field label='Resume submission' id='incomplete'>
           <Row columns={1} gap={[5, 6, 6, 8]} sx={{ gridAutoRows: '1fr' }}>
             {preprints.map((preprint) => (
@@ -26,7 +25,7 @@ const SelectPreprint: React.FC<Props> = ({ preprints, setPreprint }) => {
             ))}
           </Row>
         </Field>
-      </Flex>
+      </Form>
     </>
   )
 }

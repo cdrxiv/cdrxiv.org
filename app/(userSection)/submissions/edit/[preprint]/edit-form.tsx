@@ -11,7 +11,7 @@ import {
 } from '../../../../../types/preprint'
 import VersionsList from './versions-list'
 import SharedLayout from '../../../shared-layout'
-import { Button, Field, Link, Select } from '../../../../../components'
+import { Button, Field, Form, Link, Select } from '../../../../../components'
 import { formatDate } from '../../../../../utils/formatters'
 import { useForm } from '../../../../../hooks/use-form'
 import { UPDATE_TYPE_DESCRIPTIONS, UPDATE_TYPE_LABELS } from './constants'
@@ -140,9 +140,7 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
       }
       back
     >
-      <Flex sx={{ flexDirection: 'column', gap: 7 }}>
-        {submitError && <Box sx={{ color: 'red' }}>{submitError}</Box>}
-
+      <Form error={submitError}>
         <Field
           label='Type'
           id='update_type'
@@ -202,7 +200,7 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
           </Field>
         )}
         <Button onClick={handleSubmit}>Submit</Button>
-      </Flex>
+      </Form>
     </SharedLayout>
   )
 }

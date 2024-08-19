@@ -1,7 +1,7 @@
 'use client'
 
-import { Box, Flex, Input, Textarea } from 'theme-ui'
-import { Field, KeywordInput, Select } from '../../../../components'
+import { Input, Textarea } from 'theme-ui'
+import { Field, Form, KeywordInput, Select } from '../../../../components'
 import FundingSources from './funding-sources'
 import NavButtons from '../../nav-buttons'
 import { usePreprint } from '../preprint-context'
@@ -20,9 +20,7 @@ const SubmissionInformation = () => {
 
   return (
     <>
-      <Flex sx={{ flexDirection: 'column', gap: 7 }}>
-        {submitError && <Box sx={{ color: 'red' }}>{submitError}</Box>}
-
+      <Form error={submitError}>
         <Field label='Title' id='title' error={errors.title}>
           <Input
             value={data.title}
@@ -101,7 +99,7 @@ const SubmissionInformation = () => {
         <Field label='Funding sources' id='funding' error={errors.funding}>
           <FundingSources value={data.funding} setValue={setters.funding} />
         </Field>
-      </Flex>
+      </Form>
 
       <NavButtons onClick={onSubmit} />
     </>
