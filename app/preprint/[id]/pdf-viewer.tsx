@@ -68,13 +68,15 @@ const PdfViewer = ({ preprint }: { preprint: Preprint }) => {
                   ':before': {
                     content: '">"',
                     position: 'absolute',
-                    left: '-1em',
-                    top: '0',
+                    left: -4,
                   },
                 },
               },
               a: {
                 color: 'text',
+                ':hover': {
+                  color: 'blue',
+                },
                 textDecoration: 'none',
                 marginBottom: 2,
               },
