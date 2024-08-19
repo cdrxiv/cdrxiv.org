@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Document, Page, pdfjs } from 'react-pdf'
+import { Document, Outline, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/Page/TextLayer.css'
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import { Box } from 'theme-ui'
@@ -17,7 +17,9 @@ const PdfViewer = ({ preprint }: { preprint: Preprint }) => {
   const pdfProxyUrl = `/api/pdf/?url=${encodeURIComponent(preprint.versions[0].public_download_url)}`
   const [numPages, setNumPages] = useState(0)
   const [containerWidth, setContainerWidth] = useState<number>(0)
+  const [pdf, setPdf] = useState<any>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const pageRefs = useRef<(HTMLDivElement | null)[]>([])
 
   useEffect(() => {
     const updateWidth = () => {
@@ -35,10 +37,52 @@ const PdfViewer = ({ preprint }: { preprint: Preprint }) => {
     }
   }, [])
 
+  const onLoadSuccess = (pdf: any): void => {
+    setNumPages(pdf.numPages)
+    setPdf(pdf)
+  }
+
+  const onItemClicked = ({ pageNumber }: { pageNumber: number }) => {
+    const pageRef = pageRefs.current[pageNumber - 1]
+    if (pageRef) {
+      pageRef.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   return (
     <PaneledPage
       title={preprint.title}
-      sidebar={<> </>} //TODO: try to use <Outline /> here
+      sidebar={
+        pdf ? (
+          <Box
+            sx={{
+              ul: {
+                listStyleType: 'none',
+                paddingLeft: 0,
+              },
+              li: {
+                marginBottom: 5,
+                position: 'relative',
+                ':hover': {
+                  ':before': {
+                    content: '">"',
+                    position: 'absolute',
+                    left: '-1em',
+                    top: '0',
+                  },
+                },
+              },
+              a: {
+                color: 'text',
+                textDecoration: 'none',
+                marginBottom: 2,
+              },
+            }}
+          >
+            <Outline pdf={pdf} onItemClick={onItemClicked} />
+          </Box>
+        ) : null
+      }
       metadata={<MetadataView preprint={preprint} />}
     >
       <div ref={containerRef} style={{ width: '100%' }}>
@@ -55,18 +99,22 @@ const PdfViewer = ({ preprint }: { preprint: Preprint }) => {
           {authorList(preprint.authors)}
         </Box>
 
-        <Document
-          file={pdfProxyUrl}
-          onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-        >
+        <Document file={pdfProxyUrl} onLoadSuccess={onLoadSuccess}>
           {containerWidth > 0 &&
             Array.from(new Array(numPages), (_, index) => (
-              <Page
+              <div
                 key={`page_${index + 1}`}
-                pageNumber={index + 1}
-                width={containerWidth}
-                loading={''}
-              />
+                ref={(el: HTMLDivElement | null) => {
+                  if (el) pageRefs.current[index] = el
+                }}
+              >
+                <Page
+                  key={`page_${index + 1}`}
+                  pageNumber={index + 1}
+                  width={containerWidth}
+                  loading={''}
+                />
+              </div>
             ))}
         </Document>
       </div>
