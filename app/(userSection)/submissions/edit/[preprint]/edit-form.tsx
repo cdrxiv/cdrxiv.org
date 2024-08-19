@@ -1,6 +1,9 @@
 'use client'
 
 import { Box, Flex, Input, Textarea } from 'theme-ui'
+import { useRouter } from 'next/navigation'
+import { useCallback, useMemo } from 'react'
+
 import {
   Preprint,
   VersionQueue,
@@ -12,7 +15,6 @@ import { Button, Field, Link, Select } from '../../../../../components'
 import { formatDate } from '../../../../../utils/formatters'
 import { useForm } from '../../../../../hooks/use-form'
 import { UPDATE_TYPE_DESCRIPTIONS, UPDATE_TYPE_LABELS } from './constants'
-import { useMemo } from 'react'
 import { createVersionQueue } from './actions'
 
 type Props = {
@@ -92,12 +94,20 @@ const submitForm = async ({
 }
 
 const EditForm: React.FC<Props> = ({ versions, preprint }) => {
+  const router = useRouter()
   const validator = useMemo(() => validateForm.bind(null, preprint), [preprint])
   const { data, setters, errors, onSubmit, submitError } = useForm(
     () => initializeForm(preprint),
     validator,
     submitForm,
   )
+
+  const handleSubmit = useCallback(async () => {
+    const result = await onSubmit()
+    if (result) {
+      router.push('/submissions')
+    }
+  }, [onSubmit, router])
 
   return (
     <SharedLayout
@@ -131,6 +141,8 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
       back
     >
       <Flex sx={{ flexDirection: 'column', gap: 7 }}>
+        {submitError && <Box sx={{ color: 'red' }}>{submitError}</Box>}
+
         <Field
           label='Type'
           id='update_type'
@@ -149,7 +161,6 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
             ))}
           </Select>
         </Field>
-
         <Field label='Title' id='title' error={errors.title}>
           <Input
             value={data.title}
@@ -157,7 +168,6 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
             id='title'
           />
         </Field>
-
         <Field
           label='Abstract'
           id='abstract'
@@ -191,8 +201,7 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
             />
           </Field>
         )}
-
-        <Button onClick={onSubmit}>Submit</Button>
+        <Button onClick={handleSubmit}>Submit</Button>
       </Flex>
     </SharedLayout>
   )
