@@ -27,52 +27,58 @@ const VersionsList: React.FC<Props> = ({ versions }) => {
 
   return (
     <>
-      {versions.map((version, i) => (
-        <Box key={version.date_submitted}>
-          <Expander
-            label={formatDate(new Date(version.date_submitted))}
-            sx={{ variant: 'text.mono' }}
-          >
-            <Flex
-              sx={{
-                flexDirection: 'column',
-                gap: 4,
-                mt: 4,
-                borderBottom: '1px solid',
-                borderColor: 'listBorderGrey',
-                pb: 4,
-              }}
+      {versions
+        .sort(
+          (a: VersionQueue, b: VersionQueue) =>
+            new Date(b.date_submitted).valueOf() -
+            new Date(a.date_submitted).valueOf(),
+        )
+        .map((version, i) => (
+          <Box key={version.date_submitted}>
+            <Expander
+              label={formatDate(new Date(version.date_submitted))}
+              sx={{ variant: 'text.mono' }}
             >
-              <Field label='status'>
-                <Badge color='muted'>{getStatus(version)}</Badge>
-              </Field>
-              <Field label='type'>
-                <Box sx={{ variant: 'text.mono' }}>
-                  {UPDATE_TYPE_LABELS[version.update_type]}
-                </Box>
-              </Field>
-              <Field label='title'>
-                <Box sx={{ variant: 'text.mono' }}>{version.title}</Box>
-              </Field>
-              <Field label='abstract'>
-                <Box sx={{ variant: 'text.mono' }}>{version.abstract}</Box>
-              </Field>
-              {version.file && (
-                <Field label='file'>
-                  <Box sx={{ variant: 'text.mono' }}>{version.file}</Box>
+              <Flex
+                sx={{
+                  flexDirection: 'column',
+                  gap: 4,
+                  mt: 4,
+                  borderBottom: '1px solid',
+                  borderColor: 'listBorderGrey',
+                  pb: 4,
+                }}
+              >
+                <Field label='status'>
+                  <Badge color='muted'>{getStatus(version)}</Badge>
                 </Field>
-              )}
-              {version.published_doi && (
-                <Field label='published_doi'>
+                <Field label='type'>
                   <Box sx={{ variant: 'text.mono' }}>
-                    {version.published_doi}
+                    {UPDATE_TYPE_LABELS[version.update_type]}
                   </Box>
                 </Field>
-              )}
-            </Flex>
-          </Expander>
-        </Box>
-      ))}
+                <Field label='title'>
+                  <Box sx={{ variant: 'text.mono' }}>{version.title}</Box>
+                </Field>
+                <Field label='abstract'>
+                  <Box sx={{ variant: 'text.mono' }}>{version.abstract}</Box>
+                </Field>
+                {version.file && (
+                  <Field label='file'>
+                    <Box sx={{ variant: 'text.mono' }}>{version.file}</Box>
+                  </Field>
+                )}
+                {version.published_doi && (
+                  <Field label='published_doi'>
+                    <Box sx={{ variant: 'text.mono' }}>
+                      {version.published_doi}
+                    </Box>
+                  </Field>
+                )}
+              </Flex>
+            </Expander>
+          </Box>
+        ))}
     </>
   )
 }
