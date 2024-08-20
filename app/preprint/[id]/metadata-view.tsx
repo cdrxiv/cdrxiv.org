@@ -1,102 +1,105 @@
 import React from 'react'
-import { Box } from 'theme-ui'
-import StyledButton from '../../../components/button'
-import StyledLink from '../../../components/link'
+import { Box, Flex } from 'theme-ui'
 import { formatDate } from '../../../utils/formatters'
 import type { Funder, Preprint } from '../../../types/preprint'
 import { getFunders } from '../../../utils/data'
-
-interface MetadataItemProps {
-  title: string
-  children: React.ReactNode
-}
-
-const MetadataItem: React.FC<MetadataItemProps> = ({ title, children }) => (
-  <Box sx={{ mb: 5 }}>
-    <Box sx={{ variant: 'text.monoCaps', mb: 2 }}>{title}</Box>
-    {children}
-  </Box>
-)
+import { Field, Button, Link } from '../../../components'
 
 const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
   const funders = getFunders(preprint)
   return (
-    <Box sx={{ mt: 5 }}>
+    <Flex sx={{ flexDirection: 'column', mt: 5, gap: 5 }}>
       {preprint.subject.length > 0 && (
-        <MetadataItem title='Pathways'>
+        <Field label='Pathways'>
           {preprint.subject.map(({ name }) => (
-            <StyledLink
+            <Link
               key={name}
               href={`/?subject=${name}`}
               forwardArrow
               sx={{
                 variant: 'text.mono',
-                mb: 1,
                 display: 'block',
               }}
             >
               {name}
-            </StyledLink>
+            </Link>
           ))}
-        </MetadataItem>
+        </Field>
       )}
 
-      <Box sx={{ mb: 5 }}>
-        <StyledButton href={preprint.versions[0].public_download_url}>
+      <Box sx={{}}>
+        <Button href={preprint.versions[0].public_download_url}>
           Download (PDF)
-        </StyledButton>
+        </Button>
       </Box>
 
       {preprint.versions.length > 1 && (
-        <MetadataItem title='Older Versions'>
-          {preprint.versions.slice(1).map((version) => (
-            <StyledLink
-              key={version.version}
-              href={version.public_download_url}
-              forwardArrow
-              sx={{ variant: 'text.mono', mb: 1, display: 'block' }}
-            >
-              {formatDate(new Date(version.date_time))}, v{version.version}
-            </StyledLink>
-          ))}
-        </MetadataItem>
+        <Field label='Older Versions'>
+          <Box
+            as='ul'
+            sx={{
+              listStyleType: 'none',
+              padding: 0,
+              margin: 0,
+              variant: 'text.mono',
+              color: 'blue',
+            }}
+          >
+            {preprint.versions.slice(1).map((version) => (
+              <Box as='li' key={version.version} sx={{ mb: 2 }}>
+                <Box as='span' sx={{ marginRight: 2 }}>
+                  {'>'}
+                </Box>
+                <Link
+                  href={version.public_download_url}
+                  sx={{
+                    variant: 'text.mono',
+                  }}
+                >
+                  {formatDate(new Date(version.date_time))}, v{version.version}
+                </Link>
+              </Box>
+            ))}
+          </Box>
+        </Field>
       )}
 
-      <MetadataItem title='Funders'>
+      <Field label='Funders'>
         {funders.map((item: Funder) => (
           <Box
             key={`${item.funder}-${item.award}`}
-            sx={{ variant: 'text.mono', mb: 1 }}
+            sx={{ variant: 'text.mono' }}
           >
             {item.funder}: {item.award}
           </Box>
         ))}
-      </MetadataItem>
+        {funders.length === 0 && <Box sx={{ variant: 'text.mono' }}></Box>}
+      </Field>
 
-      <MetadataItem title='License'>
-        <StyledLink href={preprint.license.url} sx={{ variant: 'text.mono' }}>
+      <Field label='License'>
+        <Link href={preprint.license.url} sx={{ variant: 'text.mono' }}>
           {preprint.license.short_name}
-        </StyledLink>
-      </MetadataItem>
+        </Link>
+      </Field>
 
       {preprint.keywords.length > 0 && (
-        <MetadataItem title='Keywords'>
-          <Box sx={{ variant: 'text.mono', mb: 1 }}>
+        <Field label='Keywords'>
+          <Box sx={{ variant: 'text.mono' }}>
             {preprint.keywords.map(({ word }, index, array) => (
               <React.Fragment key={word}>
-                <StyledLink
+                <Link
                   href={`/?keyword=${word}`}
                   sx={{ display: 'inline', variant: 'text.mono' }}
                 >
                   {word}
-                </StyledLink>
+                </Link>
                 {index < array.length - 1 && ', '}
               </React.Fragment>
             ))}
           </Box>
-        </MetadataItem>
+        </Field>
       )}
-    </Box>
+    </Flex>
   )
 }
 
