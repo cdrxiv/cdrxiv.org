@@ -1,7 +1,6 @@
 import React from 'react'
 import { Card, Row } from '../components'
 import { submissionTypes } from '../utils/formatters'
-import { getAdditionalField } from '../utils/data'
 import type { Preprints } from '../types/preprint'
 
 interface GridViewProps {
@@ -12,10 +11,7 @@ const GridView: React.FC<GridViewProps> = ({ preprints }) => {
   return (
     <Row columns={[1, 2, 3, 4]} gap={[5, 6, 6, 8]}>
       {preprints.map((preprint) => {
-        const { title, authors, date_published, pk, additional_field_answers } =
-          preprint
-        const isPreprint =
-          getAdditionalField(preprint, 'Submission type') === 'Article'
+        const { title, authors, date_published, pk } = preprint
         return (
           <Card
             key={title}
@@ -23,7 +19,7 @@ const GridView: React.FC<GridViewProps> = ({ preprints }) => {
             authors={authors}
             date={date_published ? new Date(date_published) : null}
             badges={submissionTypes(preprint)}
-            href={isPreprint ? '/preprint/' + pk : undefined}
+            href={'/preprint/' + pk}
           />
         )
       })}
