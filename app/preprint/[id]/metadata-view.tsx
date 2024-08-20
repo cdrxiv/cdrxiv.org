@@ -4,7 +4,7 @@ import StyledButton from '../../../components/button'
 import StyledLink from '../../../components/link'
 import { formatDate } from '../../../utils/formatters'
 import type { Funder, Preprint } from '../../../types/preprint'
-import { getAdditionalField } from '../../../utils/data'
+import { getFunders } from '../../../utils/data'
 
 interface MetadataItemProps {
   title: string
@@ -19,6 +19,7 @@ const MetadataItem: React.FC<MetadataItemProps> = ({ title, children }) => (
 )
 
 const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
+  const funders = getFunders(preprint)
   return (
     <Box sx={{ mt: 5 }}>
       {preprint.subject.length > 0 && (
@@ -62,9 +63,7 @@ const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
       )}
 
       <MetadataItem title='Funders'>
-        {JSON.parse(
-          getAdditionalField(preprint, 'Funder(s) and award numbers') || '[]',
-        ).map((item: Funder) => (
+        {funders.map((item: Funder) => (
           <Box
             key={`${item.funder}-${item.award}`}
             sx={{ variant: 'text.mono', mb: 1 }}
