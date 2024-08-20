@@ -1,23 +1,25 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Document, Outline, Page, pdfjs } from 'react-pdf'
+import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/Page/TextLayer.css'
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import { Box } from 'theme-ui'
 import PaneledPage from '../../../components/layouts/paneled-page'
 import StyledLink from '../../../components/link'
 import MetadataView from './metadata-view'
+import Outline from './outline'
 import { authorList } from '../../../utils/formatters'
 import type { Preprint } from '../../../types/preprint'
+import type { PDFDocumentProxy } from 'pdfjs-dist'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
 const PdfViewer = ({ preprint }: { preprint: Preprint }) => {
   const pdfProxyUrl = `/api/pdf/?url=${encodeURIComponent(preprint.versions[0].public_download_url)}`
-  const [numPages, setNumPages] = useState(0)
+  const [numPages, setNumPages] = useState<number>(0)
   const [containerWidth, setContainerWidth] = useState<number>(0)
-  const [pdf, setPdf] = useState<any>(null)
+  const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const pageRefs = useRef<(HTMLDivElement | null)[]>([])
 
@@ -52,43 +54,7 @@ const PdfViewer = ({ preprint }: { preprint: Preprint }) => {
   return (
     <PaneledPage
       title={preprint.title}
-      sidebar={
-        pdf ? (
-          <Box>
-            <Box sx={{ variant: 'text.monoCaps' }}>Overview</Box>
-            <Box
-              sx={{
-                height: 'fit-content',
-                ul: {
-                  listStyleType: 'none',
-                  paddingLeft: 0,
-                },
-                li: {
-                  marginBottom: 5,
-                  ':hover': {
-                    color: 'blue',
-                    ':before': {
-                      content: '">"',
-                      position: 'absolute',
-                      left: -4,
-                    },
-                    a: {
-                      color: 'blue',
-                    },
-                  },
-                },
-                a: {
-                  color: 'text',
-                  textDecoration: 'none',
-                  marginBottom: 2,
-                },
-              }}
-            >
-              <Outline pdf={pdf} onItemClick={onItemClicked} />
-            </Box>
-          </Box>
-        ) : null
-      }
+      sidebar={pdf ? <Outline pdf={pdf} onItemClick={onItemClicked} /> : null}
       metadata={<MetadataView preprint={preprint} />}
     >
       <div ref={containerRef} style={{ width: '100%' }}>
