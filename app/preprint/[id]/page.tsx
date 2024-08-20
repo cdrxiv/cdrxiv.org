@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import PdfViewer from './pdf-viewer'
+import PreprintViewer from './preprint-viewer'
 
 // Polyfill for Promise.withResolvers
 if (typeof Promise.withResolvers !== 'function') {
@@ -36,7 +36,7 @@ const PreprintsPage = async ({ params }: { params: { id: string } }) => {
   if (!preprint) {
     notFound()
   }
-  return <PdfViewer preprint={preprint} />
+  return <PreprintViewer preprint={preprint} />
 }
 
 export default PreprintsPage
