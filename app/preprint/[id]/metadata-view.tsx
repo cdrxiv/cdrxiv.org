@@ -2,11 +2,16 @@ import React from 'react'
 import { Box, Flex } from 'theme-ui'
 import { formatDate } from '../../../utils/formatters'
 import type { Funder, Preprint } from '../../../types/preprint'
-import { getFunders } from '../../../utils/data'
+import { getAdditionalField, getFunders } from '../../../utils/data'
 import { Field, Button, Link } from '../../../components'
 
 const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
   const funders = getFunders(preprint)
+
+  const submissionType = getAdditionalField(preprint, 'Submission type')
+  const hasArticle = ['Article', 'Both'].includes(submissionType)
+  const fileType = hasArticle ? 'PDF' : 'Data'
+
   return (
     <Flex sx={{ flexDirection: 'column', mt: 5, gap: 5 }}>
       {preprint.subject.length > 0 && (
@@ -27,11 +32,13 @@ const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
         </Field>
       )}
 
-      <Box sx={{}}>
-        <Button href={preprint.versions[0].public_download_url}>
-          Download (PDF)
-        </Button>
-      </Box>
+      {preprint.versions[0]?.public_download_url && (
+        <Box sx={{}}>
+          <Button href={preprint.versions[0].public_download_url}>
+            Download ({fileType})
+          </Button>
+        </Box>
+      )}
 
       {preprint.versions.length > 1 && (
         <Field label='Older Versions'>
