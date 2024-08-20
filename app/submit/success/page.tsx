@@ -1,8 +1,8 @@
 'use client'
 
-import { Box, Flex } from 'theme-ui'
+import { Box } from 'theme-ui'
 
-import { Link } from '../../../components'
+import { Form, Link } from '../../../components'
 import { useEffect, useRef, useState } from 'react'
 
 const Success = () => {
@@ -25,7 +25,7 @@ const Success = () => {
   }, [])
 
   return (
-    <Flex sx={{ flexDirection: 'column', gap: 7 }}>
+    <Form>
       <Box sx={{ variant: 'text.monoCaps' }}>
         {decoration} Your paper was successfully submitted!{' '}
         {decoration.split('').reverse().join('')}
@@ -34,7 +34,7 @@ const Success = () => {
       <Link href='/' forwardArrow>
         Home
       </Link>
-    </Flex>
+    </Form>
   )
 }
 

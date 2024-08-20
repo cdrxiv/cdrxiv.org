@@ -2,10 +2,18 @@
 
 import { useSession, signIn, signOut } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
-import { Box, Flex } from 'theme-ui'
+import { Box } from 'theme-ui'
 import { Suspense, useEffect } from 'react'
 
-import { Button, Column, Expander, Field, Link, Row } from '../../../components'
+import {
+  Button,
+  Column,
+  Expander,
+  Field,
+  Form,
+  Link,
+  Row,
+} from '../../../components'
 import SharedLayout from '../shared-layout'
 
 const SignIn = () => {
@@ -54,7 +62,7 @@ const SubmissionLogin = () => {
 
   return (
     <SharedLayout title='Log in'>
-      <Flex sx={{ flexDirection: 'column', gap: 7 }}>
+      <Form>
         <Suspense>
           <SignOutListener />
         </Suspense>
@@ -97,7 +105,7 @@ const SubmissionLogin = () => {
             </Row>
           </Field>
         )}
-      </Flex>
+      </Form>
     </SharedLayout>
   )
 }

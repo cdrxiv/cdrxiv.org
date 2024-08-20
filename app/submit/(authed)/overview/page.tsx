@@ -1,8 +1,8 @@
 'use client'
 
-import { Box, Flex, Label } from 'theme-ui'
+import { Flex, Label } from 'theme-ui'
 
-import { Checkbox, Field } from '../../../../components'
+import { Checkbox, Field, Form } from '../../../../components'
 import NavButtons from '../../nav-buttons'
 import { usePreprint } from '../preprint-context'
 import { useForm } from '../utils'
@@ -18,8 +18,7 @@ const SubmissionOverview = () => {
 
   return (
     <>
-      <Flex sx={{ flexDirection: 'column', gap: 7 }}>
-        {submitError && <Box sx={{ color: 'red' }}>{submitError}</Box>}
+      <Form error={submitError}>
         <Field
           label='Submission agreement'
           id='agreement'
@@ -62,7 +61,7 @@ const SubmissionOverview = () => {
             </Label>
           </Flex>
         </Field>
-      </Flex>
+      </Form>
 
       <NavButtons onClick={onSubmit} />
     </>

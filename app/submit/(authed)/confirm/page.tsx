@@ -4,7 +4,7 @@ import { Box, Flex } from 'theme-ui'
 import { useCallback, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import { Button, Field, Link } from '../../../../components'
+import { Button, Field, Form, Link } from '../../../../components'
 import NavButtons from '../../nav-buttons'
 import { PATHS } from '../../constants'
 import { usePreprint } from '../preprint-context'
@@ -107,9 +107,7 @@ const SubmissionConfirmation = () => {
 
   return (
     <div>
-      <Flex sx={{ flexDirection: 'column', gap: 7 }}>
-        {submitError && <Box sx={{ color: 'red' }}>{submitError}</Box>}
-
+      <Form error={submitError}>
         <SectionWrapper index={1} error={overview.error}>
           {overview.data.article && 'Article TK'}
           {overview.data.data && 'Data TK'}
@@ -149,7 +147,7 @@ const SubmissionConfirmation = () => {
         >
           Submit
         </Button>
-      </Flex>
+      </Form>
 
       <NavButtons />
     </div>
