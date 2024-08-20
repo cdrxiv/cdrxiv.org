@@ -3,7 +3,8 @@ import { Box } from 'theme-ui'
 import StyledButton from '../../../components/button'
 import StyledLink from '../../../components/link'
 import { formatDate } from '../../../utils/formatters'
-import type { Preprint } from '../../../types/preprint'
+import type { Funder, Preprint } from '../../../types/preprint'
+import { getAdditionalField } from '../../../utils/data'
 
 interface MetadataItemProps {
   title: string
@@ -60,24 +61,18 @@ const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
         </MetadataItem>
       )}
 
-      {preprint.additional_field_answers.find(
-        (answer) =>
-          answer?.field?.name === 'Funder(s) and award numbers' &&
-          answer.answer !== '',
-      ) && (
-        //   TODO: funders are coming back in different formats
-        <MetadataItem title='Funders'>
-          {preprint.additional_field_answers
-            .filter(
-              (answer) => answer?.field?.name === 'Funder(s) and award numbers',
-            )
-            .map((answer) => (
-              <Box key={answer.answer} sx={{ variant: 'text.mono', mb: 1 }}>
-                {answer.answer}
-              </Box>
-            ))}
-        </MetadataItem>
-      )}
+      <MetadataItem title='Funders'>
+        {JSON.parse(
+          getAdditionalField(preprint, 'Funder(s) and award numbers') || '[]',
+        ).map((item: Funder) => (
+          <Box
+            key={`${item.funder}-${item.award}`}
+            sx={{ variant: 'text.mono', mb: 1 }}
+          >
+            {item.funder}: {item.award}
+          </Box>
+        ))}
+      </MetadataItem>
 
       <MetadataItem title='License'>
         <StyledLink href={preprint.license.url} sx={{ variant: 'text.mono' }}>
