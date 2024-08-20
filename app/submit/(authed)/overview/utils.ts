@@ -7,8 +7,8 @@ export type FormData = {
   agreement: boolean
   data: boolean
   article: boolean
-  articleFile?: PreprintFile
-  dataFile: string | null
+  articleFile: PreprintFile | null
+  dataFile: PreprintFile | null
 }
 export const initializeForm = (
   preprint: Preprint,
@@ -20,9 +20,9 @@ export const initializeForm = (
     data: ['Data', 'Both'].includes(submissionType),
     article: ['Article', 'Both'].includes(submissionType),
     articleFile: files.reduce(
-      (last: PreprintFile | undefined, file: PreprintFile) =>
+      (last: PreprintFile | null, file: PreprintFile) =>
         !last || last.pk < file.pk ? file : last,
-      undefined,
+      null,
     ),
     dataFile: null,
   }

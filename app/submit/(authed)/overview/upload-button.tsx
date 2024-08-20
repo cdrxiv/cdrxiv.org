@@ -9,9 +9,13 @@ import { usePreprint } from '../preprint-context'
 import { PreprintFile, PreprintFileParams } from '../../../../types/preprint'
 
 type Props = {
-  file?: PreprintFile
+  file?: PreprintFile | null
+  setFile: (file: PreprintFile | null) => void
 }
-const UploadButton: React.FC<Props> = ({ file: fileProp }) => {
+const UploadButton: React.FC<Props> = ({
+  file: fileProp,
+  setFile: setFileProp,
+}) => {
   const { preprint } = usePreprint()
   const ref = useRef<HTMLInputElement>(null)
   const [file, setFile] = useState<PreprintFileParams | PreprintFile | null>(
@@ -42,12 +46,19 @@ const UploadButton: React.FC<Props> = ({ file: fileProp }) => {
         formData.set('mime_type', file.mime_type)
         formData.set('original_filename', file.original_filename)
 
-        createPreprintFile(formData)
+        const result = await createPreprintFile(formData)
+        setFile(result)
+        setFileProp(result)
         // createPreprintFile(file)
       }
     },
-    [file, preprint?.pk],
+    [file, preprint?.pk, setFileProp],
   )
+
+  const handleClear = useCallback(() => {
+    setFile(null)
+    setFileProp(null)
+  }, [setFileProp])
 
   return (
     <form onSubmit={handleSubmit}>
@@ -78,7 +89,7 @@ const UploadButton: React.FC<Props> = ({ file: fileProp }) => {
         {file && (
           <Link
             sx={{ variant: 'text.monoCaps', textTransform: 'none' }}
-            onClick={() => setFile(null)}
+            onClick={handleClear}
           >
             {file.original_filename}
             <Box

@@ -71,7 +71,10 @@ const SubmissionOverview = () => {
             description='Your article must be submitted as a PDF.'
             error={errors.articleFile}
           >
-            <UploadButton file={data.articleFile} />
+            <UploadButton
+              file={data.articleFile}
+              setFile={setters.articleFile}
+            />
           </Field>
         )}
 
@@ -82,7 +85,7 @@ const SubmissionOverview = () => {
             description='Your submission can by represented by a single file of any format, including ZIP, up to [TK] MB.'
             error={errors.articleFile}
           >
-            <UploadButton />
+            <UploadButton setFile={setters.dataFile} />
           </Field>
         )}
       </Form>
