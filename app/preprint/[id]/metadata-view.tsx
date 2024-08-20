@@ -38,23 +38,14 @@ const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
           <Box
             as='ul'
             sx={{
-              listStyleType: 'none',
-              padding: 0,
-              margin: 0,
-              variant: 'text.mono',
-              color: 'blue',
+              variant: 'styles.ul',
             }}
           >
             {preprint.versions.slice(1).map((version) => (
-              <Box as='li' key={version.version} sx={{ mb: 2 }}>
-                <Box as='span' sx={{ marginRight: 2 }}>
-                  {'>'}
-                </Box>
+              <Box as='li' key={version.version} sx={{ variant: 'styles.li' }}>
                 <Link
                   href={version.public_download_url}
-                  sx={{
-                    variant: 'text.mono',
-                  }}
+                  sx={{ variant: 'text.mono' }}
                 >
                   {formatDate(new Date(version.date_time))}, v{version.version}
                 </Link>
