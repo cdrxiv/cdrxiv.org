@@ -16,16 +16,25 @@ export const getAdditionalField = (
     return null
   }
 
-  return additionalField.answer
+  const answer = additionalField.answer
+
+  if (typeof answer === 'string') {
+    try {
+      return JSON.parse(answer)
+    } catch (error) {
+      return answer
+    }
+  }
+
+  return answer
 }
 
 export const getFunders = (preprint: Preprint | null): Funder[] => {
   try {
-    const rawData = getAdditionalField(preprint, 'Funder(s) and award numbers')
-    if (!rawData) return []
-    const parsedData = JSON.parse(rawData)
-    if (!Array.isArray(parsedData)) return []
-    return parsedData.filter(
+    const funders = getAdditionalField(preprint, 'Funder(s) and award numbers')
+    if (!funders) return []
+    if (!Array.isArray(funders)) return []
+    return funders.filter(
       (item): item is Funder =>
         typeof item === 'object' &&
         item !== null &&
