@@ -177,7 +177,6 @@ export async function createPreprintFile(
   )
 
   if (res.status !== 200) {
-    console.log(res)
     throw new Error(
       `Status ${res.status}: Unable to create file. ${res.statusText}`,
     )

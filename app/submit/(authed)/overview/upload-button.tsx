@@ -11,7 +11,7 @@ const UploadButton = () => {
   const { preprint } = usePreprint()
   const ref = useRef<HTMLInputElement>(null)
   const [file, setFile] = useState<File | null>(null)
-
+  console.log(preprint)
   const handleChange = useCallback(() => {
     if (ref.current?.files && ref.current.files[0]) {
       setFile(ref.current?.files[0])
@@ -31,13 +31,6 @@ const UploadButton = () => {
         formData.set('preprint', String(preprint?.pk))
         formData.set('mime_type', file.type)
         formData.set('original_filename', file.name)
-        console.log({
-          preprint: preprint?.pk,
-          // file: arrayBuffer,
-          mime_type: file.type,
-          original_filename: file.name,
-        })
-        debugger
 
         createPreprintFile(formData)
         // createPreprintFile({
@@ -51,7 +44,6 @@ const UploadButton = () => {
     [file, preprint?.pk],
   )
 
-  console.log(file)
   return (
     <form onSubmit={handleSubmit}>
       <Flex sx={{ alignItems: 'baseline', gap: 3 }}>
