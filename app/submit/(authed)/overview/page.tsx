@@ -4,15 +4,16 @@ import { Flex, Label } from 'theme-ui'
 
 import { Checkbox, Field, Form } from '../../../../components'
 import NavButtons from '../../nav-buttons'
-import { usePreprint } from '../preprint-context'
+import { usePreprint, usePreprintFiles } from '../preprint-context'
 import { useForm } from '../utils'
 import { FormData, initializeForm, validateForm, submitForm } from './utils'
 import UploadButton from './upload-button'
 
 const SubmissionOverview = () => {
   const { preprint, setPreprint } = usePreprint()
+  const { files } = usePreprintFiles()
   const { data, setters, errors, onSubmit, submitError } = useForm<FormData>(
-    () => initializeForm(preprint),
+    () => initializeForm(preprint, files),
     validateForm,
     submitForm.bind(null, preprint, setPreprint),
   )
@@ -66,20 +67,20 @@ const SubmissionOverview = () => {
         {data.article && (
           <Field
             label='Article upload'
-            id='article'
+            id='articleFile'
             description='Your article must be submitted as a PDF.'
-            error={errors.article ?? errors.data}
+            error={errors.articleFile}
           >
-            <UploadButton />
+            <UploadButton file={data.articleFile} />
           </Field>
         )}
 
         {data.data && (
           <Field
             label='Data upload'
-            id='data'
+            id='dataFile'
             description='Your submission can by represented by a single file of any format, including ZIP, up to [TK] MB.'
-            error={errors.article ?? errors.data}
+            error={errors.articleFile}
           >
             <UploadButton />
           </Field>

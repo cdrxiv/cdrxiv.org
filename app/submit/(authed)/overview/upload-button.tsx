@@ -1,44 +1,49 @@
 'use client'
 
-import { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 
 import { Button, Link } from '../../../../components'
-import { createPreprintFile, updatePreprint } from '../actions'
+import { createPreprintFile } from '../actions'
 import { usePreprint } from '../preprint-context'
+import { PreprintFile, PreprintFileParams } from '../../../../types/preprint'
 
-const UploadButton = () => {
+type Props = {
+  file?: PreprintFile
+}
+const UploadButton: React.FC<Props> = ({ file: fileProp }) => {
   const { preprint } = usePreprint()
   const ref = useRef<HTMLInputElement>(null)
-  const [file, setFile] = useState<File | null>(null)
-  console.log(preprint)
+  const [file, setFile] = useState<PreprintFileParams | PreprintFile | null>(
+    fileProp ?? null,
+  )
   const handleChange = useCallback(() => {
     if (ref.current?.files && ref.current.files[0]) {
-      setFile(ref.current?.files[0])
+      const currentFile = ref.current.files[0]
+      currentFile.arrayBuffer().then((arrayBuffer) =>
+        setFile({
+          preprint: preprint.pk,
+          mime_type: currentFile.type,
+          original_filename: currentFile.name,
+          file: arrayBuffer,
+        }),
+      )
     }
-  }, [])
+  }, [preprint])
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       if (file) {
         const formData = new FormData(e.target)
-        // const arrayBuffer = await file.arrayBuffer()
 
-        // if (arrayBuffer) {
-        //   formData.set('file', arrayBuffer)
-        // }
+        //   formData.set('file', file.file)
         formData.set('preprint', String(preprint?.pk))
-        formData.set('mime_type', file.type)
-        formData.set('original_filename', file.name)
+        formData.set('mime_type', file.mime_type)
+        formData.set('original_filename', file.original_filename)
 
         createPreprintFile(formData)
-        // createPreprintFile({
-        //   preprint: preprint?.pk,
-        //   file: arrayBuffer,
-        //   mime_type: file.type,
-        //   original_filename: file.name,
-        // })
+        // createPreprintFile(file)
       }
     },
     [file, preprint?.pk],
@@ -47,11 +52,19 @@ const UploadButton = () => {
   return (
     <form onSubmit={handleSubmit}>
       <Flex sx={{ alignItems: 'baseline', gap: 3 }}>
-        <Button sx={{ display: !file ? 'none' : 'inherit', flexShrink: 0 }}>
+        <Button
+          sx={{
+            display: !file || file.pk ? 'none' : 'inherit',
+            flexShrink: 0,
+          }}
+        >
           Upload file
         </Button>
-        <Button as='label' sx={{ display: file ? 'none' : 'inherit' }}>
-          Choose file
+        <Button
+          as='label'
+          sx={{ display: file && !file.pk ? 'none' : 'inherit', flexShrink: 0 }}
+        >
+          {file?.pk ? 'Replace file' : 'Choose file'}
           <input
             name='file'
             ref={ref}
@@ -67,7 +80,7 @@ const UploadButton = () => {
             sx={{ variant: 'text.monoCaps', textTransform: 'none' }}
             onClick={() => setFile(null)}
           >
-            {file.name}
+            {file.original_filename}
             <Box
               as='span'
               sx={{ display: 'inline-block', textDecoration: 'none' }}
