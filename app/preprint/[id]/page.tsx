@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation'
 import PdfViewer from './pdf-viewer'
 
 // Polyfill for Promise.withResolvers
@@ -19,15 +20,22 @@ if (typeof Promise.withResolvers !== 'function') {
 
 const getPreprint = async (id: string) => {
   const res = await fetch(
-    'https://carbonplan.endurance.janeway.systems/carbonplan/api/published_preprints/' +
-      id,
+    `https://carbonplan.endurance.janeway.systems/carbonplan/api/published_preprints/${id}`,
   )
-  const preprint = await res.json()
-  return preprint
+  if (!res.ok) {
+    if (res.status === 404) {
+      return null
+    }
+    throw new Error(`API request failed with status ${res.status}`)
+  }
+  return res.json()
 }
 
 const PreprintsPage = async ({ params }: { params: { id: string } }) => {
   const preprint = await getPreprint(params.id)
+  if (!preprint) {
+    notFound()
+  }
   return <PdfViewer preprint={preprint} />
 }
 
