@@ -1,9 +1,14 @@
 import React from 'react'
 import { Box, Flex } from 'theme-ui'
 import { formatDate } from '../../../utils/formatters'
-import type { Funder, Preprint } from '../../../types/preprint'
-import { getAdditionalField, getFunders } from '../../../utils/data'
+import type { Preprint } from '../../../types/preprint'
+import { getAdditionalField } from '../../../utils/data'
 import { Field, Button, Link } from '../../../components'
+
+type Funder = {
+  funder: string
+  award: string
+}
 
 const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
   const funders =
