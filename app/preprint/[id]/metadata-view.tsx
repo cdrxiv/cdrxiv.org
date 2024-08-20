@@ -79,7 +79,7 @@ const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
             {preprint.keywords.map(({ word }, index, array) => (
               <React.Fragment key={word}>
                 <Link
-                  href={`/?keyword=${word}`}
+                  href={`/search?query=${word}`}
                   sx={{ display: 'inline', variant: 'text.mono' }}
                 >
                   {word}
