@@ -1,4 +1,4 @@
-import { Funder, Preprint } from '../types/preprint'
+import { Preprint } from '../types/preprint'
 
 export const getAdditionalField = (
   preprint: Preprint | null,
@@ -27,22 +27,4 @@ export const getAdditionalField = (
   }
 
   return answer
-}
-
-export const getFunders = (preprint: Preprint | null): Funder[] => {
-  try {
-    const funders = getAdditionalField(preprint, 'Funder(s) and award numbers')
-    if (!funders) return []
-    if (!Array.isArray(funders)) return []
-    return funders.filter(
-      (item): item is Funder =>
-        typeof item === 'object' &&
-        item !== null &&
-        typeof item.funder === 'string' &&
-        typeof item.award === 'string',
-    )
-  } catch (error) {
-    console.error('Error parsing funders data:', error)
-    return []
-  }
 }

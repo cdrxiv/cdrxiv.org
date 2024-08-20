@@ -6,7 +6,8 @@ import { getAdditionalField, getFunders } from '../../../utils/data'
 import { Field, Button, Link } from '../../../components'
 
 const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
-  const funders = getFunders(preprint)
+  const funders =
+    getAdditionalField(preprint, 'Funder(s) and award numbers') || []
 
   const submissionType = getAdditionalField(preprint, 'Submission type')
   const hasArticle = ['Article', 'Both'].includes(submissionType)

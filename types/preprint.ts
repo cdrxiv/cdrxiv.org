@@ -53,13 +53,6 @@ export type AdditionalFieldAnswer = {
   } | null
 }
 
-export type Funder = {
-  funder: string
-  award: string
-}
-
-export type Funders = Funder[]
-
 export type Stage =
   | 'preprint_unsubmitted'
   | 'preprint_review'

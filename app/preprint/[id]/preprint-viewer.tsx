@@ -20,7 +20,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 const PreprintViewer = ({ preprint }: { preprint: Preprint }) => {
   const [containerWidth, setContainerWidth] = useState<number>(0)
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null)
-  console.log('preprint', pdf)
   const containerRef = useRef<HTMLDivElement>(null)
   const pageRefs = useRef<(HTMLDivElement | null)[]>([])
 
