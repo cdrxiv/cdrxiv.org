@@ -46,7 +46,7 @@ const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         rightCorner={
           active.hidden
             ? 'Success!'
-            : `Step ${index} / ${visiblePaths.length - 1}`
+            : `Step ${index + 1} / ${visiblePaths.length}`
         }
         sidebar={
           <Box>
