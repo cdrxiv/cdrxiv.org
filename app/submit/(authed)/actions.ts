@@ -185,3 +185,17 @@ export async function createPreprintFile(
   const result = res.json()
   return result
 }
+
+export async function createDataDeposition() {
+  const res = await fetch(process.env.ZENODO_URL + '/api/deposit/depositions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ metadata: { upload_type: 'dataset' } }),
+  })
+
+  const result = await res.json()
+  return result
+}
