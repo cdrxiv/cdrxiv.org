@@ -124,7 +124,7 @@ const Card: React.FC<CardProps> = ({
           sx={{
             position: 'relative',
             width: '100%',
-            height: 'auto',
+            height: '100%',
             cursor: 'pointer',
             background: 'primary',
             borderColor: color,
