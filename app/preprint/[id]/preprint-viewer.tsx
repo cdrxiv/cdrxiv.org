@@ -24,7 +24,7 @@ const PreprintViewer = ({ preprint }: { preprint: Preprint }) => {
   const pageRefs = useRef<(HTMLDivElement | null)[]>([])
 
   const submissionType = getAdditionalField(preprint, 'Submission type')
-  const hasArticle = ['Article', 'Both'].includes(submissionType)
+  const hasArticle = ['Article', 'Both'].includes(submissionType ?? '')
 
   useEffect(() => {
     const updateWidth = () => {
