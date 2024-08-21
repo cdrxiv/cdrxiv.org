@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import { Box } from 'theme-ui'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Column, Link, Menu, Row } from '../components'
@@ -19,6 +19,11 @@ const Topics: React.FC = () => {
 
   const midPoint = Math.ceil(subjects.length / 2) - 1 // -1 accounts for All option
 
+  const totalCount = useMemo(
+    () => subjects.reduce((sum, subject) => sum + subject.preprints.length, 0),
+    [subjects],
+  )
+
   const handleFilterChange = (newFilter: string) => {
     const params = new URLSearchParams(searchParams)
     if (newFilter === 'All' || newFilter === currentSubject) {
@@ -31,7 +36,7 @@ const Topics: React.FC = () => {
     router.push(`/?${params.toString()}`)
   }
 
-  const renderSubject = (name: string) => (
+  const renderSubject = (name: string, count: number) => (
     <Box
       onClick={() => handleFilterChange(name)}
       key={name}
@@ -47,6 +52,13 @@ const Topics: React.FC = () => {
       }}
     >
       {name}
+
+      <Box
+        as='sup'
+        sx={{ display: ['none', 'none', 'initial', 'initial'], ml: 1 }}
+      >
+        {count}
+      </Box>
     </Box>
   )
 
@@ -62,15 +74,19 @@ const Topics: React.FC = () => {
         </Row>
         <Row columns={8} sx={{ display: ['none', 'none', 'flex', 'flex'] }}>
           <Column start={1} width={4}>
-            {renderSubject('All')}
+            {renderSubject('All', totalCount)}
             {subjects
               .slice(0, midPoint)
-              .map((subject) => renderSubject(subject.name))}
+              .map((subject) =>
+                renderSubject(subject.name, subject.preprints.length),
+              )}
           </Column>
           <Column start={5} width={4}>
             {subjects
               .slice(midPoint)
-              .map((subject) => renderSubject(subject.name))}
+              .map((subject) =>
+                renderSubject(subject.name, subject.preprints.length),
+              )}
           </Column>
         </Row>
 
@@ -106,8 +122,10 @@ const Topics: React.FC = () => {
             overflowY: 'auto',
           }}
         >
-          {renderSubject('All')}
-          {subjects.map((subject) => renderSubject(subject.name))}
+          {renderSubject('All', totalCount)}
+          {subjects.map((subject) =>
+            renderSubject(subject.name, subject.preprints.length),
+          )}
         </Menu>
       )}
     </>

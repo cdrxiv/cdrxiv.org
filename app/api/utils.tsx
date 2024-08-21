@@ -1,7 +1,6 @@
 import { getToken } from 'next-auth/jwt'
 import { NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
-import { TEST_SUBJECTS } from './placeholder-data'
 
 export const fetchWithToken = async (
   reqOrHeaders: NextRequest | Headers,
@@ -47,8 +46,6 @@ export const getSubjects = async () => {
   )
 
   if (res.status === 200) {
-    return await res.json()
-  } else {
-    return { ...TEST_SUBJECTS, test_data: true }
+    return res.json()
   }
 }

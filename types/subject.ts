@@ -1,6 +1,6 @@
 export type Subject = {
   name: string
-  preprint_set: string[]
+  preprints: string[]
 }
 
 export type Subjects = Subject[]
