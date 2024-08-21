@@ -3,7 +3,7 @@ import { Funder, Preprint } from '../types/preprint'
 export const getAdditionalField = (
   preprint: Preprint | null,
   fieldName: string,
-) => {
+): string | null => {
   if (!preprint) {
     return null
   }

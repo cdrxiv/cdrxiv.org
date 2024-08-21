@@ -9,7 +9,7 @@ const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
   const funders = getFunders(preprint) ?? []
 
   const submissionType = getAdditionalField(preprint, 'Submission type')
-  const hasArticle = ['Article', 'Both'].includes(submissionType)
+  const hasArticle = ['Article', 'Both'].includes(submissionType ?? '')
   const fileType = hasArticle ? 'PDF' : 'Data'
 
   return (
