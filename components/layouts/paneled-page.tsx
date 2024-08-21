@@ -86,10 +86,10 @@ const PaneledPage: React.FC<{
         </Box>
       </Column>
       <Column
-        start={[1, 1, 11, 11]}
-        width={[6, 6, 2, 2]}
+        start={[1, 7, 11, 11]}
+        width={[6, 2, 2, 2]}
         sx={{
-          display: ['none', 'none', 'inherit', 'inherit'],
+          display: ['none', 'inherit', 'inherit', 'inherit'],
           overflowY: 'auto',
         }}
       >
