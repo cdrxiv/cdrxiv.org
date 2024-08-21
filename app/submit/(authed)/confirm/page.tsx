@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { Button, Field, Form, Link } from '../../../../components'
 import NavButtons from '../../nav-buttons'
 import { PATHS } from '../../constants'
-import { usePreprint } from '../preprint-context'
+import { usePreprint, usePreprintFiles } from '../preprint-context'
 import { getFormattedDate } from '../utils'
 import { updatePreprint } from '../actions'
 import {
@@ -68,6 +68,7 @@ const SectionWrapper = ({
 
 const SubmissionConfirmation = () => {
   const { preprint } = usePreprint()
+  const { files } = usePreprintFiles()
   const router = useRouter()
   const [submitError, setSubmitError] = useState<string | null>(null)
 
@@ -85,11 +86,11 @@ const SubmissionConfirmation = () => {
             'Unable to complete submission. Please check submission contents and try again.',
         )
       })
-  }, [preprint])
+  }, [preprint, router])
 
   const { info, overview, authors } = useMemo(() => {
     const info = initializeInfo(preprint)
-    const overview = initializeOverview(preprint)
+    const overview = initializeOverview(preprint, files)
     const { agreement, ...overviewErrors } = validateOverview(overview)
 
     return {
@@ -103,7 +104,7 @@ const SubmissionConfirmation = () => {
             : null,
       },
     }
-  }, [preprint])
+  }, [preprint, files])
 
   return (
     <div>
