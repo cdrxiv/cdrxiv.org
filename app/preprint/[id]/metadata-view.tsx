@@ -19,7 +19,7 @@ const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
   const fileType = hasArticle ? 'PDF' : 'Data'
 
   return (
-    <Flex sx={{ flexDirection: 'column', mt: 5, gap: 5 }}>
+    <Flex sx={{ flexDirection: 'column', mt: 5, gap: 9 }}>
       {preprint.subject.length > 0 && (
         <Field label='Pathways'>
           {preprint.subject.map(({ name }) => (
