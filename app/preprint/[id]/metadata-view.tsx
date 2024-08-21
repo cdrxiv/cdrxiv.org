@@ -38,35 +38,42 @@ const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
         </Field>
       )}
 
-      {preprint.versions[0]?.public_download_url && (
-        <Box sx={{}}>
-          <Button href={preprint.versions[0].public_download_url}>
-            Download ({fileType})
-          </Button>
-        </Box>
-      )}
-
-      {preprint.versions.length > 1 && (
-        <Field label='Older Versions'>
-          <Box
-            as='ul'
-            sx={{
-              variant: 'styles.ul',
-            }}
-          >
-            {preprint.versions.slice(1).map((version) => (
-              <Box as='li' key={version.version} sx={{ variant: 'styles.li' }}>
-                <Link
-                  href={version.public_download_url}
-                  sx={{ variant: 'text.mono' }}
-                >
-                  {formatDate(new Date(version.date_time))}, v{version.version}
-                </Link>
-              </Box>
-            ))}
+      <Flex sx={{ flexDirection: 'column', gap: 5 }}>
+        {preprint.versions[0]?.public_download_url && (
+          <Box sx={{}}>
+            <Button href={preprint.versions[0].public_download_url}>
+              Download ({fileType})
+            </Button>
           </Box>
-        </Field>
-      )}
+        )}
+
+        {preprint.versions.length > 1 && (
+          <Field label='Older Versions'>
+            <Box
+              as='ul'
+              sx={{
+                variant: 'styles.ul',
+              }}
+            >
+              {preprint.versions.slice(1).map((version) => (
+                <Box
+                  as='li'
+                  key={version.version}
+                  sx={{ variant: 'styles.li' }}
+                >
+                  <Link
+                    href={version.public_download_url}
+                    sx={{ variant: 'text.mono' }}
+                  >
+                    {formatDate(new Date(version.date_time))}, v
+                    {version.version}
+                  </Link>
+                </Box>
+              ))}
+            </Box>
+          </Field>
+        )}
+      </Flex>
 
       <Field label='Funders'>
         {funders.map((item: Funder) => (
