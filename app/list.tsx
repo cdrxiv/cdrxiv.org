@@ -3,17 +3,25 @@ import { Box, Flex } from 'theme-ui'
 import type { Preprints } from '../types/preprint'
 import { formatDate, authorList, submissionTypes } from '../utils/formatters'
 import { Badge, Column, Row } from '../components'
+import { useRouter } from 'next/navigation'
 
 interface ListViewProps {
   preprints: Preprints
 }
 
 const ListView: React.FC<ListViewProps> = ({ preprints }) => {
+  const router = useRouter()
+
+  const handleClick = (pk) => {
+    router.push(`/preprint/${pk}`)
+  }
+
   return (
     <>
       {preprints.map((preprint, i) => (
         <Box
           key={preprint.title}
+          onClick={() => handleClick(preprint.pk)}
           sx={{
             borderTop: '1px solid',
             borderBottom: i === preprints.length - 1 ? '1px solid' : 0,
