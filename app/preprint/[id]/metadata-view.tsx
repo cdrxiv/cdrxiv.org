@@ -1,18 +1,12 @@
 import React from 'react'
 import { Box, Flex } from 'theme-ui'
 import { formatDate } from '../../../utils/formatters'
-import type { Preprint } from '../../../types/preprint'
-import { getAdditionalField } from '../../../utils/data'
+import type { Preprint, Funder } from '../../../types/preprint'
+import { getAdditionalField, getFunders } from '../../../utils/data'
 import { Field, Button, Link } from '../../../components'
 
-type Funder = {
-  funder: string
-  award: string
-}
-
 const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
-  const rawFunders = getAdditionalField(preprint, 'Funder(s) and award numbers')
-  const funders = Array.isArray(rawFunders) ? rawFunders : []
+  const funders = getFunders(preprint) ?? []
 
   const submissionType = getAdditionalField(preprint, 'Submission type')
   const hasArticle = ['Article', 'Both'].includes(submissionType)
@@ -84,7 +78,9 @@ const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
             {item.funder} {item.award ? `(${item.award})` : ''}
           </Box>
         ))}
-        {funders.length === 0 && <Box sx={{ variant: 'text.mono', color: 'listBorderGrey' }}>None</Box>}
+        {funders.length === 0 && (
+          <Box sx={{ variant: 'text.mono', color: 'listBorderGrey' }}>None</Box>
+        )}
       </Field>
 
       <Field label='License'>
