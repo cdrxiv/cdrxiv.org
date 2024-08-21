@@ -33,6 +33,7 @@ export const validateForm = ({
   data,
   article,
   articleFile,
+  dataFile,
 }: FormData) => {
   let result: Partial<{ [K in keyof FormData]: string }> = {}
 
@@ -47,6 +48,10 @@ export const validateForm = ({
 
   if (article && !articleFile) {
     result.articleFile = 'You must finish uploading your article file.'
+  }
+
+  if (data && !dataFile) {
+    result.dataFile = 'You must finish uploading your data file.'
   }
 
   return result

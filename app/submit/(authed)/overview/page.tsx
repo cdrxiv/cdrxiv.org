@@ -83,7 +83,7 @@ const SubmissionOverview = () => {
             label='Data upload'
             id='dataFile'
             description='Your submission can by represented by a single file of any format, including ZIP, up to [TK] MB.'
-            error={errors.articleFile}
+            error={errors.dataFile}
           >
             <UploadButton setFile={setters.dataFile} />
           </Field>
