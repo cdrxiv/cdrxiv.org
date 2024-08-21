@@ -7,11 +7,11 @@ type ColorsObject = {
 
 const useBackgroundColors = (): ColorsObject => {
   const pathname = usePathname()
-  // TODO: expand this to include preprint viewing paths
   if (
     pathname.startsWith('/submit/') ||
     pathname.startsWith('/login') ||
-    pathname.startsWith('/submissions')
+    pathname.startsWith('/submissions') ||
+    pathname.startsWith('/preprint/')
   ) {
     return {
       cardBackground: ['primary', 'primary', 'background', 'background'],
