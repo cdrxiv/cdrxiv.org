@@ -1,6 +1,6 @@
 import React, { useState, SVGProps } from 'react'
 import { Box, Flex, BoxProps, ThemeUIStyleObject } from 'theme-ui'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 import Badge from './badge'
 import type { Author } from '../types/preprint'
@@ -85,16 +85,12 @@ const Card: React.FC<CardProps> = ({
   background = 'background',
   sx = {},
 }) => {
-  const router = useRouter()
-
   const [hovered, setHovered] = useState<boolean>(false)
 
   const color = hovered ? 'blue' : 'text'
 
   const handleClick = () => {
-    if (href) {
-      router.push(href)
-    } else if (onClick) {
+    if (onClick) {
       onClick()
     }
   }
@@ -107,96 +103,108 @@ const Card: React.FC<CardProps> = ({
   }
 
   return (
-    <Box
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
-      tabIndex={0}
-      role='button'
-      aria-label={`${title} by ${authorList(authors)}, published on ${date ? formatDate(date) : 'unknown date'}`}
-      sx={{
-        position: 'relative',
-        width: '100%',
-        height: 'auto',
-        cursor: 'pointer',
-        background: 'primary',
-        borderColor: color,
-        borderWidth,
-        borderStyle: 'solid',
-        outline: 'none', // use highlight style for focus instead
-        ...sx,
-      }}
-    >
-      <Corner
-        hovered={hovered}
-        background={background}
-        size={40}
-        sx={{ display: ['none', 'none', 'inherit', 'inherit'] }}
-      />
-      <Corner
-        hovered={hovered}
-        background={background}
-        size={30}
-        sx={{ display: ['inherit', 'inherit', 'none', 'none'] }}
-      />
-
-      <Flex
-        sx={{
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          height: '100%',
-          p: [3, 6, 6, 7],
-          position: 'relative',
+    <Link href={href || '#'} key={title} passHref legacyBehavior>
+      <a
+        style={{
+          textDecoration: 'none',
+          color: 'inherit',
+          display: 'block',
         }}
       >
-        <Flex sx={{ flexDirection: 'column' }}>
-          <Box
-            sx={{
-              variant: 'text.body',
-              mb: [3, 3, 3, 4],
-              pr: [36, 36, 48, 48],
-              color,
-            }}
-          >
-            {title}
-          </Box>
-          <Box sx={{ variant: 'text.mono' }}>{authorList(authors)}</Box>
-        </Flex>
-        <Flex
+        <Box
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          onFocus={() => setHovered(true)}
+          onBlur={() => setHovered(false)}
+          tabIndex={0}
+          role='button'
+          aria-label={`${title} by ${authorList(authors)}, published on ${date ? formatDate(date) : 'unknown date'}`}
           sx={{
-            justifyContent: 'space-between',
-            alignItems: 'flex-end',
-            mt: 3,
+            position: 'relative',
+            width: '100%',
+            height: 'auto',
+            cursor: 'pointer',
+            background: 'primary',
+            borderColor: color,
+            borderWidth,
+            borderStyle: 'solid',
+            outline: 'none', // use highlight style for focus instead
+            ...sx,
           }}
         >
-          <Flex sx={{ gap: 2 }}>
-            {badges.map((badge) => (
-              <Badge key={badge.label} color={badge.color}>
-                {badge.label}
-              </Badge>
-            ))}
-            {badges.length === 0 && (
-              <Box sx={{ variant: 'text.monoCaps', color: 'listBorderGrey' }}>
-                Not labeled
+          <Corner
+            hovered={hovered}
+            background={background}
+            size={40}
+            sx={{ display: ['none', 'none', 'inherit', 'inherit'] }}
+          />
+          <Corner
+            hovered={hovered}
+            background={background}
+            size={30}
+            sx={{ display: ['inherit', 'inherit', 'none', 'none'] }}
+          />
+
+          <Flex
+            sx={{
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              height: '100%',
+              p: [3, 6, 6, 7],
+              position: 'relative',
+            }}
+          >
+            <Flex sx={{ flexDirection: 'column' }}>
+              <Box
+                sx={{
+                  variant: 'text.body',
+                  mb: [3, 3, 3, 4],
+                  pr: [36, 36, 48, 48],
+                  color,
+                }}
+              >
+                {title}
               </Box>
-            )}
-          </Flex>
-          {date && (
-            <Box
+              <Box sx={{ variant: 'text.mono' }}>{authorList(authors)}</Box>
+            </Flex>
+            <Flex
               sx={{
-                variant: 'text.monoCaps',
-                alignSelf: 'center',
+                justifyContent: 'space-between',
+                alignItems: 'flex-end',
+                mt: 3,
               }}
             >
-              {formatDate(date)}
-            </Box>
-          )}
-        </Flex>
-      </Flex>
-    </Box>
+              <Flex sx={{ gap: 2 }}>
+                {badges.map((badge) => (
+                  <Badge key={badge.label} color={badge.color}>
+                    {badge.label}
+                  </Badge>
+                ))}
+                {badges.length === 0 && (
+                  <Box
+                    sx={{ variant: 'text.monoCaps', color: 'listBorderGrey' }}
+                  >
+                    Not labeled
+                  </Box>
+                )}
+              </Flex>
+              {date && (
+                <Box
+                  sx={{
+                    variant: 'text.monoCaps',
+                    alignSelf: 'center',
+                  }}
+                >
+                  {formatDate(date)}
+                </Box>
+              )}
+            </Flex>
+          </Flex>
+        </Box>
+      </a>
+    </Link>
   )
 }
 
