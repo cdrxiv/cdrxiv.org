@@ -12,7 +12,7 @@ interface ListViewProps {
 const ListView: React.FC<ListViewProps> = ({ preprints }) => {
   const router = useRouter()
 
-  const handleClick = (pk) => {
+  const handleClick = (pk: number) => {
     router.push(`/preprint/${pk}`)
   }
 
