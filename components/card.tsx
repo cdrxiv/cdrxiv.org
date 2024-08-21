@@ -108,10 +108,10 @@ const Card: React.FC<CardProps> = ({
         style={{
           textDecoration: 'none',
           color: 'inherit',
-          display: 'block',
+          height: '100%',
         }}
       >
-        <Box
+        <Flex
           onClick={handleClick}
           onKeyDown={handleKeyDown}
           onMouseEnter={() => setHovered(true)}
@@ -151,7 +151,7 @@ const Card: React.FC<CardProps> = ({
             sx={{
               flexDirection: 'column',
               justifyContent: 'space-between',
-              height: '100%',
+              flex: 1,
               p: [3, 6, 6, 7],
               position: 'relative',
             }}
@@ -202,7 +202,7 @@ const Card: React.FC<CardProps> = ({
               )}
             </Flex>
           </Flex>
-        </Box>
+        </Flex>
       </a>
     </Link>
   )
