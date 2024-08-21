@@ -74,7 +74,7 @@ const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
             key={`${item.funder}-${item.award}`}
             sx={{ variant: 'text.mono' }}
           >
-            {item.funder}: {item.award}
+            {item.funder} {item.award ? `(${item.award})` : ''}
           </Box>
         ))}
         {funders.length === 0 && <Box sx={{ variant: 'text.mono' }}></Box>}
