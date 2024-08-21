@@ -11,8 +11,8 @@ type Funder = {
 }
 
 const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
-  const funders =
-    getAdditionalField(preprint, 'Funder(s) and award numbers') || []
+  const rawFunders = getAdditionalField(preprint, 'Funder(s) and award numbers')
+  const funders = Array.isArray(rawFunders) ? rawFunders : []
 
   const submissionType = getAdditionalField(preprint, 'Submission type')
   const hasArticle = ['Article', 'Both'].includes(submissionType)
