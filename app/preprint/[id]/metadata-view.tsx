@@ -77,7 +77,7 @@ const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
             {item.funder} {item.award ? `(${item.award})` : ''}
           </Box>
         ))}
-        {funders.length === 0 && <Box sx={{ variant: 'text.mono' }}></Box>}
+        {funders.length === 0 && <Box sx={{ variant: 'text.mono', color: 'listBorderGrey' }}>None</Box>}
       </Field>
 
       <Field label='License'>
