@@ -18,8 +18,6 @@ const StyledButton = React.forwardRef<Ref, Props>(
       color: 'blue',
       background: 'primary',
       borderRadius: 0,
-      border: '1px solid',
-      borderColor: 'background',
       boxShadow: (theme) => `1px 1px 0px 1px ${theme?.colors?.muted} inset, 
                   -1px -1px 0px 1px ${theme?.colors?.text} inset`,
       outline: 'none',

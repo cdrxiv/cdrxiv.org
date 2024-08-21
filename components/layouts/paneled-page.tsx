@@ -1,9 +1,13 @@
+'use client'
+
 import React from 'react'
 import { Box, Flex } from 'theme-ui'
 
 import Row from '../row'
 import Column from '../column'
 import Guide from '../guide'
+
+const HEADER_HEIGHT = 125
 
 const PaneledPage: React.FC<{
   children: React.ReactNode
@@ -14,21 +18,28 @@ const PaneledPage: React.FC<{
   rightCorner?: React.ReactNode
 }> = ({ children, sidebar, metadata, title, leftCorner, rightCorner }) => {
   return (
-    <Row>
+    <Row sx={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
       <Column
         start={1}
         width={3}
-        sx={{ display: ['none', 'none', 'inherit', 'inherit'] }}
+        sx={{
+          display: ['none', 'none', 'inherit', 'inherit'],
+          overflowY: 'auto',
+        }}
       >
         {sidebar}
       </Column>
-      <Column start={[1, 1, 4, 4]} width={[6, 6, 6, 6]}>
+      <Column
+        start={[1, 1, 4, 4]}
+        width={[6, 6, 6, 6]}
+        sx={{
+          overflowY: 'auto',
+        }}
+      >
         <Box
           sx={{
             width: '100%',
             background: 'primary',
-            minHeight: '300px',
-            overflowY: 'scroll',
             px: [0, 0, 6, 8],
             pb: 6,
           }}
@@ -75,9 +86,12 @@ const PaneledPage: React.FC<{
         </Box>
       </Column>
       <Column
-        start={[1, 1, 11, 11]}
-        width={[6, 6, 2, 2]}
-        sx={{ display: ['none', 'none', 'inherit', 'inherit'] }}
+        start={[1, 7, 11, 11]}
+        width={[6, 2, 2, 2]}
+        sx={{
+          display: ['none', 'inherit', 'inherit', 'inherit'],
+          overflowY: 'auto',
+        }}
       >
         {metadata}
       </Column>
