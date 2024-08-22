@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Box } from 'theme-ui'
 
 import {
   createDataDeposition,
@@ -25,7 +24,6 @@ const DataFileInput: React.FC<Props> = ({
   const { preprint } = usePreprint()
   const [deposition, setDeposition] = useState<Deposition | null>(null)
   const [loading, setLoading] = useState<boolean>(fileProp ? true : false)
-  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (fileProp?.url) {
@@ -40,49 +38,45 @@ const DataFileInput: React.FC<Props> = ({
     async (file: CurrentFile | null) => {
       if (file && file.file) {
         let depositionId
-        try {
-          if (!deposition) {
-            // Create a new deposition if one doesn't already exist
-            const dep = await createDataDeposition()
-            const supplementaryFile = {
-              label: 'CDRXIV_DATA_DRAFT',
-              url: dep.links.self,
-            }
-
-            // Add file to preprint's supplementary_files list
-            const updatedPreprint = await updatePreprint(preprint, {
-              supplementary_files: [
-                ...preprint.supplementary_files,
-                supplementaryFile,
-              ],
-            })
-
-            depositionId = dep.id
-            setDeposition(dep)
-            setFileProp(supplementaryFile)
-            // TODO: setPreprint(updatedPreprint)
-          } else {
-            depositionId = deposition.id
+        if (!deposition) {
+          // Create a new deposition if one doesn't already exist
+          const dep = await createDataDeposition()
+          const supplementaryFile = {
+            label: 'CDRXIV_DATA_DRAFT',
+            url: dep.links.self,
           }
 
-          const formData = new FormData()
-          formData.set('name', file.original_filename)
-          formData.set('file', file.file)
+          // Add file to preprint's supplementary_files list
+          const updatedPreprint = await updatePreprint(preprint, {
+            supplementary_files: [
+              ...preprint.supplementary_files,
+              supplementaryFile,
+            ],
+          })
 
-          await createDataDepositionFile(depositionId, formData)
-          return {
-            persisted: true as const,
-            mime_type: null,
-            original_filename: file.original_filename,
-            file: null,
-          } as CurrentFile
-        } catch (e: any) {
-          setError(e.message ?? 'Error saving data file.')
-          return file
+          depositionId = dep.id
+          setDeposition(dep)
+          setFileProp(supplementaryFile)
+          // TODO: setPreprint(updatedPreprint)
+        } else {
+          depositionId = deposition.id
         }
+
+        const formData = new FormData()
+        formData.set('name', file.original_filename)
+        formData.set('file', file.file)
+
+        await createDataDepositionFile(depositionId, formData)
+        return {
+          persisted: true as const,
+          mime_type: null,
+          original_filename: file.original_filename,
+          file: null,
+        } as CurrentFile
       } else {
         // TODO (maybe)
         // delete deposition?
+        // delete deposition file?
         // clear supplementary_files entry
         setFileProp(null)
         return null
@@ -109,7 +103,6 @@ const DataFileInput: React.FC<Props> = ({
   ) : (
     <>
       <FileInput file={file} onSubmit={handleSubmit} />
-      {error && <Box sx={{ variant: 'text.mono', color: 'red' }}>{error}</Box>}
     </>
   )
 }

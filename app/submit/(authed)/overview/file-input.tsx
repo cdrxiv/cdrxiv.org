@@ -25,6 +25,7 @@ type Props = {
 const FileInput: React.FC<Props> = ({ file: fileProp, onSubmit }) => {
   const ref = useRef<HTMLInputElement>(null)
   const [file, setFile] = useState<CurrentFile | null>(fileProp ?? null)
+  const [error, setError] = useState<string>()
   const handleChange = useCallback(() => {
     onSubmit(null)
     if (ref.current?.files && ref.current.files[0]) {
@@ -42,8 +43,14 @@ const FileInput: React.FC<Props> = ({ file: fileProp, onSubmit }) => {
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       if (file && !file.persisted) {
-        const result = await onSubmit(file)
-        setFile(result)
+        setError(undefined)
+
+        try {
+          const result = await onSubmit(file)
+          setFile(result)
+        } catch (e: any) {
+          setError(e.message ?? 'Error saving file.')
+        }
       }
     },
     [file, onSubmit],
@@ -98,6 +105,7 @@ const FileInput: React.FC<Props> = ({ file: fileProp, onSubmit }) => {
           </Link>
         )}
       </Flex>
+      {error && <Box sx={{ variant: 'text.mono', color: 'red' }}>{error}</Box>}
     </form>
   )
 }
