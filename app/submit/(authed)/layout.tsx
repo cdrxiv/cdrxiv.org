@@ -10,7 +10,7 @@ interface Props {
   children: React.ReactNode
 }
 const SubmissionOverview: React.FC<Props> = async ({ children }) => {
-  const responses = await Promise.all([
+  const [preprintRes, filesRes] = await Promise.all([
     fetchWithToken(
       headers(),
       'https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/?stage=preprint_unsubmitted',
@@ -21,13 +21,18 @@ const SubmissionOverview: React.FC<Props> = async ({ children }) => {
     ),
   ])
 
-  if (responses.some((res) => res.status !== 200)) {
+  let files
+  if (preprintRes.status !== 200) {
     redirect('/login?signOut=true')
+  } else if (filesRes.status !== 200) {
+    // TODO: Remove special handling for /api/preprint_files once non-repository-manager-users can access
+    files = { results: [] }
   }
 
-  const [preprintsData, filesData] = await Promise.all(
-    responses.map((res) => res.json()),
-  )
+  const [preprintsData, filesData] = await Promise.all([
+    preprintRes.json(),
+    files ?? filesRes.json(),
+  ])
   let preprints = preprintsData.results
 
   if (preprints.length === 0) {
