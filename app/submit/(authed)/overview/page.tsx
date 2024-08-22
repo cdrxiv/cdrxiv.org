@@ -1,6 +1,6 @@
 'use client'
 
-import { Flex, Label } from 'theme-ui'
+import { Label } from 'theme-ui'
 
 import { Checkbox, Field, Form } from '../../../../components'
 import NavButtons from '../../nav-buttons'
@@ -40,55 +40,25 @@ const SubmissionOverview = () => {
         </Field>
 
         <Field
-          label='Submission contents'
-          id='contents'
-          description='Select the content types you’d like to include in your submission.'
-          error={errors.article ?? errors.data}
+          label='Article upload'
+          id='articleFile'
+          description='Your article must be submitted as a PDF.'
+          error={errors.articleFile}
         >
-          <Flex sx={{ gap: 8 }}>
-            <Label sx={{ width: 'fit-content', alignItems: 'center' }}>
-              <Checkbox
-                value='article'
-                checked={data.article}
-                onChange={(e) => setters.article(e.target.checked)}
-              />
-              Article
-            </Label>
-            <Label sx={{ width: 'fit-content', alignItems: 'center' }}>
-              <Checkbox
-                value='data'
-                checked={data.data}
-                onChange={(e) => setters.data(e.target.checked)}
-              />
-              Data
-            </Label>
-          </Flex>
+          <PreprintFileInput
+            file={data.articleFile}
+            setFile={setters.articleFile}
+          />
         </Field>
 
-        {data.article && (
-          <Field
-            label='Article upload'
-            id='articleFile'
-            description='Your article must be submitted as a PDF.'
-            error={errors.articleFile}
-          >
-            <PreprintFileInput
-              file={data.articleFile}
-              setFile={setters.articleFile}
-            />
-          </Field>
-        )}
-
-        {data.data && (
-          <Field
-            label='Data upload'
-            id='dataFile'
-            description='Your submission can by represented by a single file of any format, including ZIP, up to [TK] MB.'
-            error={errors.dataFile}
-          >
-            <DataFileInput file={data.dataFile} setFile={setters.dataFile} />
-          </Field>
-        )}
+        <Field
+          label='Data upload'
+          id='dataFile'
+          description='Your submission can by represented by a single file of any format, including ZIP, up to [TK] MB.'
+          error={errors.dataFile}
+        >
+          <DataFileInput file={data.dataFile} setFile={setters.dataFile} />
+        </Field>
       </Form>
 
       <NavButtons onClick={onSubmit} />

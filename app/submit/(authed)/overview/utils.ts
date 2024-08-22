@@ -3,14 +3,11 @@ import {
   PreprintFile,
   SupplementaryFile,
 } from '../../../../types/preprint'
-import { getAdditionalField } from '../../../../utils/data'
 import { createAdditionalField } from '../utils'
 import { updatePreprint } from '../actions'
 
 export type FormData = {
   agreement: boolean
-  data: boolean
-  article: boolean
   articleFile: PreprintFile | null
   dataFile: SupplementaryFile | null
 }
@@ -18,11 +15,8 @@ export const initializeForm = (
   preprint: Preprint,
   files: PreprintFile[],
 ): FormData => {
-  const submissionType = getAdditionalField(preprint, 'Submission type') ?? ''
   return {
     agreement: false,
-    data: ['Data', 'Both'].includes(submissionType),
-    article: ['Article', 'Both'].includes(submissionType),
     articleFile: files.reduce(
       (last: PreprintFile | null, file: PreprintFile) =>
         !last || last.pk < file.pk ? file : last,
@@ -37,8 +31,6 @@ export const initializeForm = (
 
 export const validateForm = ({
   agreement,
-  data,
-  article,
   articleFile,
   dataFile,
 }: FormData) => {
@@ -48,17 +40,9 @@ export const validateForm = ({
     result.agreement = 'You must accept the user agreement to continue.'
   }
 
-  if (!data && !article) {
-    result.data = 'You must include at least one content type.'
-    result.article = 'You must include at least one content type.'
-  }
-
-  if (article && !articleFile) {
-    result.articleFile = 'You must finish uploading your article file.'
-  }
-
-  if (data && !dataFile) {
-    result.dataFile = 'You must finish uploading your data file.'
+  if (!articleFile && !dataFile) {
+    result.articleFile = 'You must include at least one content type.'
+    result.dataFile = 'You must include at least one content type.'
   }
 
   return result
@@ -67,16 +51,16 @@ export const validateForm = ({
 export const submitForm = (
   preprint: Preprint,
   setPreprint: (p: Preprint) => void,
-  { data, article, articleFile, dataFile }: FormData,
+  { articleFile, dataFile }: FormData,
 ) => {
   if (!preprint) {
     throw new Error('Tried to submit without active preprint')
   }
 
   let submissionType
-  if (data && article) {
+  if (dataFile && articleFile) {
     submissionType = 'Both'
-  } else if (data) {
+  } else if (dataFile) {
     submissionType = 'Data'
   } else {
     submissionType = 'Article'

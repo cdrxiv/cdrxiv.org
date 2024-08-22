@@ -21,6 +21,7 @@ import {
 import AuthorsList from '../authors/authors-list'
 import DataFileDisplay from '../overview/data-file-display'
 import FileDisplay from '../overview/file-display'
+import { getAdditionalField } from '../../../../utils/data'
 
 const SummaryCard = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -113,7 +114,9 @@ const SubmissionConfirmation = () => {
       <Form error={submitError}>
         <SectionWrapper index={0} error={overview.error}>
           <Row columns={[1, 2, 2, 2]} gap={[5, 6, 6, 8]}>
-            {overview.data.article && (
+            {['Article', 'Both'].includes(
+              getAdditionalField(preprint, 'Submission type') ?? '',
+            ) && (
               <SummaryCard>
                 <Box sx={{ variant: 'text.body' }}>Article</Box>
 
@@ -122,7 +125,9 @@ const SubmissionConfirmation = () => {
                 />
               </SummaryCard>
             )}
-            {overview.data.data && (
+            {['Data', 'Both'].includes(
+              getAdditionalField(preprint, 'Submission type') ?? '',
+            ) && (
               <SummaryCard>
                 <Box sx={{ variant: 'text.body' }}>Data</Box>
 
