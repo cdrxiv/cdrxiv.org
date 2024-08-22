@@ -8,7 +8,7 @@ import { Button, Link } from '../../../../components'
 export type CurrentFile =
   | {
       persisted: true
-      mime_type: string
+      mime_type: null
       original_filename: string
       file: null
     }

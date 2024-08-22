@@ -1,4 +1,8 @@
-import { Preprint, PreprintFile } from '../../../../types/preprint'
+import {
+  Preprint,
+  PreprintFile,
+  SupplementaryFile,
+} from '../../../../types/preprint'
 import { getAdditionalField } from '../../../../utils/data'
 import { createAdditionalField } from '../utils'
 import { updatePreprint } from '../actions'
@@ -8,7 +12,7 @@ export type FormData = {
   data: boolean
   article: boolean
   articleFile: PreprintFile | null
-  dataFile: PreprintFile | null
+  dataFile: SupplementaryFile | null
 }
 export const initializeForm = (
   preprint: Preprint,
@@ -24,7 +28,10 @@ export const initializeForm = (
         !last || last.pk < file.pk ? file : last,
       null,
     ),
-    dataFile: null,
+    dataFile:
+      preprint.supplementary_files.find(
+        (file) => file.label === 'CDRXIV_DATA_DRAFT',
+      ) ?? null,
   }
 }
 
@@ -60,7 +67,7 @@ export const validateForm = ({
 export const submitForm = (
   preprint: Preprint,
   setPreprint: (p: Preprint) => void,
-  { data, article, articleFile }: FormData,
+  { data, article, articleFile, dataFile }: FormData,
 ) => {
   if (!preprint) {
     throw new Error('Tried to submit without active preprint')

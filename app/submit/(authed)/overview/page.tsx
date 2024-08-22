@@ -8,6 +8,7 @@ import { usePreprint, usePreprintFiles } from '../preprint-context'
 import { useForm } from '../utils'
 import { FormData, initializeForm, validateForm, submitForm } from './utils'
 import PreprintFileInput from './preprint-file-input'
+import DataFileInput from './data-file-input'
 
 const SubmissionOverview = () => {
   const { preprint, setPreprint } = usePreprint()
@@ -84,7 +85,9 @@ const SubmissionOverview = () => {
             id='dataFile'
             description='Your submission can by represented by a single file of any format, including ZIP, up to [TK] MB.'
             error={errors.dataFile}
-          ></Field>
+          >
+            <DataFileInput file={data.dataFile} setFile={setters.dataFile} />
+          </Field>
         )}
       </Form>
 

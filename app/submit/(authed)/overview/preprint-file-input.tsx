@@ -31,7 +31,7 @@ const PreprintFileInput: React.FC<Props> = ({
         setFileProp(result)
         return {
           persisted: true as const,
-          mime_type: result.mime_type,
+          mime_type: null,
           original_filename: result.original_filename,
           file: null,
         } as CurrentFile
@@ -48,7 +48,7 @@ const PreprintFileInput: React.FC<Props> = ({
       fileProp
         ? {
             persisted: true as const,
-            mime_type: fileProp.mime_type,
+            mime_type: null,
             original_filename: fileProp.original_filename,
             file: null,
           }

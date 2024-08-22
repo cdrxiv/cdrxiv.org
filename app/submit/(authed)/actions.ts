@@ -171,12 +171,11 @@ export async function createPreprintFile(
     `https://carbonplan.endurance.janeway.systems/carbonplan/api/preprint_files/`,
     {
       method: 'POST',
-      headers: { 'Content-Type': 'multipart/form-data' },
       body: formData,
     },
   )
 
-  if (res.status !== 200) {
+  if (![200, 201].includes(res.status)) {
     throw new Error(
       `Status ${res.status}: Unable to create file. ${res.statusText}`,
     )
@@ -194,6 +193,44 @@ export async function createDataDeposition() {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ metadata: { upload_type: 'dataset' } }),
+  })
+
+  const result = await res.json()
+  return result
+}
+
+export async function createDataDepositionFile(
+  deposition: number,
+  formData: FormData,
+) {
+  const res = await fetch(
+    process.env.ZENODO_URL + `/api/deposit/depositions/${deposition}/files`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+      },
+      body: formData,
+    },
+  )
+
+  const result = await res.json()
+
+  if (!result.id) {
+    throw new Error(result.message ?? 'Unable to create deposition file.')
+  }
+
+  return result
+}
+
+export async function fetchDataDeposition(url: string) {
+  if (process.env.ZENODO_URL && !url.startsWith(process.env.ZENODO_URL)) {
+    throw new Error(`Invalid data URL: ${url}`)
+  }
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+    },
   })
 
   const result = await res.json()
