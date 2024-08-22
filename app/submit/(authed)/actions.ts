@@ -5,13 +5,13 @@ import { getToken } from 'next-auth/jwt'
 import {
   Author,
   AuthorParams,
-  PreprintFileParams,
   Pagination,
   Preprint,
   PreprintParams,
   PreprintFile,
 } from '../../../types/preprint'
 import { fetchWithToken } from '../../api/utils'
+import { Deposition, DepositionFile } from '../../../types/zenodo'
 
 export async function updatePreprint(
   preprint: Preprint,
@@ -185,7 +185,7 @@ export async function createPreprintFile(
   return result
 }
 
-export async function createDataDeposition() {
+export async function createDataDeposition(): Promise<Deposition> {
   const res = await fetch(process.env.ZENODO_URL + '/api/deposit/depositions', {
     method: 'POST',
     headers: {
@@ -202,7 +202,7 @@ export async function createDataDeposition() {
 export async function createDataDepositionFile(
   deposition: number,
   formData: FormData,
-) {
+): Promise<DepositionFile> {
   const res = await fetch(
     process.env.ZENODO_URL + `/api/deposit/depositions/${deposition}/files`,
     {
@@ -223,7 +223,7 @@ export async function createDataDepositionFile(
   return result
 }
 
-export async function fetchDataDeposition(url: string) {
+export async function fetchDataDeposition(url: string): Promise<Deposition> {
   if (process.env.ZENODO_URL && !url.startsWith(process.env.ZENODO_URL)) {
     throw new Error(`Invalid data URL: ${url}`)
   }

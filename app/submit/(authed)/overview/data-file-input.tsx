@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { Box } from 'theme-ui'
 
 import {
   createDataDeposition,
@@ -10,24 +11,8 @@ import {
 } from '../actions'
 import { usePreprint } from '../preprint-context'
 import { SupplementaryFile } from '../../../../types/preprint'
+import { Deposition } from '../../../../types/zenodo'
 import FileInput, { CurrentFile } from './file-input'
-import { Box } from 'theme-ui'
-
-type Deposition = {
-  created: string
-  id: number
-  metadata: {}
-  files: DepositionFile[]
-  links: {
-    self: string
-  }
-}
-type DepositionFile = {
-  id: string
-  filename: string
-  filesize: number
-  checksum: string
-}
 
 type Props = {
   file?: SupplementaryFile | null
@@ -84,7 +69,7 @@ const DataFileInput: React.FC<Props> = ({
           formData.set('name', file.original_filename)
           formData.set('file', file.file)
 
-          const result = await createDataDepositionFile(depositionId, formData)
+          await createDataDepositionFile(depositionId, formData)
           return {
             persisted: true as const,
             mime_type: null,
