@@ -1,7 +1,8 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Box, Flex } from 'theme-ui'
+import { usePathname } from 'next/navigation'
 
 import Row from '../row'
 import Column from '../column'
@@ -17,6 +18,15 @@ const PaneledPage: React.FC<{
   leftCorner?: React.ReactNode
   rightCorner?: React.ReactNode
 }> = ({ children, sidebar, metadata, title, leftCorner, rightCorner }) => {
+  const contentRef = useRef<HTMLDivElement>(null)
+  const pathname = usePathname()
+
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollIntoView()
+    }
+  }, [pathname])
+
   return (
     <Row sx={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
       <Column
@@ -37,6 +47,7 @@ const PaneledPage: React.FC<{
         }}
       >
         <Box
+          ref={contentRef}
           sx={{
             width: '100%',
             background: 'primary',
