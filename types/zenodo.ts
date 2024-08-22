@@ -12,4 +12,5 @@ export type DepositionFile = {
   filename: string
   filesize: number
   checksum: string
+  links: { self: string; download: string }
 }

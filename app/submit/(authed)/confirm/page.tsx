@@ -4,7 +4,7 @@ import { Box, Flex } from 'theme-ui'
 import { useCallback, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import { Button, Field, Form, Link } from '../../../../components'
+import { Button, Column, Field, Form, Link, Row } from '../../../../components'
 import NavButtons from '../../nav-buttons'
 import { PATHS } from '../../constants'
 import { usePreprint, usePreprintFiles } from '../preprint-context'
@@ -19,6 +19,8 @@ import {
   validateForm as validateOverview,
 } from '../overview'
 import AuthorsList from '../authors/authors-list'
+import DataFileDisplay from '../overview/data-file-display'
+import FileDisplay from '../overview/file-display'
 
 const SummaryCard = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -109,12 +111,28 @@ const SubmissionConfirmation = () => {
   return (
     <div>
       <Form error={submitError}>
-        <SectionWrapper index={1} error={overview.error}>
-          {overview.data.article && 'Article TK'}
-          {overview.data.data && 'Data TK'}
+        <SectionWrapper index={0} error={overview.error}>
+          <Row columns={[1, 2, 2, 2]} gap={[5, 6, 6, 8]}>
+            {overview.data.article && (
+              <SummaryCard>
+                <Box sx={{ variant: 'text.body' }}>Article</Box>
+
+                <FileDisplay
+                  name={overview.data.articleFile?.original_filename}
+                />
+              </SummaryCard>
+            )}
+            {overview.data.data && (
+              <SummaryCard>
+                <Box sx={{ variant: 'text.body' }}>Data</Box>
+
+                <DataFileDisplay file={overview.data.dataFile} />
+              </SummaryCard>
+            )}
+          </Row>
         </SectionWrapper>
 
-        <SectionWrapper index={2} error={info.error}>
+        <SectionWrapper index={1} error={info.error}>
           <SummaryCard>
             <Box sx={{ variant: 'text.body' }}>
               {info.data.title || 'No title'}
@@ -138,7 +156,7 @@ const SubmissionConfirmation = () => {
           </SummaryCard>
         </SectionWrapper>
 
-        <SectionWrapper index={3} error={authors.error}>
+        <SectionWrapper index={2} error={authors.error}>
           <AuthorsList removable={false} />
         </SectionWrapper>
 
