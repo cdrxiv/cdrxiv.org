@@ -74,10 +74,6 @@ const DataFileInput: React.FC<Props> = ({
           file: null,
         } as CurrentFile
       } else {
-        // TODO (maybe)
-        // delete deposition?
-        // delete deposition file?
-        // clear supplementary_files entry
         setFileProp(null)
         return null
       }

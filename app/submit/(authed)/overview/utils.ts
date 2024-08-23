@@ -71,6 +71,30 @@ export const submitForm = (
     ],
   }
 
+  // If the data file has been cleared...
+  if (
+    preprint.supplementary_files.find(
+      (file) => file.label === 'CDRXIV_DATA_DRAFT',
+    ) &&
+    submissionType === 'Article'
+  ) {
+    // TODO:
+    // - Remove supplementary_files entry
+    // - Delete deposition
+    // - Delete deposition file?
+  }
+
+  // If the article PDF file has been cleared...
+  if (
+    preprint.supplementary_files.find(
+      (file) => file.label === 'CDRXIV_DATA_DRAFT',
+    ) &&
+    submissionType === 'Data'
+  ) {
+    // TODO:
+    // - Delete all preprint files
+  }
+
   return updatePreprint(preprint, params).then((updated) =>
     setPreprint(updated),
   )
