@@ -8,20 +8,20 @@ import { Deposition } from '../../../../types/zenodo'
 import FileDisplay from './file-display'
 
 type Props = {
-  file?: SupplementaryFile | null
+  file?: SupplementaryFile | 'loading' | null
 }
 const DataFileDisplay: React.FC<Props> = ({ file: fileProp }) => {
   const [deposition, setDeposition] = useState<Deposition | null>(null)
   const [loading, setLoading] = useState<boolean>(fileProp ? true : false)
 
   useEffect(() => {
-    if (fileProp?.url) {
+    if (fileProp !== 'loading' && fileProp?.url) {
       fetchDataDeposition(fileProp.url).then((deposition) => {
         setDeposition(deposition)
         setLoading(false)
       })
     }
-  }, [fileProp?.url])
+  }, [fileProp])
 
   const file = useMemo(
     () =>
@@ -34,7 +34,7 @@ const DataFileDisplay: React.FC<Props> = ({ file: fileProp }) => {
     [deposition],
   )
 
-  return loading ? (
+  return loading || fileProp === 'loading' ? (
     'Loading...'
   ) : (
     <FileDisplay name={file?.name} href={file?.href} />

@@ -121,7 +121,11 @@ const SubmissionConfirmation = () => {
                 <Box sx={{ variant: 'text.body' }}>Article</Box>
 
                 <FileDisplay
-                  name={overview.data.articleFile?.original_filename}
+                  name={
+                    overview.data.articleFile === 'loading'
+                      ? 'Loading...'
+                      : overview.data.articleFile?.original_filename
+                  }
                 />
               </SummaryCard>
             )}
