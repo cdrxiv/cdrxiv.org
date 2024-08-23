@@ -8,8 +8,8 @@ import { PreprintFile } from '../../../../types/preprint'
 import FileInput, { CurrentFile } from './file-input'
 
 type Props = {
-  file?: PreprintFile | null
-  setFile: (file: PreprintFile | null) => void
+  file?: PreprintFile | 'loading' | null
+  setFile: (file: PreprintFile | 'loading' | null) => void
 }
 const PreprintFileInput: React.FC<Props> = ({
   file: fileProp,
@@ -36,16 +36,20 @@ const PreprintFileInput: React.FC<Props> = ({
           file: null,
         } as CurrentFile
       } else {
-        setFileProp(null)
+        setFileProp('loading')
         return null
       }
     },
     [preprint?.pk, setFileProp],
   )
 
+  const handleClear = useCallback(() => {
+    setFileProp(null)
+  }, [setFileProp])
+
   const file = useMemo(
     () =>
-      fileProp
+      fileProp && fileProp !== 'loading'
         ? {
             persisted: true as const,
             mime_type: null,
@@ -56,7 +60,7 @@ const PreprintFileInput: React.FC<Props> = ({
     [fileProp],
   )
 
-  return <FileInput file={file} onSubmit={handleSubmit} />
+  return <FileInput file={file} onSubmit={handleSubmit} onClear={handleClear} />
 }
 
 export default PreprintFileInput

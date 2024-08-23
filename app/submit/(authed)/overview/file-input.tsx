@@ -21,8 +21,9 @@ export type CurrentFile =
 type Props = {
   file?: CurrentFile | null
   onSubmit: (file: CurrentFile | null) => Promise<CurrentFile | null>
+  onClear: () => void
 }
-const FileInput: React.FC<Props> = ({ file: fileProp, onSubmit }) => {
+const FileInput: React.FC<Props> = ({ file: fileProp, onSubmit, onClear }) => {
   const ref = useRef<HTMLInputElement>(null)
   const [file, setFile] = useState<CurrentFile | null>(fileProp ?? null)
   const [error, setError] = useState<string>()
@@ -58,8 +59,8 @@ const FileInput: React.FC<Props> = ({ file: fileProp, onSubmit }) => {
 
   const handleClear = useCallback(() => {
     setFile(null)
-    onSubmit(null)
-  }, [onSubmit])
+    onClear()
+  }, [onClear])
 
   return (
     <form onSubmit={handleSubmit}>

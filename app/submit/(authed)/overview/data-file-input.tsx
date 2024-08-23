@@ -15,8 +15,8 @@ import { Deposition } from '../../../../types/zenodo'
 import FileInput, { CurrentFile } from './file-input'
 
 type Props = {
-  file?: SupplementaryFile | null
-  setFile: (file: SupplementaryFile | null) => void
+  file?: SupplementaryFile | 'loading' | null
+  setFile: (file: SupplementaryFile | null | 'loading') => void
 }
 const DataFileInput: React.FC<Props> = ({
   file: fileProp,
@@ -26,14 +26,15 @@ const DataFileInput: React.FC<Props> = ({
   const [deposition, setDeposition] = useState<Deposition | null>(null)
   const [loading, setLoading] = useState<boolean>(fileProp ? true : false)
 
+  const fileUrl = fileProp !== 'loading' && fileProp?.url
   useEffect(() => {
-    if (fileProp?.url) {
-      fetchDataDeposition(fileProp.url).then((deposition) => {
+    if (fileUrl) {
+      fetchDataDeposition(fileUrl).then((deposition) => {
         setDeposition(deposition)
         setLoading(false)
       })
     }
-  }, [fileProp?.url])
+  }, [fileUrl])
 
   const handleSubmit = useCallback(
     async (file: CurrentFile | null) => {
@@ -84,7 +85,7 @@ const DataFileInput: React.FC<Props> = ({
           file: null,
         } as CurrentFile
       } else {
-        setFileProp(null)
+        setFileProp('loading')
         return null
       }
     },
@@ -104,11 +105,15 @@ const DataFileInput: React.FC<Props> = ({
     [deposition],
   )
 
+  const handleClear = useCallback(() => {
+    setFileProp(null)
+  }, [setFileProp])
+
   return loading ? (
     'Loading...'
   ) : (
     <>
-      <FileInput file={file} onSubmit={handleSubmit} />
+      <FileInput file={file} onSubmit={handleSubmit} onClear={handleClear} />
     </>
   )
 }

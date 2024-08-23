@@ -12,8 +12,8 @@ import {
 
 export type FormData = {
   agreement: boolean
-  articleFile: PreprintFile | null
-  dataFile: SupplementaryFile | null
+  articleFile: PreprintFile | 'loading' | null
+  dataFile: SupplementaryFile | 'loading' | null
 }
 export const initializeForm = (
   preprint: Preprint,
@@ -47,6 +47,16 @@ export const validateForm = ({
   if (!articleFile && !dataFile) {
     result.articleFile = 'You must include at least one content type.'
     result.dataFile = 'You must include at least one content type.'
+  }
+
+  if (articleFile === 'loading') {
+    result.articleFile =
+      'Please finish uploading your file or clear your in-progress upload.'
+  }
+
+  if (dataFile === 'loading') {
+    result.dataFile =
+      'Please finish uploading your file or clear your in-progress upload.'
   }
 
   return result
