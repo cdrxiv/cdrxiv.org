@@ -29,10 +29,14 @@ const DataFileInput: React.FC<Props> = ({
   const fileUrl = fileProp !== 'loading' && fileProp?.url
   useEffect(() => {
     if (fileUrl) {
-      fetchDataDeposition(fileUrl).then((deposition) => {
-        setDeposition(deposition)
-        setLoading(false)
-      })
+      fetchDataDeposition(fileUrl)
+        .then((deposition) => {
+          setDeposition(deposition)
+          setLoading(false)
+        })
+        .catch(() => {
+          // TODO: remove from supplementary files
+        })
     }
   }, [fileUrl])
 

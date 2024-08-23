@@ -227,6 +227,12 @@ export async function fetchDataDeposition(url: string): Promise<Deposition> {
     },
   })
 
+  if (res.status !== 200) {
+    throw new Error(
+      `Status ${res.status}: Unable to fetch deposition. ${res.statusText}`,
+    )
+  }
+
   const result = await res.json()
   return result
 }
