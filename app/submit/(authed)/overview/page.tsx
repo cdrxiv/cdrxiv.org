@@ -16,7 +16,7 @@ const SubmissionOverview = () => {
   const { data, setters, errors, onSubmit, submitError } = useForm<FormData>(
     () => initializeForm(preprint, files),
     validateForm,
-    submitForm.bind(null, preprint, setPreprint),
+    submitForm.bind(null, preprint, setPreprint, files),
   )
 
   return (

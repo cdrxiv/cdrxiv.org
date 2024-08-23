@@ -185,6 +185,24 @@ export async function createPreprintFile(
   return result
 }
 
+export async function deletePreprintFile(pk: number): Promise<true> {
+  const res = await fetchWithToken(
+    headers(),
+    `https://carbonplan.endurance.janeway.systems/carbonplan/api/preprint_files/${pk}`,
+    {
+      method: 'DELETE',
+    },
+  )
+
+  if (res.status !== 204) {
+    throw new Error(
+      `Status ${res.status}: Unable to delete file. ${res.statusText}`,
+    )
+  }
+
+  return true
+}
+
 export async function createDataDeposition(): Promise<Deposition> {
   const res = await fetch(process.env.ZENODO_URL + '/api/deposit/depositions', {
     method: 'POST',
@@ -193,6 +211,35 @@ export async function createDataDeposition(): Promise<Deposition> {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ metadata: { upload_type: 'dataset' } }),
+  })
+
+  const result = await res.json()
+  return result
+}
+
+export async function fetchDataDeposition(url: string): Promise<Deposition> {
+  if (process.env.ZENODO_URL && !url.startsWith(process.env.ZENODO_URL)) {
+    throw new Error(`Invalid data URL: ${url}`)
+  }
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+    },
+  })
+
+  const result = await res.json()
+  return result
+}
+
+export async function deleteDataDeposition(url: string): Promise<Deposition> {
+  if (process.env.ZENODO_URL && !url.startsWith(process.env.ZENODO_URL)) {
+    throw new Error(`Invalid data URL: ${url}`)
+  }
+  const res = await fetch(url, {
+    headers: {
+      method: 'DELETE',
+      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+    },
   })
 
   const result = await res.json()
@@ -220,19 +267,5 @@ export async function createDataDepositionFile(
     throw new Error(result.message ?? 'Unable to create deposition file.')
   }
 
-  return result
-}
-
-export async function fetchDataDeposition(url: string): Promise<Deposition> {
-  if (process.env.ZENODO_URL && !url.startsWith(process.env.ZENODO_URL)) {
-    throw new Error(`Invalid data URL: ${url}`)
-  }
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
-    },
-  })
-
-  const result = await res.json()
   return result
 }

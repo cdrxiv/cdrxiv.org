@@ -4,7 +4,11 @@ import {
   SupplementaryFile,
 } from '../../../../types/preprint'
 import { createAdditionalField } from '../utils'
-import { updatePreprint } from '../actions'
+import {
+  deleteDataDeposition,
+  deletePreprintFile,
+  updatePreprint,
+} from '../actions'
 
 export type FormData = {
   agreement: boolean
@@ -51,6 +55,7 @@ export const validateForm = ({
 export const submitForm = (
   preprint: Preprint,
   setPreprint: (p: Preprint) => void,
+  files: PreprintFile[],
   { articleFile, dataFile }: FormData,
 ) => {
   if (!preprint) {
@@ -69,19 +74,20 @@ export const submitForm = (
     additional_field_answers: [
       createAdditionalField('Submission type', submissionType),
     ],
+    supplementary_files: preprint.supplementary_files, // default to no changes
   }
 
+  let cleanUpFiles: () => Promise<any> = async () => null
+
   // If the data file has been cleared...
-  if (
-    preprint.supplementary_files.find(
-      (file) => file.label === 'CDRXIV_DATA_DRAFT',
-    ) &&
-    submissionType === 'Article'
-  ) {
-    // TODO:
-    // - Remove supplementary_files entry
-    // - Delete deposition
-    // - Delete deposition file?
+  const existingDataFile = preprint.supplementary_files.find(
+    (file) => file.label === 'CDRXIV_DATA_DRAFT',
+  )
+  if (existingDataFile && submissionType === 'Article') {
+    params.supplementary_files = preprint.supplementary_files.filter(
+      (file) => file.label !== 'CDRXIV_DATA_DRAFT',
+    )
+    cleanUpFiles = () => deleteDataDeposition(existingDataFile.url)
   }
 
   // If the article PDF file has been cleared...
@@ -91,11 +97,11 @@ export const submitForm = (
     ) &&
     submissionType === 'Data'
   ) {
-    // TODO:
-    // - Delete all preprint files
+    cleanUpFiles = () =>
+      Promise.all(files.map((file) => deletePreprintFile(file.pk)))
   }
 
-  return updatePreprint(preprint, params).then((updated) =>
-    setPreprint(updated),
-  )
+  return updatePreprint(preprint, params)
+    .then((updated) => setPreprint(updated))
+    .then(cleanUpFiles)
 }
