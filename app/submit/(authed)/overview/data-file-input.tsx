@@ -21,7 +21,7 @@ const DataFileInput: React.FC<Props> = ({
   file: fileProp,
   setFile: setFileProp,
 }) => {
-  const { preprint } = usePreprint()
+  const { preprint, setPreprint } = usePreprint()
   const [deposition, setDeposition] = useState<Deposition | null>(null)
   const [loading, setLoading] = useState<boolean>(fileProp ? true : false)
 
@@ -57,7 +57,7 @@ const DataFileInput: React.FC<Props> = ({
           depositionId = dep.id
           setDeposition(dep)
           setFileProp(supplementaryFile)
-          // TODO: setPreprint(updatedPreprint)
+          setPreprint(updatedPreprint)
         } else {
           depositionId = deposition.id
         }
@@ -82,7 +82,7 @@ const DataFileInput: React.FC<Props> = ({
         return null
       }
     },
-    [preprint, setFileProp, deposition],
+    [preprint, setFileProp, deposition, setPreprint],
   )
 
   const file = useMemo(
