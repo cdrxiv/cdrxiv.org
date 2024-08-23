@@ -231,19 +231,25 @@ export async function fetchDataDeposition(url: string): Promise<Deposition> {
   return result
 }
 
-export async function deleteDataDeposition(url: string): Promise<Deposition> {
+export async function deleteDataDeposition(url: string): Promise<true> {
   if (process.env.ZENODO_URL && !url.startsWith(process.env.ZENODO_URL)) {
     throw new Error(`Invalid data URL: ${url}`)
   }
+
   const res = await fetch(url, {
+    method: 'DELETE',
     headers: {
-      method: 'DELETE',
       Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
     },
   })
 
-  const result = await res.json()
-  return result
+  if (res.status !== 204) {
+    throw new Error(
+      `Status ${res.status}: Unable to delete deposition. ${res.statusText}`,
+    )
+  }
+
+  return true
 }
 
 export async function createDataDepositionFile(
