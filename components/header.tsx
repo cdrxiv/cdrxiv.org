@@ -56,6 +56,7 @@ const LoginLink = ({ sx }: { sx?: ThemeUIStyleObject }) => {
       href={authenticated ? '/submissions' : PATHS[2].path}
       sx={{
         width: 'fit-content',
+        whiteSpace: 'nowrap',
         display: 'flex',
         alignItems: 'baseline',
         gap: 2,
@@ -202,7 +203,7 @@ const Header = () => {
           height: [65, 65, 100, 100],
           top: margin,
           left: margin,
-          alignContent: 'center',
+          alignItems: 'center',
           bg: cardBackground,
           zIndex: 2,
           borderTop: '1px solid',
