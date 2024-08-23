@@ -231,7 +231,7 @@ export async function fetchDataDeposition(url: string): Promise<Deposition> {
   return result
 }
 
-export async function deleteDataDeposition(url: string): Promise<true> {
+export async function deleteZenodoEntity(url: string): Promise<true> {
   if (process.env.ZENODO_URL && !url.startsWith(process.env.ZENODO_URL)) {
     throw new Error(`Invalid data URL: ${url}`)
   }

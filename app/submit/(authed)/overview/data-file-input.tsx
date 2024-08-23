@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   createDataDeposition,
   createDataDepositionFile,
+  deleteZenodoEntity,
   fetchDataDeposition,
   updatePreprint,
 } from '../actions'
@@ -37,7 +38,7 @@ const DataFileInput: React.FC<Props> = ({
   const handleSubmit = useCallback(
     async (file: CurrentFile | null) => {
       if (file && file.file) {
-        let depositionId
+        let activeDeposition
         if (!deposition) {
           // Create a new deposition if one doesn't already exist
           const dep = await createDataDeposition()
@@ -54,19 +55,28 @@ const DataFileInput: React.FC<Props> = ({
             ],
           })
 
-          depositionId = dep.id
+          activeDeposition = dep
           setDeposition(dep)
           setFileProp(supplementaryFile)
           setPreprint(updatedPreprint)
         } else {
-          depositionId = deposition.id
+          if (deposition.files.length > 0) {
+            await Promise.all([
+              deposition.files.map((f) => deleteZenodoEntity(f.links.self)),
+            ])
+          }
+          activeDeposition = deposition
         }
 
         const formData = new FormData()
         formData.set('name', file.original_filename)
         formData.set('file', file.file)
 
-        await createDataDepositionFile(depositionId, formData)
+        await createDataDepositionFile(activeDeposition.id, formData)
+        const updatedDeposition = await fetchDataDeposition(
+          activeDeposition.links.self,
+        )
+        setDeposition(updatedDeposition)
         return {
           persisted: true as const,
           mime_type: null,

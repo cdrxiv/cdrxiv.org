@@ -5,7 +5,7 @@ import {
 } from '../../../../types/preprint'
 import { createAdditionalField } from '../utils'
 import {
-  deleteDataDeposition,
+  deleteZenodoEntity,
   deletePreprintFile,
   updatePreprint,
 } from '../actions'
@@ -87,7 +87,7 @@ export const submitForm = (
     params.supplementary_files = preprint.supplementary_files.filter(
       (file) => file.label !== 'CDRXIV_DATA_DRAFT',
     )
-    cleanUpFiles = () => deleteDataDeposition(existingDataFile.url)
+    cleanUpFiles = () => deleteZenodoEntity(existingDataFile.url)
   }
 
   // If the article PDF file has been cleared...
