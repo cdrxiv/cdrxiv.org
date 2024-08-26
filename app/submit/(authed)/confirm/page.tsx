@@ -3,6 +3,7 @@
 import { Box, Flex } from 'theme-ui'
 import { useCallback, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { track } from '@vercel/analytics'
 
 import { Button, Field, Form, Link } from '../../../../components'
 import NavButtons from '../../nav-buttons'
@@ -78,6 +79,10 @@ const SubmissionConfirmation = () => {
     })
       .then(() => {
         router.push('/submit/success')
+        track('preprint_submitted', {
+          preprint_id: preprint.pk,
+          owner: preprint.owner,
+        })
       })
       .catch((err) => {
         setSubmitError(
