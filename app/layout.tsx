@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Analytics } from '@vercel/analytics/react'
 import PageCard from '../components/layouts/page-card'
 import '../components/fonts.css'
 import { getSubjects } from './api/utils'
@@ -42,6 +43,7 @@ export default async function RootLayout({
             </main>
           </SubjectsProvider>
         </Providers>
+        <Analytics />
       </body>
     </html>
   )
