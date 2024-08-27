@@ -36,33 +36,33 @@ const Outline = ({ pdf, onItemClick }: OutlineProps) => {
   }
 
   const renderOutlineItems = (items: PDFOutline, level = 0) => {
-    return (
-      <Box>
-        <Box sx={{ variant: 'text.monoCaps', mt: 5, mb: 3 }}>Overview</Box>
-        {items.map((item, index) => (
-          <React.Fragment key={index}>
-            <NavLink
-              active={false}
-              onClick={() => handleItemClick(item)}
-              sx={{
-                display: 'block',
-                marginBottom: '8px',
-                marginLeft: `${level * 20}px`,
-                cursor: 'pointer',
-              }}
-            >
-              {item.title}
-            </NavLink>
-            {item.items &&
-              item.items.length > 0 &&
-              renderOutlineItems(item.items, level + 1)}
-          </React.Fragment>
-        ))}
-      </Box>
-    )
+    return items.map((item, index) => (
+      <React.Fragment key={index}>
+        <NavLink
+          active={false}
+          onClick={() => handleItemClick(item)}
+          sx={{
+            display: 'block',
+            marginBottom: '8px',
+            marginLeft: `${level * 20}px`,
+            cursor: 'pointer',
+          }}
+        >
+          {item.title}
+        </NavLink>
+        {item.items &&
+          item.items.length > 0 &&
+          renderOutlineItems(item.items, level + 1)}
+      </React.Fragment>
+    ))
   }
 
-  return <>{renderOutlineItems(outline)}</>
+  return (
+    <Box>
+      <Box sx={{ variant: 'text.monoCaps', mt: 5, mb: 3 }}>Overview</Box>
+      {renderOutlineItems(outline)}
+    </Box>
+  )
 }
 
 export default Outline
