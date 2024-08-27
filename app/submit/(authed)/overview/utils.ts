@@ -8,29 +8,64 @@ import {
   deleteZenodoEntity,
   deletePreprintFile,
   updatePreprint,
+  createPreprintFile,
 } from '../actions'
+
+export type CurrentFile =
+  | {
+      persisted: true
+      url: string
+      mime_type: null
+      original_filename: string
+      file: null
+    }
+  | {
+      persisted: false
+      url: null
+      mime_type: string
+      original_filename: string
+      file: Blob
+    }
 
 export type FormData = {
   agreement: boolean
-  articleFile: PreprintFile | 'loading' | null
-  dataFile: SupplementaryFile | 'loading' | null
+  articleFile: CurrentFile | null
+  dataFile: CurrentFile | null
   externalFile: SupplementaryFile | null
 }
 export const initializeForm = (
   preprint: Preprint,
   files: PreprintFile[],
 ): FormData => {
+  const articleFile = files.reduce(
+    (last: PreprintFile | null, file: PreprintFile) =>
+      !last || last.pk < file.pk ? file : last,
+    null,
+  )
+  const dataFile =
+    preprint.supplementary_files.find(
+      (file) => file.label === 'CDRXIV_DATA_DRAFT',
+    ) ?? null
   return {
     agreement: false,
-    articleFile: files.reduce(
-      (last: PreprintFile | null, file: PreprintFile) =>
-        !last || last.pk < file.pk ? file : last,
-      null,
-    ),
-    dataFile:
-      preprint.supplementary_files.find(
-        (file) => file.label === 'CDRXIV_DATA_DRAFT',
-      ) ?? null,
+    articleFile: articleFile
+      ? {
+          persisted: true,
+          mime_type: null,
+          original_filename: articleFile.original_filename,
+          url: articleFile.public_download_url,
+          file: null,
+        }
+      : null,
+    dataFile: dataFile
+      ? {
+          persisted: true,
+          mime_type: null,
+          original_filename: dataFile.url,
+          url: dataFile.url,
+          file: null,
+        }
+      : null,
     externalFile:
       preprint.supplementary_files.find(
         (file) =>
@@ -82,16 +117,6 @@ export const validateForm = ({
     }
   }
 
-  if (articleFile === 'loading') {
-    result.articleFile =
-      'Please finish uploading your file or clear your in-progress upload.'
-  }
-
-  if (dataFile === 'loading') {
-    result.dataFile =
-      'Please finish uploading your file or clear your in-progress upload.'
-  }
-
   return result
 }
 
@@ -103,11 +128,9 @@ export const getSubmissionType = ({
   articleFile: FormData['articleFile']
 }): string => {
   let submissionType
-  const hasDataFile = dataFile && dataFile !== 'loading'
-  const hasArticleFile = articleFile && articleFile !== 'loading'
-  if (hasDataFile && hasArticleFile) {
+  if (dataFile && articleFile) {
     submissionType = 'Both'
-  } else if (hasDataFile) {
+  } else if (dataFile) {
     submissionType = 'Data'
   } else {
     submissionType = 'Article'
@@ -116,7 +139,7 @@ export const getSubmissionType = ({
   return submissionType
 }
 
-export const submitForm = (
+export const submitForm = async (
   preprint: Preprint,
   setPreprint: (p: Preprint) => void,
   files: PreprintFile[],
@@ -126,27 +149,23 @@ export const submitForm = (
     throw new Error('Tried to submit without active preprint')
   }
 
-  if (articleFile === 'loading' || dataFile === 'loading') {
-    throw new Error('Tried to submit while file upload is in progress.')
-  }
-
   const submissionType = getSubmissionType({ dataFile, articleFile })
-  let supplementaryFiles
-  if (dataFile) {
-    supplementaryFiles = [dataFile]
-  } else {
-    supplementaryFiles = externalFile ? [externalFile] : []
-  }
 
-  const params = {
-    additional_field_answers: [
-      ...preprint.additional_field_answers,
-      createAdditionalField('Submission type', submissionType),
-    ],
-    supplementary_files: supplementaryFiles,
-  }
-
+  let createFile: () => Promise<any> = async () => null
   let cleanUpFiles: () => Promise<any> = async () => null
+
+  if (articleFile && !articleFile.persisted) {
+    const formData = new FormData()
+
+    formData.set('file', articleFile.file)
+    formData.set('preprint', String(preprint?.pk))
+    formData.set('mime_type', articleFile.mime_type)
+    formData.set('original_filename', articleFile.original_filename)
+
+    createFile = () => createPreprintFile(formData)
+  }
+  if (dataFile && !dataFile.persisted) {
+  }
 
   // If the data file has been cleared...
   const existingDataFile = preprint.supplementary_files.find(
@@ -160,6 +179,24 @@ export const submitForm = (
   if (files.length > 0 && submissionType === 'Data') {
     cleanUpFiles = () =>
       Promise.all(files.map((file) => deletePreprintFile(file.pk)))
+  }
+
+  let supplementaryFiles
+  if (dataFile?.persisted) {
+    supplementaryFiles = preprint.supplementary_files
+  } else if (dataFile) {
+    // save file and added to supplementaryFiles
+    // supplementaryFiles = [dataFile]
+  } else {
+    supplementaryFiles = externalFile ? [externalFile] : []
+  }
+
+  const params = {
+    additional_field_answers: [
+      ...preprint.additional_field_answers,
+      createAdditionalField('Submission type', submissionType),
+    ],
+    supplementary_files: supplementaryFiles,
   }
 
   return updatePreprint(preprint, params)

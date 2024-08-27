@@ -7,8 +7,8 @@ import NavButtons from '../../nav-buttons'
 import { usePreprint, usePreprintFiles } from '../preprint-context'
 import { useForm } from '../utils'
 import { FormData, initializeForm, validateForm, submitForm } from './utils'
-import PreprintFileInput from './preprint-file-input'
 import DataFileInput from './data-file-input'
+import FileInput from './file-input'
 
 const SubmissionOverview = () => {
   const { preprint, setPreprint } = usePreprint()
@@ -45,9 +45,10 @@ const SubmissionOverview = () => {
           description='Your article must be submitted as a PDF.'
           error={errors.articleFile}
         >
-          <PreprintFileInput
+          <FileInput
             file={data.articleFile}
-            setFile={setters.articleFile}
+            onChange={setters.articleFile}
+            accept='application/pdf'
           />
         </Field>
 

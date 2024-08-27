@@ -4,92 +4,45 @@ import React, { useCallback, useRef, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 
 import { Button, Link } from '../../../../components'
+import { CurrentFile } from './utils'
 
-export type CurrentFile =
-  | {
-      persisted: true
-      mime_type: null
-      original_filename: string
-      file: null
-    }
-  | {
-      persisted: false
-      mime_type: string
-      original_filename: string
-      file: Blob
-    }
 type Props = {
   accept?: string
   file?: CurrentFile | null
   description?: React.ReactNode
-  onSubmit: (file: CurrentFile | null) => Promise<CurrentFile | null>
-  onClear: () => void
+  onChange: (file: CurrentFile | null) => void
 }
 const FileInput: React.FC<Props> = ({
   accept = 'any',
-  file: fileProp,
+  file,
   description,
-  onSubmit,
-  onClear,
+  onChange,
 }) => {
   const ref = useRef<HTMLInputElement>(null)
-  const [file, setFile] = useState<CurrentFile | null>(fileProp ?? null)
-  const [error, setError] = useState<string>()
   const handleChange = useCallback(() => {
-    onSubmit(null)
     if (ref.current?.files && ref.current.files[0]) {
       const currentFile = ref.current.files[0]
-      setFile({
+      onChange({
         persisted: false,
         mime_type: currentFile.type,
         original_filename: currentFile.name,
         file: currentFile,
+        url: null,
       })
     }
-  }, [onSubmit])
-
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault()
-      if (file && !file.persisted) {
-        setError(undefined)
-
-        try {
-          const result = await onSubmit(file)
-          setFile(result)
-        } catch (e: any) {
-          setError(e.message ?? 'Error saving file.')
-        }
-      }
-    },
-    [file, onSubmit],
-  )
+  }, [onChange])
 
   const handleClear = useCallback(() => {
-    setFile(null)
-    onClear()
+    onChange(null)
+    onChange(null)
     ref.current?.value && (ref.current.value = '')
-  }, [onClear])
+  }, [onChange])
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div>
       <Flex sx={{ alignItems: 'baseline', gap: 3 }}>
-        <Button
-          sx={{
-            display: !file || file.persisted ? 'none' : 'inherit',
-            flexShrink: 0,
-          }}
-        >
-          Upload file
-        </Button>
-        <Button
-          as='label'
-          sx={{
-            display: file && !file.persisted ? 'none' : 'inherit',
-            flexShrink: 0,
-          }}
-        >
-          {file?.persisted ? 'Replace file' : 'Choose file'}
+        <Button as='label' sx={{ flexShrink: 0 }}>
+          Choose file
           <input
             name='file'
             ref={ref}
@@ -122,8 +75,7 @@ const FileInput: React.FC<Props> = ({
           <Box sx={{ variant: 'text.mono' }}>{description}</Box>
         )}
       </Flex>
-      {error && <Box sx={{ variant: 'text.mono', color: 'red' }}>{error}</Box>}
-    </form>
+    </div>
   )
 }
 

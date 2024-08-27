@@ -3,19 +3,19 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
 import { fetchDataDeposition } from '../actions'
-import { SupplementaryFile } from '../../../../types/preprint'
 import { Deposition } from '../../../../types/zenodo'
 import FileDisplay from './file-display'
+import { CurrentFile } from './utils'
 
 type Props = {
-  file?: SupplementaryFile | 'loading' | null
+  file: CurrentFile
 }
 const DataFileDisplay: React.FC<Props> = ({ file: fileProp }) => {
   const [deposition, setDeposition] = useState<Deposition | null>(null)
   const [loading, setLoading] = useState<boolean>(fileProp ? true : false)
 
   useEffect(() => {
-    if (fileProp !== 'loading' && fileProp?.url) {
+    if (fileProp?.url) {
       fetchDataDeposition(fileProp.url).then((deposition) => {
         setDeposition(deposition)
         setLoading(false)
@@ -34,7 +34,7 @@ const DataFileDisplay: React.FC<Props> = ({ file: fileProp }) => {
     [deposition],
   )
 
-  return loading || fileProp === 'loading' ? (
+  return loading ? (
     'Loading...'
   ) : (
     <FileDisplay name={file?.name} href={file?.href} />

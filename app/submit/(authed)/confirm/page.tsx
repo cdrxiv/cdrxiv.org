@@ -109,7 +109,7 @@ const SubmissionConfirmation = () => {
       ],
     })
       .then(() => {
-        if (overview.data.dataFile && overview.data.dataFile !== 'loading') {
+        if (overview.data.dataFile?.url) {
           // Push metadata to Zenodo
           return updateDataDeposition(overview.data.dataFile.url, {
             metadata: getZenodoMetadata(preprint),
@@ -132,16 +132,15 @@ const SubmissionConfirmation = () => {
       <Form error={submitError}>
         <SectionWrapper index={0} error={overview.error}>
           <Row columns={[1, 2, 2, 2]} gap={[5, 6, 6, 8]}>
-            {overview.data.articleFile &&
-              overview.data.articleFile !== 'loading' && (
-                <SummaryCard>
-                  <Box sx={{ variant: 'text.body' }}>Article</Box>
+            {overview.data.articleFile && (
+              <SummaryCard>
+                <Box sx={{ variant: 'text.body' }}>Article</Box>
 
-                  <FileDisplay
-                    name={overview.data.articleFile.original_filename}
-                  />
-                </SummaryCard>
-              )}
+                <FileDisplay
+                  name={overview.data.articleFile.original_filename}
+                />
+              </SummaryCard>
+            )}
             {overview.data.dataFile && (
               <SummaryCard>
                 <Box sx={{ variant: 'text.body' }}>Data</Box>
