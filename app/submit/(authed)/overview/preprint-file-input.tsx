@@ -60,7 +60,14 @@ const PreprintFileInput: React.FC<Props> = ({
     [fileProp],
   )
 
-  return <FileInput file={file} onSubmit={handleSubmit} onClear={handleClear} />
+  return (
+    <FileInput
+      file={file}
+      onSubmit={handleSubmit}
+      onClear={handleClear}
+      accept='application/pdf'
+    />
+  )
 }
 
 export default PreprintFileInput

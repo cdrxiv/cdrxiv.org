@@ -19,12 +19,14 @@ export type CurrentFile =
       file: Blob
     }
 type Props = {
+  accept?: string
   file?: CurrentFile | null
   description?: React.ReactNode
   onSubmit: (file: CurrentFile | null) => Promise<CurrentFile | null>
   onClear: () => void
 }
 const FileInput: React.FC<Props> = ({
+  accept = 'any',
   file: fileProp,
   description,
   onSubmit,
@@ -92,7 +94,7 @@ const FileInput: React.FC<Props> = ({
             name='file'
             ref={ref}
             type='file'
-            accept='application/pdf'
+            accept={accept}
             hidden
             onChange={handleChange}
           />
