@@ -101,12 +101,7 @@ export const submitForm = (
   }
 
   // If the article PDF file has been cleared...
-  if (
-    preprint.supplementary_files.find(
-      (file) => file.label === 'CDRXIV_DATA_DRAFT',
-    ) &&
-    submissionType === 'Data'
-  ) {
+  if (files.length > 0 && submissionType === 'Data') {
     cleanUpFiles = () =>
       Promise.all(files.map((file) => deletePreprintFile(file.pk)))
   }
