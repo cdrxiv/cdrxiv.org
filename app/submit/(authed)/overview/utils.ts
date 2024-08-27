@@ -95,6 +95,27 @@ export const validateForm = ({
   return result
 }
 
+export const getSubmissionType = ({
+  dataFile,
+  articleFile,
+}: {
+  dataFile: FormData['dataFile']
+  articleFile: FormData['articleFile']
+}): string => {
+  let submissionType
+  const hasDataFile = dataFile && dataFile !== 'loading'
+  const hasArticleFile = articleFile && articleFile !== 'loading'
+  if (hasDataFile && hasArticleFile) {
+    submissionType = 'Both'
+  } else if (hasDataFile) {
+    submissionType = 'Data'
+  } else {
+    submissionType = 'Article'
+  }
+
+  return submissionType
+}
+
 export const submitForm = (
   preprint: Preprint,
   setPreprint: (p: Preprint) => void,
@@ -109,20 +130,17 @@ export const submitForm = (
     throw new Error('Tried to submit while file upload is in progress.')
   }
 
+  const submissionType = getSubmissionType({ dataFile, articleFile })
   let supplementaryFiles
-  let submissionType
-  if (dataFile && articleFile) {
-    submissionType = 'Both'
-    supplementaryFiles = [dataFile]
-  } else if (dataFile) {
-    submissionType = 'Data'
+  if (dataFile) {
     supplementaryFiles = [dataFile]
   } else {
-    submissionType = 'Article'
     supplementaryFiles = externalFile ? [externalFile] : []
   }
+
   const params = {
     additional_field_answers: [
+      ...preprint.additional_field_answers,
       createAdditionalField('Submission type', submissionType),
     ],
     supplementary_files: supplementaryFiles,

@@ -8,7 +8,7 @@ import { Button, Column, Field, Form, Link, Row } from '../../../../components'
 import NavButtons from '../../nav-buttons'
 import { PATHS } from '../../constants'
 import { usePreprint, usePreprintFiles } from '../preprint-context'
-import { getFormattedDate } from '../utils'
+import { createAdditionalField, getFormattedDate } from '../utils'
 import { updatePreprint } from '../actions'
 import {
   initializeForm as initializeInfo,
@@ -22,6 +22,7 @@ import AuthorsList from '../authors/authors-list'
 import DataFileDisplay from '../overview/data-file-display'
 import FileDisplay from '../overview/file-display'
 import { getAdditionalField } from '../../../../utils/data'
+import { getSubmissionType } from '../overview/utils'
 
 const SummaryCard = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -75,22 +76,6 @@ const SubmissionConfirmation = () => {
   const router = useRouter()
   const [submitError, setSubmitError] = useState<string | null>(null)
 
-  const handleSubmit = useCallback(() => {
-    updatePreprint(preprint, {
-      stage: 'preprint_review',
-      date_submitted: getFormattedDate(),
-    })
-      .then(() => {
-        router.push('/submit/success')
-      })
-      .catch((err) => {
-        setSubmitError(
-          err.message ??
-            'Unable to complete submission. Please check submission contents and try again.',
-        )
-      })
-  }, [preprint, router])
-
   const { info, overview, authors } = useMemo(() => {
     const info = initializeInfo(preprint)
     const overview = initializeOverview(preprint, files)
@@ -109,33 +94,61 @@ const SubmissionConfirmation = () => {
     }
   }, [preprint, files])
 
+  const submissionType = getSubmissionType({
+    dataFile: overview.data.dataFile,
+    articleFile: overview.data.articleFile,
+  })
+  const handleSubmit = useCallback(() => {
+    updatePreprint(preprint, {
+      stage: 'preprint_review',
+      date_submitted: getFormattedDate(),
+      additional_field_answers: [
+        ...preprint.additional_field_answers,
+        // Ensure that submission type is up-to-date with files provided
+        createAdditionalField('Submission type', submissionType),
+      ],
+    })
+      .then(() => {
+        router.push('/submit/success')
+      })
+      .catch((err) => {
+        setSubmitError(
+          err.message ??
+            'Unable to complete submission. Please check submission contents and try again.',
+        )
+      })
+  }, [preprint, router, submissionType])
+
   return (
     <div>
       <Form error={submitError}>
         <SectionWrapper index={0} error={overview.error}>
           <Row columns={[1, 2, 2, 2]} gap={[5, 6, 6, 8]}>
-            {['Article', 'Both'].includes(
-              getAdditionalField(preprint, 'Submission type') ?? '',
-            ) && (
-              <SummaryCard>
-                <Box sx={{ variant: 'text.body' }}>Article</Box>
+            {overview.data.articleFile &&
+              overview.data.articleFile !== 'loading' && (
+                <SummaryCard>
+                  <Box sx={{ variant: 'text.body' }}>Article</Box>
 
-                <FileDisplay
-                  name={
-                    overview.data.articleFile === 'loading'
-                      ? 'Loading...'
-                      : overview.data.articleFile?.original_filename
-                  }
-                />
-              </SummaryCard>
-            )}
-            {['Data', 'Both'].includes(
-              getAdditionalField(preprint, 'Submission type') ?? '',
-            ) && (
+                  <FileDisplay
+                    name={overview.data.articleFile.original_filename}
+                  />
+                </SummaryCard>
+              )}
+            {overview.data.dataFile && (
               <SummaryCard>
                 <Box sx={{ variant: 'text.body' }}>Data</Box>
 
                 <DataFileDisplay file={overview.data.dataFile} />
+              </SummaryCard>
+            )}
+            {overview.data.externalFile && (
+              <SummaryCard>
+                <Box sx={{ variant: 'text.body' }}>External data</Box>
+
+                <FileDisplay
+                  href={overview.data.externalFile.url}
+                  name={overview.data.externalFile.label}
+                />
               </SummaryCard>
             )}
           </Row>
