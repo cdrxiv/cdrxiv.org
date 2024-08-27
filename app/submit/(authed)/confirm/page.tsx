@@ -4,12 +4,12 @@ import { Box, Flex } from 'theme-ui'
 import { useCallback, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import { Button, Column, Field, Form, Link, Row } from '../../../../components'
+import { Button, Field, Form, Link, Row } from '../../../../components'
 import NavButtons from '../../nav-buttons'
 import { PATHS } from '../../constants'
 import { usePreprint, usePreprintFiles } from '../preprint-context'
 import { createAdditionalField, getFormattedDate } from '../utils'
-import { updatePreprint } from '../actions'
+import { updateDataDeposition, updatePreprint } from '../actions'
 import {
   initializeForm as initializeInfo,
   validateForm as validateInfo,
@@ -21,7 +21,7 @@ import {
 import AuthorsList from '../authors/authors-list'
 import DataFileDisplay from '../overview/data-file-display'
 import FileDisplay from '../overview/file-display'
-import { getAdditionalField } from '../../../../utils/data'
+import { getZenodoMetadata } from '../../../../utils/data'
 import { getSubmissionType } from '../overview/utils'
 
 const SummaryCard = ({ children }: { children: React.ReactNode }) => {
@@ -109,6 +109,14 @@ const SubmissionConfirmation = () => {
       ],
     })
       .then(() => {
+        if (overview.data.dataFile && overview.data.dataFile !== 'loading') {
+          // Push metadata to Zenodo
+          return updateDataDeposition(overview.data.dataFile.url, {
+            metadata: getZenodoMetadata(preprint),
+          })
+        }
+      })
+      .then(() => {
         router.push('/submit/success')
       })
       .catch((err) => {
@@ -117,7 +125,7 @@ const SubmissionConfirmation = () => {
             'Unable to complete submission. Please check submission contents and try again.',
         )
       })
-  }, [preprint, router, submissionType])
+  }, [preprint, router, submissionType, overview.data.dataFile])
 
   return (
     <div>

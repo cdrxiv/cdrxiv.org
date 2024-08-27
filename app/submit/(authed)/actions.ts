@@ -236,6 +236,31 @@ export async function fetchDataDeposition(url: string): Promise<Deposition> {
   const result = await res.json()
   return result
 }
+export async function updateDataDeposition(
+  url: string,
+  params: Partial<Deposition>,
+): Promise<Deposition> {
+  if (process.env.ZENODO_URL && !url.startsWith(process.env.ZENODO_URL)) {
+    throw new Error(`Invalid data URL: ${url}`)
+  }
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(params),
+  })
+
+  if (res.status !== 200) {
+    throw new Error(
+      `Status ${res.status}: Unable to update deposition. ${res.statusText}`,
+    )
+  }
+
+  const result = await res.json()
+  return result
+}
 
 export async function deleteZenodoEntity(url: string): Promise<true> {
   if (process.env.ZENODO_URL && !url.startsWith(process.env.ZENODO_URL)) {
