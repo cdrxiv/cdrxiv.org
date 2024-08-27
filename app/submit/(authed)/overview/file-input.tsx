@@ -101,18 +101,21 @@ const FileInput: React.FC<Props> = ({
         </Button>
 
         {file && (
-          <Link
+          <Box
+            as='span'
             sx={{ variant: 'text.monoCaps', textTransform: 'none' }}
-            onClick={handleClear}
           >
-            {file.original_filename}
-            <Box
-              as='span'
-              sx={{ display: 'inline-block', textDecoration: 'none' }}
+            {file.original_filename}&nbsp;
+            <Link
+              sx={{
+                variant: 'text.monoCaps',
+                textDecoration: 'none',
+              }}
+              onClick={handleClear}
             >
-              &nbsp;(X)
-            </Box>
-          </Link>
+              (X)
+            </Link>
+          </Box>
         )}
 
         {!file && description && (
