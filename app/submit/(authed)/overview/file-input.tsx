@@ -66,6 +66,7 @@ const FileInput: React.FC<Props> = ({
   const handleClear = useCallback(() => {
     setFile(null)
     onClear()
+    ref.current?.value && (ref.current.value = '')
   }, [onClear])
 
   return (
