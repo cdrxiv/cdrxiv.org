@@ -52,31 +52,33 @@ export const validateForm = ({
   }
 
   if (!articleFile && !dataFile) {
-    result.articleFile = 'You must include at least one content type.'
+    result.articleFile = 'You must upload at least one content type.'
     if (!externalFile) {
-      result.dataFile = 'You must include at least one content type.'
+      result.dataFile = 'You must upload at least one content type.'
     }
   }
 
   if (externalFile) {
     if (!externalFile.label || !externalFile.url) {
-      result.externalFile = 'Please provide a label and URL for your file.'
-    }
-    if (externalFile.label.includes('CDRXIV_DATA')) {
       result.externalFile =
-        'This label is reserved. Please enter a different label.'
-    }
-
-    try {
-      const url = new URL(externalFile.url)
-      const parts = url.hostname.split('.')
-      if (parts.length < 2) {
+        'Please provide a label and URL for your file, or upload your data to CDRXIV directly.'
+    } else {
+      if (externalFile.label.includes('CDRXIV_DATA')) {
         result.externalFile =
-          'Please provide a URL with a valid top-level domain.'
+          'This label is reserved. Please enter a different label.'
       }
-    } catch {
-      result.externalFile =
-        'Please enter a valid URL, including the protocol (e.g., https://) and a domain name with a valid extension (e.g., .com, .org).'
+
+      try {
+        const url = new URL(externalFile.url)
+        const parts = url.hostname.split('.')
+        if (parts.length < 2) {
+          result.externalFile =
+            'Please provide a URL with a valid top-level domain.'
+        }
+      } catch {
+        result.externalFile =
+          'Please enter a valid URL, including the protocol (e.g., https://) and a domain name with a valid extension (e.g., .com, .org).'
+      }
     }
   }
 
