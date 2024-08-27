@@ -9,6 +9,9 @@ import {
   deletePreprintFile,
   updatePreprint,
   createPreprintFile,
+  fetchDataDeposition,
+  createDataDeposition,
+  createDataDepositionFile,
 } from '../actions'
 
 export type CurrentFile =
@@ -149,11 +152,12 @@ export const submitForm = async (
     throw new Error('Tried to submit without active preprint')
   }
 
+  const existingDataFile = preprint.supplementary_files.find(
+    (file) => file.label === 'CDRXIV_DATA_DRAFT',
+  )
   const submissionType = getSubmissionType({ dataFile, articleFile })
 
-  let createFile: () => Promise<any> = async () => null
-  let cleanUpFiles: () => Promise<any> = async () => null
-
+  // Save article PDF if it hasn't already been persisted
   if (articleFile && !articleFile.persisted) {
     const formData = new FormData()
 
@@ -162,31 +166,44 @@ export const submitForm = async (
     formData.set('mime_type', articleFile.mime_type)
     formData.set('original_filename', articleFile.original_filename)
 
-    createFile = () => createPreprintFile(formData)
-  }
-  if (dataFile && !dataFile.persisted) {
+    await createPreprintFile(formData)
   }
 
+  let cleanUpFiles: () => Promise<any> = async () => null
+
   // If the data file has been cleared...
-  const existingDataFile = preprint.supplementary_files.find(
-    (file) => file.label === 'CDRXIV_DATA_DRAFT',
-  )
   if (existingDataFile && submissionType === 'Article') {
-    cleanUpFiles = () => deleteZenodoEntity(existingDataFile.url)
+    cleanUpFiles = () => deleteZenodoEntity(existingDataFile.url) // delete the data deposition
   }
 
   // If the article PDF file has been cleared...
   if (files.length > 0 && submissionType === 'Data') {
     cleanUpFiles = () =>
-      Promise.all(files.map((file) => deletePreprintFile(file.pk)))
+      Promise.all(files.map((file) => deletePreprintFile(file.pk))) // delete previous preprint files
   }
 
   let supplementaryFiles
   if (dataFile?.persisted) {
     supplementaryFiles = preprint.supplementary_files
   } else if (dataFile) {
-    // save file and added to supplementaryFiles
-    // supplementaryFiles = [dataFile]
+    // Save data file if it hasn't already been persisted
+    const formData = new FormData()
+    formData.set('name', dataFile.original_filename)
+    formData.set('file', dataFile.file)
+
+    const deposition = await (existingDataFile
+      ? fetchDataDeposition(existingDataFile.url)
+      : createDataDeposition())
+    if (deposition.files.length > 0) {
+      await Promise.all([
+        deposition.files.map((f) => deleteZenodoEntity(f.links.self)), // delete previous data deposition files
+      ])
+    }
+    await createDataDepositionFile(deposition.id, formData)
+
+    supplementaryFiles = [
+      { label: 'CDRXIV_DATA_DRAFT', url: deposition.links.self },
+    ]
   } else {
     supplementaryFiles = externalFile ? [externalFile] : []
   }
