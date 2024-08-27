@@ -153,26 +153,38 @@ const DataFileInput: React.FC<Props> = ({
     )
   } else {
     return (
-      <Flex sx={{ alignItems: 'baseline', gap: 3 }}>
-        <Input
-          value={externalFile?.label ?? ''}
-          onChange={(e) =>
-            setExternalFile({
-              label: e.target.value,
-              url: externalFile?.url ?? '',
-            })
-          }
-        />
-        <Input
-          value={externalFile?.url ?? ''}
-          onChange={(e) =>
-            setExternalFile({
-              url: e.target.value,
-              label: externalFile?.label ?? '',
-            })
-          }
-        />
-        <Box sx={{ variant: 'text.mono', flexShrink: 0 }}>
+      <Flex
+        sx={{
+          flexDirection: ['column', 'column', 'row', 'row'],
+          alignItems: ['flex-start', 'flex-start', 'flex-end', 'flex-end'],
+          gap: 3,
+        }}
+      >
+        <Box as='label' sx={{ variant: 'text.mono' }}>
+          Label
+          <Input
+            value={externalFile?.label ?? ''}
+            onChange={(e) =>
+              setExternalFile({
+                label: e.target.value,
+                url: externalFile?.url ?? '',
+              })
+            }
+          />
+        </Box>
+        <Box as='label' sx={{ variant: 'text.mono' }}>
+          URL
+          <Input
+            value={externalFile?.url ?? ''}
+            onChange={(e) =>
+              setExternalFile({
+                url: e.target.value,
+                label: externalFile?.label ?? '',
+              })
+            }
+          />
+        </Box>
+        <Box sx={{ variant: 'text.mono', flexShrink: 0, pb: '10px' }}>
           Or{' '}
           <Link
             onClick={() => {
