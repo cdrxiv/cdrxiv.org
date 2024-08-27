@@ -14,6 +14,7 @@ export type FormData = {
   agreement: boolean
   articleFile: PreprintFile | 'loading' | null
   dataFile: SupplementaryFile | 'loading' | null
+  externalFile: SupplementaryFile | null
 }
 export const initializeForm = (
   preprint: Preprint,
@@ -30,6 +31,11 @@ export const initializeForm = (
       preprint.supplementary_files.find(
         (file) => file.label === 'CDRXIV_DATA_DRAFT',
       ) ?? null,
+    externalFile:
+      preprint.supplementary_files.find(
+        (file) =>
+          file.label !== 'CDRXIV_DATA_DRAFT' && file.label !== 'CDRXIV_DATA',
+      ) ?? null,
   }
 }
 
@@ -37,6 +43,7 @@ export const validateForm = ({
   agreement,
   articleFile,
   dataFile,
+  externalFile,
 }: FormData) => {
   let result: Partial<{ [K in keyof FormData]: string }> = {}
 
@@ -46,7 +53,31 @@ export const validateForm = ({
 
   if (!articleFile && !dataFile) {
     result.articleFile = 'You must include at least one content type.'
-    result.dataFile = 'You must include at least one content type.'
+    if (!externalFile) {
+      result.dataFile = 'You must include at least one content type.'
+    }
+  }
+
+  if (externalFile) {
+    if (!externalFile.label || !externalFile.url) {
+      result.externalFile = 'Please provide a label and URL for your file.'
+    }
+    if (externalFile.label.includes('CDRXIV_DATA')) {
+      result.externalFile =
+        'This label is reserved. Please enter a different label.'
+    }
+
+    try {
+      const url = new URL(externalFile.url)
+      const parts = url.hostname.split('.')
+      if (parts.length < 2) {
+        result.externalFile =
+          'Please provide a URL with a valid top-level domain.'
+      }
+    } catch {
+      result.externalFile =
+        'Please enter a valid URL, including the protocol (e.g., https://) and a domain name with a valid extension (e.g., .com, .org).'
+    }
   }
 
   if (articleFile === 'loading') {
@@ -66,25 +97,33 @@ export const submitForm = (
   preprint: Preprint,
   setPreprint: (p: Preprint) => void,
   files: PreprintFile[],
-  { articleFile, dataFile }: FormData,
+  { articleFile, dataFile, externalFile }: FormData,
 ) => {
   if (!preprint) {
     throw new Error('Tried to submit without active preprint')
   }
 
+  if (articleFile === 'loading' || dataFile === 'loading') {
+    throw new Error('Tried to submit while file upload is in progress.')
+  }
+
+  let supplementaryFiles
   let submissionType
   if (dataFile && articleFile) {
     submissionType = 'Both'
+    supplementaryFiles = [dataFile]
   } else if (dataFile) {
     submissionType = 'Data'
+    supplementaryFiles = [dataFile]
   } else {
     submissionType = 'Article'
+    supplementaryFiles = externalFile ? [externalFile] : []
   }
   const params = {
     additional_field_answers: [
       createAdditionalField('Submission type', submissionType),
     ],
-    supplementary_files: preprint.supplementary_files, // default to no changes
+    supplementary_files: supplementaryFiles,
   }
 
   let cleanUpFiles: () => Promise<any> = async () => null
@@ -94,9 +133,6 @@ export const submitForm = (
     (file) => file.label === 'CDRXIV_DATA_DRAFT',
   )
   if (existingDataFile && submissionType === 'Article') {
-    params.supplementary_files = preprint.supplementary_files.filter(
-      (file) => file.label !== 'CDRXIV_DATA_DRAFT',
-    )
     cleanUpFiles = () => deleteZenodoEntity(existingDataFile.url)
   }
 

@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { Box, Flex, Input } from 'theme-ui'
 
 import {
   createDataDeposition,
@@ -13,20 +14,29 @@ import { usePreprint } from '../preprint-context'
 import { SupplementaryFile } from '../../../../types/preprint'
 import { Deposition } from '../../../../types/zenodo'
 import FileInput, { CurrentFile } from './file-input'
+import { Link } from '../../../../components'
 
 type Props = {
   file?: SupplementaryFile | 'loading' | null
   setFile: (file: SupplementaryFile | null | 'loading') => void
+  externalFile: SupplementaryFile | null
+  setExternalFile: (file: SupplementaryFile | null) => void
 }
 const DataFileInput: React.FC<Props> = ({
   file: fileProp,
   setFile: setFileProp,
+  externalFile,
+  setExternalFile,
 }) => {
+  const fileLabel = fileProp !== 'loading' && fileProp?.label
+  const fileUrl = fileProp !== 'loading' && fileProp?.url
+  const [mode, setMode] = useState<'upload' | 'link'>(
+    fileLabel && fileLabel !== 'CDRXIV_DATA_DRAFT' ? 'link' : 'upload',
+  )
   const { preprint, setPreprint } = usePreprint()
   const [deposition, setDeposition] = useState<Deposition | null>(null)
   const [loading, setLoading] = useState<boolean>(fileProp ? true : false)
 
-  const fileUrl = fileProp !== 'loading' && fileProp?.url
   useEffect(() => {
     if (fileUrl) {
       fetchDataDeposition(fileUrl)
@@ -109,17 +119,75 @@ const DataFileInput: React.FC<Props> = ({
     [deposition],
   )
 
-  const handleClear = useCallback(() => {
+  const handleClearUpload = useCallback(() => {
     setFileProp(null)
   }, [setFileProp])
 
-  return loading ? (
-    'Loading...'
-  ) : (
-    <>
-      <FileInput file={file} onSubmit={handleSubmit} onClear={handleClear} />
-    </>
-  )
+  if (loading) {
+    return 'Loading...'
+  } else if (mode === 'upload') {
+    return (
+      <>
+        <FileInput
+          file={file}
+          onSubmit={handleSubmit}
+          onClear={handleClearUpload}
+          description={
+            <>
+              Or{' '}
+              <Link
+                onClick={() => {
+                  setMode('link')
+                  handleClearUpload()
+                  setExternalFile({ url: '', label: '' })
+                }}
+                sx={{ variant: 'text.mono' }}
+              >
+                enter link
+              </Link>{' '}
+              to externally hosted dataset.
+            </>
+          }
+        />
+      </>
+    )
+  } else {
+    return (
+      <Flex sx={{ alignItems: 'baseline', gap: 3 }}>
+        <Input
+          value={externalFile?.label ?? ''}
+          onChange={(e) =>
+            setExternalFile({
+              label: e.target.value,
+              url: externalFile?.url ?? '',
+            })
+          }
+        />
+        <Input
+          value={externalFile?.url ?? ''}
+          onChange={(e) =>
+            setExternalFile({
+              url: e.target.value,
+              label: externalFile?.label ?? '',
+            })
+          }
+        />
+        <Box sx={{ variant: 'text.mono', flexShrink: 0 }}>
+          Or{' '}
+          <Link
+            onClick={() => {
+              setMode('upload')
+              setExternalFile(null)
+            }}
+            sx={{ variant: 'text.mono' }}
+          >
+            upload file
+          </Link>{' '}
+          to CDRXIV.
+        </Box>
+      </Flex>
+    )
+  }
 }
 
 export default DataFileInput

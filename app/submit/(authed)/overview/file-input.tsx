@@ -20,10 +20,16 @@ export type CurrentFile =
     }
 type Props = {
   file?: CurrentFile | null
+  description?: React.ReactNode
   onSubmit: (file: CurrentFile | null) => Promise<CurrentFile | null>
   onClear: () => void
 }
-const FileInput: React.FC<Props> = ({ file: fileProp, onSubmit, onClear }) => {
+const FileInput: React.FC<Props> = ({
+  file: fileProp,
+  description,
+  onSubmit,
+  onClear,
+}) => {
   const ref = useRef<HTMLInputElement>(null)
   const [file, setFile] = useState<CurrentFile | null>(fileProp ?? null)
   const [error, setError] = useState<string>()
@@ -104,6 +110,10 @@ const FileInput: React.FC<Props> = ({ file: fileProp, onSubmit, onClear }) => {
               &nbsp;(X)
             </Box>
           </Link>
+        )}
+
+        {!file && description && (
+          <Box sx={{ variant: 'text.mono' }}>{description}</Box>
         )}
       </Flex>
       {error && <Box sx={{ variant: 'text.mono', color: 'red' }}>{error}</Box>}

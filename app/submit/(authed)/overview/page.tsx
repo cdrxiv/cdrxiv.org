@@ -40,7 +40,7 @@ const SubmissionOverview = () => {
         </Field>
 
         <Field
-          label='Article upload'
+          label='Article file'
           id='articleFile'
           description='Your article must be submitted as a PDF.'
           error={errors.articleFile}
@@ -52,12 +52,17 @@ const SubmissionOverview = () => {
         </Field>
 
         <Field
-          label='Data upload'
+          label='Data file'
           id='dataFile'
           description='Your submission can by represented by a single file of any format, including ZIP, up to [TK] MB.'
-          error={errors.dataFile}
+          error={errors.dataFile ?? errors.externalFile}
         >
-          <DataFileInput file={data.dataFile} setFile={setters.dataFile} />
+          <DataFileInput
+            file={data.dataFile}
+            setFile={setters.dataFile}
+            externalFile={data.externalFile}
+            setExternalFile={setters.externalFile}
+          />
         </Field>
       </Form>
 
