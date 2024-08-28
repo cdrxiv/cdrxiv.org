@@ -27,7 +27,7 @@ export async function updatePreprint(
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         // Convert license into PreprintParams format
-        license: license?.pk,
+        license: typeof license === 'number' ? license : license?.pk,
         ...rest,
         ...params,
         repository: 1,
