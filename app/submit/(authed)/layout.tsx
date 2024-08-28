@@ -10,24 +10,41 @@ interface Props {
   children: React.ReactNode
 }
 const SubmissionOverview: React.FC<Props> = async ({ children }) => {
-  const res = await fetchWithToken(
-    headers(),
-    'https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/?stage=preprint_unsubmitted',
-  )
+  const [preprintRes, filesRes] = await Promise.all([
+    fetchWithToken(
+      headers(),
+      'https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/?stage=preprint_unsubmitted',
+    ),
+    fetchWithToken(
+      headers(),
+      'https://carbonplan.endurance.janeway.systems/carbonplan/api/preprint_files/',
+    ),
+  ])
 
-  if (res.status !== 200) {
+  let files
+  if (preprintRes.status !== 200) {
     redirect('/login?signOut=true')
+  } else if (filesRes.status !== 200) {
+    // TODO: Remove special handling for /api/preprint_files once non-repository-manager-users can access
+    files = { results: [] }
   }
 
-  const data = await res.json()
-  let preprints = data.results
+  const [preprintsData, filesData] = await Promise.all([
+    preprintRes.json(),
+    files ?? filesRes.json(),
+  ])
+  let preprints = preprintsData.results
 
   if (preprints.length === 0) {
     const preprint = await createPreprint()
     preprints = [preprint]
   }
 
-  return <PreprintProvider preprints={preprints}>{children}</PreprintProvider>
+  return (
+    <PreprintProvider preprints={preprints} files={filesData.results}>
+      {children}
+    </PreprintProvider>
+  )
 }
 
 export default SubmissionOverview
