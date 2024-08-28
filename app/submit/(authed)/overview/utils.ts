@@ -146,6 +146,7 @@ export const submitForm = async (
   preprint: Preprint,
   setPreprint: (p: Preprint) => void,
   files: PreprintFile[],
+  setFiles: (files: PreprintFile[]) => void,
   { articleFile, dataFile, externalFile }: FormData,
 ) => {
   if (!preprint) {
@@ -157,6 +158,7 @@ export const submitForm = async (
   )
   const submissionType = getSubmissionType({ dataFile, articleFile })
 
+  let preprintFiles: PreprintFile[]
   // Save article PDF if it hasn't already been persisted
   if (articleFile && !articleFile.persisted) {
     const formData = new FormData()
@@ -166,7 +168,8 @@ export const submitForm = async (
     formData.set('mime_type', articleFile.mime_type)
     formData.set('original_filename', articleFile.original_filename)
 
-    await createPreprintFile(formData)
+    const preprintFile = await createPreprintFile(formData)
+    preprintFiles = [preprintFile]
   }
 
   let cleanUpFiles: () => Promise<any> = async () => null
@@ -178,6 +181,7 @@ export const submitForm = async (
 
   // If the article PDF file has been cleared...
   if (files.length > 0 && submissionType === 'Data') {
+    preprintFiles = []
     cleanUpFiles = () =>
       Promise.all(files.map((file) => deletePreprintFile(file.pk))) // delete previous preprint files
   }
@@ -221,4 +225,5 @@ export const submitForm = async (
   return updatePreprint(preprint, params)
     .then((updated) => setPreprint(updated))
     .then(cleanUpFiles)
+    .then(() => (preprintFiles ? setFiles(preprintFiles) : undefined))
 }

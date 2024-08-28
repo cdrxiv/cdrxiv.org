@@ -12,11 +12,11 @@ import FileInput from './file-input'
 
 const SubmissionOverview = () => {
   const { preprint, setPreprint } = usePreprint()
-  const { files } = usePreprintFiles()
+  const { files, setFiles } = usePreprintFiles()
   const { data, setters, errors, onSubmit, submitError } = useForm<FormData>(
     () => initializeForm(preprint, files),
     validateForm,
-    submitForm.bind(null, preprint, setPreprint, files),
+    submitForm.bind(null, preprint, setPreprint, files, setFiles),
   )
 
   return (

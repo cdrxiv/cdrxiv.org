@@ -2,6 +2,7 @@
 
 import { headers, cookies } from 'next/headers'
 import { getToken } from 'next-auth/jwt'
+import { revalidatePath } from 'next/cache'
 import {
   Author,
   AuthorParams,
@@ -27,7 +28,7 @@ export async function updatePreprint(
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         // Convert license into PreprintParams format
-        license: license?.pk,
+        license: typeof license === 'number' ? license : license?.pk,
         ...rest,
         ...params,
         repository: 1,
@@ -53,6 +54,14 @@ export async function updatePreprint(
   }
 
   const updatedPreprint = res.json()
+
+  // Clear submit form cache when preprint moves from unsubmitted to review stage
+  if (
+    preprint.stage === 'preprint_unsubmitted' &&
+    params.stage === 'preprint_review'
+  ) {
+    revalidatePath(`/submit`)
+  }
   return updatedPreprint
 }
 

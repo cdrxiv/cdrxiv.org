@@ -31,7 +31,7 @@ export const PreprintProvider: React.FC<ProviderProps> = ({
 
   useEffect(() => {
     setFiles(filesProp.filter((f) => f.preprint === value?.pk))
-  }, [filesProp, value])
+  }, [filesProp, value?.pk])
 
   return (
     <PreprintContext.Provider
