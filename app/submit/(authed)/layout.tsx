@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { fetchWithToken } from '../../api/utils'
 import { PreprintProvider } from './preprint-context'
 import { createPreprint } from './actions'
+import { Preprint } from '../../../types/preprint'
 
 interface Props {
   children: React.ReactNode
@@ -34,6 +35,11 @@ const SubmissionOverview: React.FC<Props> = async ({ children }) => {
     files ?? filesRes.json(),
   ])
   let preprints = preprintsData.results
+
+  // TODO: remove manual filtering when stage querying is restored
+  preprints = preprints.filter(
+    (p: Preprint) => p.stage === 'preprint_unsubmitted',
+  )
 
   if (preprints.length === 0) {
     const preprint = await createPreprint()
