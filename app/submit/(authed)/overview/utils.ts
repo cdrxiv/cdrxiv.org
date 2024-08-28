@@ -210,7 +210,9 @@ export const submitForm = async (
 
   const params = {
     additional_field_answers: [
-      ...preprint.additional_field_answers,
+      ...preprint.additional_field_answers.filter(
+        (field) => field.field?.name !== 'Submission type',
+      ),
       createAdditionalField('Submission type', submissionType),
     ],
     supplementary_files: supplementaryFiles,

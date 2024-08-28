@@ -39,6 +39,8 @@ const DataFileInput: React.FC<Props> = ({
           // TODO: remove from supplementary files
           setFileProp(null)
         })
+    } else {
+      setDeposition(null)
     }
   }, [fileProp?.url, setFileProp])
 
