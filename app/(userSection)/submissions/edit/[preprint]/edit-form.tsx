@@ -16,6 +16,7 @@ import { formatDate } from '../../../../../utils/formatters'
 import { useForm } from '../../../../../hooks/use-form'
 import { UPDATE_TYPE_DESCRIPTIONS, UPDATE_TYPE_LABELS } from './constants'
 import { createVersionQueue } from './actions'
+import { getAdditionalField } from '../../../../../utils/data'
 
 type Props = {
   preprint: Preprint
@@ -100,6 +101,11 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
     () => initializeForm(preprint),
     validator,
     submitForm,
+  )
+
+  const submissionType = useMemo(
+    () => getAdditionalField(preprint, 'Submission type'),
+    [preprint],
   )
 
   const handleSubmit = useCallback(async () => {
@@ -191,13 +197,36 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
           />
         </Field>
         {data.update_type !== 'metadata_correction' && (
-          <Field label='File' id='file' error={errors.file}>
-            <Input
-              value={data.file}
-              onChange={(e) => setters.file(e.target.value)}
-              id='file'
-            />
-          </Field>
+          <>
+            {submissionType !== 'Data' && (
+              <Field
+                label='Article file'
+                id='dataFile'
+                description='Your data must be submitted as a PDF.'
+                error={errors.file}
+              >
+                <Input
+                  value={data.file}
+                  onChange={(e) => setters.file(e.target.value)}
+                  id='file'
+                />
+              </Field>
+            )}
+            {submissionType !== 'Article' && (
+              <Field
+                label='Data file'
+                id='dataFile'
+                description='Your submission can by represented by a single file of any format, including ZIP, up to [TK] MB.'
+                error={errors.file}
+              >
+                <Input
+                  value={data.file}
+                  onChange={(e) => setters.file(e.target.value)}
+                  id='file'
+                />
+              </Field>
+            )}
+          </>
         )}
         <Button onClick={handleSubmit}>Submit</Button>
       </Form>

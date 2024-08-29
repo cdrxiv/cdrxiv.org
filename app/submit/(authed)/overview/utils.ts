@@ -13,27 +13,12 @@ import {
   createDataDeposition,
   createDataDepositionFile,
 } from '../actions'
-
-export type CurrentFile =
-  | {
-      persisted: true
-      url: string
-      mime_type: null
-      original_filename: string
-      file: null
-    }
-  | {
-      persisted: false
-      url: null
-      mime_type: string
-      original_filename: string
-      file: Blob
-    }
+import { FileInputValue } from '../../../../components'
 
 export type FormData = {
   agreement: boolean
-  articleFile: CurrentFile | null
-  dataFile: CurrentFile | null
+  articleFile: FileInputValue | null
+  dataFile: FileInputValue | null
   externalFile: SupplementaryFile | null
 }
 export const initializeForm = (
