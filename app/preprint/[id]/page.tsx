@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation'
 import PreprintViewer from './preprint-viewer'
+import { SupplementaryFile } from '../../../types/preprint'
+import { fetchDataDeposition } from '../../../actions/zenodo'
 
 // Polyfill for Promise.withResolvers
 if (typeof Promise.withResolvers !== 'function') {
@@ -36,7 +38,15 @@ const PreprintsPage = async ({ params }: { params: { id: string } }) => {
   if (!preprint) {
     notFound()
   }
-  return <PreprintViewer preprint={preprint} />
+
+  const dataUrl = preprint.supplementary_files.find(
+    (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
+  )?.url
+  let deposition
+  if (dataUrl) {
+    deposition = await fetchDataDeposition(dataUrl)
+  }
+  return <PreprintViewer preprint={preprint} deposition={deposition} />
 }
 
 export default PreprintsPage

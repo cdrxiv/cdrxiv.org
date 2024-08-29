@@ -1,16 +1,24 @@
 import React from 'react'
 import { Box, Flex } from 'theme-ui'
 import { formatDate } from '../../../utils/formatters'
-import type { Preprint, Funder } from '../../../types/preprint'
 import { getAdditionalField, getFunders } from '../../../utils/data'
 import { Field, Button, Link } from '../../../components'
+import type { Preprint, Funder } from '../../../types/preprint'
+import type { Deposition } from '../../../types/zenodo'
 
-const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
+const getDataDownload = (deposition: Deposition) => {
+  return `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].filename}?download=1`
+}
+
+const MetadataView: React.FC<{
+  preprint: Preprint
+  deposition?: Deposition
+}> = ({ preprint, deposition }) => {
   const funders = getFunders(preprint) ?? []
 
   const submissionType = getAdditionalField(preprint, 'Submission type')
   const hasArticle = ['Article', 'Both'].includes(submissionType ?? '')
-  const fileType = hasArticle ? 'PDF' : 'Data'
+  const hasData = ['Data', 'Both'].includes(submissionType ?? '')
 
   return (
     <Flex sx={{ flexDirection: 'column', mt: 5, gap: 9 }}>
@@ -33,12 +41,13 @@ const MetadataView: React.FC<{ preprint: Preprint }> = ({ preprint }) => {
       )}
 
       <Flex sx={{ flexDirection: 'column', gap: 5 }}>
-        {preprint.versions[0]?.public_download_url && (
-          <Box sx={{}}>
-            <Button href={preprint.versions[0].public_download_url}>
-              Download ({fileType})
-            </Button>
-          </Box>
+        {hasArticle && preprint.versions[0]?.public_download_url && (
+          <Button href={preprint.versions[0].public_download_url}>
+            Download (PDF)
+          </Button>
+        )}
+        {hasData && deposition && deposition.submitted && (
+          <Button href={getDataDownload(deposition)}>Download (data)</Button>
         )}
 
         {preprint.versions.length > 1 && (

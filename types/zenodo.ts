@@ -33,6 +33,7 @@ export type Deposition = {
   links: {
     self: string
   }
+  submitted: boolean
 }
 
 export type DepositionFile = {

@@ -3,21 +3,27 @@
 import { Deposition, DepositionFile } from '../types/zenodo'
 
 export async function createDataDeposition(): Promise<Deposition> {
-  const res = await fetch(process.env.ZENODO_URL + '/api/deposit/depositions', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
-      'Content-Type': 'application/json',
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_ZENODO_URL + '/api/deposit/depositions',
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ metadata: { upload_type: 'dataset' } }),
     },
-    body: JSON.stringify({ metadata: { upload_type: 'dataset' } }),
-  })
+  )
 
   const result = await res.json()
   return result
 }
 
 export async function fetchDataDeposition(url: string): Promise<Deposition> {
-  if (process.env.ZENODO_URL && !url.startsWith(process.env.ZENODO_URL)) {
+  if (
+    process.env.NEXT_PUBLIC_ZENODO_URL &&
+    !url.startsWith(process.env.NEXT_PUBLIC_ZENODO_URL)
+  ) {
     throw new Error(`Invalid data URL: ${url}`)
   }
   const res = await fetch(url, {
@@ -39,7 +45,10 @@ export async function updateDataDeposition(
   url: string,
   params: Partial<Deposition>,
 ): Promise<Deposition> {
-  if (process.env.ZENODO_URL && !url.startsWith(process.env.ZENODO_URL)) {
+  if (
+    process.env.NEXT_PUBLIC_ZENODO_URL &&
+    !url.startsWith(process.env.NEXT_PUBLIC_ZENODO_URL)
+  ) {
     throw new Error(`Invalid data URL: ${url}`)
   }
   const res = await fetch(url, {
@@ -62,7 +71,10 @@ export async function updateDataDeposition(
 }
 
 export async function deleteZenodoEntity(url: string): Promise<true> {
-  if (process.env.ZENODO_URL && !url.startsWith(process.env.ZENODO_URL)) {
+  if (
+    process.env.NEXT_PUBLIC_ZENODO_URL &&
+    !url.startsWith(process.env.NEXT_PUBLIC_ZENODO_URL)
+  ) {
     throw new Error(`Invalid data URL: ${url}`)
   }
 
@@ -87,7 +99,8 @@ export async function createDataDepositionFile(
   formData: FormData,
 ): Promise<DepositionFile> {
   const res = await fetch(
-    process.env.ZENODO_URL + `/api/deposit/depositions/${deposition}/files`,
+    process.env.NEXT_PUBLIC_ZENODO_URL +
+      `/api/deposit/depositions/${deposition}/files`,
     {
       method: 'POST',
       headers: {
