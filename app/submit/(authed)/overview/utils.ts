@@ -5,14 +5,16 @@ import {
 } from '../../../../types/preprint'
 import { createAdditionalField } from '../utils'
 import {
-  deleteZenodoEntity,
   deletePreprintFile,
   updatePreprint,
   createPreprintFile,
+} from '../../../../actions/preprint'
+import {
+  deleteZenodoEntity,
   fetchDataDeposition,
   createDataDeposition,
   createDataDepositionFile,
-} from '../actions'
+} from '../../../../actions/zenodo'
 import { FileInputValue } from '../../../../components'
 
 export type FormData = {

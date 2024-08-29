@@ -1,7 +1,7 @@
 import { createAdditionalField } from '../utils'
 import { Preprint } from '../../../../types/preprint'
 import { getAdditionalField } from '../../../../utils/data'
-import { updatePreprint } from '../actions'
+import { updatePreprint } from '../../../../actions/preprint'
 
 export type FormData = {
   title: string

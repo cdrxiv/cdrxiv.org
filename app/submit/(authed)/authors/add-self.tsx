@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 
 import { Button } from '../../../../components'
 import { usePreprint } from '../preprint-context'
-import { updatePreprint } from '../actions'
+import { updatePreprint } from '../../../../actions/preprint'
 
 const AddSelf = () => {
   const { data: session } = useSession()
@@ -18,7 +18,7 @@ const AddSelf = () => {
         ],
       }).then((updatedPreprint) => setPreprint(updatedPreprint))
     }
-  }, [preprint, session?.user])
+  }, [preprint, session?.user, setPreprint])
 
   const isAdded = !!preprint.authors.find(({ pk }) => pk === session?.user?.id)
   return (

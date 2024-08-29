@@ -23,9 +23,11 @@ import {
 import { formatDate } from '../../../../../utils/formatters'
 import { useForm } from '../../../../../hooks/use-form'
 import { UPDATE_TYPE_DESCRIPTIONS, UPDATE_TYPE_LABELS } from './constants'
-import { createVersionQueue } from './actions'
 import { getAdditionalField } from '../../../../../utils/data'
-import { createPreprintFile } from '../../../../submit/(authed)/actions'
+import {
+  createPreprintFile,
+  createVersionQueue,
+} from '../../../../../actions/preprint'
 
 type Props = {
   preprint: Preprint

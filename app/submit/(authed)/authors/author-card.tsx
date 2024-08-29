@@ -5,7 +5,7 @@ import { useCallback } from 'react'
 import { usePreprint } from '../preprint-context'
 import { Author } from '../../../../types/preprint'
 import { Link } from '../../../../components'
-import { updatePreprint } from '../actions'
+import { updatePreprint } from '../../../../actions/preprint'
 
 const AuthorCard = ({
   author,
@@ -21,7 +21,7 @@ const AuthorCard = ({
     updatePreprint(preprint, {
       authors: preprint.authors.filter(({ pk }) => pk !== author.pk),
     }).then((updatedPreprint) => setPreprint(updatedPreprint))
-  }, [preprint, author])
+  }, [preprint, author, setPreprint])
 
   return (
     <Box
