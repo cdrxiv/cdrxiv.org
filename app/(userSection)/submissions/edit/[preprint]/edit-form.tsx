@@ -11,7 +11,15 @@ import {
 } from '../../../../../types/preprint'
 import VersionsList from './versions-list'
 import SharedLayout from '../../../shared-layout'
-import { Button, Field, Form, Link, Select } from '../../../../../components'
+import {
+  Button,
+  Field,
+  FileInput,
+  FileInputValue,
+  Form,
+  Link,
+  Select,
+} from '../../../../../components'
 import { formatDate } from '../../../../../utils/formatters'
 import { useForm } from '../../../../../hooks/use-form'
 import { UPDATE_TYPE_DESCRIPTIONS, UPDATE_TYPE_LABELS } from './constants'
@@ -29,22 +37,31 @@ type FormData = {
   title: string
   abstract: string
   published_doi: string
-  file: string
+  articleFile: FileInputValue | null
+  dataFile: FileInputValue | null
 }
-const initializeForm = (preprint: Preprint) => {
+const initializeForm = (preprint: Preprint): FormData => {
   return {
     preprint: preprint.pk,
     update_type: 'correction' as UpdateType,
     title: preprint.title,
     abstract: preprint.abstract,
     published_doi: preprint.doi ?? '',
-    file: '',
+    articleFile: null,
+    dataFile: null,
   }
 }
 
 const validateForm = (
   preprint: Preprint,
-  { update_type, title, abstract, published_doi, file }: FormData,
+  {
+    update_type,
+    title,
+    abstract,
+    published_doi,
+    articleFile,
+    dataFile,
+  }: FormData,
 ) => {
   let result: Partial<{ [K in keyof FormData]: string }> = {}
   if (!title || title === 'Placeholder') {
@@ -70,8 +87,8 @@ const validateForm = (
     }
   }
 
-  if (update_type !== 'metadata_correction' && !file) {
-    result.file = 'You must provide a new file for your update.'
+  if (update_type !== 'metadata_correction' && !articleFile) {
+    result.articleFile = 'You must provide a new file for your update.'
   }
 
   return result
@@ -83,7 +100,8 @@ const submitForm = async ({
   title,
   abstract,
   published_doi,
-  file,
+  articleFile,
+  dataFile,
 }: FormData) => {
   return createVersionQueue({
     preprint,
@@ -114,6 +132,11 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
       router.push('/submissions')
     }
   }, [onSubmit, router])
+
+  const collectArticleFile =
+    submissionType !== 'Data' && data.update_type !== 'metadata_correction'
+  const collectDataFile =
+    submissionType !== 'Article' && data.update_type === 'version'
 
   return (
     <SharedLayout
@@ -196,37 +219,29 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
             id='published_doi'
           />
         </Field>
-        {data.update_type !== 'metadata_correction' && (
-          <>
-            {submissionType !== 'Data' && (
-              <Field
-                label='Article file'
-                id='dataFile'
-                description='Your data must be submitted as a PDF.'
-                error={errors.file}
-              >
-                <Input
-                  value={data.file}
-                  onChange={(e) => setters.file(e.target.value)}
-                  id='file'
-                />
-              </Field>
-            )}
-            {submissionType !== 'Article' && (
-              <Field
-                label='Data file'
-                id='dataFile'
-                description='Your submission can by represented by a single file of any format, including ZIP, up to [TK] MB.'
-                error={errors.file}
-              >
-                <Input
-                  value={data.file}
-                  onChange={(e) => setters.file(e.target.value)}
-                  id='file'
-                />
-              </Field>
-            )}
-          </>
+        {collectArticleFile && (
+          <Field
+            label='Article file'
+            id='articleFile'
+            description='Your article must be submitted as a PDF.'
+            error={errors.articleFile}
+          >
+            <FileInput
+              file={data.articleFile}
+              onChange={setters.articleFile}
+              accept='application/pdf'
+            />
+          </Field>
+        )}
+        {collectDataFile && (
+          <Field
+            label='Data file'
+            id='dataFile'
+            description='Your submission can by represented by a single file of any format, including ZIP, up to [TK] MB.'
+            error={errors.dataFile}
+          >
+            <FileInput file={data.dataFile} onChange={setters.dataFile} />
+          </Field>
         )}
         <Button onClick={handleSubmit}>Submit</Button>
       </Form>
