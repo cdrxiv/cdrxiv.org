@@ -43,7 +43,7 @@ type FormData = {
 const initializeForm = (preprint: Preprint): FormData => {
   return {
     preprint: preprint.pk,
-    update_type: 'correction' as UpdateType,
+    update_type: 'metadata_correction' as UpdateType,
     title: preprint.title,
     abstract: preprint.abstract,
     published_doi: preprint.doi ?? '',
@@ -181,11 +181,16 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
             onChange={(e) => setters.update_type(e.target.value as UpdateType)}
             id='update_type'
           >
-            {Object.keys(UPDATE_TYPE_LABELS).map((value) => (
-              <option key={value} value={value}>
-                {UPDATE_TYPE_LABELS[value as UpdateType]}
-              </option>
-            ))}
+            {Object.keys(UPDATE_TYPE_LABELS).map((value) =>
+              value === 'correction' &&
+              submissionType ===
+                'Data' ? // Do not collect text corrections for data-only submissions
+              null : (
+                <option key={value} value={value}>
+                  {UPDATE_TYPE_LABELS[value as UpdateType]}
+                </option>
+              ),
+            )}
           </Select>
         </Field>
         <Field label='Title' id='title' error={errors.title}>
