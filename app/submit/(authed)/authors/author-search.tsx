@@ -36,7 +36,7 @@ const AuthorSearch = () => {
   const handleSubmit = useCallback(async () => {
     setError('')
     const type = validateAuthorSearch(value)
-    track('author_search', { type, value })
+    track('author_search', { type, value: type === 'invalid' ? value : null })
     const searchResults = await searchAuthor(value)
     const author = searchResults.results[0]
     if (author && searchResults.results.length === 1) {
