@@ -178,6 +178,9 @@ const submitForm = async (
       ],
     })
   }
+
+  // TODO: update metadata on Zenodo deposition metadata if changed
+
   return createVersionQueue({
     preprint: preprint_pk,
     update_type,
