@@ -99,6 +99,19 @@ const SubmissionInformation = () => {
         <Field label='Funding sources' id='funding' error={errors.funding}>
           <FundingSources value={data.funding} setValue={setters.funding} />
         </Field>
+
+        <Field
+          label='Comments to the editor'
+          id='comments_editor'
+          description='For most submissions, this is left blank.'
+          error={errors.comments_editor}
+        >
+          <Textarea
+            value={data.comments_editor}
+            onChange={(e) => setters.comments_editor(e.target.value)}
+            id='comments_editor'
+          />
+        </Field>
       </Form>
 
       <NavButtons onClick={onSubmit} />
