@@ -177,6 +177,21 @@ export async function createPreprintFile(
   const result = res.json()
   return result
 }
+export async function fetchPreprintFile(pk: number): Promise<PreprintFile> {
+  const res = await fetchWithToken(
+    headers(),
+    `https://carbonplan.endurance.janeway.systems/carbonplan/api/preprint_files/${pk}`,
+  )
+
+  if (![200].includes(res.status)) {
+    throw new Error(
+      `Status ${res.status}: Unable to fetch file. ${res.statusText}`,
+    )
+  }
+
+  const result = res.json()
+  return result
+}
 
 export async function deletePreprintFile(pk: number): Promise<true> {
   const res = await fetchWithToken(
