@@ -1,19 +1,22 @@
 'use client'
 
-import { Flex, Label } from 'theme-ui'
+import { Label } from 'theme-ui'
 
 import { Checkbox, Field, Form } from '../../../../components'
 import NavButtons from '../../nav-buttons'
-import { usePreprint } from '../preprint-context'
+import { usePreprint, usePreprintFiles } from '../preprint-context'
 import { useForm } from '../utils'
 import { FormData, initializeForm, validateForm, submitForm } from './utils'
+import DataFileInput from './data-file-input'
+import FileInput from './file-input'
 
 const SubmissionOverview = () => {
   const { preprint, setPreprint } = usePreprint()
+  const { files, setFiles } = usePreprintFiles()
   const { data, setters, errors, onSubmit, submitError } = useForm<FormData>(
-    () => initializeForm(preprint),
+    () => initializeForm(preprint, files),
     validateForm,
-    submitForm.bind(null, preprint, setPreprint),
+    submitForm.bind(null, preprint, setPreprint, files, setFiles),
   )
 
   return (
@@ -37,29 +40,30 @@ const SubmissionOverview = () => {
         </Field>
 
         <Field
-          label='Submission contents'
-          id='contents'
-          description='Select the content types you’d like to include in your submission.'
-          error={errors.article ?? errors.data}
+          label='Article file'
+          id='articleFile'
+          description='Your article must be submitted as a PDF.'
+          error={errors.articleFile}
         >
-          <Flex sx={{ gap: 8 }}>
-            <Label sx={{ width: 'fit-content', alignItems: 'center' }}>
-              <Checkbox
-                value='article'
-                checked={data.article}
-                onChange={(e) => setters.article(e.target.checked)}
-              />
-              Article
-            </Label>
-            <Label sx={{ width: 'fit-content', alignItems: 'center' }}>
-              <Checkbox
-                value='data'
-                checked={data.data}
-                onChange={(e) => setters.data(e.target.checked)}
-              />
-              Data
-            </Label>
-          </Flex>
+          <FileInput
+            file={data.articleFile}
+            onChange={setters.articleFile}
+            accept='application/pdf'
+          />
+        </Field>
+
+        <Field
+          label='Data file'
+          id='dataFile'
+          description='Your submission can by represented by a single file of any format, including ZIP, up to [TK] MB.'
+          error={errors.dataFile ?? errors.externalFile}
+        >
+          <DataFileInput
+            file={data.dataFile}
+            setFile={setters.dataFile}
+            externalFile={data.externalFile}
+            setExternalFile={setters.externalFile}
+          />
         </Field>
       </Form>
 

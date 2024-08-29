@@ -1,4 +1,5 @@
-import { Funder, Preprint } from '../types/preprint'
+import { Author, Funder, Preprint } from '../types/preprint'
+import { Creator, Deposition } from '../types/zenodo'
 
 export const getAdditionalField = (
   preprint: Preprint | null,
@@ -41,5 +42,37 @@ export const getFunders = (preprint: Preprint | null): Funder[] | null => {
   } catch (error) {
     console.error('Error in getFunders:', error)
     return null
+  }
+}
+
+const getZenodoCreators = (authors: Author[]): Creator[] => {
+  return authors.map((author) => ({
+    name: `${author.last_name}, ${author.first_name}${author.middle_name ? ` ${author.middle_name}` : ''}`,
+    affiliation: author.institution ?? undefined,
+    orcid: author.orcid ?? undefined,
+  }))
+}
+
+export const getZenodoMetadata = (
+  preprint: Preprint,
+): Deposition['metadata'] => {
+  return {
+    upload_type: 'dataset',
+    title: preprint.title,
+    description: preprint.abstract,
+    doi: preprint.doi ?? undefined,
+    communities: [{ identifier: 'cdrxiv' }],
+    keywords: preprint.keywords.map((keyword) => keyword.word),
+    subjects: preprint.subject.map((s) => ({
+      term: s.name,
+      identifier: `https://cdrxiv.org/?subject=${s.name}`,
+    })),
+    creators: getZenodoCreators(preprint.authors),
+    related_identifiers: [
+      {
+        relation: 'isPartOf',
+        identifier: `https://cdrxiv.org/preprint/${preprint.pk}`,
+      },
+    ],
   }
 }

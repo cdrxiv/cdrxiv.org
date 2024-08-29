@@ -2,14 +2,17 @@
 
 import { headers, cookies } from 'next/headers'
 import { getToken } from 'next-auth/jwt'
+import { revalidatePath } from 'next/cache'
 import {
   Author,
   AuthorParams,
   Pagination,
   Preprint,
   PreprintParams,
+  PreprintFile,
 } from '../../../types/preprint'
 import { fetchWithToken } from '../../api/utils'
+import { Deposition, DepositionFile } from '../../../types/zenodo'
 
 export async function updatePreprint(
   preprint: Preprint,
@@ -25,7 +28,7 @@ export async function updatePreprint(
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         // Convert license into PreprintParams format
-        license: license?.pk,
+        license: typeof license === 'number' ? license : license?.pk,
         ...rest,
         ...params,
         repository: 1,
@@ -51,6 +54,14 @@ export async function updatePreprint(
   }
 
   const updatedPreprint = res.json()
+
+  // Clear submit form cache when preprint moves from unsubmitted to review stage
+  if (
+    preprint.stage === 'preprint_unsubmitted' &&
+    params.stage === 'preprint_review'
+  ) {
+    revalidatePath(`/submit`)
+  }
   return updatedPreprint
 }
 
@@ -158,5 +169,149 @@ export async function fetchAccount(pk: number): Promise<Author> {
   }
 
   const result = res.json()
+  return result
+}
+
+export async function createPreprintFile(
+  formData: FormData,
+): Promise<PreprintFile> {
+  const res = await fetchWithToken(
+    headers(),
+    `https://carbonplan.endurance.janeway.systems/carbonplan/api/preprint_files/`,
+    {
+      method: 'POST',
+      body: formData,
+    },
+  )
+
+  if (![200, 201].includes(res.status)) {
+    throw new Error(
+      `Status ${res.status}: Unable to create file. ${res.statusText}`,
+    )
+  }
+
+  const result = res.json()
+  return result
+}
+
+export async function deletePreprintFile(pk: number): Promise<true> {
+  const res = await fetchWithToken(
+    headers(),
+    `https://carbonplan.endurance.janeway.systems/carbonplan/api/preprint_files/${pk}`,
+    {
+      method: 'DELETE',
+    },
+  )
+
+  if (res.status !== 204) {
+    throw new Error(
+      `Status ${res.status}: Unable to delete file. ${res.statusText}`,
+    )
+  }
+
+  return true
+}
+
+export async function createDataDeposition(): Promise<Deposition> {
+  const res = await fetch(process.env.ZENODO_URL + '/api/deposit/depositions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ metadata: { upload_type: 'dataset' } }),
+  })
+
+  const result = await res.json()
+  return result
+}
+
+export async function fetchDataDeposition(url: string): Promise<Deposition> {
+  if (process.env.ZENODO_URL && !url.startsWith(process.env.ZENODO_URL)) {
+    throw new Error(`Invalid data URL: ${url}`)
+  }
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+    },
+  })
+
+  if (res.status !== 200) {
+    throw new Error(
+      `Status ${res.status}: Unable to fetch deposition. ${res.statusText}`,
+    )
+  }
+
+  const result = await res.json()
+  return result
+}
+export async function updateDataDeposition(
+  url: string,
+  params: Partial<Deposition>,
+): Promise<Deposition> {
+  if (process.env.ZENODO_URL && !url.startsWith(process.env.ZENODO_URL)) {
+    throw new Error(`Invalid data URL: ${url}`)
+  }
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(params),
+  })
+
+  if (res.status !== 200) {
+    throw new Error(
+      `Status ${res.status}: Unable to update deposition. ${res.statusText}`,
+    )
+  }
+
+  const result = await res.json()
+  return result
+}
+
+export async function deleteZenodoEntity(url: string): Promise<true> {
+  if (process.env.ZENODO_URL && !url.startsWith(process.env.ZENODO_URL)) {
+    throw new Error(`Invalid data URL: ${url}`)
+  }
+
+  const res = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+    },
+  })
+
+  if (res.status !== 204) {
+    throw new Error(
+      `Status ${res.status}: Unable to delete deposition. ${res.statusText}`,
+    )
+  }
+
+  return true
+}
+
+export async function createDataDepositionFile(
+  deposition: number,
+  formData: FormData,
+): Promise<DepositionFile> {
+  const res = await fetch(
+    process.env.ZENODO_URL + `/api/deposit/depositions/${deposition}/files`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+      },
+      body: formData,
+    },
+  )
+
+  const result = await res.json()
+
+  if (!result.id) {
+    throw new Error(result.message ?? 'Unable to create deposition file.')
+  }
+
   return result
 }
