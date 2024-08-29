@@ -37,24 +37,43 @@ const AuthorSearch = () => {
     let success = false
     setError('')
     const type = validateAuthorSearch(value)
-    const searchResults = await searchAuthor(value)
-    const author = searchResults.results[0]
-    if (author && searchResults.results.length === 1) {
-      const account = await fetchAccount(author.pk) // TODO: remove if search endpoint can return email
-      const updatedPreprint = await updatePreprint(preprint, {
-        authors: [...preprint.authors, account],
+
+    try {
+      const searchResults = await searchAuthor(value)
+      const author = searchResults.results[0]
+
+      if (author && searchResults.results.length === 1) {
+        try {
+          const account = await fetchAccount(author.pk) // TODO: remove if search endpoint can return email
+          const updatedPreprint = await updatePreprint(preprint, {
+            authors: [...preprint.authors, account],
+          })
+          success = true
+          setPreprint(updatedPreprint)
+          setValue('')
+        } catch (error) {
+          console.error('Error fetching author account:', error)
+          if (error instanceof Error) {
+            track('author_account_error', { error: error.message })
+            setError('Error fetching author account.')
+          } else {
+            track('author_account_error', { error: 'Unknown error' })
+            setError('Error fetching author account: Unknown error occurred')
+          }
+        }
+      } else {
+        setError('No author found.')
+      }
+    } catch (searchError) {
+      console.error('Error searching for author:', searchError)
+      setError('Error searching for author. Please try again.')
+    } finally {
+      track('author_search_attempt', {
+        success,
+        type: type === 'invalid' ? `invalid (${value})` : type,
       })
-      success = true
-      setPreprint(updatedPreprint)
-      setValue('')
-    } else {
-      setError('No author found.')
     }
-    track('author_search_attempt', {
-      success,
-      type: type === 'invalid' ? `invalid (${value})` : type,
-    })
-  }, [value, preprint])
+  }, [value, preprint, setPreprint])
 
   return (
     <>
