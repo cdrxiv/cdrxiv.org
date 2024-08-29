@@ -6,6 +6,27 @@ import { useCallback, useState } from 'react'
 import { Search } from '../../../../components'
 import { usePreprint } from '../preprint-context'
 import { fetchAccount, searchAuthor, updatePreprint } from '../actions'
+import { track } from '@vercel/analytics'
+
+const isEmail = (value: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(value)
+}
+
+const isOrcid = (value: string) => {
+  const orcidRegex = /^\d{4}-\d{4}-\d{4}-\d{4}$/
+  return orcidRegex.test(value)
+}
+
+const validateAuthorSearch = (value: string) => {
+  if (isEmail(value)) {
+    return 'email'
+  } else if (isOrcid(value)) {
+    return 'orcid'
+  } else {
+    return 'invalid'
+  }
+}
 
 const AuthorSearch = () => {
   const { preprint, setPreprint } = usePreprint()
@@ -14,6 +35,8 @@ const AuthorSearch = () => {
 
   const handleSubmit = useCallback(async () => {
     setError('')
+    const type = validateAuthorSearch(value)
+    track('author_search', { type, value })
     const searchResults = await searchAuthor(value)
     const author = searchResults.results[0]
     if (author && searchResults.results.length === 1) {
@@ -25,6 +48,7 @@ const AuthorSearch = () => {
       setPreprint(updatedPreprint)
       setValue('')
     } else {
+      track('author_search_failed', { type, value })
       setError('No author found.')
     }
   }, [value, preprint])
