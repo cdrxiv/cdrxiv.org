@@ -27,7 +27,13 @@ import { getAdditionalField } from '../../../../../utils/data'
 import {
   createPreprintFile,
   createVersionQueue,
+  updatePreprint,
 } from '../../../../../actions/preprint'
+import {
+  createDataDepositionFile,
+  createDataDepositionVersion,
+  fetchDataDeposition,
+} from '../../../../../actions/zenodo'
 
 type Props = {
   preprint: Preprint
@@ -43,6 +49,7 @@ type FormData = {
   published_doi: string
   articleFile: FileInputValue | null
   dataFile: FileInputValue | null
+  depositionUrl: string | null
 }
 const initializeForm = (preprint: Preprint): FormData => {
   return {
@@ -54,6 +61,10 @@ const initializeForm = (preprint: Preprint): FormData => {
     articleFile: null,
     dataFile: null,
     submissionType: getAdditionalField(preprint, 'Submission type') ?? '', // not editable; stored in form state for convenience
+    depositionUrl:
+      preprint.supplementary_files.find(
+        (file) => file.label === 'CDRXIV_DATA_PUBLISHED',
+      )?.url ?? null, // not editable; stored in form state for convenience
   }
 }
 
@@ -109,16 +120,20 @@ const validateForm = (
   return result
 }
 
-const submitForm = async ({
-  preprint,
-  update_type,
-  title,
-  abstract,
-  published_doi,
-  articleFile,
-  dataFile,
-  submissionType,
-}: FormData) => {
+const submitForm = async (
+  preprint: Preprint,
+  {
+    preprint: preprint_pk,
+    update_type,
+    title,
+    abstract,
+    published_doi,
+    articleFile,
+    dataFile,
+    submissionType,
+    depositionUrl,
+  }: FormData,
+) => {
   let file = null
   if (
     submissionType !== 'Data' &&
@@ -141,12 +156,28 @@ const submitForm = async ({
     submissionType !== 'Article' &&
     update_type === 'version' &&
     dataFile &&
-    dataFile.persisted
+    !dataFile.persisted &&
+    depositionUrl
   ) {
-    // TODO: make zenodo requests
+    const existingDeposition = await fetchDataDeposition(depositionUrl)
+    const newDeposition = await createDataDepositionVersion(
+      existingDeposition.links.newversion,
+    )
+    const formData = new FormData()
+
+    formData.set('name', dataFile.original_filename)
+    formData.set('file', dataFile.file)
+
+    createDataDepositionFile(newDeposition.id, formData)
+
+    await updatePreprint(preprint, {
+      supplementary_files: [
+        { label: 'CDRXIV_DATA_DRAFT', url: newDeposition.links.self },
+      ],
+    })
   }
   return createVersionQueue({
-    preprint,
+    preprint: preprint_pk,
     update_type,
     title,
     abstract,
@@ -161,7 +192,7 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
   const { data, setters, errors, onSubmit, submitError } = useForm(
     () => initializeForm(preprint),
     validator,
-    submitForm,
+    submitForm.bind(null, preprint),
   )
 
   const handleSubmit = useCallback(async () => {

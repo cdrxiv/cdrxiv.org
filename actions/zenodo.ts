@@ -118,3 +118,29 @@ export async function createDataDepositionFile(
 
   return result
 }
+
+export async function createDataDepositionVersion(
+  url: string,
+): Promise<Deposition> {
+  if (
+    process.env.NEXT_PUBLIC_ZENODO_URL &&
+    !url.startsWith(process.env.NEXT_PUBLIC_ZENODO_URL)
+  ) {
+    throw new Error(`Invalid data URL: ${url}`)
+  }
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+    },
+  })
+
+  if (res.status !== 201) {
+    throw new Error(
+      `Status ${res.status}: Unable to create new version of deposition. ${res.statusText}`,
+    )
+  }
+
+  const result = await res.json()
+  return result
+}

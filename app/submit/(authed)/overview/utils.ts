@@ -59,7 +59,8 @@ export const initializeForm = (
     externalFile:
       preprint.supplementary_files.find(
         (file) =>
-          file.label !== 'CDRXIV_DATA_DRAFT' && file.label !== 'CDRXIV_DATA',
+          file.label !== 'CDRXIV_DATA_DRAFT' &&
+          file.label !== 'CDRXIV_DATA_PUBLISHED',
       ) ?? null,
   }
 }

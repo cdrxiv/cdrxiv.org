@@ -40,7 +40,7 @@ const PreprintsPage = async ({ params }: { params: { id: string } }) => {
   }
 
   const dataUrl = preprint.supplementary_files.find(
-    (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
+    (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_PUBLISHED',
   )?.url
   let deposition
   if (dataUrl) {
