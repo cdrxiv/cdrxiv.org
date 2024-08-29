@@ -25,6 +25,7 @@ import { useForm } from '../../../../../hooks/use-form'
 import { UPDATE_TYPE_DESCRIPTIONS, UPDATE_TYPE_LABELS } from './constants'
 import { createVersionQueue } from './actions'
 import { getAdditionalField } from '../../../../../utils/data'
+import { createPreprintFile } from '../../../../submit/(authed)/actions'
 
 type Props = {
   preprint: Preprint
@@ -34,6 +35,7 @@ type Props = {
 type FormData = {
   preprint: number
   update_type: UpdateType
+  submissionType: string
   title: string
   abstract: string
   published_doi: string
@@ -49,6 +51,7 @@ const initializeForm = (preprint: Preprint): FormData => {
     published_doi: preprint.doi ?? '',
     articleFile: null,
     dataFile: null,
+    submissionType: getAdditionalField(preprint, 'Submission type') ?? '', // not editable; stored in form state for convenience
   }
 }
 
@@ -61,6 +64,7 @@ const validateForm = (
     published_doi,
     articleFile,
     dataFile,
+    submissionType,
   }: FormData,
 ) => {
   let result: Partial<{ [K in keyof FormData]: string }> = {}
@@ -87,8 +91,17 @@ const validateForm = (
     }
   }
 
-  if (update_type !== 'metadata_correction' && !articleFile) {
-    result.articleFile = 'You must provide a new file for your update.'
+  if (update_type === 'correction' && !articleFile) {
+    result.articleFile = 'You must provide a new file for a text update.'
+  }
+
+  if (update_type === 'version' && !articleFile && !dataFile) {
+    const errorMessage =
+      submissionType === 'Both'
+        ? 'You must upload a new file for at least one content type.'
+        : 'You must upload a new file to create a new version.'
+    result.articleFile = errorMessage
+    result.dataFile = errorMessage
   }
 
   return result
@@ -102,13 +115,41 @@ const submitForm = async ({
   published_doi,
   articleFile,
   dataFile,
+  submissionType,
 }: FormData) => {
+  let file = null
+  if (
+    submissionType !== 'Data' &&
+    update_type !== 'metadata_correction' &&
+    articleFile &&
+    !articleFile.persisted
+  ) {
+    const formData = new FormData()
+
+    formData.set('file', articleFile.file)
+    formData.set('preprint', String(preprint))
+    formData.set('mime_type', articleFile.mime_type)
+    formData.set('original_filename', articleFile.original_filename)
+
+    const preprintFile = await createPreprintFile(formData)
+    file = preprintFile.pk
+  }
+
+  if (
+    submissionType !== 'Article' &&
+    update_type === 'version' &&
+    dataFile &&
+    dataFile.persisted
+  ) {
+    // TODO: make zenodo requests
+  }
   return createVersionQueue({
     preprint,
     update_type,
     title,
     abstract,
     published_doi: published_doi || null,
+    file,
   })
 }
 
@@ -121,11 +162,6 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
     submitForm,
   )
 
-  const submissionType = useMemo(
-    () => getAdditionalField(preprint, 'Submission type'),
-    [preprint],
-  )
-
   const handleSubmit = useCallback(async () => {
     const result = await onSubmit()
     if (result) {
@@ -134,9 +170,9 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
   }, [onSubmit, router])
 
   const collectArticleFile =
-    submissionType !== 'Data' && data.update_type !== 'metadata_correction'
+    data.submissionType !== 'Data' && data.update_type !== 'metadata_correction'
   const collectDataFile =
-    submissionType !== 'Article' && data.update_type === 'version'
+    data.submissionType !== 'Article' && data.update_type === 'version'
 
   return (
     <SharedLayout
@@ -183,9 +219,7 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
           >
             {Object.keys(UPDATE_TYPE_LABELS).map((value) =>
               value === 'correction' &&
-              submissionType ===
-                'Data' ? // Do not collect text corrections for data-only submissions
-              null : (
+              data.submissionType === 'Data' ? null : ( // Do not collect text corrections for data-only submissions
                 <option key={value} value={value}>
                   {UPDATE_TYPE_LABELS[value as UpdateType]}
                 </option>
