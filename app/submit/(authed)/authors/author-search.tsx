@@ -34,9 +34,9 @@ const AuthorSearch = () => {
   const [error, setError] = useState('')
 
   const handleSubmit = useCallback(async () => {
+    let success = false
     setError('')
     const type = validateAuthorSearch(value)
-    track('author_search', { type, value: type === 'invalid' ? value : null })
     const searchResults = await searchAuthor(value)
     const author = searchResults.results[0]
     if (author && searchResults.results.length === 1) {
@@ -44,13 +44,16 @@ const AuthorSearch = () => {
       const updatedPreprint = await updatePreprint(preprint, {
         authors: [...preprint.authors, account],
       })
-
+      success = true
       setPreprint(updatedPreprint)
       setValue('')
     } else {
-      track('author_search_failed', { type, value })
       setError('No author found.')
     }
+    track('author_search_attempt', {
+      success,
+      type: type === 'invalid' ? `invalid (${value})` : type,
+    })
   }, [value, preprint])
 
   return (
