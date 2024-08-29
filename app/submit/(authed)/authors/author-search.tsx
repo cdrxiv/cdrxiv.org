@@ -5,7 +5,7 @@ import { useCallback, useState } from 'react'
 
 import { Search } from '../../../../components'
 import { usePreprint } from '../preprint-context'
-import { fetchAccount, searchAuthor, updatePreprint } from '../actions'
+import { searchAuthor, updatePreprint } from '../actions'
 
 const AuthorSearch = () => {
   const { preprint, setPreprint } = usePreprint()
@@ -17,9 +17,8 @@ const AuthorSearch = () => {
     const searchResults = await searchAuthor(value)
     const author = searchResults.results[0]
     if (author && searchResults.results.length === 1) {
-      const account = await fetchAccount(author.pk) // TODO: remove if search endpoint can return email
       const updatedPreprint = await updatePreprint(preprint, {
-        authors: [...preprint.authors, account],
+        authors: [...preprint.authors, author],
       })
 
       setPreprint(updatedPreprint)
@@ -27,7 +26,7 @@ const AuthorSearch = () => {
     } else {
       setError('No author found.')
     }
-  }, [value, preprint])
+  }, [value, preprint, setPreprint])
 
   return (
     <>

@@ -109,7 +109,7 @@ export type PreprintParams = Partial<
       authors: Array<Author | { pk: number; email: string }>
     }
   >
->
+> & { comments_editor?: string }
 
 export type AuthorParams = Partial<
   Modify<

@@ -11,6 +11,7 @@ export type FormData = {
   subject: string[]
   keywords: string[]
   funding: string
+  comments_editor: string
 }
 
 export const initializeForm = (preprint: Preprint): FormData => {
@@ -26,6 +27,7 @@ export const initializeForm = (preprint: Preprint): FormData => {
     keywords: preprint.keywords.map(({ word }) => word),
     funding:
       getAdditionalField(preprint, 'Funder(s) and award numbers') ?? '[]',
+    comments_editor: '',
   }
 }
 
@@ -66,7 +68,16 @@ export const validateForm = ({
 export const submitForm = (
   preprint: Preprint,
   setPreprint: (p: Preprint) => void,
-  { title, abstract, license, doi, subject, keywords, funding }: FormData,
+  {
+    title,
+    abstract,
+    license,
+    doi,
+    subject,
+    keywords,
+    funding,
+    comments_editor,
+  }: FormData,
 ) => {
   const params = {
     title,
@@ -79,6 +90,7 @@ export const submitForm = (
       ...preprint.additional_field_answers,
       createAdditionalField('Funder(s) and award numbers', funding),
     ],
+    ...(comments_editor ? { comments_editor } : {}),
   }
 
   return updatePreprint(preprint, params).then((updated) =>
