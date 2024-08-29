@@ -1,8 +1,7 @@
 import { headers } from 'next/headers'
 import React from 'react'
-import { redirect } from 'next/navigation'
 
-import SubmissionsView from '../submissions-view'
+import SubmissionsView from './submissions-view'
 import { Preprint } from '../../../../types/preprint'
 import { fetchWithToken } from '../../../api/utils'
 
