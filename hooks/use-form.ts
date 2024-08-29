@@ -1,3 +1,4 @@
+import { track } from '@vercel/analytics'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 export type Errors<T> = Partial<{ [K in keyof T]: string }>
@@ -55,6 +56,9 @@ export function useForm<T>(
 
     const valid = Object.keys(errors).length === 0
     if (!valid) {
+      track('submit_step_not_valid', {
+        errors: Object.keys(errors).join(', '),
+      })
       return false
     } else {
       return submit(data)
@@ -62,6 +66,9 @@ export function useForm<T>(
           return true
         })
         .catch((err) => {
+          track('submit_step_error', {
+            error: err.message,
+          })
           setSubmitError(err.message ?? 'Error submitting form.')
           return false
         })
