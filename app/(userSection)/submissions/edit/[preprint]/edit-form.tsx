@@ -49,7 +49,6 @@ type FormData = {
   published_doi: string
   articleFile: FileInputValue | null
   dataFile: FileInputValue | null
-  depositionUrl: string | null
 }
 const initializeForm = (preprint: Preprint): FormData => {
   return {
@@ -61,10 +60,6 @@ const initializeForm = (preprint: Preprint): FormData => {
     articleFile: null,
     dataFile: null,
     submissionType: getAdditionalField(preprint, 'Submission type') ?? '', // not editable; stored in form state for convenience
-    depositionUrl:
-      preprint.supplementary_files.find(
-        (file) => file.label === 'CDRXIV_DATA_PUBLISHED',
-      )?.url ?? null, // not editable; stored in form state for convenience
   }
 }
 
@@ -131,7 +126,6 @@ const submitForm = async (
     articleFile,
     dataFile,
     submissionType,
-    depositionUrl,
   }: FormData,
 ) => {
   let file = null
@@ -156,9 +150,17 @@ const submitForm = async (
     submissionType !== 'Article' &&
     update_type === 'version' &&
     dataFile &&
-    !dataFile.persisted &&
-    depositionUrl
+    !dataFile.persisted
   ) {
+    const depositionUrl =
+      preprint.supplementary_files.find(
+        (file) => file.label === 'CDRXIV_DATA_PUBLISHED',
+      )?.url ?? null
+
+    if (!depositionUrl) {
+      throw new Error('No published data uploads found.')
+    }
+
     const existingDeposition = await fetchDataDeposition(depositionUrl)
     const newDeposition = await createDataDepositionVersion(
       existingDeposition.links.newversion,
