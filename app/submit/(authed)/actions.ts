@@ -156,22 +156,6 @@ export async function searchAuthor(
   return result
 }
 
-export async function fetchAccount(pk: number): Promise<Author> {
-  const res = await fetchWithToken(
-    headers(),
-    `https://carbonplan.endurance.janeway.systems/carbonplan/api/accounts/${pk}`,
-  )
-
-  if (res.status !== 200) {
-    throw new Error(
-      `Status ${res.status}: Unable to fetch account. ${res.statusText}`,
-    )
-  }
-
-  const result = res.json()
-  return result
-}
-
 export async function createPreprintFile(
   formData: FormData,
 ): Promise<PreprintFile> {
