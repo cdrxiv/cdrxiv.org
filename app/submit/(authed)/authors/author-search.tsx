@@ -41,33 +41,19 @@ const AuthorSearch = () => {
     try {
       const searchResults = await searchAuthor(value)
       const author = searchResults.results[0]
-
       if (author && searchResults.results.length === 1) {
-        try {
-          const account = await fetchAccount(author.pk) // TODO: remove if search endpoint can return email
-          const updatedPreprint = await updatePreprint(preprint, {
-            authors: [...preprint.authors, account],
-          })
-          success = true
-          setPreprint(updatedPreprint)
-          setValue('')
-        } catch (error) {
-          console.error('Error fetching author account:', error)
-          if (error instanceof Error) {
-            track('author_account_error', { error: error.message })
-            setError('Error fetching author account.')
-          } else {
-            track('author_account_error', { error: 'Unknown error' })
-            setError('Error fetching author account: Unknown error occurred')
-          }
-        }
-      } else {
-        setError('No author found.')
+        const account = await fetchAccount(author.pk) // TODO: remove if search endpoint can return email
+        const updatedPreprint = await updatePreprint(preprint, {
+          authors: [...preprint.authors, account],
+        })
+        success = true
+        setPreprint(updatedPreprint)
+        setValue('')
       }
-    } catch (searchError) {
-      console.error('Error searching for author:', searchError)
-      setError('Error searching for author. Please try again.')
+    } catch (error) {
+      console.error('Error in author search or update:', error)
     } finally {
+      if (!success) setError('Author not found.')
       track('author_search_attempt', {
         success,
         type: type === 'invalid' ? `invalid (${value})` : type,
