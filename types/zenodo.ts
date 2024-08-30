@@ -32,7 +32,9 @@ export type Deposition = {
   files: DepositionFile[]
   links: {
     self: string
+    newversion: string
   }
+  submitted: boolean
 }
 
 export type DepositionFile = {

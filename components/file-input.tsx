@@ -1,16 +1,30 @@
-'use client'
-
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useRef } from 'react'
 import { Box, Flex } from 'theme-ui'
 
-import { Button, Link } from '../../../../components'
-import { CurrentFile } from './utils'
+import Button from './button'
+import Link from './link'
+
+export type FileInputValue =
+  | {
+      persisted: true
+      url: string
+      mime_type: null
+      original_filename: string
+      file: null
+    }
+  | {
+      persisted: false
+      url: null
+      mime_type: string
+      original_filename: string
+      file: Blob
+    }
 
 type Props = {
   accept?: string
-  file?: CurrentFile | null
+  file?: FileInputValue | null
   description?: React.ReactNode
-  onChange: (file: CurrentFile | null) => void
+  onChange: (file: FileInputValue | null) => void
 }
 const FileInput: React.FC<Props> = ({
   accept = 'any',

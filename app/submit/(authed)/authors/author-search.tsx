@@ -5,7 +5,7 @@ import { useCallback, useState } from 'react'
 
 import { Search } from '../../../../components'
 import { usePreprint } from '../preprint-context'
-import { searchAuthor, updatePreprint } from '../actions'
+import { searchAuthor, updatePreprint } from '../../../../actions/preprint'
 
 const AuthorSearch = () => {
   const { preprint, setPreprint } = usePreprint()

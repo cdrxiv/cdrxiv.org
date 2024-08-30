@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 
 import { fetchWithToken } from '../../api/utils'
 import { PreprintProvider } from './preprint-context'
-import { createPreprint } from './actions'
+import { createPreprint } from '../../../actions/preprint'
 import { Preprint } from '../../../types/preprint'
 
 interface Props {

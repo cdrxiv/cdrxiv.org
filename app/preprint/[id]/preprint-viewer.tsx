@@ -13,11 +13,18 @@ import { authorList } from '../../../utils/formatters'
 import { getAdditionalField } from '../../../utils/data'
 
 import type { Preprint } from '../../../types/preprint'
+import type { Deposition } from '../../../types/zenodo'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
-const PreprintViewer = ({ preprint }: { preprint: Preprint }) => {
+const PreprintViewer = ({
+  preprint,
+  deposition,
+}: {
+  preprint: Preprint
+  deposition?: Deposition
+}) => {
   const [containerWidth, setContainerWidth] = useState<number>(0)
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -57,7 +64,7 @@ const PreprintViewer = ({ preprint }: { preprint: Preprint }) => {
     <PaneledPage
       title={preprint.title}
       sidebar={pdf ? <Outline pdf={pdf} onItemClick={onItemClicked} /> : null}
-      metadata={<MetadataView preprint={preprint} />}
+      metadata={<MetadataView preprint={preprint} deposition={deposition} />}
     >
       {preprint.doi && (
         <StyledLink
