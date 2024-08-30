@@ -32,6 +32,7 @@ import {
 import {
   createDataDepositionFile,
   createDataDepositionVersion,
+  deleteZenodoEntity,
   fetchDataDeposition,
 } from '../../../../../actions/zenodo'
 
@@ -152,31 +153,60 @@ const submitForm = async (
     dataFile &&
     !dataFile.persisted
   ) {
+    const label =
+      preprint.stage === 'preprint_published'
+        ? 'CDRXIV_DATA_PUBLISHED'
+        : 'CDRXIV_DATA_DRAFT'
     const depositionUrl =
-      preprint.supplementary_files.find(
-        (file) => file.label === 'CDRXIV_DATA_PUBLISHED',
-      )?.url ?? null
+      preprint.supplementary_files.find((file) => file.label === label)?.url ??
+      null
 
     if (!depositionUrl) {
       throw new Error('No published data uploads found.')
     }
 
     const existingDeposition = await fetchDataDeposition(depositionUrl)
-    const newDeposition = await createDataDepositionVersion(
-      existingDeposition.links.newversion,
-    )
+
+    if (label === 'CDRXIV_DATA_PUBLISHED' && !existingDeposition.submitted) {
+      throw new Error(
+        "Expected data to have been previously published, but it wasn't.",
+      )
+    } else if (label === 'CDRXIV_DATA_DRAFT' && existingDeposition.submitted) {
+      throw new Error(
+        'Data has been published, but your preprint has not. Unable to update data.',
+      )
+    }
+    let depositionId
+    let newUrl
+    // If the deposition has been published...
+    if (existingDeposition.submitted) {
+      // create new version.
+      const newDeposition = await createDataDepositionVersion(
+        existingDeposition.links.newversion,
+      )
+      depositionId = newDeposition.id
+      newUrl = newDeposition.links.self
+    } else {
+      // otherwise replace existing files with newly added file.
+      depositionId = existingDeposition.id
+      if (existingDeposition.files.length > 0) {
+        await Promise.all([
+          existingDeposition.files.map((f) => deleteZenodoEntity(f.links.self)), // delete previous data deposition files
+        ])
+      }
+    }
     const formData = new FormData()
 
     formData.set('name', dataFile.original_filename)
     formData.set('file', dataFile.file)
 
-    createDataDepositionFile(newDeposition.id, formData)
+    await createDataDepositionFile(depositionId, formData)
 
-    await updatePreprint(preprint, {
-      supplementary_files: [
-        { label: 'CDRXIV_DATA_DRAFT', url: newDeposition.links.self },
-      ],
-    })
+    if (newUrl) {
+      await updatePreprint(preprint, {
+        supplementary_files: [{ label: 'CDRXIV_DATA_DRAFT', url: newUrl }],
+      })
+    }
   }
 
   // TODO: update metadata on Zenodo deposition metadata if changed
