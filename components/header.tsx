@@ -232,7 +232,7 @@ const Header = () => {
             sx={{
               flexDirection: 'row',
               justifyContent: 'flex-start',
-              gap: 4,
+              gap: [4, 4, 8, 10],
             }}
           >
             {renderLinks()}
