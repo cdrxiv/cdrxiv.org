@@ -48,13 +48,21 @@ const UserProfile = () => {
   )
 }
 
-const LoginLink = ({ sx }: { sx?: ThemeUIStyleObject }) => {
+const LoginLink = ({
+  sx,
+  name,
+  path,
+}: {
+  sx?: ThemeUIStyleObject
+  name: string
+  path: string
+}) => {
   const { data: session, status } = useSession()
   const authenticated = status === 'authenticated' && !!session
 
   return (
     <StyledLink
-      href={authenticated ? '/submissions' : PATHS[2].path}
+      href={authenticated ? '/submissions' : path}
       sx={{
         width: 'fit-content',
         whiteSpace: 'nowrap',
@@ -67,7 +75,7 @@ const LoginLink = ({ sx }: { sx?: ThemeUIStyleObject }) => {
       <Box as='span'>
         {authenticated
           ? `${session.user.first_name} ${session.user.last_name}`
-          : PATHS[2].name}
+          : name}
         &nbsp;&nbsp;&nbsp;&nbsp;
       </Box>
       <UserProfile />
@@ -99,7 +107,7 @@ const Header = () => {
     return PATHS.map(({ name, path }) => {
       const textDecoration = isActive(path) ? 'underline' : 'none'
       return name === 'Login' ? (
-        <LoginLink key={name} sx={{ textDecoration }} />
+        <LoginLink key={name} sx={{ textDecoration }} name={name} path={path} />
       ) : (
         <StyledLink
           href={path}
@@ -108,7 +116,7 @@ const Header = () => {
             width: 'fit-content',
           }}
         >
-          {name === 'Login' ? <LoginLink /> : name}
+          {name}
         </StyledLink>
       )
     })
@@ -230,8 +238,6 @@ const Header = () => {
         >
           <Flex
             sx={{
-              flexDirection: 'row',
-              justifyContent: 'flex-start',
               gap: [4, 4, 8, 10],
             }}
           >
