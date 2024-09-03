@@ -20,7 +20,7 @@ const About = () => {
         About CDRXIV
       </Box>
       <Box variant='text.body' sx={{ mb: 3 }}>
-        CDRXIV is a preprint and data server for the Carbon Dioxide Removal
+        CDRXIV is a preprint and data server for the carbon dioxide removal
         community.
       </Box>
       <Box variant='text.heading' sx={{ fontSize: [4, 4, 4, 5] }}>
