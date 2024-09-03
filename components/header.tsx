@@ -1,5 +1,5 @@
 import { SVGProps, useEffect, useRef, useState } from 'react'
-import { Box, BoxProps, ThemeUIStyleObject, useThemeUI } from 'theme-ui'
+import { Box, BoxProps, Flex, ThemeUIStyleObject, useThemeUI } from 'theme-ui'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
@@ -26,6 +26,7 @@ const margin = [2, 2, 3, 3]
 
 const PATHS: { name: string; path: string }[] = [
   { name: 'Home', path: '/' },
+  { name: 'About', path: '/about' },
   { name: 'Submit', path: '/submit/overview' },
   { name: 'Login', path: '/login' },
 ]
@@ -95,20 +96,19 @@ const Header = () => {
     return pathname.startsWith(path)
   }
   const renderLinks = () => {
-    return PATHS.map(({ name, path }, i) => {
+    return PATHS.map(({ name, path }) => {
       const textDecoration = isActive(path) ? 'underline' : 'none'
-      return i === 2 ? (
+      return name === 'Login' ? (
         <LoginLink key={name} sx={{ textDecoration }} />
       ) : (
         <StyledLink
-          key={name}
           href={path}
           sx={{
             textDecoration,
             width: 'fit-content',
           }}
         >
-          {i === 2 ? <LoginLink key={name} /> : name}
+          {name === 'Login' ? <LoginLink /> : name}
         </StyledLink>
       )
     })
@@ -225,28 +225,18 @@ const Header = () => {
         </Column>
         <Column
           start={[4, 4, 5, 5]}
-          width={1}
+          width={[7, 7, 6, 6]}
           sx={{ display: ['none', 'inherit', 'inherit', 'inherit'] }}
         >
-          <StyledLink href={PATHS[0].path} sx={{ width: 'fit-content' }}>
-            {PATHS[0].name}
-          </StyledLink>
-        </Column>
-        <Column
-          start={[5, 5, 6, 6]}
-          width={1}
-          sx={{ display: ['none', 'inherit', 'inherit', 'inherit'] }}
-        >
-          <StyledLink href={PATHS[1].path} sx={{ width: 'fit-content' }}>
-            {PATHS[1].name}
-          </StyledLink>
-        </Column>
-        <Column
-          start={[6, 6, 7, 7]}
-          width={2}
-          sx={{ display: ['none', 'inherit', 'inherit', 'inherit'] }}
-        >
-          <LoginLink />
+          <Flex
+            sx={{
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              gap: 4,
+            }}
+          >
+            {renderLinks()}
+          </Flex>
         </Column>
         <Column
           start={4}
