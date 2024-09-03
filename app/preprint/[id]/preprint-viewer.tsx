@@ -75,9 +75,13 @@ const PreprintViewer = ({
           {preprint.doi}
         </StyledLink>
       )}
-      <Box sx={{ variant: 'text.mono', mt: 3, mb: 4 }}>
+      <Box sx={{ variant: 'text.mono', mt: 3, mb: 7 }}>
         {authorList(preprint.authors)}
       </Box>
+      <Box sx={{ variant: 'text.monoCaps', fontSize: [3, 3, 3, 4], mb: 4 }}>
+        Abstract
+      </Box>
+      <Box sx={{ variant: 'text.body', mb: 7 }}>{preprint.abstract}</Box>
       {hasArticle && (
         <div ref={containerRef} style={{ width: '100%' }}>
           <Document
