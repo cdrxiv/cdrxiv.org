@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 
 import { fetchWithToken } from '../../api/utils'
 import { PreprintProvider } from './preprint-context'
-import { createPreprint } from './actions'
+import { createPreprint } from '../../../actions/preprint'
 import { Preprint } from '../../../types/preprint'
 
 interface Props {
@@ -25,9 +25,6 @@ const SubmissionOverview: React.FC<Props> = async ({ children }) => {
   let files
   if (preprintRes.status !== 200) {
     redirect('/login?signOut=true')
-  } else if (filesRes.status !== 200) {
-    // TODO: Remove special handling for /api/preprint_files once non-repository-manager-users can access
-    files = { results: [] }
   }
 
   const [preprintsData, filesData] = await Promise.all([

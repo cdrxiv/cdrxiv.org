@@ -7,7 +7,7 @@ import { Button, Column, Field, Row } from '../../../../components'
 import { usePreprint } from '../preprint-context'
 import { useForm } from '../utils'
 import { Preprint } from '../../../../types/preprint'
-import { createAuthor, updatePreprint } from '../actions'
+import { createAuthor, updatePreprint } from '../../../../actions/preprint'
 
 type FormData = {
   email: string

@@ -3,16 +3,14 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Box, Flex, Input } from 'theme-ui'
 
-import { fetchDataDeposition } from '../actions'
+import { fetchDataDeposition } from '../../../../actions/zenodo'
 import { SupplementaryFile } from '../../../../types/preprint'
 import { Deposition } from '../../../../types/zenodo'
-import FileInput from './file-input'
-import { Link } from '../../../../components'
-import { CurrentFile } from './utils'
+import { Link, FileInput, FileInputValue } from '../../../../components'
 
 type Props = {
-  file?: CurrentFile | null
-  setFile: (file: CurrentFile | null) => void
+  file?: FileInputValue | null
+  setFile: (file: FileInputValue | null) => void
   externalFile: SupplementaryFile | null
   setExternalFile: (file: SupplementaryFile | null) => void
 }

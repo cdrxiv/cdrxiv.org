@@ -5,7 +5,7 @@ import { useCallback, useState } from 'react'
 
 import { Search } from '../../../../components'
 import { usePreprint } from '../preprint-context'
-import { fetchAccount, searchAuthor, updatePreprint } from '../actions'
+import { searchAuthor, updatePreprint } from '../../../../actions/preprint'
 import { track } from '@vercel/analytics'
 
 const isEmail = (value: string) => {
@@ -35,16 +35,15 @@ const AuthorSearch = () => {
 
   const handleSubmit = useCallback(async () => {
     let success = false
-    setError('')
     const type = validateAuthorSearch(value)
+    setError('')
 
     try {
       const searchResults = await searchAuthor(value)
       const author = searchResults.results[0]
       if (author && searchResults.results.length === 1) {
-        const account = await fetchAccount(author.pk) // TODO: remove if search endpoint can return email
         const updatedPreprint = await updatePreprint(preprint, {
-          authors: [...preprint.authors, account],
+          authors: [...preprint.authors, author],
         })
         success = true
         setPreprint(updatedPreprint)

@@ -11,11 +11,30 @@ import {
 } from '../../../../../types/preprint'
 import VersionsList from './versions-list'
 import SharedLayout from '../../../shared-layout'
-import { Button, Field, Form, Link, Select } from '../../../../../components'
+import {
+  Button,
+  Field,
+  FileInput,
+  FileInputValue,
+  Form,
+  Link,
+  Select,
+} from '../../../../../components'
 import { formatDate } from '../../../../../utils/formatters'
 import { useForm } from '../../../../../hooks/use-form'
 import { UPDATE_TYPE_DESCRIPTIONS, UPDATE_TYPE_LABELS } from './constants'
-import { createVersionQueue } from './actions'
+import { getAdditionalField } from '../../../../../utils/data'
+import {
+  createPreprintFile,
+  createVersionQueue,
+  updatePreprint,
+} from '../../../../../actions/preprint'
+import {
+  createDataDepositionFile,
+  createDataDepositionVersion,
+  deleteZenodoEntity,
+  fetchDataDeposition,
+} from '../../../../../actions/zenodo'
 
 type Props = {
   preprint: Preprint
@@ -25,25 +44,37 @@ type Props = {
 type FormData = {
   preprint: number
   update_type: UpdateType
+  submissionType: string
   title: string
   abstract: string
   published_doi: string
-  file: string
+  articleFile: FileInputValue | null
+  dataFile: FileInputValue | null
 }
-const initializeForm = (preprint: Preprint) => {
+const initializeForm = (preprint: Preprint): FormData => {
   return {
     preprint: preprint.pk,
-    update_type: 'correction' as UpdateType,
+    update_type: 'metadata_correction' as UpdateType,
     title: preprint.title,
     abstract: preprint.abstract,
     published_doi: preprint.doi ?? '',
-    file: '',
+    articleFile: null,
+    dataFile: null,
+    submissionType: getAdditionalField(preprint, 'Submission type') ?? '', // not editable; stored in form state for convenience
   }
 }
 
 const validateForm = (
   preprint: Preprint,
-  { update_type, title, abstract, published_doi, file }: FormData,
+  {
+    update_type,
+    title,
+    abstract,
+    published_doi,
+    articleFile,
+    dataFile,
+    submissionType,
+  }: FormData,
 ) => {
   let result: Partial<{ [K in keyof FormData]: string }> = {}
   if (!title || title === 'Placeholder') {
@@ -69,27 +100,124 @@ const validateForm = (
     }
   }
 
-  if (update_type !== 'metadata_correction' && !file) {
-    result.file = 'You must provide a new file for your update.'
+  if (update_type === 'correction' && !articleFile) {
+    result.articleFile = 'You must provide a new file for a text update.'
+  }
+
+  if (update_type === 'version' && !articleFile && !dataFile) {
+    const errorMessage =
+      submissionType === 'Both'
+        ? 'You must upload a new file for at least one content type.'
+        : 'You must upload a new file to create a new version.'
+    result.articleFile = errorMessage
+    result.dataFile = errorMessage
   }
 
   return result
 }
 
-const submitForm = async ({
-  preprint,
-  update_type,
-  title,
-  abstract,
-  published_doi,
-  file,
-}: FormData) => {
+const submitForm = async (
+  preprint: Preprint,
+  {
+    preprint: preprint_pk,
+    update_type,
+    title,
+    abstract,
+    published_doi,
+    articleFile,
+    dataFile,
+    submissionType,
+  }: FormData,
+) => {
+  let file = null
+  if (
+    submissionType !== 'Data' &&
+    update_type !== 'metadata_correction' &&
+    articleFile &&
+    !articleFile.persisted
+  ) {
+    const formData = new FormData()
+
+    formData.set('file', articleFile.file)
+    formData.set('preprint', String(preprint))
+    formData.set('mime_type', articleFile.mime_type)
+    formData.set('original_filename', articleFile.original_filename)
+
+    const preprintFile = await createPreprintFile(formData)
+    file = preprintFile.pk
+  }
+
+  if (
+    submissionType !== 'Article' &&
+    update_type === 'version' &&
+    dataFile &&
+    !dataFile.persisted
+  ) {
+    const label =
+      preprint.stage === 'preprint_published'
+        ? 'CDRXIV_DATA_PUBLISHED'
+        : 'CDRXIV_DATA_DRAFT'
+    const depositionUrl =
+      preprint.supplementary_files.find((file) => file.label === label)?.url ??
+      null
+
+    if (!depositionUrl) {
+      throw new Error('No published data uploads found.')
+    }
+
+    const existingDeposition = await fetchDataDeposition(depositionUrl)
+
+    if (label === 'CDRXIV_DATA_PUBLISHED' && !existingDeposition.submitted) {
+      throw new Error(
+        "Expected data to have been previously published, but it wasn't.",
+      )
+    } else if (label === 'CDRXIV_DATA_DRAFT' && existingDeposition.submitted) {
+      throw new Error(
+        'Data has been published, but your preprint has not. Unable to update data.',
+      )
+    }
+    let depositionId
+    let newUrl
+    // If the deposition has been published...
+    if (existingDeposition.submitted) {
+      // create new version.
+      const newDeposition = await createDataDepositionVersion(
+        existingDeposition.links.newversion,
+      )
+      depositionId = newDeposition.id
+      newUrl = newDeposition.links.self
+    } else {
+      // otherwise replace existing files with newly added file.
+      depositionId = existingDeposition.id
+      if (existingDeposition.files.length > 0) {
+        await Promise.all([
+          existingDeposition.files.map((f) => deleteZenodoEntity(f.links.self)), // delete previous data deposition files
+        ])
+      }
+    }
+    const formData = new FormData()
+
+    formData.set('name', dataFile.original_filename)
+    formData.set('file', dataFile.file)
+
+    await createDataDepositionFile(depositionId, formData)
+
+    if (newUrl) {
+      await updatePreprint(preprint, {
+        supplementary_files: [{ label: 'CDRXIV_DATA_DRAFT', url: newUrl }],
+      })
+    }
+  }
+
+  // TODO: update metadata on Zenodo deposition metadata if changed
+
   return createVersionQueue({
-    preprint,
+    preprint: preprint_pk,
     update_type,
     title,
     abstract,
     published_doi: published_doi || null,
+    file,
   })
 }
 
@@ -99,7 +227,7 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
   const { data, setters, errors, onSubmit, submitError } = useForm(
     () => initializeForm(preprint),
     validator,
-    submitForm,
+    submitForm.bind(null, preprint),
   )
 
   const handleSubmit = useCallback(async () => {
@@ -108,6 +236,11 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
       router.push('/submissions')
     }
   }, [onSubmit, router])
+
+  const collectArticleFile =
+    data.submissionType !== 'Data' && data.update_type !== 'metadata_correction'
+  const collectDataFile =
+    data.submissionType !== 'Article' && data.update_type === 'version'
 
   return (
     <SharedLayout
@@ -152,11 +285,14 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
             onChange={(e) => setters.update_type(e.target.value as UpdateType)}
             id='update_type'
           >
-            {Object.keys(UPDATE_TYPE_LABELS).map((value) => (
-              <option key={value} value={value}>
-                {UPDATE_TYPE_LABELS[value as UpdateType]}
-              </option>
-            ))}
+            {Object.keys(UPDATE_TYPE_LABELS).map((value) =>
+              value === 'correction' &&
+              data.submissionType === 'Data' ? null : ( // Do not collect text corrections for data-only submissions
+                <option key={value} value={value}>
+                  {UPDATE_TYPE_LABELS[value as UpdateType]}
+                </option>
+              ),
+            )}
           </Select>
         </Field>
         <Field label='Title' id='title' error={errors.title}>
@@ -190,13 +326,28 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
             id='published_doi'
           />
         </Field>
-        {data.update_type !== 'metadata_correction' && (
-          <Field label='File' id='file' error={errors.file}>
-            <Input
-              value={data.file}
-              onChange={(e) => setters.file(e.target.value)}
-              id='file'
+        {collectArticleFile && (
+          <Field
+            label='Article file'
+            id='articleFile'
+            description='Your article must be submitted as a PDF.'
+            error={errors.articleFile}
+          >
+            <FileInput
+              file={data.articleFile}
+              onChange={setters.articleFile}
+              accept='application/pdf'
             />
+          </Field>
+        )}
+        {collectDataFile && (
+          <Field
+            label='Data file'
+            id='dataFile'
+            description='Your submission can by represented by a single file of any format, including ZIP, up to [TK] MB.'
+            error={errors.dataFile}
+          >
+            <FileInput file={data.dataFile} onChange={setters.dataFile} />
           </Field>
         )}
         <Button onClick={handleSubmit}>Submit</Button>

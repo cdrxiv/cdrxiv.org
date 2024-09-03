@@ -94,7 +94,7 @@ export type VersionQueue = {
   date_decision: string | null
   published_doi: string | null
   approved: boolean
-  file: null
+  file: number | null
 }
 
 export type VersionQueueParams = Partial<VersionQueue>
@@ -109,7 +109,7 @@ export type PreprintParams = Partial<
       authors: Array<Author | { pk: number; email: string }>
     }
   >
->
+> & { comments_editor?: string }
 
 export type AuthorParams = Partial<
   Modify<

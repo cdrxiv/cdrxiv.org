@@ -2,13 +2,12 @@
 
 import { Label } from 'theme-ui'
 
-import { Checkbox, Field, Form } from '../../../../components'
+import { Checkbox, Field, FileInput, Form } from '../../../../components'
 import NavButtons from '../../nav-buttons'
 import { usePreprint, usePreprintFiles } from '../preprint-context'
 import { useForm } from '../utils'
 import { FormData, initializeForm, validateForm, submitForm } from './utils'
 import DataFileInput from './data-file-input'
-import FileInput from './file-input'
 
 const SubmissionOverview = () => {
   const { preprint, setPreprint } = usePreprint()

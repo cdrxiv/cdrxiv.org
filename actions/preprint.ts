@@ -10,9 +10,9 @@ import {
   Preprint,
   PreprintParams,
   PreprintFile,
-} from '../../../types/preprint'
-import { fetchWithToken } from '../../api/utils'
-import { Deposition, DepositionFile } from '../../../types/zenodo'
+  VersionQueueParams,
+} from '../types/preprint'
+import { fetchWithToken } from '../app/api/utils'
 
 export async function updatePreprint(
   preprint: Preprint,
@@ -156,22 +156,6 @@ export async function searchAuthor(
   return result
 }
 
-export async function fetchAccount(pk: number): Promise<Author> {
-  const res = await fetchWithToken(
-    headers(),
-    `https://carbonplan.endurance.janeway.systems/carbonplan/api/accounts/${pk}`,
-  )
-
-  if (res.status !== 200) {
-    throw new Error(
-      `Status ${res.status}: Unable to fetch account. ${res.statusText}`,
-    )
-  }
-
-  const result = res.json()
-  return result
-}
-
 export async function createPreprintFile(
   formData: FormData,
 ): Promise<PreprintFile> {
@@ -187,6 +171,21 @@ export async function createPreprintFile(
   if (![200, 201].includes(res.status)) {
     throw new Error(
       `Status ${res.status}: Unable to create file. ${res.statusText}`,
+    )
+  }
+
+  const result = res.json()
+  return result
+}
+export async function fetchPreprintFile(pk: number): Promise<PreprintFile> {
+  const res = await fetchWithToken(
+    headers(),
+    `https://carbonplan.endurance.janeway.systems/carbonplan/api/preprint_files/${pk}`,
+  )
+
+  if (![200].includes(res.status)) {
+    throw new Error(
+      `Status ${res.status}: Unable to fetch file. ${res.statusText}`,
     )
   }
 
@@ -212,106 +211,25 @@ export async function deletePreprintFile(pk: number): Promise<true> {
   return true
 }
 
-export async function createDataDeposition(): Promise<Deposition> {
-  const res = await fetch(process.env.ZENODO_URL + '/api/deposit/depositions', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ metadata: { upload_type: 'dataset' } }),
-  })
-
-  const result = await res.json()
-  return result
-}
-
-export async function fetchDataDeposition(url: string): Promise<Deposition> {
-  if (process.env.ZENODO_URL && !url.startsWith(process.env.ZENODO_URL)) {
-    throw new Error(`Invalid data URL: ${url}`)
-  }
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
-    },
-  })
-
-  if (res.status !== 200) {
-    throw new Error(
-      `Status ${res.status}: Unable to fetch deposition. ${res.statusText}`,
-    )
-  }
-
-  const result = await res.json()
-  return result
-}
-export async function updateDataDeposition(
-  url: string,
-  params: Partial<Deposition>,
-): Promise<Deposition> {
-  if (process.env.ZENODO_URL && !url.startsWith(process.env.ZENODO_URL)) {
-    throw new Error(`Invalid data URL: ${url}`)
-  }
-  const res = await fetch(url, {
-    method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(params),
-  })
-
-  if (res.status !== 200) {
-    throw new Error(
-      `Status ${res.status}: Unable to update deposition. ${res.statusText}`,
-    )
-  }
-
-  const result = await res.json()
-  return result
-}
-
-export async function deleteZenodoEntity(url: string): Promise<true> {
-  if (process.env.ZENODO_URL && !url.startsWith(process.env.ZENODO_URL)) {
-    throw new Error(`Invalid data URL: ${url}`)
-  }
-
-  const res = await fetch(url, {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
-    },
-  })
-
-  if (res.status !== 204) {
-    throw new Error(
-      `Status ${res.status}: Unable to delete deposition. ${res.statusText}`,
-    )
-  }
-
-  return true
-}
-
-export async function createDataDepositionFile(
-  deposition: number,
-  formData: FormData,
-): Promise<DepositionFile> {
-  const res = await fetch(
-    process.env.ZENODO_URL + `/api/deposit/depositions/${deposition}/files`,
+export async function createVersionQueue(versionQueue: VersionQueueParams) {
+  const res = await fetchWithToken(
+    headers(),
+    'https://carbonplan.endurance.janeway.systems/carbonplan/api/version_queue/',
     {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
-      },
-      body: formData,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(versionQueue),
     },
   )
 
-  const result = await res.json()
-
-  if (!result.id) {
-    throw new Error(result.message ?? 'Unable to create deposition file.')
+  if (![200, 201].includes(res.status)) {
+    throw new Error(
+      `Status ${res.status}: Unable to create revision. ${res.statusText}`,
+    )
   }
 
+  revalidatePath(`/submissions/edit/${versionQueue.preprint}`)
+
+  const result = res.json()
   return result
 }

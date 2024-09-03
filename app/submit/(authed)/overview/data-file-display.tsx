@@ -2,13 +2,13 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 
-import { fetchDataDeposition } from '../actions'
+import { fetchDataDeposition } from '../../../../actions/zenodo'
 import { Deposition } from '../../../../types/zenodo'
 import FileDisplay from './file-display'
-import { CurrentFile } from './utils'
+import { FileInputValue } from '../../../../components'
 
 type Props = {
-  file: CurrentFile
+  file: FileInputValue
 }
 const DataFileDisplay: React.FC<Props> = ({ file: fileProp }) => {
   const [deposition, setDeposition] = useState<Deposition | null>(null)
