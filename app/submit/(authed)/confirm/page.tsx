@@ -97,13 +97,22 @@ const SubmissionConfirmation = () => {
   }, [preprint, files])
 
   useEffect(() => {
-    // Track errors
     overview.error &&
-      track('confirm_page_overview_error', { error: overview.error })
-    info.error && track('confirm_page_info_error', { error: info.error })
+      track('confirm_page_overview_error', {
+        error: overview.error,
+        preprint_id: preprint.pk,
+      })
+    info.error &&
+      track('confirm_page_info_error', {
+        error: info.error,
+        preprint_id: preprint.pk,
+      })
     authors.error &&
-      track('confirm_page_authors_error', { error: authors.error })
-  }, [overview.error, info.error, authors.error])
+      track('confirm_page_authors_error', {
+        error: authors.error,
+        preprint_id: preprint.pk,
+      })
+  }, [overview.error, info.error, authors.error, preprint.pk])
 
   const submissionType = getSubmissionType({
     dataFile: overview.data.dataFile,
