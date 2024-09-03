@@ -1,4 +1,6 @@
+import { track } from '@vercel/analytics'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { usePreprint } from '../app/submit/(authed)/preprint-context'
 
 export type Errors<T> = Partial<{ [K in keyof T]: string }>
 export type Setter<T> = {
@@ -11,6 +13,7 @@ export function useForm<T>(
   submit: (values: T) => Promise<void>,
   setNavigationWarning?: (shouldWarn: boolean) => void,
 ) {
+  const { preprint } = usePreprint()
   const [data, setData] = useState<T>(initialize)
   const setDataWrapper = useCallback(
     (value: T | ((prev: T) => T), internal?: boolean) => {
@@ -55,6 +58,10 @@ export function useForm<T>(
 
     const valid = Object.keys(errors).length === 0
     if (!valid) {
+      track('submit_step_not_valid', {
+        errors: Object.keys(errors).join(', '),
+        preprint_id: preprint.pk,
+      })
       return false
     } else {
       return submit(data)
@@ -62,11 +69,15 @@ export function useForm<T>(
           return true
         })
         .catch((err) => {
+          track('submit_step_error', {
+            error: err.message,
+            preprint_id: preprint.pk,
+          })
           setSubmitError(err.message ?? 'Error submitting form.')
           return false
         })
     }
-  }, [errors, data, submit])
+  }, [errors, data, submit, preprint.pk])
 
   return {
     data,

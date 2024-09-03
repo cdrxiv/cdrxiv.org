@@ -6,6 +6,7 @@ import { fetchWithToken } from '../../api/utils'
 import { PreprintProvider } from './preprint-context'
 import { createPreprint } from '../../../actions/preprint'
 import { Preprint } from '../../../types/preprint'
+import { track } from '@vercel/analytics'
 
 interface Props {
   children: React.ReactNode
@@ -40,6 +41,10 @@ const SubmissionOverview: React.FC<Props> = async ({ children }) => {
 
   if (preprints.length === 0) {
     const preprint = await createPreprint()
+    track('preprint_created', {
+      preprint_id: preprint.pk,
+      owner: preprint.owner,
+    })
     preprints = [preprint]
   }
 

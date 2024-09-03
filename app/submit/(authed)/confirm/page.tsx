@@ -1,8 +1,9 @@
 'use client'
 
 import { Box, Flex } from 'theme-ui'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { track } from '@vercel/analytics'
 
 import { Button, Field, Form, Link, Row } from '../../../../components'
 import NavButtons from '../../nav-buttons'
@@ -95,6 +96,24 @@ const SubmissionConfirmation = () => {
     }
   }, [preprint, files])
 
+  useEffect(() => {
+    overview.error &&
+      track('confirm_page_overview_error', {
+        error: overview.error,
+        preprint_id: preprint.pk,
+      })
+    info.error &&
+      track('confirm_page_info_error', {
+        error: info.error,
+        preprint_id: preprint.pk,
+      })
+    authors.error &&
+      track('confirm_page_authors_error', {
+        error: authors.error,
+        preprint_id: preprint.pk,
+      })
+  }, [overview.error, info.error, authors.error, preprint.pk])
+
   const submissionType = getSubmissionType({
     dataFile: overview.data.dataFile,
     articleFile: overview.data.articleFile,
@@ -118,9 +137,17 @@ const SubmissionConfirmation = () => {
         }
       })
       .then(() => {
+        track('preprint_submitted_success', {
+          preprint_id: preprint.pk,
+          owner: preprint.owner,
+        })
         router.push('/submit/success')
       })
       .catch((err) => {
+        track('preprint_submitted_error', {
+          preprint_id: preprint.pk,
+          error: err.message,
+        })
         setSubmitError(
           err.message ??
             'Unable to complete submission. Please check submission contents and try again.',
