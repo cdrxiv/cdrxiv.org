@@ -110,6 +110,7 @@ const Header = () => {
         <LoginLink key={name} sx={{ textDecoration }} name={name} path={path} />
       ) : (
         <StyledLink
+          key={name}
           href={path}
           sx={{
             textDecoration,
