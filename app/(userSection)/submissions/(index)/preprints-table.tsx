@@ -56,7 +56,7 @@ const PreprintsTable: React.FC<PreprintsTableProps> = ({ preprints, date }) => {
             role='button'
             onClick={() => router.push(`/submissions/edit/${preprint.pk}`)}
             aria-label={`Edit "${preprint.title}"`}
-            key={preprint.title}
+            key={preprint.pk}
             sx={{
               borderTop: '1px solid',
               borderBottom: i === preprints.length - 1 ? '1px solid' : 0,

@@ -47,7 +47,7 @@ const Stack: React.FC<StackProps> = ({ preprints }) => {
 
                       return (
                         <Card
-                          key={preprint.title}
+                          key={preprint.pk}
                           title={preprint.title}
                           authors={preprint.authors}
                           badges={submissionTypes(preprint)}

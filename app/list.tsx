@@ -15,7 +15,7 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
       {preprints.map((preprint, i) => (
         <Link
           href={`/preprint/${preprint.pk}`}
-          key={preprint.title}
+          key={preprint.pk}
           passHref
           legacyBehavior
         >

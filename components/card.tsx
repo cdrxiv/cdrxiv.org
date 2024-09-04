@@ -103,7 +103,7 @@ const Card: React.FC<CardProps> = ({
   }
 
   return (
-    <Link href={href || '#'} key={title} passHref legacyBehavior>
+    <Link href={href || '#'} key={href} passHref legacyBehavior>
       <a
         style={{
           textDecoration: 'none',

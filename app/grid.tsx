@@ -14,7 +14,7 @@ const GridView: React.FC<GridViewProps> = ({ preprints }) => {
         const { title, authors, date_published, pk } = preprint
         return (
           <Card
-            key={title}
+            key={pk}
             title={title}
             authors={authors}
             date={date_published ? new Date(date_published) : null}
