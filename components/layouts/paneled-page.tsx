@@ -14,6 +14,7 @@ import { usePathname } from 'next/navigation'
 import Row from '../row'
 import Column from '../column'
 import Guide from '../guide'
+import Loading from '../loading'
 
 const HEADER_HEIGHT = 125
 
@@ -91,7 +92,7 @@ const PaneledPage: React.FC<{
               display: isLoading ? 'flex' : 'none',
             }}
           >
-            <Box sx={{ fontSize: 3 }}>Loading...</Box>
+            <Loading />
           </Flex>
           <Box
             ref={contentRef}
