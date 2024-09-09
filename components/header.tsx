@@ -24,11 +24,11 @@ const PathBox: React.FC<PathBoxProps> = (props) => <Box as='path' {...props} />
 const foldSize = 100
 const margin = [2, 2, 3, 3]
 
-const PATHS: { name: string; path: string }[] = [
+const PATHS: { name: string; path: string; matchingPaths?: string[] }[] = [
   { name: 'Home', path: '/' },
   { name: 'About', path: '/about' },
   { name: 'Submit', path: '/submit/overview' },
-  { name: 'Login', path: '/login' },
+  { name: 'Login', path: '/login', matchingPaths: ['/login', '/submissions'] },
 ]
 
 const UserProfile = () => {
@@ -48,7 +48,7 @@ const UserProfile = () => {
   )
 }
 
-const LoginLink = ({
+const AccountLink = ({
   sx,
   name,
   path,
@@ -94,20 +94,29 @@ const Header = () => {
   const pathname = usePathname()
   const router = useRouter()
 
-  const isActive = (path: string) => {
+  const isActive = (path: string, matchingPaths?: string[]) => {
     if (path === '/') {
       return pathname === '/'
     } else if (path.startsWith('/submit')) {
       return pathname.startsWith('/submit')
+    } else if (matchingPaths) {
+      return matchingPaths.some((p) => pathname.startsWith(p))
     }
 
     return pathname.startsWith(path)
   }
   const renderLinks = () => {
-    return PATHS.map(({ name, path }) => {
-      const textDecoration = isActive(path) ? 'underline' : 'none'
+    return PATHS.map(({ name, path, matchingPaths }) => {
+      const textDecoration = isActive(path, matchingPaths)
+        ? 'underline'
+        : 'none'
       return name === 'Login' ? (
-        <LoginLink key={name} sx={{ textDecoration }} name={name} path={path} />
+        <AccountLink
+          key={name}
+          sx={{ textDecoration }}
+          name={name}
+          path={path}
+        />
       ) : (
         <StyledLink
           key={name}
