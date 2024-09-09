@@ -1,5 +1,6 @@
 import { useNavigation } from '../navigation-context'
 import { useForm as useFormBase, Errors } from '../../../hooks/use-form'
+import { usePreprint } from './preprint-context'
 
 export const createAdditionalField = (fieldName: string, value: string) => {
   return {
@@ -16,7 +17,14 @@ export function useForm<T>(
   submit: (values: T) => Promise<void>,
 ) {
   const { setNavigationWarning } = useNavigation()
-  return useFormBase(initialize, validate, submit, setNavigationWarning)
+  const { preprint } = usePreprint()
+  return useFormBase(
+    preprint,
+    initialize,
+    validate,
+    submit,
+    setNavigationWarning,
+  )
 }
 
 export function getFormattedDate() {

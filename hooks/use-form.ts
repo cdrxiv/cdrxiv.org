@@ -1,6 +1,6 @@
 import { track } from '@vercel/analytics'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { usePreprint } from '../app/submit/(authed)/preprint-context'
+import { Preprint } from '../types/preprint'
 
 export type Errors<T> = Partial<{ [K in keyof T]: string }>
 export type Setter<T> = {
@@ -8,12 +8,12 @@ export type Setter<T> = {
 }
 
 export function useForm<T>(
+  preprint: Preprint,
   initialize: () => T,
   validate: (values: T) => Errors<T>,
   submit: (values: T) => Promise<void>,
   setNavigationWarning?: (shouldWarn: boolean) => void,
 ) {
-  const { preprint } = usePreprint()
   const [data, setData] = useState<T>(initialize)
   const setDataWrapper = useCallback(
     (value: T | ((prev: T) => T), internal?: boolean) => {
