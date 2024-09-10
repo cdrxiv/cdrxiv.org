@@ -1,7 +1,14 @@
 'use client'
 
-import { Input, Textarea } from 'theme-ui'
-import { Field, Form, KeywordInput, Select } from '../../../../components'
+import { useState } from 'react'
+import { Input, Label, Textarea } from 'theme-ui'
+import {
+  Checkbox,
+  Field,
+  Form,
+  KeywordInput,
+  Select,
+} from '../../../../components'
 import FundingSources from './funding-sources'
 import NavButtons from '../../nav-buttons'
 import { usePreprint } from '../preprint-context'
@@ -16,6 +23,10 @@ const SubmissionInformation = () => {
     () => initializeForm(preprint),
     validateForm,
     submitForm.bind(null, preprint, setPreprint),
+  )
+
+  const [hasConflict, setHasConflict] = useState(
+    data.conflict_of_interest === 'None',
   )
 
   return (
@@ -111,6 +122,45 @@ const SubmissionInformation = () => {
             onChange={(e) => setters.comments_editor(e.target.value)}
             id='comments_editor'
           />
+        </Field>
+
+        <Field
+          label='Conflict of interest statement'
+          id='conflict_of_interest'
+          description='If you have conflicts of interest to declare, please do so here and they will be displayed next to your submission. If not, check the no conflicts of interest box above.'
+          error={errors.conflict_of_interest}
+        >
+          <Textarea
+            value={data.conflict_of_interest}
+            onChange={(e) => {
+              setters.conflict_of_interest(e.target.value)
+              if (e.target.value === 'None') {
+                setHasConflict(true)
+              } else {
+                setHasConflict(false)
+              }
+            }}
+            id='conflict_of_interest'
+          />
+          <Label
+            sx={{
+              cursor: 'pointer',
+            }}
+          >
+            <Checkbox
+              checked={hasConflict}
+              onChange={(e) => {
+                setHasConflict(e.target.checked)
+                if (e.target.checked) {
+                  setters.conflict_of_interest('None')
+                } else {
+                  setters.conflict_of_interest('')
+                }
+              }}
+              sx={{ mt: '-1px' }}
+            />
+            No conflicts of interest to declare
+          </Label>
         </Field>
       </Form>
 
