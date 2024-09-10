@@ -41,6 +41,7 @@ export async function fetchDataDeposition(url: string): Promise<Deposition> {
   const result = await res.json()
   return result
 }
+
 export async function updateDataDeposition(
   url: string,
   params: Partial<Deposition>,
@@ -85,13 +86,15 @@ export async function deleteZenodoEntity(url: string): Promise<true> {
     },
   })
 
-  if (res.status !== 204) {
-    throw new Error(
-      `Status ${res.status}: Unable to delete deposition. ${res.statusText}`,
-    )
+  if (res.status === 204 || res.status === 404) {
+    // 204: Successful deletion
+    // 404: Entity not found (consider it already deleted)
+    return true
   }
 
-  return true
+  throw new Error(
+    `Status ${res.status}: Unable to delete deposition. ${res.statusText}`,
+  )
 }
 
 export async function createDataDepositionFile(
