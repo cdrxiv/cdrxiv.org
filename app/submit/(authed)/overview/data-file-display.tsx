@@ -16,10 +16,16 @@ const DataFileDisplay: React.FC<Props> = ({ file: fileProp }) => {
 
   useEffect(() => {
     if (fileProp?.url) {
-      fetchDataDeposition(fileProp.url).then((deposition) => {
-        setDeposition(deposition)
-        setLoading(false)
-      })
+      fetchDataDeposition(fileProp.url)
+        .then((deposition) => {
+          setDeposition(deposition)
+          setLoading(false)
+        })
+        .catch((error) => {
+          console.error('Error fetching deposition:', error)
+          setLoading(false)
+          setDeposition(null)
+        })
     }
   }, [fileProp])
 

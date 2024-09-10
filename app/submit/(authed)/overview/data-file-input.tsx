@@ -36,6 +36,7 @@ const DataFileInput: React.FC<Props> = ({
         .catch(() => {
           // TODO: remove from supplementary files
           setFileProp(null)
+          setLoading(false)
         })
     } else {
       setDeposition(null)
