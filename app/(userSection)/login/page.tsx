@@ -24,11 +24,12 @@ const SignIn = () => {
       onClick={() =>
         signIn(
           'janeway',
-          searchParams.get('callbackUrl')
-            ? {
-                callbackUrl: searchParams.get('callbackUrl') as string,
-              }
-            : undefined,
+
+          {
+            callbackUrl: searchParams.get('callbackUrl')
+              ? (searchParams.get('callbackUrl') as string)
+              : '/account',
+          },
         )
       }
     >
@@ -58,8 +59,6 @@ const SignOutListener = () => {
 }
 
 const SubmissionLogin = () => {
-  const { data: session, status } = useSession()
-
   return (
     <SharedLayout title='Log in'>
       <Form>
@@ -67,44 +66,19 @@ const SubmissionLogin = () => {
           <SignOutListener />
         </Suspense>
 
-        {status === 'authenticated' && session && (
-          <Field label='Signed in' id='signin'>
-            <Box sx={{ position: 'relative' }}>
-              <Expander
-                label={
-                  session?.user?.first_name
-                    ? `${session?.user?.first_name} ${session?.user?.last_name}`
-                    : 'Unknown'
-                }
-              >
-                <Box sx={{ top: '28px' }}>
-                  <Link
-                    onClick={() => signOut({ callbackUrl: '/' })}
-                    sx={{ position: 'absolute', variant: 'text.monoCaps' }}
-                  >
-                    Sign out
-                  </Link>
-                </Box>
-              </Expander>
-            </Box>
-          </Field>
-        )}
-
-        {status === 'unauthenticated' && (
-          <Field
-            label=''
-            id='signin'
-            description='CDRXIV uses Janeway for authentication. Use your Janeway account credentials to log in and get started with your submission.'
-          >
-            <Row columns={6}>
-              <Column start={1} width={[3, 4, 3, 3]}>
-                <Suspense>
-                  <SignIn />
-                </Suspense>
-              </Column>
-            </Row>
-          </Field>
-        )}
+        <Field
+          label=''
+          id='signin'
+          description='CDRXIV uses Janeway for authentication. Use your Janeway account credentials to log in and get started with your submission.'
+        >
+          <Row columns={6}>
+            <Column start={1} width={[3, 4, 3, 3]}>
+              <Suspense>
+                <SignIn />
+              </Suspense>
+            </Column>
+          </Row>
+        </Field>
       </Form>
     </SharedLayout>
   )

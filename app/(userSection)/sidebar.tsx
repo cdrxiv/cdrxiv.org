@@ -1,6 +1,6 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { Box, Flex } from 'theme-ui'
 import { usePathname } from 'next/navigation'
 
@@ -19,16 +19,26 @@ const Sidebar = () => {
     <Box>
       <Box sx={{ variant: 'text.monoCaps', mb: [5, 5, 5, 6] }}>Overview</Box>
       <Flex sx={{ flexDirection: 'column', gap: [5, 5, 5, 6] }}>
-        {PATHS.map(({ href, title, public: publicPath }) => (
-          <NavLink
-            key={href}
-            href={href}
-            active={pathname.startsWith(href)}
-            disabled={!publicPath && status === 'unauthenticated'}
-          >
-            {title}
-          </NavLink>
-        ))}
+        {PATHS.map(({ href, title, public: publicPath }) =>
+          href === '/login' && status === 'authenticated' ? (
+            <NavLink
+              key={href}
+              onClick={() => signOut({ callbackUrl: '/' })}
+              active={false}
+            >
+              Log out
+            </NavLink>
+          ) : (
+            <NavLink
+              key={href}
+              href={href}
+              active={pathname.startsWith(href)}
+              disabled={!publicPath && status === 'unauthenticated'}
+            >
+              {title}
+            </NavLink>
+          ),
+        )}
       </Flex>
     </Box>
   )
