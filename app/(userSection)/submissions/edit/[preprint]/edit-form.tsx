@@ -225,10 +225,10 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
   const router = useRouter()
   const validator = useMemo(() => validateForm.bind(null, preprint), [preprint])
   const { data, setters, errors, onSubmit, submitError } = useForm(
-    preprint,
     () => initializeForm(preprint),
     validator,
     submitForm.bind(null, preprint),
+    { preprint: preprint.pk },
   )
 
   const handleSubmit = useCallback(async () => {

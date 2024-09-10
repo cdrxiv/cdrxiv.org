@@ -8,10 +8,10 @@ export type Setter<T> = {
 }
 
 export function useForm<T>(
-  preprint: Preprint,
   initialize: () => T,
   validate: (values: T) => Errors<T>,
   submit: (values: T) => Promise<void>,
+  analyticsIdentifier: { [label: string]: number | string },
   setNavigationWarning?: (shouldWarn: boolean) => void,
 ) {
   const [data, setData] = useState<T>(initialize)
@@ -58,9 +58,9 @@ export function useForm<T>(
 
     const valid = Object.keys(errors).length === 0
     if (!valid) {
-      track('submit_step_not_valid', {
+      track('form_invalid', {
         errors: Object.keys(errors).join(', '),
-        preprint_id: preprint.pk,
+        ...analyticsIdentifier,
       })
       return false
     } else {
@@ -69,15 +69,15 @@ export function useForm<T>(
           return true
         })
         .catch((err) => {
-          track('submit_step_error', {
+          track('form_error', {
             error: err.message,
-            preprint_id: preprint.pk,
+            ...analyticsIdentifier,
           })
           setSubmitError(err.message ?? 'Error submitting form.')
           return false
         })
     }
-  }, [errors, data, submit, preprint.pk])
+  }, [errors, data, submit, analyticsIdentifier])
 
   return {
     data,
