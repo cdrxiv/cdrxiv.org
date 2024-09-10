@@ -100,18 +100,21 @@ const AccountForm = ({
   return (
     <SharedLayout title='Account'>
       <Form error={submitError}>
-        <Field
+        {/* <Field
           label='Email*'
           id='email'
           error={errors.email}
           description='If you want to change your email address you may do so below, however, you will be logged out and your account will be marked as inactive until you follow the instructions in the verification email. Note: Changing your email address will also change your username as these are one and the same.'
         >
-          <Input
-            value={data.email}
-            onChange={(e) => setters.email(e.target.value)}
-            id='email'
-          />
-        </Field>
+          <Flex sx={{ gap: 2 }}>
+            <Input
+              value={data.email}
+              onChange={(e) => setters.email(e.target.value)}
+              id='email'
+            />
+            <Button sx={{ flexShrink: 0 }}>Update</Button>
+          </Flex>
+        </Field> */}
         <Row columns={[6, 6, 9, 9]} sx={{ mt: 3 }}>
           <Column start={1} width={[6, 2, 3, 3]}>
             <Field
