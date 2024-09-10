@@ -78,22 +78,6 @@ const PaneledPage: React.FC<{
             position: 'relative',
           }}
         >
-          <Flex
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: 'primary',
-              zIndex: 10,
-              justifyContent: 'center',
-              alignItems: 'center',
-              display: isLoading ? 'flex' : 'none',
-            }}
-          >
-            <Loading />
-          </Flex>
           <Box
             ref={contentRef}
             sx={{
@@ -101,7 +85,6 @@ const PaneledPage: React.FC<{
               background: 'primary',
               px: [0, 0, 6, 8],
               pb: 6,
-              display: isLoading ? 'none' : 'inherit',
             }}
           >
             <Box sx={{ contain: 'layout' }}>
@@ -126,6 +109,24 @@ const PaneledPage: React.FC<{
                   <Box as='h1' sx={{ variant: 'text.heading', mb: 7 }}>
                     {title}
                   </Box>
+                  {isLoading && (
+                    <Flex
+                      sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        height: '100%',
+                        zIndex: 10,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: 'primary',
+                      }}
+                    >
+                      <Loading />
+                    </Flex>
+                  )}
 
                   {children}
                 </Column>

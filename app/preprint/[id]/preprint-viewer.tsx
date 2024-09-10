@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/Page/TextLayer.css'
 import 'react-pdf/dist/Page/AnnotationLayer.css'
-import { Box } from 'theme-ui'
+import { Box, Flex } from 'theme-ui'
 import PaneledPage from '../../../components/layouts/paneled-page'
 import StyledLink from '../../../components/link'
 import MetadataView from './metadata-view'
@@ -15,6 +15,7 @@ import { getAdditionalField } from '../../../utils/data'
 import type { Preprint } from '../../../types/preprint'
 import type { Deposition } from '../../../types/zenodo'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
+import Loading from '../../../components/loading'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
@@ -87,6 +88,17 @@ const PreprintViewer = ({
           <Document
             file={`/api/pdf/?url=${encodeURIComponent(preprint.versions[0].public_download_url)}`}
             onLoadSuccess={onDocumentLoadSuccess}
+            loading={
+              <Flex
+                sx={{
+                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Loading />
+              </Flex>
+            }
           >
             {containerWidth > 0 &&
               Array.from(new Array(pdf?.numPages ?? 0), (_, index) => (
