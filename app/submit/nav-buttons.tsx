@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { Link } from '../../components'
 import { PATHS } from './constants'
 import { useLinkWithWarning } from './navigation-context'
+import { useLoading } from '../../components/layouts/paneled-page'
 
 interface Props {
   onClick?: () => Promise<boolean> | boolean
@@ -25,6 +26,7 @@ const NavButton: React.FC<ButtonProps> = ({
   children,
 }) => {
   const router = useRouter()
+  const { setIsLoading } = useLoading()
   const { onClick: onClickWithWarning } = useLinkWithWarning(href)
 
   const props = {
@@ -33,9 +35,12 @@ const NavButton: React.FC<ButtonProps> = ({
 
   const onClickProp = onClick
     ? async () => {
+        setIsLoading(true)
         const result = await onClick()
         if (result) {
-          router.push(href)
+          router.push(href) // loading off handled in paneled-page
+        } else {
+          setIsLoading(false)
         }
       }
     : onClickWithWarning
