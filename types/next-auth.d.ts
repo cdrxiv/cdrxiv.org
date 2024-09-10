@@ -12,6 +12,7 @@ declare module 'next-auth' {
       middle_name?: string
       last_name: string
       orcid?: string
+      institution?: string
       is_active: boolean
     } & DefaultSession['user']
   }
@@ -22,6 +23,7 @@ declare module 'next-auth' {
     middle_name?: string
     last_name: string
     orcid?: string
+    institution?: string
     is_active: boolean
   }
 }
@@ -34,6 +36,7 @@ declare module 'next-auth/jwt' {
       middle_name?: string
       last_name: string
       orcid?: string
+      institution?: string
       is_active: boolean
     } & DefaultSession['user']
     accessToken?: string

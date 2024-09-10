@@ -25,6 +25,7 @@ const Janeway: Provider = {
       middle_name: profile.middle_name,
       last_name: profile.last_name,
       orcid: profile.orcid,
+      institution: profile.institution,
       is_active: profile.is_active,
     }
   },
