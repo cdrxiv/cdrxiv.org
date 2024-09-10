@@ -2,13 +2,14 @@
 
 import { useSession } from 'next-auth/react'
 import { User } from 'next-auth'
-
+import { useEffect } from 'react'
 import { Input } from 'theme-ui'
 
 import { Button, Column, Field, Form, Row } from '../../../components'
 import { useForm } from '../../../hooks/use-form'
 import SharedLayout from '../shared-layout'
 import { updateAccount } from '../../../actions/account'
+import { useLoading } from '../../../components/layouts/paneled-page'
 
 type FormData = {
   email: string
@@ -58,6 +59,7 @@ const validateForm = ({
 const submitForm = async (
   user: User,
   updateUser: ({ user }: { user: User }) => void,
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   formData: FormData,
 ) => {
   const initialParams: Partial<FormData> = {
@@ -78,9 +80,11 @@ const submitForm = async (
     initialParams,
   )
 
+  setIsLoading(true)
   const { pk, ...updated } = await updateAccount(user, params)
-
   updateUser({ user: { id: pk, ...updated } })
+
+  setIsLoading(false)
 }
 
 const AccountForm = ({
@@ -90,17 +94,23 @@ const AccountForm = ({
   user: User
   updateUser: ({ user }: { user: User }) => void
 }) => {
+  const { setIsLoading } = useLoading()
   const { errors, submitError, data, setters, onSubmit } = useForm(
     initializeForm.bind(null, user),
     validateForm,
-    submitForm.bind(null, user, updateUser),
+    submitForm.bind(null, user, updateUser, setIsLoading),
     { user: user.id ?? '' },
   )
 
+  useEffect(() => {
+    if (submitError) {
+      setIsLoading(false)
+    }
+  }, [submitError, setIsLoading])
+
   return (
-    <SharedLayout title='Account'>
-      <Form error={submitError}>
-        {/* <Field
+    <Form error={submitError}>
+      {/* <Field
           label='Email*'
           id='email'
           error={errors.email}
@@ -115,70 +125,65 @@ const AccountForm = ({
             <Button sx={{ flexShrink: 0 }}>Update</Button>
           </Flex>
         </Field> */}
-        <Row columns={[6, 6, 9, 9]} sx={{ mt: 3 }}>
-          <Column start={1} width={[6, 2, 3, 3]}>
-            <Field
-              label='First name*'
+      <Row columns={[6, 6, 9, 9]} sx={{ mt: 3 }}>
+        <Column start={1} width={[6, 2, 3, 3]}>
+          <Field label='First name*' id='first_name' error={errors.first_name}>
+            <Input
+              value={data.first_name}
+              onChange={(e) => setters.first_name(e.target.value)}
               id='first_name'
-              error={errors.first_name}
-            >
-              <Input
-                value={data.first_name}
-                onChange={(e) => setters.first_name(e.target.value)}
-                id='first_name'
-              />
-            </Field>
-          </Column>
-          <Column start={[1, 3, 4, 4]} width={[6, 2, 3, 3]}>
-            <Field
-              label='Middle name'
+            />
+          </Field>
+        </Column>
+        <Column start={[1, 3, 4, 4]} width={[6, 2, 3, 3]}>
+          <Field
+            label='Middle name'
+            id='middle_name'
+            error={errors.middle_name}
+          >
+            <Input
+              value={data.middle_name}
+              onChange={(e) => setters.middle_name(e.target.value)}
               id='middle_name'
-              error={errors.middle_name}
-            >
-              <Input
-                value={data.middle_name}
-                onChange={(e) => setters.middle_name(e.target.value)}
-                id='middle_name'
-              />
-            </Field>
-          </Column>
-          <Column start={[1, 5, 7, 7]} width={[6, 2, 3, 3]}>
-            <Field label='Last name*' id='last_name' error={errors.last_name}>
-              <Input
-                value={data.last_name}
-                onChange={(e) => setters.last_name(e.target.value)}
-                id='last_name'
-              />
-            </Field>
-          </Column>
-        </Row>
-        <Row columns={[6, 6, 8, 8]}>
-          <Column start={1} width={[6, 3, 4, 4]}>
-            <Field label='ORCID' id='orcid'>
-              <Input
-                value={data.orcid}
-                onChange={(e) => setters.orcid(e.target.value)}
-                id='orcid'
-              />
-            </Field>
-          </Column>
-          <Column start={[1, 4, 5, 5]} width={[6, 3, 4, 4]}>
-            <Field
-              label='Affiliation'
+            />
+          </Field>
+        </Column>
+        <Column start={[1, 5, 7, 7]} width={[6, 2, 3, 3]}>
+          <Field label='Last name*' id='last_name' error={errors.last_name}>
+            <Input
+              value={data.last_name}
+              onChange={(e) => setters.last_name(e.target.value)}
+              id='last_name'
+            />
+          </Field>
+        </Column>
+      </Row>
+      <Row columns={[6, 6, 8, 8]}>
+        <Column start={1} width={[6, 3, 4, 4]}>
+          <Field label='ORCID' id='orcid'>
+            <Input
+              value={data.orcid}
+              onChange={(e) => setters.orcid(e.target.value)}
+              id='orcid'
+            />
+          </Field>
+        </Column>
+        <Column start={[1, 4, 5, 5]} width={[6, 3, 4, 4]}>
+          <Field
+            label='Affiliation'
+            id='institution'
+            error={errors.institution}
+          >
+            <Input
+              value={data.institution}
+              onChange={(e) => setters.institution(e.target.value)}
               id='institution'
-              error={errors.institution}
-            >
-              <Input
-                value={data.institution}
-                onChange={(e) => setters.institution(e.target.value)}
-                id='institution'
-              />
-            </Field>
-          </Column>
-        </Row>
-        <Button onClick={onSubmit}>Update account</Button>
-      </Form>
-    </SharedLayout>
+            />
+          </Field>
+        </Column>
+      </Row>
+      <Button onClick={onSubmit}>Update account</Button>
+    </Form>
   )
 }
 
@@ -187,7 +192,11 @@ const Page = () => {
 
   if (!session?.user) return null
 
-  return <AccountForm user={session.user} updateUser={update} />
+  return (
+    <SharedLayout title='Account'>
+      <AccountForm user={session.user} updateUser={update} />
+    </SharedLayout>
+  )
 }
 
 export default Page
