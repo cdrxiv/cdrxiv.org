@@ -11,6 +11,7 @@ export type FormData = {
   subject: string[]
   keywords: string[]
   funding: string
+  conflict_of_interest: string
   comments_editor: string
 }
 
@@ -27,6 +28,8 @@ export const initializeForm = (preprint: Preprint): FormData => {
     keywords: preprint.keywords.map(({ word }) => word),
     funding:
       getAdditionalField(preprint, 'Funder(s) and award numbers') ?? '[]',
+    conflict_of_interest:
+      getAdditionalField(preprint, 'Conflict of interest statement') ?? '',
     comments_editor: '',
   }
 }
@@ -37,8 +40,7 @@ export const validateForm = ({
   license,
   doi,
   subject,
-  keywords,
-  funding,
+  conflict_of_interest,
 }: FormData) => {
   let result: Partial<{ [K in keyof FormData]: string }> = {}
 
@@ -62,6 +64,11 @@ export const validateForm = ({
     result.subject = 'Please select at least one subject.'
   }
 
+  if (conflict_of_interest === '') {
+    result.conflict_of_interest =
+      'You must provide a response or check the no-conflicts box.'
+  }
+
   return result
 }
 
@@ -76,6 +83,7 @@ export const submitForm = (
     subject,
     keywords,
     funding,
+    conflict_of_interest,
     comments_editor,
   }: FormData,
 ) => {
@@ -89,6 +97,10 @@ export const submitForm = (
     additional_field_answers: [
       ...preprint.additional_field_answers,
       createAdditionalField('Funder(s) and award numbers', funding),
+      createAdditionalField(
+        'Conflict of interest statement',
+        conflict_of_interest,
+      ),
     ],
     ...(comments_editor ? { comments_editor } : {}),
   }

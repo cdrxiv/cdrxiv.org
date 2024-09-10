@@ -19,6 +19,12 @@ const MetadataView: React.FC<{
   const submissionType = getAdditionalField(preprint, 'Submission type')
   const hasArticle = ['Article', 'Both'].includes(submissionType ?? '')
   const hasData = ['Data', 'Both'].includes(submissionType ?? '')
+  const conflictOfInterest = getAdditionalField(
+    preprint,
+    'Conflict of interest statement',
+  )
+  const hasConflictOfInterest =
+    conflictOfInterest && conflictOfInterest !== 'None'
 
   return (
     <Flex sx={{ flexDirection: 'column', mt: 5, gap: 9 }}>
@@ -112,6 +118,14 @@ const MetadataView: React.FC<{
                 {index < array.length - 1 && ', '}
               </React.Fragment>
             ))}
+          </Box>
+        </Field>
+      )}
+
+      {hasConflictOfInterest && (
+        <Field label='Conflict of interest'>
+          <Box sx={{ variant: 'text.body', fontSize: 2 }}>
+            {conflictOfInterest}
           </Box>
         </Field>
       )}
