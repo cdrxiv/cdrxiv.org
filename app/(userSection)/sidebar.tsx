@@ -8,6 +8,7 @@ import { NavLink } from '../../components'
 
 const PATHS = [
   { href: '/login', title: 'Log in', public: true },
+  { href: '/account', title: 'Account' },
   { href: '/submissions', title: 'Submissions' },
 ]
 const Sidebar = () => {

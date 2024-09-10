@@ -9,10 +9,10 @@ declare module 'next-auth' {
     user: {
       id: number
       first_name: string
-      middle_name?: string
+      middle_name: string | null
       last_name: string
-      orcid?: string
-      institution?: string
+      orcid: string | null
+      institution?: string | null
       is_active: boolean
     } & DefaultSession['user']
   }
@@ -20,10 +20,10 @@ declare module 'next-auth' {
   interface User {
     id: number
     first_name: string
-    middle_name?: string
+    middle_name: string | null
     last_name: string
-    orcid?: string
-    institution?: string
+    orcid: string | null
+    institution?: string | null
     is_active: boolean
   }
 }
@@ -33,10 +33,10 @@ declare module 'next-auth/jwt' {
     user?: {
       id: number
       first_name: string
-      middle_name?: string
+      middle_name: string | null
       last_name: string
-      orcid?: string
-      institution?: string
+      orcid: string | null
+      institution?: string | null
       is_active: boolean
     } & DefaultSession['user']
     accessToken?: string
