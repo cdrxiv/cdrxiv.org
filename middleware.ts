@@ -9,6 +9,7 @@ export const middleware = withAuth({
 export const config = {
   matcher: [
     '/submissions',
+    '/account',
     '/submit/overview',
     '/submit/info',
     '/submit/authors',
