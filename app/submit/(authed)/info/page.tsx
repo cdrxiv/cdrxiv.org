@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Input, Label, Textarea } from 'theme-ui'
 import {
   Checkbox,
@@ -14,7 +15,6 @@ import { usePreprint } from '../preprint-context'
 import { useForm } from '../utils'
 import { useSubjects } from '../../../subjects-context'
 import { FormData, initializeForm, validateForm, submitForm } from './utils'
-import { useState } from 'react'
 
 const SubmissionInformation = () => {
   const { preprint, setPreprint } = usePreprint()
