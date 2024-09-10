@@ -28,7 +28,11 @@ const PATHS: { name: string; path: string; matchingPaths?: string[] }[] = [
   { name: 'Home', path: '/' },
   { name: 'About', path: '/about' },
   { name: 'Submit', path: '/submit/overview' },
-  { name: 'Login', path: '/login', matchingPaths: ['/login', '/submissions'] },
+  {
+    name: 'Login',
+    path: '/login',
+    matchingPaths: ['/login', '/account', '/submissions'],
+  },
 ]
 
 const UserProfile = () => {
