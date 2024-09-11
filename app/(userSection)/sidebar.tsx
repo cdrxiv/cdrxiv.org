@@ -7,8 +7,7 @@ import { usePathname } from 'next/navigation'
 import { NavLink } from '../../components'
 
 const PATHS = [
-  { href: '/login', title: 'Log in', public: true },
-  { href: '/account', title: 'Account' },
+  { href: '/account', title: 'Account', public: true },
   { href: '/submissions', title: 'Submissions' },
 ]
 const Sidebar = () => {
@@ -19,26 +18,16 @@ const Sidebar = () => {
     <Box>
       <Box sx={{ variant: 'text.monoCaps', mb: [5, 5, 5, 6] }}>Overview</Box>
       <Flex sx={{ flexDirection: 'column', gap: [5, 5, 5, 6] }}>
-        {PATHS.map(({ href, title, public: publicPath }) =>
-          href === '/login' && status === 'authenticated' ? (
-            <NavLink
-              key={href}
-              onClick={() => signOut({ callbackUrl: '/' })}
-              active={false}
-            >
-              Log out
-            </NavLink>
-          ) : (
-            <NavLink
-              key={href}
-              href={href}
-              active={pathname.startsWith(href)}
-              disabled={!publicPath && status === 'unauthenticated'}
-            >
-              {title}
-            </NavLink>
-          ),
-        )}
+        {PATHS.map(({ href, title, public: publicPath }) => (
+          <NavLink
+            key={href}
+            href={href}
+            active={pathname.startsWith(href)}
+            disabled={!publicPath && status === 'unauthenticated'}
+          >
+            {title}
+          </NavLink>
+        ))}
       </Flex>
     </Box>
   )

@@ -30,8 +30,8 @@ const PATHS: { name: string; path: string; matchingPaths?: string[] }[] = [
   { name: 'Submit', path: '/submit/overview' },
   {
     name: 'Login',
-    path: '/login',
-    matchingPaths: ['/login', '/account', '/submissions'],
+    path: '/account',
+    matchingPaths: ['/account', '/submissions'],
   },
 ]
 
@@ -66,7 +66,7 @@ const AccountLink = ({
 
   return (
     <StyledLink
-      href={authenticated ? '/submissions' : path}
+      href={path}
       sx={{
         width: 'fit-content',
         whiteSpace: 'nowrap',
