@@ -22,7 +22,7 @@ const SubmissionOverview = async () => {
   // ])
 
   // if (responses.some((res) => res.status !== 200)) {
-  //   redirect('/login?signOut=true')
+  //   redirect('/account?signOut=true')
   // }
   // const [published, review, rejected] = await Promise.all(
   //   responses.map((res) => res.json()),

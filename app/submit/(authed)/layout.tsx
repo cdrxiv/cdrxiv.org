@@ -25,7 +25,7 @@ const SubmissionOverview: React.FC<Props> = async ({ children }) => {
 
   let files
   if (preprintRes.status !== 200) {
-    redirect('/login?signOut=true')
+    redirect('/account?signOut=true')
   }
 
   const [preprintsData, filesData] = await Promise.all([

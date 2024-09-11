@@ -1,13 +1,13 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { Box, Flex } from 'theme-ui'
 import { usePathname } from 'next/navigation'
 
 import { NavLink } from '../../components'
 
 const PATHS = [
-  { href: '/login', title: 'Log in', public: true },
+  { href: '/account', title: 'Account', public: true },
   { href: '/submissions', title: 'Submissions' },
 ]
 const Sidebar = () => {

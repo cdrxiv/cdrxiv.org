@@ -19,10 +19,10 @@ export function useForm<T>(
   const { setNavigationWarning } = useNavigation()
   const { preprint } = usePreprint()
   return useFormBase(
-    preprint,
     initialize,
     validate,
     submit,
+    { preprint: preprint.pk },
     setNavigationWarning,
   )
 }
