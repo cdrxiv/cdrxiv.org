@@ -3,7 +3,6 @@
 import { Box, Flex } from 'theme-ui'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { track } from '@vercel/analytics'
 
 import { Button, Field, Form, Link, Row } from '../../../../components'
 import NavButtons from '../../nav-buttons'
@@ -25,6 +24,7 @@ import DataFileDisplay from '../overview/data-file-display'
 import FileDisplay from '../overview/file-display'
 import { getZenodoMetadata } from '../../../../utils/data'
 import { getSubmissionType } from '../overview/utils'
+import { track } from '../../../../utils/tracking'
 import { useLoading } from '../../../../components/layouts/paneled-page'
 
 const SummaryCard = ({ children }: { children: React.ReactNode }) => {
@@ -103,17 +103,17 @@ const SubmissionConfirmation = () => {
     overview.error &&
       track('confirm_page_overview_error', {
         error: overview.error,
-        preprint_id: preprint.pk,
+        preprint: preprint.pk,
       })
     info.error &&
       track('confirm_page_info_error', {
         error: info.error,
-        preprint_id: preprint.pk,
+        preprint: preprint.pk,
       })
     authors.error &&
       track('confirm_page_authors_error', {
         error: authors.error,
-        preprint_id: preprint.pk,
+        preprint: preprint.pk,
       })
   }, [overview.error, info.error, authors.error, preprint.pk])
 
@@ -142,14 +142,14 @@ const SubmissionConfirmation = () => {
       })
       .then(() => {
         track('preprint_submitted_success', {
-          preprint_id: preprint.pk,
-          owner: preprint.owner,
+          preprint: preprint.pk,
+          user: preprint.owner,
         })
         router.push('/submit/success')
       })
       .catch((err) => {
         track('preprint_submitted_error', {
-          preprint_id: preprint.pk,
+          preprint: preprint.pk,
           error: err.message,
         })
         setSubmitError(

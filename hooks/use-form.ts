@@ -1,6 +1,6 @@
-import { track } from '@vercel/analytics'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Preprint } from '../types/preprint'
+
+import { track } from '../utils/tracking'
 
 export type Errors<T> = Partial<{ [K in keyof T]: string }>
 export type Setter<T> = {
@@ -59,7 +59,7 @@ export function useForm<T>(
     const valid = Object.keys(errors).length === 0
     if (!valid) {
       track('form_invalid', {
-        errors: Object.keys(errors).join(', '),
+        error: Object.keys(errors).join(', '),
         ...analyticsIdentifier,
       })
       return false
