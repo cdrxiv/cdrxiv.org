@@ -1,4 +1,4 @@
-import { NextAuthOptions } from 'next-auth'
+import { NextAuthOptions, User } from 'next-auth'
 import type { Provider } from 'next-auth/providers/index'
 
 const Janeway: Provider = {
