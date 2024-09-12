@@ -1,12 +1,12 @@
 import { headers } from 'next/headers'
 import React from 'react'
 import { redirect } from 'next/navigation'
+import { track } from '@vercel/analytics'
 
 import { fetchWithToken } from '../../api/utils'
 import { PreprintProvider } from './preprint-context'
 import { createPreprint } from '../../../actions/preprint'
 import { Preprint } from '../../../types/preprint'
-import { track } from '@vercel/analytics'
 
 interface Props {
   children: React.ReactNode

@@ -3,7 +3,6 @@
 import { Box, Flex } from 'theme-ui'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { track } from '@vercel/analytics'
 
 import { Button, Field, Form, Link, Row } from '../../../../components'
 import NavButtons from '../../nav-buttons'
@@ -25,6 +24,7 @@ import DataFileDisplay from '../overview/data-file-display'
 import FileDisplay from '../overview/file-display'
 import { getZenodoMetadata } from '../../../../utils/data'
 import { getSubmissionType } from '../overview/utils'
+import { track } from '../../../../utils/tracking'
 
 const SummaryCard = ({ children }: { children: React.ReactNode }) => {
   return (

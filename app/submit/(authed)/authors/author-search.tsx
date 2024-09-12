@@ -6,7 +6,7 @@ import { useCallback, useState } from 'react'
 import { Search } from '../../../../components'
 import { usePreprint } from '../preprint-context'
 import { searchAuthor, updatePreprint } from '../../../../actions/preprint'
-import { track } from '@vercel/analytics'
+import { track } from '../../../../utils/tracking'
 
 const isEmail = (value: string) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/

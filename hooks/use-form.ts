@@ -1,6 +1,6 @@
-import { track } from '@vercel/analytics'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Preprint } from '../types/preprint'
+
+import { track } from '../utils/tracking'
 
 export type Errors<T> = Partial<{ [K in keyof T]: string }>
 export type Setter<T> = {
