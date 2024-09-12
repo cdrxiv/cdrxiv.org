@@ -6,7 +6,7 @@ import { fetchWithToken } from '../../api/utils'
 import { PreprintProvider } from './preprint-context'
 import { createPreprint } from '../../../actions/preprint'
 import { Preprint } from '../../../types/preprint'
-import { track } from '@vercel/analytics'
+import { track } from '@vercel/analytics/server'
 
 interface Props {
   children: React.ReactNode
