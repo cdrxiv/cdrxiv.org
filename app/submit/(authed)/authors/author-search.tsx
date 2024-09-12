@@ -35,7 +35,6 @@ const AuthorSearch = () => {
 
   const handleSubmit = useCallback(async () => {
     setError('')
-    const type = validateAuthorSearch(value)
     let success = false
     const searchResults = await searchAuthor(value)
     const author = searchResults.results[0]
@@ -54,9 +53,9 @@ const AuthorSearch = () => {
       setError('An error occurred. Please try again.')
       console.error(e)
     } finally {
-      track('author_search', {
-        success,
-        type: type === 'invalid' ? `invalid (${value})` : type,
+      track(success ? 'author_search_success' : 'author_search_failure', {
+        search_type: validateAuthorSearch(value),
+        search_value: value,
       })
     }
   }, [value, preprint, setPreprint])
