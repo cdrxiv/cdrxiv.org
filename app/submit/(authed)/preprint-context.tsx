@@ -40,8 +40,8 @@ export const PreprintProvider: React.FC<ProviderProps> = ({
   const initializationEvent = useRef<Record<string, any>>(
     value
       ? {
-          preprint_id: value?.pk,
-          owner: value?.owner,
+          preprint: value?.pk,
+          user: value?.owner,
         }
       : null,
   )

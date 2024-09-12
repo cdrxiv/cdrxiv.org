@@ -59,7 +59,7 @@ export function useForm<T>(
     const valid = Object.keys(errors).length === 0
     if (!valid) {
       track('form_invalid', {
-        errors: Object.keys(errors).join(', '),
+        error: Object.keys(errors).join(', '),
         ...analyticsIdentifier,
       })
       return false
