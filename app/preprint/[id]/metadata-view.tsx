@@ -7,7 +7,7 @@ import type { Preprint, Funder } from '../../../types/preprint'
 import type { Deposition } from '../../../types/zenodo'
 
 const getDataDownload = (deposition: Deposition) => {
-  return `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].filename}?download=1`
+  return `${process.env.ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].filename}?download=1`
 }
 
 const MetadataView: React.FC<{
