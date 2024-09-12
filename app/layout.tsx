@@ -36,7 +36,8 @@ export default async function RootLayout({
         />
         <script
           defer
-          data-domain='cdrxiv.org'
+          // TODO: Configure production domain
+          data-domain='staging.cdrxiv.org'
           src='https://plausible.io/js/script.js'
         />
       </head>
