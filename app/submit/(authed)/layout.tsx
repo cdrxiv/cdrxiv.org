@@ -1,7 +1,6 @@
 import { headers } from 'next/headers'
 import React from 'react'
 import { redirect } from 'next/navigation'
-import { track } from '@vercel/analytics'
 
 import { fetchWithToken } from '../../api/utils'
 import { PreprintProvider } from './preprint-context'
@@ -39,17 +38,19 @@ const SubmissionOverview: React.FC<Props> = async ({ children }) => {
     (p: Preprint) => p.stage === 'preprint_unsubmitted',
   )
 
+  let preprintCreated = false
   if (preprints.length === 0) {
     const preprint = await createPreprint()
-    track('preprint_created', {
-      preprint_id: preprint.pk,
-      owner: preprint.owner,
-    })
+    preprintCreated = true
     preprints = [preprint]
   }
 
   return (
-    <PreprintProvider preprints={preprints} files={filesData.results}>
+    <PreprintProvider
+      preprints={preprints}
+      files={filesData.results}
+      newlyCreated={preprintCreated}
+    >
       {children}
     </PreprintProvider>
   )

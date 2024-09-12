@@ -1,8 +1,15 @@
 'use client'
 
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { Preprint, PreprintFile, Preprints } from '../../../types/preprint'
 import SelectPreprint from './select-preprint'
+import { track } from '../../../utils/tracking'
 
 const PreprintContext = createContext<{
   preprint: Preprint | null
@@ -15,12 +22,14 @@ interface ProviderProps {
   children: React.ReactNode
   preprints: Preprints
   files: PreprintFile[]
+  newlyCreated: boolean
 }
 
 export const PreprintProvider: React.FC<ProviderProps> = ({
   children,
   preprints,
   files: filesProp,
+  newlyCreated,
 }) => {
   const [value, setValue] = useState(
     preprints.length === 1 ? preprints[0] : null,
@@ -28,10 +37,24 @@ export const PreprintProvider: React.FC<ProviderProps> = ({
   const [files, setFiles] = useState(() =>
     filesProp.filter((f) => f.preprint === value?.pk),
   )
+  const initializationEvent = useRef<Record<string, any>>(
+    value
+      ? {
+          preprint_id: value?.pk,
+          owner: value?.owner,
+        }
+      : null,
+  )
 
   useEffect(() => {
     setFiles(filesProp.filter((f) => f.preprint === value?.pk))
   }, [filesProp, value?.pk])
+
+  useEffect(() => {
+    if (newlyCreated && initializationEvent.current) {
+      track('preprint_created', initializationEvent.current)
+    }
+  }, [newlyCreated])
 
   return (
     <PreprintContext.Provider
