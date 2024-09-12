@@ -34,6 +34,11 @@ export default async function RootLayout({
           type='font/woff2'
           crossOrigin='anonymous'
         />
+        <script
+          defer
+          data-domain='cdrxiv.org'
+          src='https://plausible.io/js/script.js'
+        />
       </head>
       <body>
         <Providers>
