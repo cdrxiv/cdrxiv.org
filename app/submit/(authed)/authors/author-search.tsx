@@ -57,6 +57,7 @@ const AuthorSearch = () => {
         search_type: validateAuthorSearch(value),
         search_value: value,
       })
+      return success
     }
   }, [value, preprint, setPreprint])
 
@@ -68,6 +69,7 @@ const AuthorSearch = () => {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onSubmit={handleSubmit}
+        showLoadingState
         sx={{ variant: 'text.body' }}
       />
     </>
