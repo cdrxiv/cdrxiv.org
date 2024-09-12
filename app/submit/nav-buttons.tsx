@@ -80,7 +80,7 @@ const NavButtons: React.FC<Props> = ({ onClick }) => {
           Prev step
         </NavButton>
       )}
-      {index < PATHS.length - 1 && (
+      {index < PATHS.length - 1 && !PATHS[index + 1]?.hidden && (
         <NextButton
           href={PATHS[index + 1].href}
           onClick={onClick}
