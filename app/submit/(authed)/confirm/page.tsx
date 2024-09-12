@@ -25,6 +25,7 @@ import DataFileDisplay from '../overview/data-file-display'
 import FileDisplay from '../overview/file-display'
 import { getZenodoMetadata } from '../../../../utils/data'
 import { getSubmissionType } from '../overview/utils'
+import { useLoading } from '../../../../components/layouts/paneled-page'
 
 const SummaryCard = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -78,6 +79,8 @@ const SubmissionConfirmation = () => {
   const router = useRouter()
   const [submitError, setSubmitError] = useState<string | null>(null)
 
+  const { setIsLoading } = useLoading()
+
   const { info, overview, authors } = useMemo(() => {
     const info = initializeInfo(preprint)
     const overview = initializeOverview(preprint, files)
@@ -119,6 +122,7 @@ const SubmissionConfirmation = () => {
     articleFile: overview.data.articleFile,
   })
   const handleSubmit = useCallback(() => {
+    setIsLoading(true)
     updatePreprint(preprint, {
       stage: 'preprint_review',
       date_submitted: getFormattedDate(),
@@ -152,8 +156,9 @@ const SubmissionConfirmation = () => {
           err.message ??
             'Unable to complete submission. Please check submission contents and try again.',
         )
+        setIsLoading(false)
       })
-  }, [preprint, router, submissionType, overview.data.dataFile])
+  }, [preprint, router, submissionType, overview.data.dataFile, setIsLoading])
 
   return (
     <div>
