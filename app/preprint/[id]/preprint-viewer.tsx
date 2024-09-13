@@ -16,6 +16,7 @@ import type { Preprint } from '../../../types/preprint'
 import type { Deposition } from '../../../types/zenodo'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
 import Loading from '../../../components/loading'
+import useTracking from '../../../hooks/use-tracking'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
@@ -30,6 +31,7 @@ const PreprintViewer = ({
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const pageRefs = useRef<(HTMLDivElement | null)[]>([])
+  const track = useTracking()
 
   const submissionType = getAdditionalField(preprint, 'Submission type')
   const hasArticle = ['Article', 'Both'].includes(submissionType ?? '')
@@ -49,6 +51,13 @@ const PreprintViewer = ({
       resizeObserver.disconnect()
     }
   }, [])
+
+  useEffect(() => {
+    track('preprint_view', {
+      preprint: preprint.pk,
+      submission_type: submissionType,
+    })
+  }, [track, preprint.pk, submissionType])
 
   const onDocumentLoadSuccess = (pdf: PDFDocumentProxy): void => {
     setPdf(pdf)

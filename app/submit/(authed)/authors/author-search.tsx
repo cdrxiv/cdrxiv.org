@@ -6,8 +6,8 @@ import { useCallback, useState } from 'react'
 import { Search } from '../../../../components'
 import { usePreprint } from '../preprint-context'
 import { searchAuthor, updatePreprint } from '../../../../actions/preprint'
-import { track } from '../../../../utils/tracking'
 import useLoadingText from '../../../../hooks/useLoadingText'
+import useTracking from '../../../../hooks/use-tracking'
 
 const isEmail = (value: string) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -36,6 +36,7 @@ const AuthorSearch = () => {
   const [isLoading, setIsLoading] = useState(false)
   const loadingText = useLoadingText({ isLoading, baseText: 'Searching' })
   const placeholderText = isLoading ? loadingText : ''
+  const track = useTracking()
 
   const handleSubmit = useCallback(async () => {
     setError('')
@@ -65,7 +66,7 @@ const AuthorSearch = () => {
         search_value: value,
       })
     }
-  }, [value, preprint, setPreprint])
+  }, [value, preprint, setPreprint, track])
 
   return (
     <>

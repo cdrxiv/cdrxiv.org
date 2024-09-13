@@ -139,7 +139,7 @@ const submitForm = async (
     const formData = new FormData()
 
     formData.set('file', articleFile.file)
-    formData.set('preprint', String(preprint))
+    formData.set('preprint', String(preprint?.pk))
     formData.set('mime_type', articleFile.mime_type)
     formData.set('original_filename', articleFile.original_filename)
 

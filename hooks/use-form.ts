@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { track } from '../utils/tracking'
+import useTracking from './use-tracking'
 
 export type Errors<T> = Partial<{ [K in keyof T]: string }>
 export type Setter<T> = {
@@ -42,7 +42,7 @@ export function useForm<T>(
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [showErrors, setShowErrors] = useState<boolean>(false)
   const empty: Errors<T> = useMemo(() => ({}), [])
-
+  const track = useTracking()
   // Turn off navigation warning on unmount
   useEffect(() => {
     return () => setNavigationWarning && setNavigationWarning(false)
@@ -77,7 +77,7 @@ export function useForm<T>(
           return false
         })
     }
-  }, [errors, data, submit, analyticsIdentifier])
+  }, [errors, data, submit, analyticsIdentifier, track])
 
   return {
     data,

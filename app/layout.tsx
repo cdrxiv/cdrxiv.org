@@ -5,6 +5,8 @@ import '../components/fonts.css'
 import { getSubjects } from './api/utils'
 import { SubjectsProvider } from './subjects-context'
 import Providers from './providers'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '../lib/auth'
 
 export const metadata: Metadata = {
   title: 'CDRXIV',
@@ -16,7 +18,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const subjects = await getSubjects()
+  const [subjects, session] = await Promise.all([
+    getSubjects(),
+    getServerSession(authOptions),
+  ])
+
   return (
     <html lang='en'>
       <head>
@@ -34,20 +40,9 @@ export default async function RootLayout({
           type='font/woff2'
           crossOrigin='anonymous'
         />
-        <script
-          defer
-          // TODO: Configure production domain
-          data-domain='staging.cdrxiv.org'
-          src='https://plausible.io/js/script.file-downloads.hash.outbound-links.pageview-props.tagged-events.js'
-        />
-        <script>
-          {
-            'window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }'
-          }
-        </script>
       </head>
       <body>
-        <Providers>
+        <Providers session={session}>
           <SubjectsProvider subjects={subjects.results}>
             <main>
               <PageCard>{children}</PageCard>
