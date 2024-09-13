@@ -144,6 +144,7 @@ const SubmissionConfirmation = () => {
         track('preprint_submitted_success', {
           preprint: preprint.pk,
           user: preprint.owner,
+          submission_type: submissionType,
         })
         router.push('/submit/success')
       })
@@ -151,6 +152,7 @@ const SubmissionConfirmation = () => {
         track('preprint_submitted_error', {
           preprint: preprint.pk,
           error: err.message,
+          submission_type: submissionType,
         })
         setSubmitError(
           err.message ??
