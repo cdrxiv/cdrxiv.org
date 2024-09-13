@@ -5,15 +5,15 @@ import { useCallback } from 'react'
 type Property = 'preprint' | 'user' | 'error' | 'search_type' | 'search_value'
 type Options = Partial<Record<Property, any>>
 
-const useTracking = () => {
+const useTracking = ({ skipVercel }: { skipVercel?: boolean } = {}) => {
   const plausible = usePlausible()
 
   const track = useCallback(
     (name: string, options: Options) => {
-      vercelTrack(name, options)
+      !skipVercel && vercelTrack(name, options)
       plausible(name, { props: options })
     },
-    [plausible],
+    [skipVercel, plausible],
   )
 
   return track

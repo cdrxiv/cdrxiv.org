@@ -7,7 +7,20 @@ import { ThemeUIProvider } from 'theme-ui'
 import { SessionProvider } from 'next-auth/react'
 import PlausibleProvider from 'next-plausible'
 import { Session } from 'next-auth'
+import { usePathname } from 'next/navigation'
+import { useEffect } from 'react'
 import { theme } from '../theme/theme'
+import useTracking from '../hooks/use-tracking'
+
+const PlausibleTracker = () => {
+  const pathname = usePathname()
+  const track = useTracking({ skipVercel: true })
+
+  useEffect(() => {
+    track('pageview', {})
+  }, [pathname, track])
+  return null
+}
 
 const Providers = ({
   session,
@@ -23,7 +36,9 @@ const Providers = ({
         domain='staging.cdrxiv.org'
         trackOutboundLinks
         trackFileDownloads
+        manualPageviews
       >
+        <PlausibleTracker />
         <ThemeUIProvider theme={theme}>{children}</ThemeUIProvider>
       </PlausibleProvider>
     </SessionProvider>
