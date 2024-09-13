@@ -39,7 +39,6 @@ const AuthorSearch = () => {
   const track = useTracking()
 
   const handleSubmit = useCallback(async () => {
-    setError('')
     setIsLoading(true)
     let success = false
 
@@ -53,6 +52,7 @@ const AuthorSearch = () => {
         success = true
         setPreprint(updatedPreprint)
         setValue('')
+        setError('')
       } else {
         setError('Author not found.')
       }
