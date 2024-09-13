@@ -24,7 +24,7 @@ import DataFileDisplay from '../overview/data-file-display'
 import FileDisplay from '../overview/file-display'
 import { getZenodoMetadata } from '../../../../utils/data'
 import { getSubmissionType } from '../overview/utils'
-import { track } from '../../../../utils/tracking'
+import useTracking from '../../../../hooks/use-tracking'
 import { useLoading } from '../../../../components/layouts/paneled-page'
 
 const SummaryCard = ({ children }: { children: React.ReactNode }) => {
@@ -77,8 +77,8 @@ const SubmissionConfirmation = () => {
   const { preprint } = usePreprint()
   const { files } = usePreprintFiles()
   const router = useRouter()
+  const track = useTracking()
   const [submitError, setSubmitError] = useState<string | null>(null)
-
   const { setIsLoading } = useLoading()
 
   const { info, overview, authors } = useMemo(() => {
@@ -115,7 +115,7 @@ const SubmissionConfirmation = () => {
         error: authors.error,
         preprint: preprint.pk,
       })
-  }, [overview.error, info.error, authors.error, preprint.pk])
+  }, [overview.error, info.error, authors.error, preprint.pk, track])
 
   const submissionType = getSubmissionType({
     dataFile: overview.data.dataFile,
@@ -158,8 +158,14 @@ const SubmissionConfirmation = () => {
         )
         setIsLoading(false)
       })
-  }, [preprint, router, submissionType, overview.data.dataFile, setIsLoading])
-
+  }, [
+    preprint,
+    router,
+    submissionType,
+    overview.data.dataFile,
+    setIsLoading,
+    track,
+  ])
   return (
     <div>
       <Form error={submitError}>

@@ -9,7 +9,7 @@ import React, {
 } from 'react'
 import { Preprint, PreprintFile, Preprints } from '../../../types/preprint'
 import SelectPreprint from './select-preprint'
-import { track } from '../../../utils/tracking'
+import useTracking from '../../../hooks/use-tracking'
 
 const PreprintContext = createContext<{
   preprint: Preprint | null
@@ -31,6 +31,7 @@ export const PreprintProvider: React.FC<ProviderProps> = ({
   files: filesProp,
   newlyCreated,
 }) => {
+  const track = useTracking()
   const [value, setValue] = useState(
     preprints.length === 1 ? preprints[0] : null,
   )
@@ -54,7 +55,7 @@ export const PreprintProvider: React.FC<ProviderProps> = ({
     if (newlyCreated && initializationEvent.current) {
       track('preprint_created', initializationEvent.current)
     }
-  }, [newlyCreated])
+  }, [newlyCreated, track])
 
   return (
     <PreprintContext.Provider

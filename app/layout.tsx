@@ -34,17 +34,6 @@ export default async function RootLayout({
           type='font/woff2'
           crossOrigin='anonymous'
         />
-        <script
-          defer
-          // TODO: Configure production domain
-          data-domain='staging.cdrxiv.org'
-          src='https://plausible.io/js/script.file-downloads.hash.outbound-links.pageview-props.tagged-events.js'
-        />
-        <script>
-          {
-            'window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }'
-          }
-        </script>
       </head>
       <body>
         <Providers>
