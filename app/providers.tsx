@@ -5,11 +5,18 @@
 
 import { ThemeUIProvider } from 'theme-ui'
 import { SessionProvider } from 'next-auth/react'
+import { Session } from 'next-auth'
 import { theme } from '../theme/theme'
 
-const Providers = ({ children }: { children: React.ReactNode }) => {
+const Providers = ({
+  session,
+  children,
+}: {
+  session: Session | null
+  children: React.ReactNode
+}) => {
   return (
-    <SessionProvider>
+    <SessionProvider session={session}>
       <ThemeUIProvider theme={theme}>{children}</ThemeUIProvider>
     </SessionProvider>
   )
