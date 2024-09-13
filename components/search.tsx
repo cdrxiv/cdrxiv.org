@@ -41,7 +41,7 @@ const Search = forwardRef<HTMLInputElement, SearchProps>(
     useImperativeHandle(ref, () => internalRef.current as HTMLInputElement)
 
     useEffect(() => {
-      if (!isLoading) return
+      if (!isLoading || !showLoadingState) return
       const interval = setInterval(() => {
         setDotCount((prevCount) => (prevCount + 1) % 4)
       }, 250)
@@ -50,8 +50,7 @@ const Search = forwardRef<HTMLInputElement, SearchProps>(
 
     const handleChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = e.target.value
-        setInputValue(newValue)
+        setInputValue(e.target.value)
         onChange && onChange(e)
       },
       [onChange],
