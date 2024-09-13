@@ -27,7 +27,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
 
   return (
     <>
-      <Row columns={12} sx={{ mt: 4, mb: 6 }}>
+      <Row columns={12} sx={{ mt: [65, 65, 100, 100], mb: 6 }}>
         <Column start={1} width={[10, 10, 3, 3]}>
           <Box sx={{ variant: 'text.heading', mb: 4 }}>
             Preprints and Data for Carbon Dioxide Removal

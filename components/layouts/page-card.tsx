@@ -3,6 +3,7 @@
 import React from 'react'
 import { Box } from 'theme-ui'
 import Header from '../header'
+import PageCorner from '../page-corner'
 import Guide from '../guide'
 import useBackgroundColors from '../../hooks/useBackgroundColors'
 
@@ -21,11 +22,6 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
               (space) =>
                 `calc(100vh - 2 * ${theme.space ? theme.space[space] : 0}px)`,
             ),
-          width: (theme) =>
-            margin.map(
-              (space) =>
-                `calc(100vw - 2 * ${theme.space ? theme.space[space] : 0}px)`,
-            ),
           position: 'fixed',
         }}
       >
@@ -34,23 +30,17 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
             height: '100%',
             overflow: 'auto',
             bg: cardBackground,
-            borderLeft: '1px solid',
-            borderBottom: '1px solid',
-            borderRight: '1px solid',
+            border: '1px solid',
             borderColor: 'text',
+            px: ['18px', '36px', '36px', '52px'],
           }}
         >
+          <PageCorner />
           <Header />
-          <Box
-            sx={{
-              mt: 100,
-              px: ['18px', '36px', '36px', '52px'],
-            }}
-          >
-            <Box sx={{ contain: 'layout' }}>
-              <Guide />
-              {children}
-            </Box>
+
+          <Box sx={{ contain: 'layout' }}>
+            <Guide />
+            {children}
           </Box>
         </Box>
       </Box>
