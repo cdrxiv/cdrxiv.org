@@ -9,7 +9,11 @@ interface GridViewProps {
 
 const GridView: React.FC<GridViewProps> = ({ preprints }) => {
   return (
-    <Row columns={[1, 2, 3, 4]} gap={[5, 6, 6, 8]} sx={{ gridAutoRows: '1fr' }}>
+    <Row
+      columns={[1, 2, 3, 4]}
+      gap={[5, 6, 6, 8]}
+      sx={{ gridAutoRows: '1fr', mb: ['18px', '36px', '36px', '52px'] }}
+    >
       {preprints.map((preprint) => {
         const { title, authors, date_published, pk } = preprint
         return (
