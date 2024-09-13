@@ -7,6 +7,7 @@ import { Search } from '../../../../components'
 import { usePreprint } from '../preprint-context'
 import { searchAuthor, updatePreprint } from '../../../../actions/preprint'
 import { track } from '../../../../utils/tracking'
+import useLoadingText from '../../../../hooks/useLoadingText'
 
 const isEmail = (value: string) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -32,13 +33,18 @@ const AuthorSearch = () => {
   const { preprint, setPreprint } = usePreprint()
   const [value, setValue] = useState('')
   const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const loadingText = useLoadingText({ isLoading, baseText: 'Searching' })
+  const placeholderText = isLoading ? loadingText : ''
 
   const handleSubmit = useCallback(async () => {
     setError('')
+    setIsLoading(true)
     let success = false
-    const searchResults = await searchAuthor(value)
-    const author = searchResults.results[0]
+
     try {
+      const searchResults = await searchAuthor(value)
+      const author = searchResults.results[0]
       if (author && searchResults.results.length === 1) {
         const updatedPreprint = await updatePreprint(preprint, {
           authors: [...preprint.authors, author],
@@ -53,11 +59,11 @@ const AuthorSearch = () => {
       setError('An error occurred. Please try again.')
       console.error(e)
     } finally {
+      setIsLoading(false)
       track(success ? 'author_search_success' : 'author_search_failure', {
         search_type: validateAuthorSearch(value),
         search_value: value,
       })
-      return success
     }
   }, [value, preprint, setPreprint])
 
@@ -66,10 +72,11 @@ const AuthorSearch = () => {
       {error && <Box sx={{ variant: 'text.mono', color: 'red' }}>{error}</Box>}
       <Search
         id='search'
-        value={value}
+        value={isLoading ? '' : value}
         onChange={(e) => setValue(e.target.value)}
         onSubmit={handleSubmit}
-        showLoadingState
+        placeholder={placeholderText}
+        disabled={isLoading}
         sx={{ variant: 'text.body' }}
       />
     </>
