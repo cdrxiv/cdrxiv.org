@@ -238,9 +238,8 @@ const Header = () => {
           <Search
             ref={searchRef}
             placeholder='Search'
-            onSubmit={async () => {
+            onSubmit={() => {
               router.push(`/search?query=${searchRef.current?.value ?? ''}`)
-              return false // don't clear value
             }}
             arrows={true}
             inverted
