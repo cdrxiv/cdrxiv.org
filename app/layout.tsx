@@ -6,7 +6,7 @@ import { getSubjects } from './api/utils'
 import { SubjectsProvider } from './subjects-context'
 import Providers from './providers'
 import { getServerSession } from 'next-auth/next'
-import { authOptions } from './lib/auth'
+import { authOptions } from '../lib/auth'
 
 export const metadata: Metadata = {
   title: 'CDRXIV',
