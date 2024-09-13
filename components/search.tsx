@@ -114,15 +114,27 @@ const Search = forwardRef<HTMLInputElement, SearchProps>(
             }}
             {...props}
           />
-          {arrows && !isLoading && (
+          {arrows && (
             <Box
+              as='button'
               sx={{
                 position: 'absolute',
                 right: 3,
                 top: '50%',
                 transform: 'translateY(-50%)',
-                color: 'blue',
+                color: isLoading && showLoadingState ? 'muted' : 'blue',
                 letterSpacing: '0.1em',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
+                fontSize: 'inherit',
+                fontFamily: 'inherit',
+              }}
+              {...{
+                type: 'submit',
+                disabled: isLoading && showLoadingState,
+                'aria-label': 'Submit author search',
               }}
             >
               &gt;&gt;
