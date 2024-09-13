@@ -19,7 +19,11 @@ const Providers = ({
   return (
     <SessionProvider session={session}>
       {/* TODO: Configure production domain */}
-      <PlausibleProvider domain='staging.cdrxiv.org'>
+      <PlausibleProvider
+        domain='staging.cdrxiv.org'
+        trackOutboundLinks
+        trackFileDownloads
+      >
         <ThemeUIProvider theme={theme}>{children}</ThemeUIProvider>
       </PlausibleProvider>
     </SessionProvider>
