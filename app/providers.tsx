@@ -5,6 +5,7 @@
 
 import { ThemeUIProvider } from 'theme-ui'
 import { SessionProvider } from 'next-auth/react'
+import PlausibleProvider from 'next-plausible'
 import { Session } from 'next-auth'
 import { theme } from '../theme/theme'
 
@@ -17,7 +18,14 @@ const Providers = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <ThemeUIProvider theme={theme}>{children}</ThemeUIProvider>
+      {/* TODO: Configure production domain */}
+      <PlausibleProvider
+        domain='staging.cdrxiv.org'
+        trackOutboundLinks
+        trackFileDownloads
+      >
+        <ThemeUIProvider theme={theme}>{children}</ThemeUIProvider>
+      </PlausibleProvider>
     </SessionProvider>
   )
 }
