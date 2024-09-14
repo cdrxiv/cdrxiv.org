@@ -12,7 +12,6 @@ type PathBoxProps = BoxProps & SVGProps<SVGPathElement>
 const PathBox: React.FC<PathBoxProps> = (props) => <Box as='path' {...props} />
 
 const foldSize = 100
-const margin = [2, 2, 3, 3]
 
 const PageCorner = () => {
   const { theme } = useThemeUI()
@@ -27,9 +26,12 @@ const PageCorner = () => {
           width: [65, 65, 100, 100],
           height: [65, 65, 100, 100],
           position: 'fixed',
-          top: margin,
-          right: margin,
           zIndex: 3,
+
+          // matched to our standard margin [2, 2, 3, 3]
+          // but with half px adjustments for small screens
+          top: [`7.5px`, `7.5px`, `12px`, `12px`],
+          right: [`7.5px`, `7.5px`, `12px`, `12px`],
         }}
       >
         <PathBox
