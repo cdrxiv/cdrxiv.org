@@ -6,7 +6,7 @@ import { useCallback, useState } from 'react'
 import { Search } from '../../../../components'
 import { usePreprint } from '../preprint-context'
 import { searchAuthor, updatePreprint } from '../../../../actions/preprint'
-import useLoadingText from '../../../../hooks/useLoadingText'
+import useLoadingText from '../../../../hooks/use-loading-text'
 import useTracking from '../../../../hooks/use-tracking'
 
 const isEmail = (value: string) => {

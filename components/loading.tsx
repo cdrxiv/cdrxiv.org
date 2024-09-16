@@ -1,5 +1,5 @@
 import { Box, ThemeUIStyleObject } from 'theme-ui'
-import useLoadingText from '../hooks/useLoadingText'
+import useLoadingText from '../hooks/use-loading-text'
 
 const Loading = ({
   baseText = 'Loading',
