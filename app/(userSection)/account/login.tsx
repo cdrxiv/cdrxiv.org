@@ -1,8 +1,8 @@
 'use client'
 
-import { signIn, signOut } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
-import { Suspense, useEffect } from 'react'
+import { Suspense } from 'react'
 
 import { Button, Column, Field, Form, Row } from '../../../components'
 
@@ -27,33 +27,9 @@ const SignIn = () => {
   )
 }
 
-const SignOutListener = () => {
-  const searchParams = useSearchParams()
-
-  useEffect(() => {
-    if (searchParams.get('signOut')) {
-      signOut()
-      const params = new URLSearchParams(searchParams.toString())
-      params.delete('signOut')
-      const filteredParams = params.toString()
-      window.history.replaceState(
-        null,
-        '',
-        `${window.location.pathname}${filteredParams ? `?${filteredParams}` : ''}`,
-      )
-    }
-  }, [searchParams])
-
-  return null
-}
-
 const Login = () => {
   return (
     <Form>
-      <Suspense>
-        <SignOutListener />
-      </Suspense>
-
       <Field
         label=''
         id='signin'
