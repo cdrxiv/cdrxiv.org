@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
-import { Analytics } from '@vercel/analytics/react'
-import PageCard from '../components/layouts/page-card'
+import { getServerSession } from 'next-auth/next'
+
 import '../components/fonts.css'
+import PageCard from '../components/layouts/page-card'
+import Providers from './providers'
 import { getSubjects } from './api/utils'
 import { SubjectsProvider } from './subjects-context'
-import Providers from './providers'
-import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../lib/auth'
 
 export const metadata: Metadata = {
@@ -49,7 +49,6 @@ export default async function RootLayout({
             </main>
           </SubjectsProvider>
         </Providers>
-        <Analytics />
       </body>
     </html>
   )
