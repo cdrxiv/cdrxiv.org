@@ -42,7 +42,10 @@ export function authorList(
   }
 
   const authorsArray = authors.map((author) =>
-    `${author.first_name || ''} ${author.middle_name || ''} ${author.last_name || ''}`.trim(),
+    [author.first_name, author.middle_name, author.last_name]
+      .filter(Boolean)
+      .join(' ')
+      .trim(),
   )
 
   return array ? authorsArray : authorsArray.join(', ')
