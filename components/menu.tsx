@@ -1,3 +1,4 @@
+import React, { useEffect, useRef } from 'react'
 import { Box, Button, Flex, ThemeUIStyleObject } from 'theme-ui'
 
 interface MenuProps {
@@ -7,6 +8,26 @@ interface MenuProps {
 }
 
 const Menu: React.FC<MenuProps> = ({ setMenuOpen, children, sx }) => {
+  const menuItemsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Tab') {
+        event.preventDefault()
+        const firstMenuItem = menuItemsRef.current?.querySelector(
+          'a[href], button:not([aria-label="Close"]), input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        ) as HTMLElement
+        firstMenuItem?.focus()
+      }
+      // remove after we've focused the first item
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+
   return (
     <Box
       onClick={() => setMenuOpen(false)}
@@ -21,6 +42,7 @@ const Menu: React.FC<MenuProps> = ({ setMenuOpen, children, sx }) => {
       }}
     >
       <Flex
+        ref={menuItemsRef}
         sx={{
           flexDirection: 'column',
           gap: 2,
@@ -42,6 +64,7 @@ const Menu: React.FC<MenuProps> = ({ setMenuOpen, children, sx }) => {
             e.stopPropagation()
             setMenuOpen(false)
           }}
+          aria-label='Close'
           sx={{
             variant: 'text.monoCaps',
             position: 'sticky',

@@ -11,6 +11,7 @@ import Row from './row'
 import StyledButton from './button'
 import Menu from './menu'
 import useBackgroundColors from '../hooks/useBackgroundColors'
+import { createPortal } from 'react-dom'
 
 type SVGBoxProps = BoxProps & SVGProps<SVGSVGElement>
 const SVGBox: React.FC<SVGBoxProps> = (props) => <Box as='svg' {...props} />
@@ -83,6 +84,7 @@ const AccountLink = ({
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 })
+  const [mounted, setMounted] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const searchRef = useRef<HTMLInputElement>(null)
   const { cardBackground, overallBackground } = useBackgroundColors()
@@ -198,14 +200,16 @@ const Header = () => {
           >
             Menu
           </StyledButton>
-          {menuOpen && (
-            <Menu
-              setMenuOpen={setMenuOpen}
-              sx={{ top: menuPosition.top, right: menuPosition.right }}
-            >
-              {renderLinks()}
-            </Menu>
-          )}
+          {menuOpen &&
+            createPortal(
+              <Menu
+                setMenuOpen={setMenuOpen}
+                sx={{ top: menuPosition.top, right: menuPosition.right }}
+              >
+                {renderLinks()}
+              </Menu>,
+              document.body,
+            )}
         </Column>
       </Row>
     </Box>
