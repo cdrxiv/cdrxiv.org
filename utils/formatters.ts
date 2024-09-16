@@ -19,10 +19,19 @@ type Options =
       array: true
       abbreviate?: false
     }
-export const authorList = (
+
+export function authorList(
+  authors: Author[],
+  options?: { abbreviate?: boolean; array?: false },
+): string
+export function authorList(
+  authors: Author[],
+  options: { abbreviate?: false; array: true },
+): string[]
+export function authorList(
   authors: Author[],
   { abbreviate, array }: Options = {},
-) => {
+) {
   if (authors.length === 0) {
     return ''
   }
