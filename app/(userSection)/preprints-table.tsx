@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Box, Flex } from 'theme-ui'
+import { Box, Flex, BoxProps, LinkProps } from 'theme-ui'
 import { useRouter } from 'next/navigation'
 
 import { formatDate, submissionTypes } from '../../utils/formatters'
@@ -24,6 +24,9 @@ const getDateValue = (preprint: Preprint) => {
 
   return date.valueOf()
 }
+
+type LinkBoxProps = BoxProps & LinkProps & { as: string }
+const LinkBox: React.FC<LinkBoxProps> = (props) => <Box {...props} />
 
 const PreprintsTable: React.FC<PreprintsTableProps> = ({
   preprints,
@@ -59,80 +62,89 @@ const PreprintsTable: React.FC<PreprintsTableProps> = ({
       {preprints
         .sort((a: Preprint, b: Preprint) => getDateValue(b) - getDateValue(a))
         .map((preprint, i) => (
-          <Box
-            role='button'
-            onClick={() => router.push(`${path}/${preprint.pk}`)}
-            aria-label={`Edit "${preprint.title}"`}
+          <LinkBox
+            as='a'
             key={preprint.pk}
-            sx={{
-              borderTop: '1px solid',
-              borderBottom: i === preprints.length - 1 ? '1px solid' : 0,
-              borderColor: 'listBorderGrey',
-              py: 4,
-              ':hover': {
-                cursor: 'pointer',
-                bg: 'white',
-                '#title': {
-                  color: 'blue',
-                },
-              },
-            }}
+            href={`${path}/${preprint.pk}`}
+            aria-label={`Edit "${preprint.title}"`}
+            sx={{ textDecoration: 'none', color: 'text' }}
           >
-            <Row
-              columns={[6, 6, 8, 8]}
-              sx={{ alignItems: 'center', flexWrap: 'wrap' }}
+            <Box
+              sx={{
+                borderTop: '1px solid',
+                borderBottom: i === preprints.length - 1 ? '1px solid' : 0,
+                borderColor: 'listBorderGrey',
+                py: 4,
+                ':hover': {
+                  cursor: 'pointer',
+                  bg: 'white',
+                  '#title': {
+                    color: 'blue',
+                  },
+                },
+              }}
             >
-              <Column start={[1, 1, 1, 1]} width={[6, 6, 4, 4]}>
-                <Box
-                  id='title'
-                  sx={{
-                    variant: 'text.body',
-                    color: ['blue', 'blue', 'inherit', 'inherit'],
-                    mb: [4, 4, 0, 0],
-                  }}
-                >
-                  {preprint.title}
-                </Box>
-              </Column>
-              <Column start={[1, 1, 5, 5]} width={[6, 6, 4, 4]}>
-                <Flex
-                  sx={{
-                    flexDirection: ['row-reverse', 'row-reverse', 'row', 'row'],
-                    justifyContent: 'space-between',
-                    alignItems: 'baseline',
-                  }}
-                >
+              <Row
+                columns={[6, 6, 8, 8]}
+                sx={{ alignItems: 'center', flexWrap: 'wrap' }}
+              >
+                <Column start={[1, 1, 1, 1]} width={[6, 6, 4, 4]}>
                   <Box
+                    id='title'
                     sx={{
-                      variant: 'text.monoCaps',
-                      width: 'fit-content',
+                      variant: 'text.body',
+                      color: ['blue', 'blue', 'inherit', 'inherit'],
+                      mb: [4, 4, 0, 0],
                     }}
                   >
-                    {preprint[date]
-                      ? formatDate(new Date(preprint[date]))
-                      : null}
+                    {preprint.title}
                   </Box>
-                  <Flex sx={{ gap: 2, flexWrap: 'wrap' }}>
-                    {submissionTypes(preprint).map((badge) => (
-                      <Badge key={badge.label} color={badge.color}>
-                        {badge.label}
-                      </Badge>
-                    ))}
-                    {submissionTypes(preprint).length === 0 && (
-                      <Box
-                        sx={{
-                          variant: 'text.monoCaps',
-                          color: 'listBorderGrey',
-                        }}
-                      >
-                        Not labeled
-                      </Box>
-                    )}
+                </Column>
+                <Column start={[1, 1, 5, 5]} width={[6, 6, 4, 4]}>
+                  <Flex
+                    sx={{
+                      flexDirection: [
+                        'row-reverse',
+                        'row-reverse',
+                        'row',
+                        'row',
+                      ],
+                      justifyContent: 'space-between',
+                      alignItems: 'baseline',
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        variant: 'text.monoCaps',
+                        width: 'fit-content',
+                      }}
+                    >
+                      {preprint[date]
+                        ? formatDate(new Date(preprint[date]))
+                        : null}
+                    </Box>
+                    <Flex sx={{ gap: 2, flexWrap: 'wrap' }}>
+                      {submissionTypes(preprint).map((badge) => (
+                        <Badge key={badge.label} color={badge.color}>
+                          {badge.label}
+                        </Badge>
+                      ))}
+                      {submissionTypes(preprint).length === 0 && (
+                        <Box
+                          sx={{
+                            variant: 'text.monoCaps',
+                            color: 'listBorderGrey',
+                          }}
+                        >
+                          Not labeled
+                        </Box>
+                      )}
+                    </Flex>
                   </Flex>
-                </Flex>
-              </Column>
-            </Row>
-          </Box>
+                </Column>
+              </Row>
+            </Box>
+          </LinkBox>
         ))}
     </>
   )
