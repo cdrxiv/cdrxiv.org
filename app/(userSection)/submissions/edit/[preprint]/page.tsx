@@ -17,7 +17,9 @@ const Page = async ({ params }: { params: { preprint: string } }) => {
     ),
   ])
   if (versionsRes.status !== 200 || preprintRes.status !== 200) {
-    redirect('/account?signOut=true')
+    redirect(
+      `/account?signOut=true&callbackUrl=/submissions/edit/${params.preprint}`,
+    )
   }
   const [versions, preprint] = await Promise.all([
     versionsRes.json(),
