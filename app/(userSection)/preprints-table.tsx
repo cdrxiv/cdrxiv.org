@@ -1,14 +1,17 @@
+'use client'
+
 import React from 'react'
 import { Box, Flex } from 'theme-ui'
 import { useRouter } from 'next/navigation'
 
-import { formatDate, submissionTypes } from '../../../../utils/formatters'
-import { Badge, Column, Row } from '../../../../components'
-import { Preprint, Preprints } from '../../../../types/preprint'
+import { formatDate, submissionTypes } from '../../utils/formatters'
+import { Badge, Column, Row } from '../../components'
+import { Preprint, Preprints } from '../../types/preprint'
 
 interface PreprintsTableProps {
   preprints: Preprints
   date: 'date_published' | 'date_submitted'
+  path?: string
 }
 
 const getDateValue = (preprint: Preprint) => {
@@ -22,7 +25,11 @@ const getDateValue = (preprint: Preprint) => {
   return date.valueOf()
 }
 
-const PreprintsTable: React.FC<PreprintsTableProps> = ({ preprints, date }) => {
+const PreprintsTable: React.FC<PreprintsTableProps> = ({
+  preprints,
+  date,
+  path = '/submissions/edit',
+}) => {
   const router = useRouter()
 
   if (preprints.length === 0) {
@@ -54,7 +61,7 @@ const PreprintsTable: React.FC<PreprintsTableProps> = ({ preprints, date }) => {
         .map((preprint, i) => (
           <Box
             role='button'
-            onClick={() => router.push(`/submissions/edit/${preprint.pk}`)}
+            onClick={() => router.push(`${path}/${preprint.pk}`)}
             aria-label={`Edit "${preprint.title}"`}
             key={preprint.pk}
             sx={{
