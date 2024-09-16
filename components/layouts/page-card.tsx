@@ -22,6 +22,11 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
               (space) =>
                 `calc(100vh - 2 * ${theme.space ? theme.space[space] : 0}px)`,
             ),
+          width: (theme) =>
+            margin.map(
+              (space) =>
+                `calc(100vw - 2 * ${theme.space ? theme.space[space] : 0}px)`,
+            ),
           position: 'fixed',
         }}
       >
