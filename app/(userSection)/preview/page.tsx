@@ -18,7 +18,11 @@ const PreviewPage = async () => {
 
   return (
     <SharedLayout title='Preprints under review'>
-      <PreprintsTable preprints={results.results} date='date_submitted' />
+      <PreprintsTable
+        preprints={results.results}
+        date='date_submitted'
+        path='/preview'
+      />
     </SharedLayout>
   )
 }

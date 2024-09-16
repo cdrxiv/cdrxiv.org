@@ -1,16 +1,16 @@
 import React from 'react'
 import { Box, Flex } from 'theme-ui'
-import { formatDate } from '../../../utils/formatters'
-import { getAdditionalField, getFunders } from '../../../utils/data'
-import { Field, Button, Link } from '../../../components'
-import type { Preprint, Funder } from '../../../types/preprint'
-import type { Deposition } from '../../../types/zenodo'
+import { formatDate } from '../utils/formatters'
+import { getAdditionalField, getFunders } from '../utils/data'
+import { Field, Button, Link } from '../components'
+import type { Preprint, Funder } from '../types/preprint'
+import type { Deposition } from '../types/zenodo'
 
 const getDataDownload = (deposition: Deposition) => {
   return `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].filename}?download=1`
 }
 
-const MetadataView: React.FC<{
+const PreprintMetadata: React.FC<{
   preprint: Preprint
   deposition?: Deposition
 }> = ({ preprint, deposition }) => {
@@ -133,4 +133,4 @@ const MetadataView: React.FC<{
   )
 }
 
-export default MetadataView
+export default PreprintMetadata
