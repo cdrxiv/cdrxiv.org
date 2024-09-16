@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Badge from './badge'
 import type { Author } from '../types/preprint'
 import { formatDate, authorList } from '../utils/formatters'
+import AuthorsList from './authors-list'
 
 interface CardProps {
   title: string
@@ -167,7 +168,9 @@ const Card: React.FC<CardProps> = ({
               >
                 {title}
               </Box>
-              <Box sx={{ variant: 'text.mono' }}>{authorList(authors)}</Box>
+              <Box sx={{ variant: 'text.mono' }}>
+                <AuthorsList authors={authors} />
+              </Box>
             </Flex>
             <Flex
               sx={{

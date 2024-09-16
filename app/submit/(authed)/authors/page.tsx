@@ -57,7 +57,7 @@ const Authors = () => {
         <Field
           label='Search for an author'
           id='search'
-          description='You can search by email or ORCID'
+          description='You can search by email or ORCID identifier.'
         >
           <AuthorSearch />
         </Field>

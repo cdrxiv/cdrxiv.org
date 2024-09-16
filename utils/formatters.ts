@@ -10,10 +10,28 @@ export const formatDate = (date: Date): string => {
   return date.toLocaleDateString('en-US', options)
 }
 
-export const authorList = (
+type Options =
+  | {
+      abbreviate?: boolean
+      array?: false
+    }
+  | {
+      array: true
+      abbreviate?: false
+    }
+
+export function authorList(
   authors: Author[],
-  abbreviate: boolean = false,
-): string => {
+  options?: { abbreviate?: boolean; array?: false },
+): string
+export function authorList(
+  authors: Author[],
+  options: { abbreviate?: false; array: true },
+): string[]
+export function authorList(
+  authors: Author[],
+  { abbreviate, array }: Options = {},
+) {
   if (authors.length === 0) {
     return ''
   }
@@ -23,11 +41,14 @@ export const authorList = (
     return `${firstAuthor.last_name || ''} et al.`
   }
 
-  return authors
-    .map((author) =>
-      `${author.first_name || ''} ${author.middle_name || ''} ${author.last_name || ''}`.trim(),
-    )
-    .join(', ')
+  const authorsArray = authors.map((author) =>
+    [author.first_name, author.middle_name, author.last_name]
+      .filter(Boolean)
+      .join(' ')
+      .trim(),
+  )
+
+  return array ? authorsArray : authorsArray.join(', ')
 }
 
 export const submissionTypes = (
