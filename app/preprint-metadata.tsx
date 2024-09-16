@@ -13,7 +13,9 @@ const getDataDownload = (deposition: Deposition) => {
 const PreprintMetadata: React.FC<{
   preprint: Preprint
   deposition?: Deposition
-}> = ({ preprint, deposition }) => {
+  preview?: boolean
+  previewUrl?: string
+}> = ({ preprint, deposition, preview, previewUrl }) => {
   const funders = getFunders(preprint) ?? []
 
   const submissionType = getAdditionalField(preprint, 'Submission type')
@@ -47,13 +49,44 @@ const PreprintMetadata: React.FC<{
       )}
 
       <Flex sx={{ flexDirection: 'column', gap: 5 }}>
+        {preview && hasData && !deposition && (
+          <Box sx={{ variant: 'text.mono', color: 'red', mt: 2 }}>
+            No data deposition found. Update submission type or add data before
+            publishing.
+          </Box>
+        )}
+
+        {preview &&
+          hasArticle &&
+          !preprint.versions[0]?.public_download_url && (
+            <Box sx={{ variant: 'text.mono', color: 'red', mt: 2 }}>
+              No article PDF found. Update submission type or add PDF before
+              publishing.
+            </Box>
+          )}
+
         {hasArticle && preprint.versions[0]?.public_download_url && (
-          <Button href={preprint.versions[0].public_download_url}>
+          <Button
+            href={
+              preview ? previewUrl : preprint.versions[0].public_download_url
+            }
+          >
             Download (PDF)
           </Button>
         )}
-        {hasData && deposition && deposition.submitted && (
-          <Button href={getDataDownload(deposition)}>Download (data)</Button>
+        {hasData && deposition && (
+          <Box>
+            {deposition.submitted || preview ? (
+              <Button href={getDataDownload(deposition)}>
+                Download (data)
+              </Button>
+            ) : null}
+            {!deposition.submitted && preview && (
+              <Box sx={{ variant: 'text.mono', color: 'red', mt: 2 }}>
+                Data not published!
+              </Box>
+            )}
+          </Box>
         )}
 
         {preprint.versions.length > 1 && (

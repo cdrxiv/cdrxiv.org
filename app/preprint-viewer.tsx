@@ -23,9 +23,13 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 const PreprintViewer = ({
   preprint,
   deposition,
+  preview,
+  previewUrl,
 }: {
   preprint: Preprint
   deposition?: Deposition
+  preview?: boolean
+  previewUrl?: string
 }) => {
   const [containerWidth, setContainerWidth] = useState<number>(0)
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null)
@@ -74,7 +78,14 @@ const PreprintViewer = ({
     <PaneledPage
       title={preprint.title}
       sidebar={pdf ? <Outline pdf={pdf} onItemClick={onItemClicked} /> : null}
-      metadata={<MetadataView preprint={preprint} deposition={deposition} />}
+      metadata={
+        <MetadataView
+          preprint={preprint}
+          deposition={deposition}
+          preview={preview}
+          previewUrl={previewUrl}
+        />
+      }
     >
       {preprint.doi && (
         <StyledLink
@@ -92,10 +103,10 @@ const PreprintViewer = ({
         Abstract
       </Box>
       <Box sx={{ variant: 'text.body', mb: 7 }}>{preprint.abstract}</Box>
-      {hasArticle && (
+      {hasArticle && preprint.versions.length > 0 && (
         <div ref={containerRef} style={{ width: '100%' }}>
           <Document
-            file={`/api/pdf/?url=${encodeURIComponent(preprint.versions[0].public_download_url)}`}
+            file={`/api/pdf/?url=${encodeURIComponent(preview && previewUrl ? previewUrl : preprint.versions[0].public_download_url)}`}
             onLoadSuccess={onDocumentLoadSuccess}
             loading={
               <Flex

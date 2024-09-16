@@ -55,7 +55,21 @@ const PreprintPreview = async ({
   if (dataUrl) {
     deposition = await fetchDataDeposition(dataUrl)
   }
-  return <PreprintViewer preprint={preprint} deposition={deposition} />
+
+  const fileUrl = preprint.versions[0]?.public_download_url
+  let previewUrl
+  if (fileUrl) {
+    previewUrl = fileUrl.replace('/repository/object/', '/repository/manager/')
+  }
+
+  return (
+    <PreprintViewer
+      preprint={preprint}
+      deposition={deposition}
+      previewUrl={previewUrl}
+      preview
+    />
+  )
 }
 
 export default PreprintPreview

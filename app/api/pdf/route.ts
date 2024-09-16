@@ -1,4 +1,8 @@
+import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
+import { headers } from 'next/headers'
+import { authOptions } from '../../../lib/auth'
+import { fetchWithToken } from '../utils'
 
 export async function GET(request: NextRequest) {
   const url = request.nextUrl.searchParams.get('url')
@@ -9,7 +13,10 @@ export async function GET(request: NextRequest) {
     )
   }
   try {
-    const response = await fetch(url)
+    const session = await getServerSession(authOptions)
+    const response = await (session
+      ? fetchWithToken(headers(), url)
+      : fetch(url))
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
