@@ -1,8 +1,8 @@
 import React from 'react'
 import { Box, Flex } from 'theme-ui'
 import type { Preprints } from '../types/preprint'
-import { formatDate, authorList, submissionTypes } from '../utils/formatters'
-import { Badge, Column, Row } from '../components'
+import { formatDate, submissionTypes } from '../utils/formatters'
+import { AuthorsList, Badge, Column, Row } from '../components'
 import Link from 'next/link'
 
 interface ListViewProps {
@@ -61,7 +61,7 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
                       mb: [2, 2, -1, 0], // baseline adjustment at [2]
                     }}
                   >
-                    {authorList(preprint.authors, true)}
+                    <AuthorsList authors={preprint.authors} abbreviate />
                   </Box>
                 </Column>
                 <Column start={[1, 1, 7, 7]} width={[12, 12, 2, 2]}>

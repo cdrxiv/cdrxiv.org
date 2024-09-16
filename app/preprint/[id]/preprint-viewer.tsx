@@ -9,7 +9,6 @@ import PaneledPage from '../../../components/layouts/paneled-page'
 import StyledLink from '../../../components/link'
 import MetadataView from './metadata-view'
 import Outline from './outline'
-import { authorList } from '../../../utils/formatters'
 import { getAdditionalField } from '../../../utils/data'
 
 import type { Preprint } from '../../../types/preprint'
@@ -17,6 +16,7 @@ import type { Deposition } from '../../../types/zenodo'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
 import Loading from '../../../components/loading'
 import useTracking from '../../../hooks/use-tracking'
+import { AuthorsList } from '../../../components'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
@@ -86,7 +86,7 @@ const PreprintViewer = ({
         </StyledLink>
       )}
       <Box sx={{ variant: 'text.mono', mt: 3, mb: 7 }}>
-        {authorList(preprint.authors)}
+        <AuthorsList authors={preprint.authors} orcidLinks />
       </Box>
       <Box sx={{ variant: 'text.monoCaps', fontSize: [3, 3, 3, 4], mb: 4 }}>
         Abstract
