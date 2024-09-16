@@ -41,6 +41,13 @@ const AuthorSearch = () => {
   const handleSubmit = useCallback(async () => {
     setIsLoading(true)
     let success = false
+    if (validateAuthorSearch(value) === 'invalid') {
+      setIsLoading(false)
+      setError(
+        'Invalid search value. Please enter an email (e.g., name@example.com) or an ORCID identifier (e.g., 0000-0000-0000-0000).',
+      )
+      return
+    }
 
     try {
       const searchResults = await searchAuthor(value)
