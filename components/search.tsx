@@ -8,6 +8,7 @@ interface SearchProps extends Omit<InputProps, 'onSubmit'> {
   arrows?: boolean
   sx?: ThemeUIStyleObject
   inverted?: boolean
+  disabled?: boolean
 }
 
 const Search = forwardRef<HTMLInputElement, SearchProps>(
@@ -19,6 +20,7 @@ const Search = forwardRef<HTMLInputElement, SearchProps>(
       inverted,
       arrows = true,
       sx = {},
+      disabled = false,
       ...props
     },
     ref,
@@ -38,6 +40,7 @@ const Search = forwardRef<HTMLInputElement, SearchProps>(
             ref={ref}
             placeholder={placeholder ?? ''}
             onChange={onChange}
+            disabled={disabled}
             sx={{
               variant: 'text.monoCaps',
               ...(inverted
@@ -57,13 +60,25 @@ const Search = forwardRef<HTMLInputElement, SearchProps>(
           />
           {arrows && (
             <Box
+              as='button'
               sx={{
                 position: 'absolute',
                 right: 3,
                 top: '50%',
                 transform: 'translateY(-50%)',
-                color: 'blue',
+                color: disabled ? 'muted' : 'blue',
                 letterSpacing: '0.1em',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
+                fontSize: 'inherit',
+                fontFamily: 'inherit',
+              }}
+              {...{
+                type: 'submit',
+                disabled: disabled,
+                'aria-label': 'Submit author search',
               }}
             >
               &gt;&gt;

@@ -10,7 +10,7 @@ import Column from './column'
 import Row from './row'
 import StyledButton from './button'
 import Menu from './menu'
-import useBackgroundColors from '../hooks/useBackgroundColors'
+import useBackgroundColors from '../hooks/use-background-colors'
 
 type GBoxProps = BoxProps & SVGProps<SVGGElement>
 const GBox: React.FC<GBoxProps> = (props) => <Box as='g' {...props} />

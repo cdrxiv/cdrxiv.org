@@ -4,7 +4,7 @@ import React from 'react'
 import { Box } from 'theme-ui'
 import Header from '../header'
 import Guide from '../guide'
-import useBackgroundColors from '../../hooks/useBackgroundColors'
+import useBackgroundColors from '../../hooks/use-background-colors'
 
 const margin = [2, 2, 3, 3]
 
