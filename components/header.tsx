@@ -146,22 +146,20 @@ const Header = () => {
   }, [pathname])
 
   return (
-    <header>
+    <Box
+      as='header'
+      sx={{
+        position: 'sticky',
+        top: 0,
+        mt: -22,
+        bg: cardBackground,
+        zIndex: 2,
+      }}
+    >
       <Row
         sx={{
-          position: 'fixed',
-          top: 0,
-          right: 0,
-          left: 0,
           height: [65, 65, 100, 100],
-          margin: margin,
           alignItems: 'center',
-          bg: cardBackground,
-          zIndex: 2,
-          border: '1px solid',
-          borderBottom: 'none',
-          borderColor: 'text',
-          px: ['18px', '36px', '36px', '52px'],
         }}
       >
         <Column start={1} width={3}>
@@ -210,7 +208,7 @@ const Header = () => {
           )}
         </Column>
       </Row>
-    </header>
+    </Box>
   )
 }
 

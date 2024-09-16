@@ -36,10 +36,10 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
           }}
         >
           <PageCorner />
-          <Header />
 
           <Box sx={{ contain: 'layout' }}>
             <Guide />
+            <Header />
             {children}
           </Box>
         </Box>
