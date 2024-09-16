@@ -106,7 +106,7 @@ const PreprintViewer = ({
       {hasArticle && preprint.versions.length > 0 && (
         <div ref={containerRef} style={{ width: '100%' }}>
           <Document
-            file={`/api/pdf/?url=${encodeURIComponent(preview && previewUrl ? previewUrl : preprint.versions[0].public_download_url)}`}
+            file={`/api/pdf?url=${encodeURIComponent(preview && previewUrl ? previewUrl : preprint.versions[0].public_download_url)}`}
             onLoadSuccess={onDocumentLoadSuccess}
             loading={
               <Flex
