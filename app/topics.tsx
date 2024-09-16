@@ -42,6 +42,7 @@ const Topics: React.FC = () => {
       onClick={() => handleFilterChange(name)}
       key={name}
       sx={{
+        display: 'block',
         variant: 'text.body',
         cursor: 'pointer',
         width: 'fit-content',
@@ -76,7 +77,13 @@ const Topics: React.FC = () => {
             </Box>
           </Column>
         </Row>
-        <Row columns={8} sx={{ display: ['none', 'none', 'flex', 'flex'] }}>
+        <Row
+          columns={8}
+          sx={{
+            display: ['none', 'none', 'flex', 'flex'],
+            height: '100%',
+          }}
+        >
           <Column start={1} width={4}>
             {renderSubject('All', totalCount)}
             {subjects
