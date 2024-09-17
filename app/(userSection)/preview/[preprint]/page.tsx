@@ -1,10 +1,13 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { headers } from 'next/headers'
+import { getServerSession } from 'next-auth'
 
 import PreprintViewer from '../../../preprint-viewer'
 import { SupplementaryFile } from '../../../../types/preprint'
 import { fetchDataDeposition } from '../../../../actions/zenodo'
 import { fetchWithToken } from '../../../api/utils'
+import Forbidden from '../forbidden'
+import SharedLayout from '../../shared-layout'
 
 // Polyfill for Promise.withResolvers
 if (typeof Promise.withResolvers !== 'function') {
@@ -23,29 +26,30 @@ if (typeof Promise.withResolvers !== 'function') {
   }
 }
 
-const getPreprint = async (preprint: string) => {
-  const res = await fetchWithToken(
-    headers(),
-    `https://carbonplan.endurance.janeway.systems/carbonplan/api/preprints/${preprint}`,
-  )
-
-  if (!res.ok) {
-    if (res.status === 404) {
-      return null
-    }
-    throw new Error(`API request failed with status ${res.status}`)
-  }
-  return res.json()
-}
-
 const PreprintPreview = async ({
   params,
 }: {
   params: { preprint: string }
 }) => {
-  const preprint = await getPreprint(params.preprint)
-  if (!preprint) {
-    notFound()
+  const session = await getServerSession()
+  if (!session?.user.email?.endsWith('@carbonplan.org')) {
+    redirect('/account')
+  }
+
+  const response = await fetchWithToken(
+    headers(),
+    `https://carbonplan.endurance.janeway.systems/carbonplan/api/preprints/${params.preprint}`,
+  )
+
+  let preprint
+  if (response.status !== 200) {
+    return (
+      <SharedLayout title='Preprint preview'>
+        <Forbidden status={response.status} statusText={response.statusText} />
+      </SharedLayout>
+    )
+  } else {
+    preprint = await response.json()
   }
 
   const dataUrl = preprint.supplementary_files.find(

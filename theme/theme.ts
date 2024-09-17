@@ -79,6 +79,10 @@ export const theme: Theme = {
         content: '"> "',
       },
     },
+    error: {
+      variant: 'text.mono',
+      color: 'red',
+    },
   },
   forms: {
     input: {
