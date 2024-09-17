@@ -1,4 +1,3 @@
-import { track as vercelTrack } from '@vercel/analytics'
 import { usePlausible } from 'next-plausible'
 import { useCallback } from 'react'
 
@@ -16,7 +15,6 @@ const useTracking = () => {
 
   const track = useCallback(
     (name: string, options: Options) => {
-      vercelTrack(name, options)
       plausible(name, { props: options })
     },
     [plausible],

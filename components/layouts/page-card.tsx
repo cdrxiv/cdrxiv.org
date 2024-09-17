@@ -5,7 +5,7 @@ import { Box } from 'theme-ui'
 import Header from '../header'
 import PageCorner from '../page-corner'
 import Guide from '../guide'
-import useBackgroundColors from '../../hooks/useBackgroundColors'
+import useBackgroundColors from '../../hooks/use-background-colors'
 
 const margin = [2, 2, 3, 3]
 

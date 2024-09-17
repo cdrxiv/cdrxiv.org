@@ -1,6 +1,6 @@
 import { SVGProps } from 'react'
 import { BoxProps, Box, Link, useThemeUI } from 'theme-ui'
-import useBackgroundColors from '../hooks/useBackgroundColors'
+import useBackgroundColors from '../hooks/use-background-colors'
 
 type GBoxProps = BoxProps & SVGProps<SVGGElement>
 const GBox: React.FC<GBoxProps> = (props) => <Box as='g' {...props} />
