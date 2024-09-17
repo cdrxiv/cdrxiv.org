@@ -59,6 +59,8 @@ const SubmissionInformation = () => {
           >
             <option value={'0'}>Select one</option>
             <option value={'1'}>CC BY 4.0</option>
+            <option value={'4'}>CC BY-NC 4.0</option>
+            <option value={'6'}>All Rights Reserved</option>
           </Select>
         </Field>
         <Field
