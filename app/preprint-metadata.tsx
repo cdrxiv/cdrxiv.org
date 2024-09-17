@@ -50,7 +50,7 @@ const PreprintMetadata: React.FC<{
 
       <Flex sx={{ flexDirection: 'column', gap: 5 }}>
         {preview && hasData && !deposition && (
-          <Box sx={{ variant: 'text.mono', color: 'red', mt: 2 }}>
+          <Box sx={{ variant: 'styles.error', mt: 2 }}>
             No data deposition found. Update submission type or add data before
             publishing.
           </Box>
@@ -59,7 +59,7 @@ const PreprintMetadata: React.FC<{
         {preview &&
           hasArticle &&
           !preprint.versions[0]?.public_download_url && (
-            <Box sx={{ variant: 'text.mono', color: 'red', mt: 2 }}>
+            <Box sx={{ variant: 'styles.error', mt: 2 }}>
               No article PDF found. Update submission type or add PDF before
               publishing.
             </Box>
@@ -82,7 +82,7 @@ const PreprintMetadata: React.FC<{
               </Button>
             ) : null}
             {!deposition.submitted && preview && (
-              <Box sx={{ variant: 'text.mono', color: 'red', mt: 2 }}>
+              <Box sx={{ variant: 'styles.error', mt: 2 }}>
                 Data not published!
               </Box>
             )}
