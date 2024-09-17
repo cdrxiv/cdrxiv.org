@@ -49,8 +49,13 @@ const PreprintMetadata: React.FC<{
       )}
 
       <Flex sx={{ flexDirection: 'column', gap: 5 }}>
+        {preview && !hasArticle && !hasData && (
+          <Box sx={{ variant: 'styles.error' }}>
+            Invalid submissionType: “{submissionType}” found.
+          </Box>
+        )}
         {preview && hasData && !deposition && (
-          <Box sx={{ variant: 'styles.error', mt: 2 }}>
+          <Box sx={{ variant: 'styles.error' }}>
             No data deposition found. Update submission type or add data before
             publishing.
           </Box>
