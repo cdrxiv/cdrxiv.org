@@ -46,8 +46,7 @@ const PreprintMetadata: React.FC<{
   preprint: Preprint
   deposition?: Deposition
   preview?: boolean
-  previewUrl?: string
-}> = ({ preprint, deposition, preview, previewUrl }) => {
+}> = ({ preprint, deposition, preview }) => {
   const funders = getFunders(preprint) ?? []
 
   const submissionType = getAdditionalField(preprint, 'Submission type')
@@ -107,11 +106,7 @@ const PreprintMetadata: React.FC<{
       <Flex sx={{ flexDirection: 'column', gap: 5 }}>
         {hasArticle && (
           <Box>
-            <Button
-              href={
-                preview ? previewUrl : preprint.versions[0]?.public_download_url
-              }
-            >
+            <Button href={preprint.versions[0]?.public_download_url}>
               Download (PDF)
             </Button>
             <ErrorOrTrack

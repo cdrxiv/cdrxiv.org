@@ -1,4 +1,4 @@
-import { notFound, redirect } from 'next/navigation'
+import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
 import { getServerSession } from 'next-auth'
 
@@ -60,20 +60,7 @@ const PreprintPreview = async ({
     deposition = await fetchDataDeposition(dataUrl)
   }
 
-  const fileUrl = preprint.versions[0]?.public_download_url
-  let previewUrl
-  if (fileUrl) {
-    previewUrl = fileUrl.replace('/repository/object/', '/repository/manager/')
-  }
-
-  return (
-    <PreprintViewer
-      preprint={preprint}
-      deposition={deposition}
-      previewUrl={previewUrl}
-      preview
-    />
-  )
+  return <PreprintViewer preprint={preprint} deposition={deposition} preview />
 }
 
 export default PreprintPreview

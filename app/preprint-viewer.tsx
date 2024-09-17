@@ -24,12 +24,10 @@ const PreprintViewer = ({
   preprint,
   deposition,
   preview,
-  previewUrl,
 }: {
   preprint: Preprint
   deposition?: Deposition
   preview?: boolean
-  previewUrl?: string
 }) => {
   const [containerWidth, setContainerWidth] = useState<number>(0)
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null)
@@ -83,7 +81,6 @@ const PreprintViewer = ({
           preprint={preprint}
           deposition={deposition}
           preview={preview}
-          previewUrl={previewUrl}
         />
       }
     >
@@ -106,7 +103,7 @@ const PreprintViewer = ({
       {hasArticle && preprint.versions.length > 0 && (
         <div ref={containerRef} style={{ width: '100%' }}>
           <Document
-            file={`/api/pdf?url=${encodeURIComponent(preview && previewUrl ? previewUrl : preprint.versions[0].public_download_url)}`}
+            file={`/api/pdf?url=${encodeURIComponent(preprint.versions[0].public_download_url)}`}
             onLoadSuccess={onDocumentLoadSuccess}
             loading={
               <Flex
