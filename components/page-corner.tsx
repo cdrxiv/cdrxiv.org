@@ -49,14 +49,14 @@ const PageCorner = () => {
         >
           <PathBox
             id='fold-mobile'
-            d={`M0 ${foldSize} L0 2 L${foldSize - 2} ${foldSize} Z`}
+            d={`M1 ${foldSize - 1} L1 3 L${foldSize - 3} ${foldSize - 1} Z`}
             fill={theme?.colors?.muted as string}
             stroke={theme?.colors?.text as string}
             sx={{ display: ['inherit', 'inherit', 'none', 'none'] }}
           />
           <PathBox
             id='fold-desktop'
-            d={`M0.5 ${foldSize - 0.5} L0.5 0.5 L${foldSize - 0.5} ${foldSize} Z`}
+            d={`M0.5 ${foldSize - 0.5} L0.5 0.5 L${foldSize - 0.5} ${foldSize - 0.5} Z`}
             fill={theme?.colors?.muted as string}
             stroke={theme?.colors?.text as string}
             sx={{ display: ['none', 'none', 'inherit', 'inherit'] }}
