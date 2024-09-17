@@ -1,13 +1,45 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Flex } from 'theme-ui'
 import { formatDate } from '../utils/formatters'
 import { getAdditionalField, getFunders } from '../utils/data'
 import { Field, Button, Link } from '../components'
 import type { Preprint, Funder } from '../types/preprint'
 import type { Deposition } from '../types/zenodo'
+import useTracking from '../hooks/use-tracking'
 
 const getDataDownload = (deposition: Deposition) => {
   return `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].filename}?download=1`
+}
+
+const ErrorOrTrack = ({
+  hasError,
+  preview,
+  errorMessage,
+  pk,
+  mt = 0,
+}: {
+  hasError: boolean
+  preview?: boolean
+  errorMessage: string
+  pk: number
+  mt?: number
+}) => {
+  const track = useTracking()
+
+  useEffect(() => {
+    // track error when present and viewing outside of preview setting
+    if (!preview && hasError) {
+      track('preprint_metadata_error', { error: errorMessage, preprint: pk })
+    }
+  }, [track, preview, hasError, errorMessage, pk])
+
+  if (preview && hasError) {
+    // in preview setting, render error message for repository manager to triage when an error is present
+    return <Box sx={{ variant: 'styles.error', mt }}>{errorMessage}</Box>
+  }
+
+  // otherwise do not render
+  return null
 }
 
 const PreprintMetadata: React.FC<{
@@ -30,67 +62,90 @@ const PreprintMetadata: React.FC<{
 
   return (
     <Flex sx={{ flexDirection: 'column', mt: 5, gap: 9 }}>
-      {preprint.subject.length > 0 && (
-        <Field label='Pathways'>
-          {preprint.subject.map(({ name }) => (
-            <Link
-              key={name}
-              href={`/?subject=${name}`}
-              forwardArrow
-              sx={{
-                variant: 'text.mono',
-                display: 'block',
-              }}
-            >
-              {name}
-            </Link>
-          ))}
-        </Field>
-      )}
+      <ErrorOrTrack
+        hasError={!hasArticle && !hasData}
+        preview={preview}
+        pk={preprint.pk}
+        errorMessage={`Invalid submissionType: “${submissionType}” found.`}
+      />
+      <ErrorOrTrack
+        hasError={hasData && !deposition}
+        preview={preview}
+        pk={preprint.pk}
+        errorMessage={`No data deposition found. Update submission type or add data before
+          publishing.`}
+      />
+      <ErrorOrTrack
+        hasError={preprint.versions.length == 0}
+        preview={preview}
+        pk={preprint.pk}
+        errorMessage={`No versions found. Versions must be created in the Janeway dashboard.`}
+      />
+
+      <Field label='Pathways'>
+        {preprint.subject.map(({ name }) => (
+          <Link
+            key={name}
+            href={`/?∂subject=${name}`}
+            forwardArrow
+            sx={{
+              variant: 'text.mono',
+              display: 'block',
+            }}
+          >
+            {name}
+          </Link>
+        ))}
+        <ErrorOrTrack
+          hasError={preprint.subject.length === 0}
+          preview={preview}
+          pk={preprint.pk}
+          errorMessage={`No subjects provided.`}
+        />
+      </Field>
 
       <Flex sx={{ flexDirection: 'column', gap: 5 }}>
-        {preview && !hasArticle && !hasData && (
-          <Box sx={{ variant: 'styles.error' }}>
-            Invalid submissionType: “{submissionType}” found.
-          </Box>
-        )}
-        {preview && hasData && !deposition && (
-          <Box sx={{ variant: 'styles.error' }}>
-            No data deposition found. Update submission type or add data before
-            publishing.
-          </Box>
-        )}
-
-        {preview &&
-          hasArticle &&
-          !preprint.versions[0]?.public_download_url && (
-            <Box sx={{ variant: 'styles.error', mt: 2 }}>
-              No article PDF found. Update submission type or add PDF before
-              publishing.
-            </Box>
-          )}
-
-        {hasArticle && preprint.versions[0]?.public_download_url && (
-          <Button
-            href={
-              preview ? previewUrl : preprint.versions[0].public_download_url
-            }
-          >
-            Download (PDF)
-          </Button>
-        )}
-        {hasData && deposition && (
+        {hasArticle && (
           <Box>
-            {deposition.submitted || preview ? (
-              <Button href={getDataDownload(deposition)}>
+            <Button
+              href={
+                preview ? previewUrl : preprint.versions[0]?.public_download_url
+              }
+            >
+              Download (PDF)
+            </Button>
+            <ErrorOrTrack
+              mt={2}
+              hasError={
+                hasArticle && !preprint.versions[0]?.public_download_url
+              }
+              preview={preview}
+              pk={preprint.pk}
+              errorMessage={'No article download URL found.'}
+            />
+          </Box>
+        )}
+        {hasData && (
+          <Box>
+            {deposition?.submitted || preview ? (
+              <Button href={deposition && getDataDownload(deposition)}>
                 Download (data)
               </Button>
             ) : null}
-            {!deposition.submitted && preview && (
-              <Box sx={{ variant: 'styles.error', mt: 2 }}>
-                Data not published!
-              </Box>
-            )}
+            <ErrorOrTrack
+              mt={2}
+              hasError={hasData && !deposition}
+              preview={preview}
+              pk={preprint.pk}
+              errorMessage={'Data missing in supplementary files.'}
+            />
+            <ErrorOrTrack
+              mt={2}
+              hasError={!!deposition && !deposition.submitted}
+              preview={preview}
+              pk={preprint.pk}
+              errorMessage={'Data deposition not published.'}
+            />
           </Box>
         )}
 
@@ -137,8 +192,15 @@ const PreprintMetadata: React.FC<{
       </Field>
 
       <Field label='License'>
-        <Link href={preprint.license.url} sx={{ variant: 'text.mono' }}>
-          {preprint.license.short_name}
+        <Link href={preprint.license?.url} sx={{ variant: 'text.mono' }}>
+          {preprint.license?.short_name}
+          <ErrorOrTrack
+            mt={2}
+            hasError={!preprint.license}
+            preview={preview}
+            pk={preprint.pk}
+            errorMessage={'No license provided.'}
+          />
         </Link>
       </Field>
 
