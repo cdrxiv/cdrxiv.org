@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { Box, Flex, BoxProps, LinkProps } from 'theme-ui'
-import { useRouter } from 'next/navigation'
 
 import { formatDate, submissionTypes } from '../../utils/formatters'
 import { Badge, Column, Row } from '../../components'
@@ -33,8 +32,6 @@ const PreprintsTable: React.FC<PreprintsTableProps> = ({
   date,
   path = '/submissions/edit',
 }) => {
-  const router = useRouter()
-
   if (preprints.length === 0) {
     return <Box sx={{ variant: 'text.monoCaps', my: 3 }}>None</Box>
   }
