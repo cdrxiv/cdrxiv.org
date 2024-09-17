@@ -69,7 +69,11 @@ const Topics: React.FC = () => {
 
   return (
     <>
-      <Column start={[1, 1, 5, 5]} width={[6, 6, 8, 8]}>
+      <Column
+        start={[1, 1, 5, 5]}
+        width={[6, 6, 8, 8]}
+        sx={{ mb: [0, 0, 8, 8] }}
+      >
         <Row columns={8}>
           <Column start={1} width={4}>
             <Box ref={topicsBoxRef} sx={{ variant: 'text.monoCaps', mb: 3 }}>
