@@ -29,9 +29,9 @@ const PageCorner = () => {
           zIndex: 3,
 
           // matched to our standard margin [2, 2, 3, 3]
-          // but with half px adjustments for small screens
-          top: [`7.5px`, `7.5px`, `12px`, `12px`],
-          right: [`7.5px`, `7.5px`, `12px`, `12px`],
+          // but with a 1px adjustments for small screens
+          top: [`7px`, `7px`, `12px`, `12px`],
+          right: [`7px`, `7px`, `12px`, `12px`],
         }}
       >
         <PathBox
@@ -47,11 +47,20 @@ const PageCorner = () => {
             },
           }}
         >
-          <path
-            id='fold'
+          <PathBox
+            id='fold-mobile'
+            d={`M1 ${foldSize - 1} L1 3.5 L${foldSize - 3.5} ${foldSize - 1} Z`}
+            fill={theme?.colors?.muted as string}
+            stroke={theme?.colors?.text as string}
+            strokeWidth={1.5}
+            sx={{ display: ['inherit', 'inherit', 'none', 'none'] }}
+          />
+          <PathBox
+            id='fold-desktop'
             d={`M0.5 ${foldSize - 0.5} L0.5 0.5 L${foldSize - 0.5} ${foldSize - 0.5} Z`}
             fill={theme?.colors?.muted as string}
             stroke={theme?.colors?.text as string}
+            sx={{ display: ['none', 'none', 'inherit', 'inherit'] }}
           />
           <path
             d='M18.9089 37.031C20.0902 38.1695 20.745 39.4643 20.8748 40.9155H18.6184C18.3677 39.8153 17.8663 38.9423 17.1172 38.2993C16.3665 37.6533 15.3135 37.3319 13.9583 37.3319C12.3051 37.3319 10.9705 37.9247 9.95439 39.1075C8.93684 40.2902 8.42953 42.1042 8.42953 44.5493C8.42953 46.552 8.88818 48.1772 9.80691 49.4219C10.7242 50.6695 12.0928 51.2919 13.914 51.2919C15.5893 51.2919 16.8664 50.6371 17.7424 49.3245C18.207 48.6343 18.5535 47.7288 18.7821 46.6021H21.0385C20.8394 48.4013 20.1802 49.9115 19.0608 51.1267C17.7188 52.5926 15.9093 53.327 13.6338 53.327C11.6709 53.327 10.0237 52.7253 8.68903 51.5219C6.93411 49.9321 6.05664 47.4752 6.05664 44.1541C6.05664 41.6322 6.71584 39.5646 8.03427 37.9513C9.45886 36.1963 11.4247 35.3203 13.9317 35.3203C16.0701 35.3203 17.7291 35.8895 18.9089 37.031Z'

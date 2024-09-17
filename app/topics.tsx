@@ -15,7 +15,7 @@ const Topics: React.FC = () => {
 
   const [currentSubject, setCurrentSubject] = useState(subjectParam)
   const [subjectsMenuOpen, setSubjectsMenuOpen] = useState(false)
-  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 })
+  const [menuPosition, setMenuPosition] = useState({ top: 0 })
 
   const midPoint = Math.ceil(subjects.length / 2) - 1 // -1 accounts for All option
 
@@ -38,12 +38,17 @@ const Topics: React.FC = () => {
 
   const renderSubject = (name: string, count: number) => (
     <Box
+      as='button'
       onClick={() => handleFilterChange(name)}
       key={name}
       sx={{
+        display: 'block',
         variant: 'text.body',
         cursor: 'pointer',
         width: 'fit-content',
+        padding: 0,
+        border: 'none',
+        textAlign: 'left',
         bg: currentSubject === name ? 'highlight' : 'transparent',
         mb: '2px',
         ':hover': {
@@ -64,7 +69,11 @@ const Topics: React.FC = () => {
 
   return (
     <>
-      <Column start={[1, 1, 5, 5]} width={[6, 6, 8, 8]}>
+      <Column
+        start={[1, 1, 5, 5]}
+        width={[6, 6, 8, 8]}
+        sx={{ mb: [0, 0, 8, 8] }}
+      >
         <Row columns={8}>
           <Column start={1} width={4}>
             <Box ref={topicsBoxRef} sx={{ variant: 'text.monoCaps', mb: 3 }}>
@@ -72,7 +81,13 @@ const Topics: React.FC = () => {
             </Box>
           </Column>
         </Row>
-        <Row columns={8} sx={{ display: ['none', 'none', 'flex', 'flex'] }}>
+        <Row
+          columns={8}
+          sx={{
+            display: ['none', 'none', 'flex', 'flex'],
+            height: '100%',
+          }}
+        >
           <Column start={1} width={4}>
             {renderSubject('All', totalCount)}
             {subjects
@@ -97,7 +112,7 @@ const Topics: React.FC = () => {
               onClick={() => {
                 if (topicsBoxRef.current) {
                   const rect = topicsBoxRef.current.getBoundingClientRect()
-                  setMenuPosition({ top: rect.top, left: rect.left })
+                  setMenuPosition({ top: rect.top })
                 }
                 setSubjectsMenuOpen(true)
               }}
@@ -116,8 +131,7 @@ const Topics: React.FC = () => {
         <Menu
           setMenuOpen={setSubjectsMenuOpen}
           sx={{
-            top: `${menuPosition.top - 90}px`,
-            left: `${menuPosition.left - 30}px`,
+            top: `${menuPosition.top}px`,
             height: '50vh',
             overflowY: 'auto',
           }}
