@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 
 import { fetchWithToken } from '../../api/utils'
 import SharedLayout from '../shared-layout'
-import PreprintsTable from '../preprints-table'
+import PreprintsTable from './preprints-preview-table'
 import Forbidden from './forbidden'
 
 const PreviewPage = async () => {
@@ -28,11 +28,7 @@ const PreviewPage = async () => {
   return (
     <SharedLayout title='Preprints under review'>
       {results ? (
-        <PreprintsTable
-          preprints={results.results}
-          date='date_submitted'
-          path='/preview'
-        />
+        <PreprintsTable preprints={results.results} />
       ) : (
         <Forbidden status={response.status} statusText={response.statusText} />
       )}

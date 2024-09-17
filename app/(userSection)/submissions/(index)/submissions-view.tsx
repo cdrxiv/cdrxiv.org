@@ -3,7 +3,7 @@
 import { Box, Flex } from 'theme-ui'
 
 import { Preprints } from '../../../../types/preprint'
-import PreprintsTable from '../../preprints-table'
+import PreprintsTable from './preprints-table'
 
 type Props = {
   published: Preprints

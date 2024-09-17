@@ -3,14 +3,13 @@
 import React from 'react'
 import { Box, Flex, BoxProps, LinkProps } from 'theme-ui'
 
-import { formatDate, submissionTypes } from '../../utils/formatters'
-import { Badge, Column, Row } from '../../components'
-import { Preprint, Preprints } from '../../types/preprint'
+import { formatDate, submissionTypes } from '../../../../utils/formatters'
+import { Badge, Column, Row } from '../../../../components'
+import { Preprint, Preprints } from '../../../../types/preprint'
 
 interface PreprintsTableProps {
   preprints: Preprints
   date: 'date_published' | 'date_submitted'
-  path?: string
 }
 
 const getDateValue = (preprint: Preprint) => {
@@ -27,11 +26,7 @@ const getDateValue = (preprint: Preprint) => {
 type LinkBoxProps = BoxProps & LinkProps & { as: string }
 const LinkBox: React.FC<LinkBoxProps> = (props) => <Box {...props} />
 
-const PreprintsTable: React.FC<PreprintsTableProps> = ({
-  preprints,
-  date,
-  path = '/submissions/edit',
-}) => {
+const PreprintsTable: React.FC<PreprintsTableProps> = ({ preprints, date }) => {
   if (preprints.length === 0) {
     return <Box sx={{ variant: 'text.monoCaps', my: 3 }}>None</Box>
   }
@@ -62,7 +57,7 @@ const PreprintsTable: React.FC<PreprintsTableProps> = ({
           <LinkBox
             as='a'
             key={preprint.pk}
-            href={`${path}/${preprint.pk}`}
+            href={`/submissions/edit/${preprint.pk}`}
             aria-label={`Edit "${preprint.title}"`}
             sx={{ textDecoration: 'none', color: 'text' }}
           >
