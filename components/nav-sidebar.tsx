@@ -1,16 +1,21 @@
 'use client'
 
-import { signOut, useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { Box, Flex } from 'theme-ui'
 import { usePathname } from 'next/navigation'
 
-import { NavLink } from '../../components'
+import { NavLink } from '.'
 
-const PATHS = [
-  { href: '/account', title: 'Account', public: true },
-  { href: '/submissions', title: 'Submissions' },
-]
-const Sidebar = () => {
+interface NavSidebarProps {
+  paths: {
+    href: string
+    title: string
+    public?: boolean
+    adminOnly?: boolean
+  }[]
+}
+
+const NavSidebar: React.FC<NavSidebarProps> = ({ paths }) => {
   const pathname = usePathname()
   const { status } = useSession()
 
@@ -18,11 +23,11 @@ const Sidebar = () => {
     <Box>
       <Box sx={{ variant: 'text.monoCaps', mb: [5, 5, 5, 6] }}>Overview</Box>
       <Flex sx={{ flexDirection: 'column', gap: [5, 5, 5, 6] }}>
-        {PATHS.map(({ href, title, public: publicPath }) => (
+        {paths.map(({ href, title, public: publicPath }) => (
           <NavLink
             key={href}
             href={href}
-            active={pathname.startsWith(href)}
+            active={pathname === href}
             disabled={!publicPath && status === 'unauthenticated'}
           >
             {title}
@@ -33,4 +38,4 @@ const Sidebar = () => {
   )
 }
 
-export default Sidebar
+export default NavSidebar
