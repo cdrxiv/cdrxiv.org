@@ -1,9 +1,7 @@
-'use client'
-
-import { Box } from 'theme-ui'
+import AboutContent from './about.mdx'
 
 const About = () => {
-  return <Box>tst</Box>
+  return <AboutContent />
 }
 
 export default About
