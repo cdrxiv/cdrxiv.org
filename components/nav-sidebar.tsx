@@ -50,22 +50,24 @@ const NavSidebar: React.FC<NavSidebarProps> = ({
   linkWarning = false,
 }) => {
   const pathname = usePathname()
-  const { status } = useSession()
+  const { data: session, status } = useSession()
 
   return (
     <Box>
       <Box sx={{ variant: 'text.monoCaps', mb: [5, 5, 5, 6] }}>Overview</Box>
       <Flex sx={{ flexDirection: 'column', gap: [5, 5, 5, 6] }}>
-        {paths.map(({ href, title, public: publicPath }) => (
-          <NavLinkItem
-            key={href}
-            href={href}
-            title={title}
-            active={pathname === href}
-            disabled={!publicPath && status === 'unauthenticated'}
-            linkWarning={linkWarning}
-          />
-        ))}
+        {paths.map(({ href, title, public: publicPath, adminOnly }) =>
+          !adminOnly || session?.user?.email?.endsWith('@carbonplan.org') ? (
+            <NavLinkItem
+              key={href}
+              href={href}
+              title={title}
+              active={pathname === href}
+              disabled={!publicPath && status === 'unauthenticated'}
+              linkWarning={linkWarning}
+            />
+          ) : null,
+        )}
       </Flex>
     </Box>
   )
