@@ -5,27 +5,29 @@ import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/Page/TextLayer.css'
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import { Box, Flex } from 'theme-ui'
-import PaneledPage from '../../../components/layouts/paneled-page'
-import StyledLink from '../../../components/link'
-import MetadataView from './metadata-view'
-import Outline from './outline'
-import { getAdditionalField } from '../../../utils/data'
+import PaneledPage from '../components/layouts/paneled-page'
+import StyledLink from '../components/link'
+import MetadataView from './preprint-metadata'
+import Outline from './preprint-outline'
+import { getAdditionalField } from '../utils/data'
 
-import type { Preprint } from '../../../types/preprint'
-import type { Deposition } from '../../../types/zenodo'
+import type { Preprint } from '../types/preprint'
+import type { Deposition } from '../types/zenodo'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
-import Loading from '../../../components/loading'
-import useTracking from '../../../hooks/use-tracking'
-import { AuthorsList } from '../../../components'
+import Loading from '../components/loading'
+import useTracking from '../hooks/use-tracking'
+import { AuthorsList } from '../components'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
 const PreprintViewer = ({
   preprint,
   deposition,
+  preview,
 }: {
   preprint: Preprint
   deposition?: Deposition
+  preview?: boolean
 }) => {
   const [containerWidth, setContainerWidth] = useState<number>(0)
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null)
@@ -74,7 +76,13 @@ const PreprintViewer = ({
     <PaneledPage
       title={preprint.title}
       sidebar={pdf ? <Outline pdf={pdf} onItemClick={onItemClicked} /> : null}
-      metadata={<MetadataView preprint={preprint} deposition={deposition} />}
+      metadata={
+        <MetadataView
+          preprint={preprint}
+          deposition={deposition}
+          preview={preview}
+        />
+      }
     >
       {preprint.doi && (
         <StyledLink
@@ -92,10 +100,10 @@ const PreprintViewer = ({
         Abstract
       </Box>
       <Box sx={{ variant: 'text.body', mb: 7 }}>{preprint.abstract}</Box>
-      {hasArticle && (
+      {hasArticle && preprint.versions.length > 0 && (
         <div ref={containerRef} style={{ width: '100%' }}>
           <Document
-            file={`/api/pdf/?url=${encodeURIComponent(preprint.versions[0].public_download_url)}`}
+            file={`/api/pdf?url=${encodeURIComponent(preprint.versions[0].public_download_url)}`}
             onLoadSuccess={onDocumentLoadSuccess}
             loading={
               <Flex

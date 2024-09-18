@@ -22,7 +22,7 @@ const Field: React.FC<Props> = ({
       </Label>
       {children}
       {description && <Box sx={{ variant: 'text.mono' }}>{description}</Box>}
-      {error && <Box sx={{ variant: 'text.mono', color: 'red' }}>{error}</Box>}
+      {error && <Box sx={{ variant: 'styles.error' }}>{error}</Box>}
     </Flex>
   )
 }

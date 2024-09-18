@@ -77,7 +77,7 @@ const AuthorSearch = () => {
 
   return (
     <>
-      {error && <Box sx={{ variant: 'text.mono', color: 'red' }}>{error}</Box>}
+      {error && <Box sx={{ variant: 'styles.error' }}>{error}</Box>}
       <Search
         id='search'
         value={isLoading ? '' : value}
