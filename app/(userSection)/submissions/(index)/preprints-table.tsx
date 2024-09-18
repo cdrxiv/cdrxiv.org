@@ -1,7 +1,8 @@
 'use client'
 
 import React from 'react'
-import { Box, Flex, BoxProps, LinkProps } from 'theme-ui'
+import NextLink from 'next/link'
+import { Box, Flex } from 'theme-ui'
 
 import { formatDate, submissionTypes } from '../../../../utils/formatters'
 import { Badge, Column, Row } from '../../../../components'
@@ -22,9 +23,6 @@ const getDateValue = (preprint: Preprint) => {
 
   return date.valueOf()
 }
-
-type LinkBoxProps = BoxProps & LinkProps & { as: string }
-const LinkBox: React.FC<LinkBoxProps> = (props) => <Box {...props} />
 
 const PreprintsTable: React.FC<PreprintsTableProps> = ({ preprints, date }) => {
   if (preprints.length === 0) {
@@ -54,15 +52,14 @@ const PreprintsTable: React.FC<PreprintsTableProps> = ({ preprints, date }) => {
       {preprints
         .sort((a: Preprint, b: Preprint) => getDateValue(b) - getDateValue(a))
         .map((preprint, i) => (
-          <LinkBox
-            as='a'
-            key={preprint.pk}
+          <NextLink
             href={`/submissions/edit/${preprint.pk}`}
-            aria-label={`Edit "${preprint.title}"`}
-            sx={{ textDecoration: 'none', color: 'text' }}
+            key={preprint.pk}
+            style={{ textDecoration: 'none' }}
           >
             <Box
               sx={{
+                color: 'text',
                 borderTop: '1px solid',
                 borderBottom: i === preprints.length - 1 ? '1px solid' : 0,
                 borderColor: 'listBorderGrey',
@@ -136,7 +133,7 @@ const PreprintsTable: React.FC<PreprintsTableProps> = ({ preprints, date }) => {
                 </Column>
               </Row>
             </Box>
-          </LinkBox>
+          </NextLink>
         ))}
     </>
   )
