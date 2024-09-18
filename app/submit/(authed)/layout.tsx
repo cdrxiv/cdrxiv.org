@@ -33,11 +33,6 @@ const SubmissionOverview: React.FC<Props> = async ({ children }) => {
   ])
   let preprints = preprintsData.results
 
-  // TODO: remove manual filtering when stage querying is restored
-  preprints = preprints.filter(
-    (p: Preprint) => p.stage === 'preprint_unsubmitted',
-  )
-
   let preprintCreated = false
   if (preprints.length === 0) {
     const preprint = await createPreprint()

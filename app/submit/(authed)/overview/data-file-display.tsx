@@ -9,8 +9,9 @@ import { FileInputValue } from '../../../../components'
 
 type Props = {
   file: FileInputValue
+  onError: () => Promise<void>
 }
-const DataFileDisplay: React.FC<Props> = ({ file: fileProp }) => {
+const DataFileDisplay: React.FC<Props> = ({ file: fileProp, onError }) => {
   const [deposition, setDeposition] = useState<Deposition | null>(null)
   const [loading, setLoading] = useState<boolean>(fileProp ? true : false)
 
@@ -22,12 +23,13 @@ const DataFileDisplay: React.FC<Props> = ({ file: fileProp }) => {
           setLoading(false)
         })
         .catch((error) => {
-          console.error('Error fetching deposition:', error)
-          setLoading(false)
-          setDeposition(null)
+          onError().then(() => {
+            setLoading(false)
+            setDeposition(null)
+          })
         })
     }
-  }, [fileProp])
+  }, [fileProp, onError])
 
   const file = useMemo(
     () =>
