@@ -1,7 +1,7 @@
 export const PATHS = [
-  { label: 'Overview', href: '/submit/overview' },
-  { label: 'Information', href: '/submit/info' },
-  { label: 'Authors', href: '/submit/authors' },
-  { label: 'Confirmation', href: '/submit/confirm' },
-  { label: 'Submission successful', href: '/submit/success', hidden: true },
+  { title: 'Overview', href: '/submit/overview' },
+  { title: 'Information', href: '/submit/info' },
+  { title: 'Authors', href: '/submit/authors' },
+  { title: 'Confirmation', href: '/submit/confirm' },
+  { title: 'Submission successful', href: '/submit/success', hidden: true },
 ]
