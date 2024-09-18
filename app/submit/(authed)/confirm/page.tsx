@@ -74,7 +74,7 @@ const SectionWrapper = ({
 }
 
 const SubmissionConfirmation = () => {
-  const { preprint } = usePreprint()
+  const { preprint, setPreprint } = usePreprint()
   const { files } = usePreprintFiles()
   const router = useRouter()
   const track = useTracking()
@@ -121,6 +121,13 @@ const SubmissionConfirmation = () => {
     dataFile: overview.data.dataFile,
     articleFile: overview.data.articleFile,
   })
+
+  const handleDataFileError = useCallback(() => {
+    return updatePreprint(preprint, { supplementary_files: [] }).then(
+      (updated) => setPreprint(updated),
+    )
+  }, [preprint, setPreprint])
+
   const handleSubmit = useCallback(() => {
     setIsLoading(true)
     updatePreprint(preprint, {
@@ -186,7 +193,10 @@ const SubmissionConfirmation = () => {
               <SummaryCard>
                 <Box sx={{ variant: 'text.body' }}>Data</Box>
 
-                <DataFileDisplay file={overview.data.dataFile} />
+                <DataFileDisplay
+                  file={overview.data.dataFile}
+                  onError={handleDataFileError}
+                />
               </SummaryCard>
             )}
             {overview.data.externalFile && (

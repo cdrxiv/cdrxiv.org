@@ -1,6 +1,7 @@
 'use client'
 
 import { Label } from 'theme-ui'
+import { useCallback } from 'react'
 
 import { Checkbox, Field, FileInput, Form } from '../../../../components'
 import NavButtons from '../../nav-buttons'
@@ -8,6 +9,7 @@ import { usePreprint, usePreprintFiles } from '../preprint-context'
 import { useForm } from '../utils'
 import { FormData, initializeForm, validateForm, submitForm } from './utils'
 import DataFileInput from './data-file-input'
+import { updatePreprint } from '../../../../actions/preprint'
 
 const SubmissionOverview = () => {
   const { preprint, setPreprint } = usePreprint()
@@ -17,6 +19,12 @@ const SubmissionOverview = () => {
     validateForm,
     submitForm.bind(null, preprint, setPreprint, files, setFiles),
   )
+
+  const handleDataFileError = useCallback(() => {
+    return updatePreprint(preprint, { supplementary_files: [] }).then(
+      (updated) => setPreprint(updated),
+    )
+  }, [preprint, setPreprint])
 
   return (
     <>
@@ -62,6 +70,7 @@ const SubmissionOverview = () => {
             setFile={setters.dataFile}
             externalFile={data.externalFile}
             setExternalFile={setters.externalFile}
+            onError={handleDataFileError}
           />
         </Field>
       </Form>
