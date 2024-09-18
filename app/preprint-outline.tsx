@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { NavLink } from '../../../components'
 import { PDFDocumentProxy } from 'pdfjs-dist'
 import { Box } from 'theme-ui'
+import { NavLink } from '../components'
 
 type PDFOutline = Awaited<ReturnType<PDFDocumentProxy['getOutline']>>
 type OutlineItem = PDFOutline[number]
@@ -11,7 +11,7 @@ interface OutlineProps {
   onItemClick: (item: any) => void
 }
 
-const Outline = ({ pdf, onItemClick }: OutlineProps) => {
+const PreprintOutline = ({ pdf, onItemClick }: OutlineProps) => {
   const [outline, setOutline] = useState<PDFOutline | null>(null)
 
   useEffect(() => {
@@ -65,4 +65,4 @@ const Outline = ({ pdf, onItemClick }: OutlineProps) => {
   )
 }
 
-export default Outline
+export default PreprintOutline

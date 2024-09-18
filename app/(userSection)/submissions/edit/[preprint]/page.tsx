@@ -26,15 +26,7 @@ const Page = async ({ params }: { params: { preprint: string } }) => {
     preprintRes.json(),
   ])
 
-  return (
-    <EditForm
-      // TODO: just pass `versions` directly when ?preprint=value query starts working
-      versions={versions.results.filter(
-        (v: VersionQueue) => v.preprint === preprint.pk,
-      )}
-      preprint={preprint}
-    />
-  )
+  return <EditForm versions={versions.results} preprint={preprint} />
 }
 
 export default Page

@@ -37,7 +37,5 @@ export async function updateAccount(user: User, params: Partial<User>) {
 
   const updatedUser = res.json()
 
-  // TODO: update user stored on session
-
   return updatedUser
 }

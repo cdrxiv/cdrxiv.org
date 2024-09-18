@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import PreprintViewer from './preprint-viewer'
+import PreprintViewer from '../../preprint-viewer'
 import { SupplementaryFile } from '../../../types/preprint'
 import { fetchDataDeposition } from '../../../actions/zenodo'
 

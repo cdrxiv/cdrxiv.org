@@ -89,7 +89,7 @@ const AuthorForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       {submitError && (
-        <Box sx={{ variant: 'text.mono', color: 'red' }}>
+        <Box sx={{ variant: 'styles.error' }}>
           {submitError.includes('400')
             ? 'We were unable to create the new author. This might be because an author with this email already exists. Please try searching for their email above, or use a different email to create a new author.'
             : submitError}

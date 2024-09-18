@@ -13,12 +13,14 @@ type Props = {
   setFile: (file: FileInputValue | null) => void
   externalFile: SupplementaryFile | null
   setExternalFile: (file: SupplementaryFile | null) => void
+  onError: () => Promise<void>
 }
 const DataFileInput: React.FC<Props> = ({
   file: fileProp,
   setFile: setFileProp,
   externalFile,
   setExternalFile,
+  onError,
 }) => {
   const [mode, setMode] = useState<'upload' | 'link'>(
     externalFile ? 'link' : 'upload',
@@ -34,14 +36,15 @@ const DataFileInput: React.FC<Props> = ({
           setLoading(false)
         })
         .catch(() => {
-          // TODO: remove from supplementary files
-          setFileProp(null)
-          setLoading(false)
+          onError().then(() => {
+            setFileProp(null)
+            setLoading(false)
+          })
         })
     } else {
       setDeposition(null)
     }
-  }, [fileProp?.url, setFileProp])
+  }, [fileProp?.url, setFileProp, onError])
 
   const fileDisplay = useMemo(
     () =>
