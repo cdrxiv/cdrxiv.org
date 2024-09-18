@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation'
 const PATHS = [
   { href: '/about', title: 'About', public: true },
   { href: '/about/faq', title: 'FAQ', public: true },
+  { href: '/about/scope', title: 'Scope', public: true },
   { href: '/about/team', title: 'Team', public: true },
 ]
 
