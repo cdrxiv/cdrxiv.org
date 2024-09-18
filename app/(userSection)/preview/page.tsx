@@ -19,19 +19,19 @@ const PreviewPage = async () => {
     'https://carbonplan.endurance.janeway.systems/carbonplan/api/preprints/?stage=preprint_review',
   )
 
-  let results
   if (response.status !== 200) {
-  } else {
-    results = await response.json()
+    return (
+      <SharedLayout title='Preprints under review'>
+        <Forbidden status={response.status} statusText={response.statusText} />
+      </SharedLayout>
+    )
   }
+
+  const results = await response.json()
 
   return (
     <SharedLayout title='Preprints under review'>
-      {results ? (
-        <PreprintsTable preprints={results.results} />
-      ) : (
-        <Forbidden status={response.status} statusText={response.statusText} />
-      )}
+      <PreprintsTable preprints={results.results} />
     </SharedLayout>
   )
 }
