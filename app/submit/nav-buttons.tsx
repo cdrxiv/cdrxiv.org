@@ -27,7 +27,7 @@ const NavButton: React.FC<ButtonProps> = ({
 }) => {
   const router = useRouter()
   const { setIsLoading } = useLoading()
-  const { onClick: onClickWithWarning } = useLinkWithWarning(href)
+  const { onClick: onClickWithWarning } = useLinkWithWarning()
 
   const props = {
     [direction === 'forward' ? 'forwardArrow' : 'backArrow']: true,

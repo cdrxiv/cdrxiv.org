@@ -33,14 +33,15 @@ export const useLinkWithWarning = () => {
   const { shouldWarn } = useContext(NavigationContext)
 
   const handleClick = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    (e: React.MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault()
+      const href = e.currentTarget.getAttribute('href')
       if (
         shouldWarn &&
         !window.confirm('You have unsaved changes. Do you still want to leave?')
       ) {
         return
-      } else {
+      } else if (href) {
         router.push(href)
       }
     },

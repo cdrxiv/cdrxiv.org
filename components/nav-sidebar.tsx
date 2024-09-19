@@ -13,7 +13,7 @@ interface NavSidebarProps {
     public?: boolean
     adminOnly?: boolean
   }[]
-  onClick?: (e: React.MouseEvent<HTMLAnchorElement>, href: string) => void
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void
 }
 
 const NavSidebar: React.FC<NavSidebarProps> = ({ paths, onClick }) => {
@@ -32,7 +32,7 @@ const NavSidebar: React.FC<NavSidebarProps> = ({ paths, onClick }) => {
               title={title}
               active={pathname === href}
               disabled={!publicPath && status === 'unauthenticated'}
-              onClick={onClick ? (e) => onClick(e, href) : undefined}
+              onClick={onClick ? (e) => onClick(e) : undefined}
             >
               {title}
             </NavLink>
