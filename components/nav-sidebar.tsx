@@ -5,35 +5,6 @@ import { Box, Flex } from 'theme-ui'
 import { usePathname } from 'next/navigation'
 
 import { NavLink } from '.'
-import { useLinkWithWarning } from '../app/submit/navigation-context'
-
-interface NavLinkItemProps {
-  href: string
-  title: string
-  active: boolean
-  disabled: boolean
-  linkWarning: boolean
-}
-
-const NavLinkItem: React.FC<NavLinkItemProps> = ({
-  href,
-  title,
-  active,
-  disabled,
-  linkWarning,
-}) => {
-  const { onClick } = useLinkWithWarning(href)
-  return (
-    <NavLink
-      href={href}
-      active={active}
-      disabled={disabled}
-      onClick={linkWarning ? onClick : undefined}
-    >
-      {title}
-    </NavLink>
-  )
-}
 
 interface NavSidebarProps {
   paths: {
@@ -42,13 +13,10 @@ interface NavSidebarProps {
     public?: boolean
     adminOnly?: boolean
   }[]
-  linkWarning?: boolean
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>, href: string) => void
 }
 
-const NavSidebar: React.FC<NavSidebarProps> = ({
-  paths,
-  linkWarning = false,
-}) => {
+const NavSidebar: React.FC<NavSidebarProps> = ({ paths, onClick }) => {
   const pathname = usePathname()
   const { data: session, status } = useSession()
 
@@ -58,14 +26,16 @@ const NavSidebar: React.FC<NavSidebarProps> = ({
       <Flex sx={{ flexDirection: 'column', gap: [5, 5, 5, 6] }}>
         {paths.map(({ href, title, public: publicPath, adminOnly }) =>
           !adminOnly || session?.user?.email?.endsWith('@carbonplan.org') ? (
-            <NavLinkItem
+            <NavLink
               key={href}
               href={href}
               title={title}
               active={pathname === href}
               disabled={!publicPath && status === 'unauthenticated'}
-              linkWarning={linkWarning}
-            />
+              onClick={onClick ? (e) => onClick(e, href) : undefined}
+            >
+              {title}
+            </NavLink>
           ) : null,
         )}
       </Flex>

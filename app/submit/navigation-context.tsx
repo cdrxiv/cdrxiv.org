@@ -28,12 +28,12 @@ export const useNavigation = () => {
   return useContext(NavigationContext)
 }
 
-export const useLinkWithWarning = (href: string) => {
+export const useLinkWithWarning = () => {
   const router = useRouter()
   const { shouldWarn } = useContext(NavigationContext)
 
   const handleClick = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement>) => {
+    (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
       e.preventDefault()
       if (
         shouldWarn &&
@@ -44,7 +44,7 @@ export const useLinkWithWarning = (href: string) => {
         router.push(href)
       }
     },
-    [shouldWarn, href, router],
+    [shouldWarn, router],
   )
 
   return { onClick: handleClick }
