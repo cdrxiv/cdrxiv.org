@@ -62,6 +62,7 @@ export const getZenodoMetadata = (
     description: preprint.abstract,
     doi: preprint.doi ?? undefined,
     communities: [{ identifier: 'cdrxiv' }],
+    license: getAdditionalField(preprint, 'Data license') as string,
     keywords: preprint.keywords.map((keyword) => keyword.word),
     subjects: preprint.subject.map((s) => ({
       term: s.name,
