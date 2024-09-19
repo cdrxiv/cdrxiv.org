@@ -11,6 +11,17 @@ const getDataDownload = (deposition: Deposition) => {
   return `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].filename}?download=1`
 }
 
+const LICENSE_DISPLAY = {
+  'cc-by-nc-4.0': {
+    url: 'https://creativecommons.org/licenses/by-nc/4.0/',
+    name: 'CC BY-NC 4.0',
+  },
+  'cc-by-4.0': {
+    url: 'https://creativecommons.org/licenses/by/4.0/',
+    name: 'CC BY 4.0',
+  },
+}
+
 const ErrorOrTrack = ({
   hasError,
   preview,
@@ -56,6 +67,9 @@ const PreprintMetadata: React.FC<{
     preprint,
     'Conflict of interest statement',
   )
+  const dataLicense = getAdditionalField(preprint, 'Data license')
+  const dataLicenseInfo =
+    LICENSE_DISPLAY[dataLicense as 'cc-by-4.0' | 'cc-by-nc-4.0']
   const hasConflictOfInterest =
     conflictOfInterest && conflictOfInterest !== 'None'
 
@@ -187,16 +201,40 @@ const PreprintMetadata: React.FC<{
       </Field>
 
       <Field label='License'>
-        <Link href={preprint.license?.url} sx={{ variant: 'text.mono' }}>
-          {preprint.license?.short_name}
-          <ErrorOrTrack
-            mt={2}
-            hasError={!preprint.license}
-            preview={preview}
-            pk={preprint.pk}
-            errorMessage={'No license provided.'}
-          />
-        </Link>
+        <Flex sx={{ gap: 2, variant: 'text.mono' }}>
+          <Link href={preprint.license?.url} sx={{ variant: 'text.mono' }}>
+            {preprint.license?.short_name}
+          </Link>
+          {submissionType === 'Data' ? null : '(Article)'}
+        </Flex>
+        <ErrorOrTrack
+          mt={2}
+          hasError={!preprint.license}
+          preview={preview}
+          pk={preprint.pk}
+          errorMessage={'No license provided.'}
+        />
+        {submissionType !== 'Article' && (
+          <>
+            <Flex sx={{ gap: 2, variant: 'text.mono' }}>
+              <Link href={dataLicenseInfo?.url} sx={{ variant: 'text.mono' }}>
+                {dataLicenseInfo?.name}
+              </Link>
+              (Data)
+            </Flex>
+            <ErrorOrTrack
+              mt={2}
+              hasError={!dataLicenseInfo}
+              preview={preview}
+              pk={preprint.pk}
+              errorMessage={
+                dataLicense
+                  ? `Invalid data license found: ${dataLicense}`
+                  : 'No data license provided.'
+              }
+            />
+          </>
+        )}
       </Field>
 
       {preprint.keywords.length > 0 && (
