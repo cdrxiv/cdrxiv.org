@@ -220,17 +220,16 @@ const SubmissionConfirmation = () => {
             <Box>{info.data.abstract || 'No abstract'}</Box>
             <Flex sx={{ gap: 2, flexWrap: 'wrap' }}>
               {info.data.subject.map((subject) => (
-                <Box
+                <Link
                   key={subject}
+                  href={`/?subject=${subject}`}
                   sx={{
-                    variant: 'styles.a',
-                    fontFamily: 'mono',
-                    fontWeight: 'mono',
-                    fontSize: [0, 0, 0, 1],
+                    variant: 'text.mono',
+                    display: 'block',
                   }}
                 >
                   {subject}
-                </Box>
+                </Link>
               ))}
             </Flex>
           </SummaryCard>
