@@ -85,7 +85,7 @@ const PreprintMetadata: React.FC<{
         {preprint.subject.map(({ name }) => (
           <Link
             key={name}
-            href={`/?∂subject=${name}`}
+            href={`/?subject=${name}`}
             forwardArrow
             sx={{
               variant: 'text.mono',
