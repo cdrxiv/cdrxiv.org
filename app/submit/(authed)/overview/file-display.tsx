@@ -14,10 +14,7 @@ const FileDisplay: React.FC<Props> = ({ name, href }) => {
     <Link
       href={href}
       sx={{
-        variant: 'styles.a',
-        fontFamily: 'mono',
-        fontWeight: 'mono',
-        fontSize: [0, 0, 0, 1],
+        variant: 'text.mono',
         textTransform: 'none',
       }}
     >
@@ -26,11 +23,7 @@ const FileDisplay: React.FC<Props> = ({ name, href }) => {
   ) : (
     <Box
       sx={{
-        variant: 'styles.a',
-        textDecoration: 'none',
-        fontFamily: 'mono',
-        fontWeight: 'mono',
-        fontSize: [0, 0, 0, 1],
+        variant: 'text.mono',
         color: 'listBorderGrey',
       }}
     >
