@@ -1,4 +1,5 @@
 import { Column, Row, Select } from '../../../../components'
+import { LICENSE_MAPPING } from '../../constants'
 
 type Props = {
   license: number
@@ -48,11 +49,6 @@ const EntryLabel = ({
   )
 }
 
-const ZENODO_TO_JANEWAY = {
-  'cc-by-4.0': '1',
-  'cc-by-nc-4.0': '4',
-}
-
 const ArticleLicense = ({
   license,
   setLicense,
@@ -87,9 +83,7 @@ const DataLicense = ({
       setDataLicense(e.target.value)
       if (e.target.value && setLicense) {
         setLicense(
-          Number(
-            ZENODO_TO_JANEWAY[e.target.value as 'cc-by-4.0' | 'cc-by-nc-4.0'],
-          ),
+          LICENSE_MAPPING[e.target.value as 'cc-by-4.0' | 'cc-by-nc-4.0'],
         )
       }
     }}

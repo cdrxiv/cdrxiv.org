@@ -5,3 +5,8 @@ export const PATHS = [
   { title: 'Confirmation', href: '/submit/confirm' },
   { title: 'Submission successful', href: '/submit/success', hidden: true },
 ]
+
+export const LICENSE_MAPPING = {
+  'cc-by-4.0': 1,
+  'cc-by-nc-4.0': 4,
+}
