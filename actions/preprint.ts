@@ -11,8 +11,11 @@ import {
   PreprintParams,
   PreprintFile,
   VersionQueueParams,
+  SupplementaryFile,
 } from '../types/preprint'
 import { fetchWithToken } from '../app/api/utils'
+import { Deposition } from '../types/zenodo'
+import { fetchDataDeposition } from './zenodo'
 
 export async function updatePreprint(
   preprint: Preprint,
@@ -232,4 +235,28 @@ export async function createVersionQueue(versionQueue: VersionQueueParams) {
 
   const result = res.json()
   return result
+}
+
+export async function getPublicPreprintAndDeposition(id: string): Promise<{
+  preprint: Preprint
+  deposition?: Deposition
+} | null> {
+  const res = await fetch(
+    `https://carbonplan.endurance.janeway.systems/carbonplan/api/published_preprints/${id}`,
+  )
+  if (!res.ok) {
+    if (res.status === 404) {
+      return null
+    }
+    throw new Error(`API request failed with status ${res.status}`)
+  }
+  const preprint: Preprint = await res.json()
+  const dataUrl = preprint.supplementary_files.find(
+    (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_PUBLISHED',
+  )?.url
+  let deposition
+  if (dataUrl) {
+    deposition = await fetchDataDeposition(dataUrl)
+  }
+  return { preprint, deposition }
 }
