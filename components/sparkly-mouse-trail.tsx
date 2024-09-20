@@ -15,9 +15,7 @@ interface SparklyMouseTrailProps {
   isActive: boolean
 }
 
-const SparklyMouseTrail= ({
-  isActive,
-}: SparklyMouseTrailProps) =>{
+const SparklyMouseTrail = ({ isActive }: SparklyMouseTrailProps) => {
   const [sparkles, setSparkles] = useState<SparklePosition[]>([])
   const [isClient, setIsClient] = useState(false)
 
