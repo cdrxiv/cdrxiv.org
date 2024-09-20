@@ -215,12 +215,14 @@ const PreprintMetadata: React.FC<{
         />
         {submissionType !== 'Article' && (
           <>
-            <Flex sx={{ gap: 2, variant: 'text.mono' }}>
-              <Link href={dataLicenseInfo?.url} sx={{ variant: 'text.mono' }}>
-                {dataLicenseInfo?.name}
-              </Link>
-              (Data)
-            </Flex>
+            {dataLicenseInfo && (
+              <Flex sx={{ gap: 2, variant: 'text.mono' }}>
+                <Link href={dataLicenseInfo.url} sx={{ variant: 'text.mono' }}>
+                  {dataLicenseInfo.name}
+                </Link>
+                (Data)
+              </Flex>
+            )}
             <ErrorOrTrack
               mt={2}
               hasError={!dataLicenseInfo}
