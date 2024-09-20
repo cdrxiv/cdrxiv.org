@@ -7,6 +7,7 @@ import {
   Field,
   Form,
   KeywordInput,
+  Link,
   Select,
 } from '../../../../components'
 import FundingSources from './funding-sources'
@@ -40,12 +41,7 @@ const SubmissionInformation = () => {
             id='title'
           />
         </Field>
-        <Field
-          label='Abstract'
-          id='abstract'
-          description='Some info about abstract formatting'
-          error={errors.abstract}
-        >
+        <Field label='Abstract' id='abstract' error={errors.abstract}>
           <Textarea
             value={data.abstract}
             onChange={(e) => setters.abstract(e.target.value)}
@@ -56,6 +52,20 @@ const SubmissionInformation = () => {
         <Field
           label='License'
           id='license'
+          description={
+            <>
+              Pick an appropriate license for your{' '}
+              {data.submission_type === 'Both' ? 'contents' : 'submission'}.
+              Learn more about licensing{' '}
+              <Link
+                href='https://creativecommons.org/share-your-work/cclicenses/'
+                sx={{ variant: 'text.mono' }}
+              >
+                here
+              </Link>
+              .
+            </>
+          }
           error={errors.license ?? errors.data_license}
         >
           <Licenses
