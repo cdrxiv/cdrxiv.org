@@ -49,6 +49,7 @@ const SubmissionInformation = () => {
           <Textarea
             value={data.abstract}
             onChange={(e) => setters.abstract(e.target.value)}
+            sx={{ minHeight: '100px' }}
             id='abstract'
           />
         </Field>
