@@ -7,6 +7,7 @@ import Providers from './providers'
 import { getSubjects } from './api/utils'
 import { SubjectsProvider } from './subjects-context'
 import { authOptions } from '../lib/auth'
+import  MouseTrail from '../components/mouse-trail'
 
 export const metadata: Metadata = {
   title: 'CDRXIV',
@@ -45,6 +46,7 @@ export default async function RootLayout({
         <Providers session={session}>
           <SubjectsProvider subjects={subjects.results}>
             <main>
+              <MouseTrail isActive/>
               <PageCard>{children}</PageCard>
             </main>
           </SubjectsProvider>
