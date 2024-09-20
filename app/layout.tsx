@@ -3,11 +3,10 @@ import { getServerSession } from 'next-auth/next'
 
 import '../components/fonts.css'
 import PageCard from '../components/layouts/page-card'
-import Providers from './providers'
-import { getSubjects } from './api/utils'
-import { SubjectsProvider } from './subjects-context'
 import { authOptions } from '../lib/auth'
-import  MouseTrail from '../components/mouse-trail'
+import { getSubjects } from './api/utils'
+import Providers from './providers'
+import { SubjectsProvider } from './subjects-context'
 
 export const metadata: Metadata = {
   title: 'CDRXIV',
@@ -23,9 +22,6 @@ export default async function RootLayout({
     getSubjects(),
     getServerSession(authOptions),
   ])
-
-
-  
 
   return (
     <html lang='en'>
