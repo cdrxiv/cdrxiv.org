@@ -8,6 +8,7 @@ import Header from '../header'
 import MouseTrail from '../mouse-trail'
 import PageCorner from '../page-corner'
 
+
 const margin = [2, 2, 3, 3]
 
 const PageCard = ({ children }: { children: React.ReactNode }) => {
@@ -48,6 +49,7 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
         >
           <PageCorner onToggle={toggleTrail} />
           <MouseTrail isActive={isTrailActive} />
+   
 
           <Box sx={{ contain: 'layout' }}>
             <Guide />
