@@ -112,7 +112,7 @@ const SubmissionInformation = () => {
         <Field
           label='Keywords'
           id='keywords'
-          description='Hit Enter to add a new keyword.'
+          description='Hit Enter to add a new keyword. Click on a keyword to remove it.'
           error={errors.keywords}
         >
           <KeywordInput
