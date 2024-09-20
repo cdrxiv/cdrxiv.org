@@ -55,13 +55,7 @@ export async function updatePreprint(
 
   const updatedPreprint = res.json()
 
-  // Clear submit form cache when preprint moves from unsubmitted to review stage
-  if (
-    preprint.stage === 'preprint_unsubmitted' &&
-    params.stage === 'preprint_review'
-  ) {
-    revalidatePath(`/submit`)
-  }
+  revalidatePath('/submit')
   return updatedPreprint
 }
 
@@ -114,6 +108,8 @@ export async function createPreprint(): Promise<Preprint> {
   }
 
   const preprint = res.json()
+  revalidatePath('/submit')
+
   return preprint
 }
 
@@ -175,6 +171,8 @@ export async function createPreprintFile(
   }
 
   const result = res.json()
+
+  revalidatePath('/submit')
   return result
 }
 export async function fetchPreprintFile(pk: number): Promise<PreprintFile> {
@@ -208,6 +206,7 @@ export async function deletePreprintFile(pk: number): Promise<true> {
     )
   }
 
+  revalidatePath('/submit')
   return true
 }
 
