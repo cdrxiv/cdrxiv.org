@@ -8,19 +8,17 @@ import {
   Form,
   KeywordInput,
   Link,
-  Select,
 } from '../../../../components'
 import FundingSources from './funding-sources'
 import NavButtons from '../../nav-buttons'
 import Licenses from './licenses'
+import Subjects from './subjects'
 import { usePreprint } from '../preprint-context'
 import { useForm } from '../utils'
-import { useSubjects } from '../../../subjects-context'
 import { FormData, initializeForm, validateForm, submitForm } from './utils'
 
 const SubmissionInformation = () => {
   const { preprint, setPreprint } = usePreprint()
-  const subjects = useSubjects()
   const { data, setters, errors, onSubmit, submitError } = useForm<FormData>(
     () => initializeForm(preprint),
     validateForm,
@@ -89,25 +87,7 @@ const SubmissionInformation = () => {
           />
         </Field>
         <Field label='Subject' id='subject' error={errors.subject}>
-          <Select
-            value={data.subject}
-            onChange={(e) =>
-              setters.subject(
-                subjects
-                  .filter((el, i) => e.target.options[i].selected)
-                  .map((el) => el.name),
-              )
-            }
-            id='subject'
-            multiple
-            size={3}
-          >
-            {subjects.map(({ name }) => (
-              <option value={name} key={name}>
-                {name}
-              </option>
-            ))}
-          </Select>
+          <Subjects value={data.subject} onChange={setters.subject} />
         </Field>
         <Field
           label='Keywords'
