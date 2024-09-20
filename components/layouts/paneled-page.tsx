@@ -16,7 +16,7 @@ import Column from '../column'
 import Guide from '../guide'
 import Loading from '../loading'
 
-const HEADER_HEIGHT = 125
+const HEADER_HEIGHT = 100
 
 const LoadingContext = createContext<
   | {
@@ -59,25 +59,30 @@ const PaneledPage: React.FC<{
 
   return (
     <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
-      <Row sx={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
+      <Row>
         <Column
           start={1}
           width={3}
           sx={{
             display: ['none', 'none', 'inherit', 'inherit'],
-            overflowY: 'auto',
+            height: '100%',
           }}
         >
-          {sidebar}
+          <Box
+            sx={{
+              height: 'fit-content',
+              maxHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
+              position: 'sticky',
+              top: HEADER_HEIGHT,
+              overflowY: 'auto',
+              mr: -6, // push scrollbar to edge
+              pr: 6,
+            }}
+          >
+            {sidebar}
+          </Box>
         </Column>
-        <Column
-          start={[1, 1, 4, 4]}
-          width={[6, 6, 6, 6]}
-          sx={{
-            overflowY: 'auto',
-            position: 'relative',
-          }}
-        >
+        <Column start={[1, 1, 4, 4]} width={[6, 6, 6, 6]}>
           <Box
             ref={contentRef}
             sx={{
@@ -139,10 +144,22 @@ const PaneledPage: React.FC<{
           width={[6, 2, 2, 2]}
           sx={{
             display: ['none', 'inherit', 'inherit', 'inherit'],
-            overflowY: 'auto',
+            height: '100%',
           }}
         >
-          {metadata}
+          <Box
+            sx={{
+              height: 'fit-content',
+              position: 'sticky',
+              top: HEADER_HEIGHT,
+              maxHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
+              overflowY: 'auto',
+              mr: -8, // push scrollbar to edge
+              pr: 8,
+            }}
+          >
+            {metadata}
+          </Box>
         </Column>
       </Row>
     </LoadingContext.Provider>
