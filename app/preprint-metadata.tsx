@@ -204,7 +204,7 @@ const PreprintMetadata: React.FC<{
           <Link href={preprint.license?.url} sx={{ variant: 'text.mono' }}>
             {preprint.license?.short_name}
           </Link>
-          {submissionType === 'Data' ? null : '(Article)'}
+          {submissionType === 'Both' ? '(Article)' : null}
         </Flex>
         <ErrorOrTrack
           mt={2}
@@ -213,7 +213,7 @@ const PreprintMetadata: React.FC<{
           pk={preprint.pk}
           errorMessage={'No license provided.'}
         />
-        {submissionType !== 'Article' && (
+        {submissionType === 'Both' && (
           <>
             {dataLicenseInfo && (
               <Flex sx={{ gap: 2, variant: 'text.mono' }}>
