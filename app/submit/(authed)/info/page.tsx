@@ -142,7 +142,7 @@ const SubmissionInformation = () => {
         <Field
           label='Conflict of interest statement'
           id='conflict_of_interest'
-          description='If you have conflicts of interest to declare, please do so here and they will be displayed next to your submission. If not, check the no conflicts of interest box above.'
+          description='If you and/or your authorship team have conflicts of interest to declare, please do so here. If not, check the no conflicts of interest box above.'
           error={errors.conflict_of_interest}
         >
           <Textarea
