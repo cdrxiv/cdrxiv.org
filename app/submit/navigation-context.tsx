@@ -28,23 +28,24 @@ export const useNavigation = () => {
   return useContext(NavigationContext)
 }
 
-export const useLinkWithWarning = (href: string) => {
+export const useLinkWithWarning = () => {
   const router = useRouter()
   const { shouldWarn } = useContext(NavigationContext)
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault()
+      const href = e.currentTarget.getAttribute('href')
       if (
         shouldWarn &&
         !window.confirm('You have unsaved changes. Do you still want to leave?')
       ) {
         return
-      } else {
+      } else if (href) {
         router.push(href)
       }
     },
-    [shouldWarn, href, router],
+    [shouldWarn, router],
   )
 
   return { onClick: handleClick }

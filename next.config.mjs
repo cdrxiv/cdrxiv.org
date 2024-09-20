@@ -1,5 +1,11 @@
 import { withPlausibleProxy } from 'next-plausible'
-/** @type {import('next').NextConfig} */
-const nextConfig = {}
+import createMDX from '@next/mdx'
 
-export default withPlausibleProxy()(nextConfig)
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+}
+
+const withMDX = createMDX({})
+
+export default withPlausibleProxy()(withMDX(nextConfig))

@@ -60,13 +60,13 @@ const SectionWrapper = ({
       error={error}
       label={
         <Flex sx={{ gap: 2, alignItems: 'baseline' }}>
-          {PATHS[index].label}
+          {PATHS[index].title}
           <Link href={PATHS[index].href} sx={{ variant: 'forms.label' }}>
             Edit
           </Link>
         </Flex>
       }
-      id={PATHS[index].label}
+      id={PATHS[index].title}
     >
       {children}
     </Field>

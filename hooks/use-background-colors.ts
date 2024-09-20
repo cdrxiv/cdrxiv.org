@@ -12,7 +12,8 @@ const useBackgroundColors = (): ColorsObject => {
     pathname.startsWith('/account') ||
     pathname.startsWith('/submissions') ||
     pathname.startsWith('/preview') ||
-    pathname.startsWith('/preprint/')
+    pathname.startsWith('/preprint/') ||
+    pathname.startsWith('/about')
   ) {
     return {
       cardBackground: ['primary', 'primary', 'background', 'background'],

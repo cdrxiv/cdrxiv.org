@@ -4,14 +4,19 @@ import { useSession } from 'next-auth/react'
 import { Box, Flex } from 'theme-ui'
 import { usePathname } from 'next/navigation'
 
-import { NavLink } from '../../components'
+import { NavLink } from '.'
 
-const PATHS = [
-  { href: '/account', title: 'Account', public: true },
-  { href: '/submissions', title: 'Submissions' },
-  { href: '/preview', title: 'Preprint preview', adminOnly: true },
-]
-const Sidebar = () => {
+interface NavSidebarProps {
+  paths: {
+    href: string
+    title: string
+    public?: boolean
+    adminOnly?: boolean
+  }[]
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void
+}
+
+const NavSidebar: React.FC<NavSidebarProps> = ({ paths, onClick }) => {
   const pathname = usePathname()
   const { data: session, status } = useSession()
 
@@ -19,13 +24,15 @@ const Sidebar = () => {
     <Box>
       <Box sx={{ variant: 'text.monoCaps', mb: [5, 5, 5, 6] }}>Overview</Box>
       <Flex sx={{ flexDirection: 'column', gap: [5, 5, 5, 6] }}>
-        {PATHS.map(({ href, title, public: publicPath, adminOnly }) =>
+        {paths.map(({ href, title, public: publicPath, adminOnly }) =>
           !adminOnly || session?.user?.email?.endsWith('@carbonplan.org') ? (
             <NavLink
               key={href}
               href={href}
-              active={pathname.startsWith(href)}
+              title={title}
+              active={pathname === href}
               disabled={!publicPath && status === 'unauthenticated'}
+              onClick={onClick ? (e) => onClick(e) : undefined}
             >
               {title}
             </NavLink>
@@ -36,4 +43,4 @@ const Sidebar = () => {
   )
 }
 
-export default Sidebar
+export default NavSidebar

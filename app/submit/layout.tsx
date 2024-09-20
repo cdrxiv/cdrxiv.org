@@ -1,37 +1,26 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
-import { Box, Flex } from 'theme-ui'
 import { usePathname } from 'next/navigation'
 
-import { NavLink, NavLinkProps } from '../../components'
+import { NavSidebar } from '../../components'
 import { PATHS } from './constants'
 import { NavigationProvider, useLinkWithWarning } from './navigation-context'
 import PaneledPage from '../../components/layouts/paneled-page'
 
-const AuthedNavLink: React.FC<NavLinkProps> = ({
-  children,
-  active,
-  href,
-  disabled: disabledProp,
-}) => {
-  const { status } = useSession()
-  const { onClick } = useLinkWithWarning(href as string)
-  const disabled = status === 'unauthenticated' && href !== PATHS[0].href
-
+const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // this wrapper allows use of useLinkWithWarning below
   return (
-    <NavLink
-      onClick={onClick}
-      active={active}
-      disabled={disabledProp || disabled}
-    >
-      {children}
-    </NavLink>
+    <NavigationProvider>
+      <SubmitContent>{children}</SubmitContent>
+    </NavigationProvider>
   )
 }
 
-const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const SubmitContent: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const pathname = usePathname()
+  const { onClick } = useLinkWithWarning()
 
   let index = PATHS.findIndex((p) => p.href === pathname)
   index = index >= 0 ? index : 0
@@ -40,37 +29,17 @@ const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const visiblePaths = PATHS.filter((p) => !p.hidden)
 
   return (
-    <NavigationProvider>
-      <PaneledPage
-        title={active.label}
-        rightCorner={
-          active.hidden
-            ? 'Success!'
-            : `Step ${index + 1} / ${visiblePaths.length}`
-        }
-        sidebar={
-          <Box>
-            <Box sx={{ variant: 'text.monoCaps', mb: [5, 5, 5, 6] }}>
-              Overview
-            </Box>
-            <Flex sx={{ flexDirection: 'column', gap: [5, 5, 5, 6] }}>
-              {visiblePaths.map(({ label, href }) => (
-                <AuthedNavLink
-                  key={href}
-                  href={href}
-                  active={pathname === href}
-                  disabled={active.hidden}
-                >
-                  {label}
-                </AuthedNavLink>
-              ))}
-            </Flex>
-          </Box>
-        }
-      >
-        {children}
-      </PaneledPage>
-    </NavigationProvider>
+    <PaneledPage
+      title={active.title}
+      rightCorner={
+        active.hidden
+          ? 'Success!'
+          : `Step ${index + 1} / ${visiblePaths.length}`
+      }
+      sidebar={<NavSidebar paths={visiblePaths} onClick={onClick} />}
+    >
+      {children}
+    </PaneledPage>
   )
 }
 

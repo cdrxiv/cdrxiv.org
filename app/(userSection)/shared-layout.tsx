@@ -2,9 +2,14 @@
 
 import { useRouter } from 'next/navigation'
 
-import { Link } from '../../components'
+import { Link, NavSidebar } from '../../components'
 import PaneledPage from '../../components/layouts/paneled-page'
-import Sidebar from './sidebar'
+
+const PATHS = [
+  { href: '/account', title: 'Account', public: true },
+  { href: '/submissions', title: 'Submissions' },
+  { href: '/preview', title: 'Preprint preview', adminOnly: true },
+]
 
 const SharedLayout: React.FC<{
   back?: boolean
@@ -29,7 +34,7 @@ const SharedLayout: React.FC<{
           </Link>
         )
       }
-      sidebar={<Sidebar />}
+      sidebar={<NavSidebar paths={PATHS} />}
     >
       {children}
     </PaneledPage>
