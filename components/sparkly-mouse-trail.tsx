@@ -1,7 +1,7 @@
 'use client'
 
-import { AnimatePresence, motion } from 'framer-motion'
-import { useCallback, useEffect, useState } from 'react'
+import { motion, useMotionValue, useSpring } from 'framer-motion'
+import { useEffect, useState } from 'react'
 
 interface SparklePosition {
   x: number
@@ -9,6 +9,7 @@ interface SparklePosition {
   id: number
   size: number
   color: string
+  duration: number
 }
 
 interface SparklyMouseTrailProps {
@@ -17,43 +18,46 @@ interface SparklyMouseTrailProps {
 
 const SparklyMouseTrail = ({ isActive }: SparklyMouseTrailProps) => {
   const [sparkles, setSparkles] = useState<SparklePosition[]>([])
-  const [isClient, setIsClient] = useState(false)
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+
+  const springConfig = { damping: 25, stiffness: 700 }
+  const springX = useSpring(mouseX, springConfig)
+  const springY = useSpring(mouseY, springConfig)
 
   useEffect(() => {
-    setIsClient(true)
-  }, [])
-
-  const handleMouseMove = useCallback(
-    (event: MouseEvent) => {
-      if (isActive) {
-        const newSparkles = Array.from({ length: 5 }, () => ({
-          x: event.clientX + (Math.random() - 0.5) * 20,
-          y: event.clientY + (Math.random() - 0.5) * 20,
-          id: Date.now() + Math.random(),
-          size: Math.random() * 4 + 1,
-          color: `hsl(${Math.random() * 360}, 100%, 50%)`,
-        }))
-        setSparkles((prevSparkles) => [
-          ...newSparkles,
-          ...prevSparkles.slice(0, 45),
-        ])
-      }
-    },
-    [isActive],
-  )
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.addEventListener('mousemove', handleMouseMove)
-      return () => {
-        window.removeEventListener('mousemove', handleMouseMove)
-      }
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseX.set(e.clientX)
+      mouseY.set(e.clientY)
     }
-  }, [handleMouseMove])
 
-  if (!isClient) {
-    return null
-  }
+    window.addEventListener('mousemove', handleMouseMove)
+
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [mouseX, mouseY])
+
+  useEffect(() => {
+    const createSparkle = () => ({
+      id: Math.random(),
+      x: (Math.random() - 0.5) * 100,
+      y: (Math.random() - 0.5) * 100,
+      size: Math.random() * 4 + 1,
+      color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+      duration: Math.random() * 2 + 1,
+    })
+
+    const intervalId = setInterval(() => {
+      setSparkles((prevSparkles) => {
+        const newSparkles = [...prevSparkles, createSparkle()]
+        if (newSparkles.length > 100) {
+          newSparkles.shift()
+        }
+        return newSparkles
+      })
+    }, 50)
+
+    return () => clearInterval(intervalId)
+  }, [])
 
   return (
     <div
@@ -61,32 +65,44 @@ const SparklyMouseTrail = ({ isActive }: SparklyMouseTrailProps) => {
         position: 'fixed',
         inset: 0,
         pointerEvents: 'none',
-        zIndex: 9999,
+        zIndex: 999999,
       }}
     >
-      <AnimatePresence>
+      <motion.div
+        style={{
+          x: springX,
+          y: springY,
+          width: '1px',
+          height: '1px',
+          position: 'absolute',
+          pointerEvents: 'none',
+        }}
+      >
         {isActive &&
           sparkles.map((sparkle) => (
             <motion.div
               key={sparkle.id}
-              initial={{ opacity: 1, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0 }}
-              transition={{ duration: 0.5, ease: 'easeOut' }}
               style={{
                 position: 'absolute',
                 left: sparkle.x,
                 top: sparkle.y,
                 width: sparkle.size,
                 height: sparkle.size,
-                backgroundColor: sparkle.color,
                 borderRadius: '50%',
+                backgroundColor: sparkle.color,
+              }}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: [0, 1, 0], scale: [0, 1, 0] }}
+              transition={{
+                duration: sparkle.duration,
+                repeat: Infinity,
+                repeatType: 'loop',
+                ease: 'easeInOut',
               }}
             />
           ))}
-      </AnimatePresence>
+      </motion.div>
     </div>
   )
 }
-
 export default SparklyMouseTrail

@@ -2,10 +2,11 @@
 
 import { Box } from 'theme-ui'
 
-import { Form, Link } from '../../../../components'
 import { useEffect, useRef, useState } from 'react'
-import { usePreprint } from '../preprint-context'
+import { Form, Link } from '../../../../components'
+import SparklyMouseTrail from '../../../../components/sparkly-mouse-trail'
 import { getAdditionalField } from '../../../../utils/data'
+import { usePreprint } from '../preprint-context'
 
 const Success = () => {
   const [decoration, setDecoration] = useState('₊˚⊹⋆')
@@ -33,16 +34,19 @@ const Success = () => {
   }, [])
 
   return (
-    <Form>
-      <Box sx={{ variant: 'text.monoCaps' }}>
-        {decoration} Your {printedType} successfully submitted!{' '}
-        {decoration.split('').reverse().join('')}
-      </Box>
+    <>
+      <SparklyMouseTrail isActive />
+      <Form>
+        <Box sx={{ variant: 'text.monoCaps' }}>
+          {decoration} Your {printedType} successfully submitted!{' '}
+          {decoration.split('').reverse().join('')}
+        </Box>
 
-      <Link href='/' forwardArrow>
-        Home
-      </Link>
-    </Form>
+        <Link href='/' forwardArrow>
+          Home
+        </Link>
+      </Form>
+    </>
   )
 }
 
