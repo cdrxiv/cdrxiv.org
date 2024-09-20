@@ -75,8 +75,10 @@ const PaneledPage: React.FC<{
               position: 'sticky',
               top: HEADER_HEIGHT,
               overflowY: 'auto',
-              mr: -6, // push scrollbar to edge
-              pr: 6,
+              pl: 3,
+              ml: -3,
+              mr: [0, 0, -6, -8], // push scrollbar to edge
+              pr: [0, 0, -6, -8],
             }}
           >
             {sidebar}
@@ -154,8 +156,8 @@ const PaneledPage: React.FC<{
               top: HEADER_HEIGHT,
               maxHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
               overflowY: 'auto',
-              mr: -8, // push scrollbar to edge
-              pr: 8,
+              mr: [0, 0, -8, -10], // push scrollbar to edge
+              pr: [0, 0, -8, -10],
             }}
           >
             {metadata}

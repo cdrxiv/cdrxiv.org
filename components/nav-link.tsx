@@ -25,10 +25,10 @@ const NavLink: React.FC<NavLinkProps> = ({
         opacity: disabled ? 0.65 : 1,
         textDecoration: 'none',
         '::before': active
-          ? { content: '">"', position: 'absolute', left: -3 }
+          ? { content: '">"', position: 'absolute', left: 0 }
           : {},
         '&:hover::before': interactive
-          ? { content: '">"', position: 'absolute', left: -3 }
+          ? { content: '">"', position: 'absolute', left: 0 }
           : {},
       }}
     >
