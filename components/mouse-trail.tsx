@@ -15,11 +15,6 @@ interface CursorTrailProps {
 
 const MouseTrail = ({ isActive }: CursorTrailProps) => {
   const [cursorTrail, setCursorTrail] = useState<CursorPosition[]>([])
-  const [isClient, setIsClient] = useState(false)
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
 
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {
@@ -41,10 +36,6 @@ const MouseTrail = ({ isActive }: CursorTrailProps) => {
       }
     }
   }, [handleMouseMove])
-
-  if (!isClient) {
-    return null
-  }
 
   return (
     <div
