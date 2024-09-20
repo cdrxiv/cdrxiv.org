@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Box, Flex } from 'theme-ui'
 import { formatDate } from '../utils/formatters'
-import { getAdditionalField, getFunders } from '../utils/data'
+import { getAdditionalField, getFunders, getZenodoLicense } from '../utils/data'
 import { Field, Button, Link } from '../components'
 import type { Preprint, Funder } from '../types/preprint'
 import type { Deposition } from '../types/zenodo'
@@ -68,8 +68,7 @@ const PreprintMetadata: React.FC<{
     'Conflict of interest statement',
   )
   const dataLicense = getAdditionalField(preprint, 'Data license')
-  const dataLicenseInfo =
-    LICENSE_DISPLAY[dataLicense as 'cc-by-4.0' | 'cc-by-nc-4.0']
+  const dataLicenseInfo = getZenodoLicense(preprint)
   const hasConflictOfInterest =
     conflictOfInterest && conflictOfInterest !== 'None'
 

@@ -77,3 +77,24 @@ export const getZenodoMetadata = (
     ],
   }
 }
+
+const LICENSE_DISPLAY = {
+  'cc-by-nc-4.0': {
+    url: 'https://creativecommons.org/licenses/by-nc/4.0/',
+    name: 'CC BY-NC 4.0',
+  },
+  'cc-by-4.0': {
+    url: 'https://creativecommons.org/licenses/by/4.0/',
+    name: 'CC BY 4.0',
+  },
+}
+export const getZenodoLicense = (preprint: Preprint) => {
+  const dataLicense = getAdditionalField(preprint, 'Data license')
+    // Handle accidental capitalization (can occur in repository manager dashboard)
+    ?.toLowerCase()
+  if (!dataLicense || !['cc-by-4.0', 'cc-by-nc-4.0'].includes(dataLicense)) {
+    return null
+  }
+
+  return LICENSE_DISPLAY[dataLicense as 'cc-by-4.0' | 'cc-by-nc-4.0']
+}
