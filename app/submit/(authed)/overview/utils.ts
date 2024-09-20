@@ -16,6 +16,7 @@ import {
   createDataDepositionFile,
 } from '../../../../actions/zenodo'
 import { FileInputValue } from '../../../../components'
+import { LICENSE_MAPPING } from '../../constants'
 
 export type FormData = {
   agreement: boolean
@@ -200,13 +201,29 @@ export const submitForm = async (
     supplementaryFiles = externalFile ? [externalFile] : []
   }
 
+  const additionalFieldAnswers = [
+    ...preprint.additional_field_answers.filter(
+      (field) =>
+        field.field?.name !== 'Submission type' &&
+        !(
+          // Remove 'Data license' there is no data included
+          (submissionType === 'Article' && field.field?.name === 'Data license')
+        ) &&
+        !(
+          // Remove 'Data license' for data-only submissions when it is out-of-sync with main license
+          (
+            submissionType === 'Data' &&
+            field.field?.name === 'Data license' &&
+            LICENSE_MAPPING[field.answer as 'cc-by-4.0' | 'cc-by-nc-4.0'] !==
+              preprint.license?.pk
+          )
+        ),
+    ),
+    createAdditionalField('Submission type', submissionType),
+  ]
+
   const params = {
-    additional_field_answers: [
-      ...preprint.additional_field_answers.filter(
-        (field) => field.field?.name !== 'Submission type',
-      ),
-      createAdditionalField('Submission type', submissionType),
-    ],
+    additional_field_answers: additionalFieldAnswers,
     supplementary_files: supplementaryFiles,
   }
 

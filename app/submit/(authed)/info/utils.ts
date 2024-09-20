@@ -7,15 +7,18 @@ export type FormData = {
   title: string
   abstract: string
   license: number
+  data_license: string
   doi: string
   subject: string[]
   keywords: string[]
   funding: string
   conflict_of_interest: string
   comments_editor: string
+  submission_type: string
 }
 
 export const initializeForm = (preprint: Preprint): FormData => {
+  const submissionType = getAdditionalField(preprint, 'Submission type') ?? ''
   return {
     title: preprint.title === 'Placeholder' ? '' : preprint.title,
     abstract: preprint.abstract ?? '',
@@ -23,6 +26,10 @@ export const initializeForm = (preprint: Preprint): FormData => {
       typeof preprint.license === 'number'
         ? preprint.license
         : preprint.license?.pk,
+    data_license:
+      submissionType === 'Article'
+        ? ''
+        : (getAdditionalField(preprint, 'Data license') ?? ''),
     doi: preprint.doi ?? '',
     subject: preprint.subject.map(({ name }) => name),
     keywords: preprint.keywords.map(({ word }) => word),
@@ -31,6 +38,7 @@ export const initializeForm = (preprint: Preprint): FormData => {
     conflict_of_interest:
       getAdditionalField(preprint, 'Conflict of interest statement') ?? '',
     comments_editor: '',
+    submission_type: submissionType, // not editable; stored in form state for convenience
   }
 }
 
@@ -38,9 +46,11 @@ export const validateForm = ({
   title,
   abstract,
   license,
+  data_license,
   doi,
   subject,
   conflict_of_interest,
+  submission_type,
 }: FormData) => {
   let result: Partial<{ [K in keyof FormData]: string }> = {}
 
@@ -53,7 +63,14 @@ export const validateForm = ({
   }
 
   if (!license) {
-    result.license = 'You must provide license for your submission.'
+    result.license =
+      submission_type === 'Article'
+        ? 'You must provide license for your submission.'
+        : 'You must provide license for your article.'
+  }
+
+  if (['Both', 'Data'].includes(submission_type) && !data_license) {
+    result.data_license = 'You must provide license for your data submission.'
   }
 
   if (doi && !doi.startsWith('https://doi.org/')) {
@@ -85,8 +102,32 @@ export const submitForm = (
     funding,
     conflict_of_interest,
     comments_editor,
+    data_license,
+    submission_type,
   }: FormData,
 ) => {
+  const additional_field_answers = [
+    ...preprint.additional_field_answers.filter(
+      (el) =>
+        el.field?.name &&
+        ![
+          'Funder(s) and award numbers',
+          'Conflict of interest statement',
+          'Data license',
+        ].includes(el.field.name),
+    ),
+    createAdditionalField('Funder(s) and award numbers', funding),
+    createAdditionalField(
+      'Conflict of interest statement',
+      conflict_of_interest,
+    ),
+  ]
+
+  if (submission_type !== 'Article') {
+    additional_field_answers.push(
+      createAdditionalField('Data license', data_license),
+    )
+  }
   const params = {
     title,
     abstract,
@@ -94,14 +135,7 @@ export const submitForm = (
     doi: doi ? doi : null,
     subject: subject.map((name) => ({ name })),
     keywords: keywords.map((word) => ({ word })),
-    additional_field_answers: [
-      ...preprint.additional_field_answers,
-      createAdditionalField('Funder(s) and award numbers', funding),
-      createAdditionalField(
-        'Conflict of interest statement',
-        conflict_of_interest,
-      ),
-    ],
+    additional_field_answers,
     ...(comments_editor ? { comments_editor } : {}),
   }
 

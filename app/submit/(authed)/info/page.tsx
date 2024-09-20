@@ -11,6 +11,7 @@ import {
 } from '../../../../components'
 import FundingSources from './funding-sources'
 import NavButtons from '../../nav-buttons'
+import Licenses from './licenses'
 import { usePreprint } from '../preprint-context'
 import { useForm } from '../utils'
 import { useSubjects } from '../../../subjects-context'
@@ -51,15 +52,18 @@ const SubmissionInformation = () => {
             id='abstract'
           />
         </Field>
-        <Field label='License' id='license' error={errors.license}>
-          <Select
-            value={String(data.license)}
-            onChange={(e) => setters.license(Number(e.target.value))}
-            id='license'
-          >
-            <option value={'0'}>Select one</option>
-            <option value={'1'}>CC BY 4.0</option>
-          </Select>
+        <Field
+          label='License'
+          id='license'
+          error={errors.license ?? errors.data_license}
+        >
+          <Licenses
+            license={data.license}
+            setLicense={setters.license}
+            dataLicense={data.data_license}
+            setDataLicense={setters.data_license}
+            submissionType={data.submission_type}
+          />
         </Field>
         <Field
           label='DOI'

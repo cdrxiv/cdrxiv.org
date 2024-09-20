@@ -50,6 +50,7 @@ const Guide: React.FC<GuideProps> = ({
         left: 0,
         right: 0,
         top: 0,
+        height: '100%',
         zIndex: 5000,
         pointerEvents: 'none',
         display: display ? 'initial' : 'none',
@@ -85,7 +86,7 @@ const GuideColumns: React.FC<GuideColumnsProps> = ({
   opacity,
 }) => {
   return (
-    <Row columns={columns}>
+    <Row columns={columns} sx={{ height: '100%' }}>
       {Array(count)
         .fill(null)
         .map((d, i) => {
@@ -95,7 +96,7 @@ const GuideColumns: React.FC<GuideColumnsProps> = ({
               start={[i + 1]}
               width={[1]}
               sx={{
-                height: '100vh',
+                height: '100%',
                 bg: style === 'solid' ? color : 'transparent',
                 opacity: style == 'solid' ? opacity : 1,
                 borderStyle: 'solid',

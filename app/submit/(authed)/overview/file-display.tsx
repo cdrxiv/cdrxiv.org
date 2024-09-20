@@ -11,13 +11,19 @@ type Props = {
 }
 const FileDisplay: React.FC<Props> = ({ name, href }) => {
   return name ? (
-    <Link href={href} sx={{ variant: 'text.monoCaps', textTransform: 'none' }}>
+    <Link
+      href={href}
+      sx={{
+        variant: 'text.mono',
+        textTransform: 'none',
+      }}
+    >
       {name}
     </Link>
   ) : (
     <Box
       sx={{
-        variant: 'text.monoCaps',
+        variant: 'text.mono',
         color: 'listBorderGrey',
       }}
     >

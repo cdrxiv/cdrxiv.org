@@ -28,6 +28,7 @@ export type Deposition = {
     related_identifiers?: RelatedIdentifier[]
     communities: [{ identifier: 'cdrxiv' }]
     subjects?: Subject[]
+    license: string
   }
   files: DepositionFile[]
   links: {

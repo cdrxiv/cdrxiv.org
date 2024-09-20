@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Box, Flex } from 'theme-ui'
 import { formatDate } from '../utils/formatters'
-import { getAdditionalField, getFunders } from '../utils/data'
+import { getAdditionalField, getFunders, getZenodoLicense } from '../utils/data'
 import { Field, Button, Link } from '../components'
 import type { Preprint, Funder } from '../types/preprint'
 import type { Deposition } from '../types/zenodo'
@@ -9,6 +9,17 @@ import useTracking from '../hooks/use-tracking'
 
 const getDataDownload = (deposition: Deposition) => {
   return `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].filename}?download=1`
+}
+
+const LICENSE_DISPLAY = {
+  'cc-by-nc-4.0': {
+    url: 'https://creativecommons.org/licenses/by-nc/4.0/',
+    name: 'CC BY-NC 4.0',
+  },
+  'cc-by-4.0': {
+    url: 'https://creativecommons.org/licenses/by/4.0/',
+    name: 'CC BY 4.0',
+  },
 }
 
 const ErrorOrTrack = ({
@@ -56,6 +67,8 @@ const PreprintMetadata: React.FC<{
     preprint,
     'Conflict of interest statement',
   )
+  const dataLicense = getAdditionalField(preprint, 'Data license')
+  const dataLicenseInfo = getZenodoLicense(preprint)
   const hasConflictOfInterest =
     conflictOfInterest && conflictOfInterest !== 'None'
 
@@ -85,7 +98,7 @@ const PreprintMetadata: React.FC<{
         {preprint.subject.map(({ name }) => (
           <Link
             key={name}
-            href={`/?∂subject=${name}`}
+            href={`/?subject=${name}`}
             forwardArrow
             sx={{
               variant: 'text.mono',
@@ -187,16 +200,42 @@ const PreprintMetadata: React.FC<{
       </Field>
 
       <Field label='License'>
-        <Link href={preprint.license?.url} sx={{ variant: 'text.mono' }}>
-          {preprint.license?.short_name}
-          <ErrorOrTrack
-            mt={2}
-            hasError={!preprint.license}
-            preview={preview}
-            pk={preprint.pk}
-            errorMessage={'No license provided.'}
-          />
-        </Link>
+        <Flex sx={{ gap: 2, variant: 'text.mono' }}>
+          <Link href={preprint.license?.url} sx={{ variant: 'text.mono' }}>
+            {preprint.license?.short_name}
+          </Link>
+          {submissionType === 'Both' ? '(Article)' : null}
+        </Flex>
+        <ErrorOrTrack
+          mt={2}
+          hasError={!preprint.license}
+          preview={preview}
+          pk={preprint.pk}
+          errorMessage={'No license provided.'}
+        />
+        {submissionType === 'Both' && (
+          <>
+            {dataLicenseInfo && (
+              <Flex sx={{ gap: 2, variant: 'text.mono' }}>
+                <Link href={dataLicenseInfo.url} sx={{ variant: 'text.mono' }}>
+                  {dataLicenseInfo.name}
+                </Link>
+                (Data)
+              </Flex>
+            )}
+            <ErrorOrTrack
+              mt={2}
+              hasError={!dataLicenseInfo}
+              preview={preview}
+              pk={preprint.pk}
+              errorMessage={
+                dataLicense
+                  ? `Invalid data license found: ${dataLicense}`
+                  : 'No data license provided.'
+              }
+            />
+          </>
+        )}
       </Field>
 
       {preprint.keywords.length > 0 && (
