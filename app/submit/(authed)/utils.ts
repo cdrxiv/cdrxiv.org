@@ -15,6 +15,7 @@ export function useForm<T>(
   initialize: () => T,
   validate: (values: T) => Errors<T>,
   submit: (values: T) => Promise<void>,
+  showNavigationWarning: boolean = true,
 ) {
   const { setNavigationWarning } = useNavigation()
   const { preprint } = usePreprint()
@@ -23,7 +24,7 @@ export function useForm<T>(
     validate,
     submit,
     { preprint: preprint.pk },
-    setNavigationWarning,
+    showNavigationWarning ? setNavigationWarning : undefined,
   )
 }
 
