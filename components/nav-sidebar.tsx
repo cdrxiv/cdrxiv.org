@@ -22,7 +22,9 @@ const NavSidebar: React.FC<NavSidebarProps> = ({ paths, onClick }) => {
 
   return (
     <Box>
-      <Box sx={{ variant: 'text.monoCaps', mb: [5, 5, 5, 6] }}>Overview</Box>
+      <Box sx={{ variant: 'text.monoCaps', mb: [5, 5, 5, 6], mt: 5 }}>
+        Overview
+      </Box>
       <Flex sx={{ flexDirection: 'column', gap: [5, 5, 5, 6] }}>
         {paths.map(({ href, title, public: publicPath, adminOnly }) =>
           !adminOnly || session?.user?.email?.endsWith('@carbonplan.org') ? (
