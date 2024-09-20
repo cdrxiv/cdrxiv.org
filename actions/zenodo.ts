@@ -113,6 +113,12 @@ export async function createDataDepositionFile(
     },
   )
 
+  if (!res.ok) {
+    throw new Error(
+      `Status ${res.status}: Unable to upload data file. ${res.statusText}.`,
+    )
+  }
+
   const result = await res.json()
 
   if (!result.id) {
