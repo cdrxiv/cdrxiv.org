@@ -1,16 +1,22 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Box } from 'theme-ui'
-import Header from '../header'
-import PageCorner from '../page-corner'
-import Guide from '../guide'
 import useBackgroundColors from '../../hooks/use-background-colors'
+import Guide from '../guide'
+import Header from '../header'
+import MouseTrail from '../mouse-trail'
+import PageCorner from '../page-corner'
 
 const margin = [2, 2, 3, 3]
 
 const PageCard = ({ children }: { children: React.ReactNode }) => {
   const { cardBackground, overallBackground } = useBackgroundColors()
+  const [isTrailActive, setIsTrailActive] = useState(false)
+
+  const toggleTrail = () => {
+    setIsTrailActive((prev) => !prev)
+  }
 
   return (
     <Box sx={{ bg: overallBackground, width: '100vw', height: '100vh' }}>
@@ -40,7 +46,8 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
             px: ['18px', '36px', '36px', '52px'],
           }}
         >
-          <PageCorner />
+          <PageCorner onToggle={toggleTrail} />
+          <MouseTrail isActive={isTrailActive} />
 
           <Box sx={{ contain: 'layout' }}>
             <Guide />

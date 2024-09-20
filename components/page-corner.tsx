@@ -1,5 +1,5 @@
 import { SVGProps } from 'react'
-import { BoxProps, Box, Link, useThemeUI } from 'theme-ui'
+import { Box, BoxProps, Link, useThemeUI } from 'theme-ui'
 import useBackgroundColors from '../hooks/use-background-colors'
 
 type GBoxProps = BoxProps & SVGProps<SVGGElement>
@@ -13,12 +13,22 @@ const PathBox: React.FC<PathBoxProps> = (props) => <Box as='path' {...props} />
 
 const foldSize = 100
 
-const PageCorner = () => {
+interface PageCornerProps {
+  onToggle: () => void
+}
+
+const PageCorner: React.FC<PageCornerProps> = ({ onToggle }) => {
   const { theme } = useThemeUI()
   const { overallBackground } = useBackgroundColors()
 
   return (
-    <Link href='/'>
+    <Link
+      href='/'
+      onClick={(event) => {
+        event.preventDefault()
+        onToggle()
+      }}
+    >
       <SVGBox
         viewBox={`0 0 ${foldSize} ${foldSize}`}
         fill='transparent'

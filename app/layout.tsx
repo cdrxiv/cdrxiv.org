@@ -24,6 +24,9 @@ export default async function RootLayout({
     getServerSession(authOptions),
   ])
 
+
+  
+
   return (
     <html lang='en'>
       <head>
@@ -46,7 +49,6 @@ export default async function RootLayout({
         <Providers session={session}>
           <SubjectsProvider subjects={subjects.results}>
             <main>
-              <MouseTrail isActive/>
               <PageCard>{children}</PageCard>
             </main>
           </SubjectsProvider>
