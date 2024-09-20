@@ -64,7 +64,7 @@ const SubmissionOverview = () => {
         <Field
           label='Data file'
           id='dataFile'
-          description='Your submission can by represented by a single file of any format, including ZIP, up to [TK] MB.'
+          description='Your submission must be represented by a single file of any format, including ZIP.'
           error={errors.dataFile ?? errors.externalFile}
         >
           <DataFileInput
