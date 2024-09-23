@@ -39,7 +39,12 @@ const SubmissionInformation = () => {
             id='title'
           />
         </Field>
-        <Field label='Abstract' id='abstract' error={errors.abstract}>
+        <Field
+          label='Abstract'
+          id='abstract'
+          description='This should be the same as the article abstract or, for data-only submissions, a brief description of the dataset.'
+          error={errors.abstract}
+        >
           <Textarea
             value={data.abstract}
             onChange={(e) => setters.abstract(e.target.value)}
