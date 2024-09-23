@@ -103,6 +103,8 @@ export const theme: Theme = {
     },
     textarea: {
       variant: 'forms.input',
+      minHeight: '61px',
+      resize: 'vertical',
     },
     select: {
       variant: 'forms.input',
