@@ -38,7 +38,7 @@ export const initializeForm = (
       (file) => file.label === 'CDRXIV_DATA_DRAFT',
     ) ?? null
   return {
-    agreement: false,
+    agreement: !!(articleFile || dataFile),
     articleFile: articleFile
       ? {
           persisted: true,

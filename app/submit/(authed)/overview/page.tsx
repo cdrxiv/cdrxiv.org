@@ -1,7 +1,7 @@
 'use client'
 
 import { Label } from 'theme-ui'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 
 import { Checkbox, Field, FileInput, Form } from '../../../../components'
 import NavButtons from '../../nav-buttons'
@@ -19,6 +19,7 @@ const SubmissionOverview = () => {
     validateForm,
     submitForm.bind(null, preprint, setPreprint, files, setFiles),
   )
+  const [disableAgreement] = useState<boolean>(data.agreement)
 
   const handleDataFileError = useCallback(() => {
     return updatePreprint(preprint, { supplementary_files: [] }).then(
@@ -39,6 +40,7 @@ const SubmissionOverview = () => {
               id='agreement'
               checked={data.agreement}
               onChange={(e) => setters.agreement(e.target.checked)}
+              disabled={disableAgreement}
             />
             Authors grant us the right to publish, on this website, their
             uploaded manuscript, supplementary materials and any supplied
@@ -62,7 +64,7 @@ const SubmissionOverview = () => {
         <Field
           label='Data file'
           id='dataFile'
-          description='Your submission can by represented by a single file of any format, including ZIP, up to [TK] MB.'
+          description='Your submission must be represented by a single file of any format, including ZIP.'
           error={errors.dataFile ?? errors.externalFile}
         >
           <DataFileInput

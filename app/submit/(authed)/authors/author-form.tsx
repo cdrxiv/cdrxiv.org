@@ -73,6 +73,7 @@ const AuthorForm = () => {
       initializeForm,
       validateForm,
       submitForm.bind(null, preprint, setPreprint),
+      false,
     )
 
   const handleSubmit = useCallback(
