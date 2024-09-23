@@ -1,3 +1,4 @@
+import { usePathname } from 'next/navigation'
 import { SVGProps } from 'react'
 import { Box, BoxProps, Link, useThemeUI } from 'theme-ui'
 import useBackgroundColors from '../hooks/use-background-colors'
@@ -14,21 +15,25 @@ const PathBox: React.FC<PathBoxProps> = (props) => <Box as='path' {...props} />
 const foldSize = 100
 
 interface PageCornerProps {
-  onToggle: () => void
+  onToggle?: () => void
 }
 
 const PageCorner: React.FC<PageCornerProps> = ({ onToggle }) => {
   const { theme } = useThemeUI()
   const { overallBackground } = useBackgroundColors()
+  const pathname = usePathname()
+
+  const isHomePage = pathname === '/'
+
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (isHomePage) {
+      event.preventDefault()
+      onToggle?.()
+    }
+  }
 
   return (
-    <Link
-      href='/'
-      onClick={(event) => {
-        event.preventDefault()
-        onToggle()
-      }}
-    >
+    <Link href='/' onClick={handleClick}>
       <SVGBox
         viewBox={`0 0 ${foldSize} ${foldSize}`}
         fill='transparent'
