@@ -15,10 +15,12 @@ const SubmissionOverview: React.FC<Props> = async ({ children }) => {
     fetchWithToken(
       headers(),
       'https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/?stage=preprint_unsubmitted',
+      { next: { tags: ['submit'] } },
     ),
     fetchWithToken(
       headers(),
       'https://carbonplan.endurance.janeway.systems/carbonplan/api/preprint_files/',
+      { next: { tags: ['submit'] } },
     ),
   ])
 

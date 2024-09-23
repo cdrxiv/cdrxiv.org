@@ -2,7 +2,7 @@
 
 import { headers, cookies } from 'next/headers'
 import { getToken } from 'next-auth/jwt'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import {
   Author,
   AuthorParams,
@@ -55,13 +55,7 @@ export async function updatePreprint(
 
   const updatedPreprint = res.json()
 
-  // Clear submit form cache when preprint moves from unsubmitted to review stage
-  if (
-    preprint.stage === 'preprint_unsubmitted' &&
-    params.stage === 'preprint_review'
-  ) {
-    revalidatePath(`/submit`)
-  }
+  revalidateTag('submit')
   return updatedPreprint
 }
 
@@ -114,6 +108,8 @@ export async function createPreprint(): Promise<Preprint> {
   }
 
   const preprint = res.json()
+  revalidateTag('submit')
+
   return preprint
 }
 
@@ -175,6 +171,8 @@ export async function createPreprintFile(
   }
 
   const result = res.json()
+
+  revalidateTag('submit')
   return result
 }
 export async function fetchPreprintFile(pk: number): Promise<PreprintFile> {
@@ -208,6 +206,7 @@ export async function deletePreprintFile(pk: number): Promise<true> {
     )
   }
 
+  revalidateTag('submit')
   return true
 }
 
