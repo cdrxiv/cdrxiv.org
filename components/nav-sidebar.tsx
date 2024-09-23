@@ -13,19 +13,31 @@ interface NavSidebarProps {
     public?: boolean
     adminOnly?: boolean
   }[]
+  label?: string
   onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void
 }
 
-const NavSidebar: React.FC<NavSidebarProps> = ({ paths, onClick }) => {
+const NavSidebar: React.FC<NavSidebarProps> = ({
+  label = 'Overview',
+  paths,
+  onClick,
+}) => {
   const pathname = usePathname()
   const { data: session, status } = useSession()
 
   return (
     <Box>
-      <Box sx={{ variant: 'text.monoCaps', mb: [5, 5, 5, 6], mt: 5 }}>
-        Overview
+      <Box
+        sx={{
+          display: ['none', 'none', 'inherit', 'inherit'],
+          variant: 'text.monoCaps',
+          mb: [3, 5, 5, 6],
+          mt: 5,
+        }}
+      >
+        {label}
       </Box>
-      <Flex sx={{ flexDirection: 'column', gap: [5, 5, 5, 6] }}>
+      <Flex sx={{ flexDirection: 'column', gap: [3, 5, 5, 6] }}>
         {paths.map(({ href, title, public: publicPath, adminOnly }) =>
           !adminOnly || session?.user?.email?.endsWith('@carbonplan.org') ? (
             <NavLink

@@ -15,6 +15,7 @@ import Row from '../row'
 import Column from '../column'
 import Guide from '../guide'
 import Loading from '../loading'
+import Expander from '../expander'
 
 const HEADER_HEIGHT = 100
 
@@ -96,6 +97,15 @@ const PaneledPage: React.FC<{
           >
             <Box sx={{ contain: 'layout' }}>
               <Guide columns={[6, 6, 8, 8]} color='pink' opacity={0.2} />
+              <Box
+                sx={{ display: ['inherit', 'inherit', 'none', 'none'], mb: 4 }}
+              >
+                <Expander label='Overview'>
+                  <Box sx={{ pt: 4, position: 'relative', pl: 3, ml: -3 }}>
+                    {sidebar}
+                  </Box>
+                </Expander>
+              </Box>
               <Row columns={[6, 6, 8, 8]}>
                 <Column start={1} width={[6, 6, 8, 8]}>
                   <Flex
