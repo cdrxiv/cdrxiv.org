@@ -59,7 +59,7 @@ const PreprintMetadata: React.FC<{
   deposition?: Deposition
   preview?: boolean
 }> = ({ preprint, preview }) => {
-  const [deposition, setDeposition] = useState<Deposition | null>(null)
+  const [deposition, setDeposition] = useState<Deposition>()
 
   useEffect(() => {
     const fetchDeposition = async () => {
