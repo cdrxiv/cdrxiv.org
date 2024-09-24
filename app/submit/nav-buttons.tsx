@@ -34,7 +34,8 @@ const NavButton: React.FC<ButtonProps> = ({
   }
 
   const onClickProp = onClick
-    ? async () => {
+    ? async (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault()
         setIsLoading(true)
         const result = await onClick()
         if (result) {
@@ -46,7 +47,12 @@ const NavButton: React.FC<ButtonProps> = ({
     : onClickWithWarning
 
   return (
-    <Link {...props} onClick={onClickProp} sx={{ variant: 'text.monoCaps' }}>
+    <Link
+      {...props}
+      href={href}
+      onClick={onClickProp}
+      sx={{ variant: 'text.monoCaps' }}
+    >
       {children}
     </Link>
   )
