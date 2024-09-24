@@ -3,15 +3,17 @@
 import { AnimatePresence, motion, useAnimationFrame } from 'framer-motion'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useThemeUI } from 'theme-ui'
+import { v4 as uuidv4 } from 'uuid'
 
 interface SparklePosition {
   x: number
   y: number
-  id: number
+  id: string
   size: number
   duration: number
   rotation: number
   initialDistance: number
+  createdAt: number
 }
 
 interface SparklyMouseTrailProps {
@@ -51,11 +53,12 @@ const SparklyMouseTrail = ({ isActive }: SparklyMouseTrailProps) => {
     return {
       x: x + offsetX,
       y: y + offsetY,
-      id: Date.now() + Math.random() * 200,
+      id: uuidv4(),
       duration: Math.random() * 1500 + 1500,
       rotation: Math.random() * 360,
       size: Math.random() * 0.5 + 0.5,
       initialDistance,
+      createdAt: Date.now(),
     }
   }, [])
 
@@ -87,7 +90,7 @@ const SparklyMouseTrail = ({ isActive }: SparklyMouseTrailProps) => {
 
     setSparkles((prevSparkles) =>
       prevSparkles.filter(
-        (sparkle) => Date.now() - sparkle.id < sparkle.duration,
+        (sparkle) => Date.now() - sparkle.createdAt < sparkle.duration,
       ),
     )
   })
