@@ -4,7 +4,6 @@ import { Box } from 'theme-ui'
 
 import { useEffect, useRef, useState } from 'react'
 import { Form, Link } from '../../../../components'
-import SparklyMouseTrail from '../../../../components/sparkly-mouse-trail'
 import { getAdditionalField } from '../../../../utils/data'
 import { usePreprint } from '../preprint-context'
 
@@ -34,19 +33,16 @@ const Success = () => {
   }, [])
 
   return (
-    <>
-      <SparklyMouseTrail isActive />
-      <Form>
-        <Box sx={{ variant: 'text.monoCaps' }}>
-          {decoration} Your {printedType} successfully submitted!{' '}
-          {decoration.split('').reverse().join('')}
-        </Box>
+    <Form>
+      <Box sx={{ variant: 'text.monoCaps' }}>
+        {decoration} Your {printedType} successfully submitted!{' '}
+        {decoration.split('').reverse().join('')}
+      </Box>
 
-        <Link href='/' forwardArrow>
-          Home
-        </Link>
-      </Form>
-    </>
+      <Link href='/' forwardArrow>
+        Home
+      </Link>
+    </Form>
   )
 }
 

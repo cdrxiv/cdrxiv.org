@@ -7,12 +7,18 @@ import Guide from '../guide'
 import Header from '../header'
 import MouseTrail from '../mouse-trail'
 import PageCorner from '../page-corner'
+import SparklyMouseTrail from '../sparkly-mouse-trail'
+
+import { usePathname } from 'next/navigation'
 
 const margin = [2, 2, 3, 3]
 
 const PageCard = ({ children }: { children: React.ReactNode }) => {
   const { cardBackground, overallBackground } = useBackgroundColors()
   const [isTrailActive, setIsTrailActive] = useState(false)
+
+  const pathname = usePathname()
+  const isSuccessfullSubmissionPage = pathname === '/submit/success'
 
   const toggleTrail = () => {
     setIsTrailActive((prev) => !prev)
@@ -48,6 +54,7 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
         >
           <PageCorner onToggle={toggleTrail} />
           <MouseTrail isActive={isTrailActive} />
+          <SparklyMouseTrail isActive={isSuccessfullSubmissionPage} />
 
           <Box sx={{ contain: 'layout' }}>
             <Guide />

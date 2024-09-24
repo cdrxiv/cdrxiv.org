@@ -34,9 +34,9 @@ const PlusSvg = ({ color, size }: { color: string; size: number }) => (
   </svg>
 )
 
-export default function SparklyMouseTrail({
+const SparklyMouseTrail = ({
   isActive,
-}: SparklyMouseTrailProps) {
+}: SparklyMouseTrailProps) => {
   const [sparkles, setSparkles] = useState<SparklePosition[]>([])
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const frameCount = useRef(0)
@@ -61,10 +61,14 @@ export default function SparklyMouseTrail({
     setMousePosition({ x: event.clientX, y: event.clientY })
   }, [])
 
-  useEffect(() => {
+useEffect(() => {
+  if (isActive) {
     window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [handleMouseMove])
+  } else {
+    window.removeEventListener('mousemove', handleMouseMove)
+  }
+  return () => window.removeEventListener('mousemove', handleMouseMove)
+}, [handleMouseMove, isActive])
 
   useAnimationFrame(() => {
     frameCount.current += 1
@@ -84,58 +88,65 @@ export default function SparklyMouseTrail({
     )
   })
 
+  if (!isActive) return null
+
   return (
     <div
       style={{
         position: 'fixed',
         inset: 0,
         pointerEvents: 'none',
-        zIndex: 999999,
+        zIndex: 9999,
         border: '2px solid red', // Debug border
+        overflow: 'hidden',
       }}
     >
+      
       <AnimatePresence>
-        {isActive &&
-          sparkles.map((sparkle) => {
-            const distance = Math.sqrt(
-              Math.pow(mousePosition.x - sparkle.x, 2) +
-                Math.pow(mousePosition.y - sparkle.y, 2),
-            )
-            const scale = Math.max(0.05, 1 - (distance / 300) ** 1.5) // Enhanced depth effect
+        {sparkles.map((sparkle) => {
+          const distance = Math.sqrt(
+            Math.pow(mousePosition.x - sparkle.x, 2) +
+              Math.pow(mousePosition.y - sparkle.y, 2),
+          )
+          const scale = Math.max(0.05, 1 - (distance / 300) ** 1.5) // Enhanced depth effect
 
-            return (
-              <motion.div
-                key={sparkle.id}
-                initial={{
-                  opacity: 1,
-                  scale: sparkle.size,
-                  x: sparkle.x,
-                  y: sparkle.y,
-                  rotate: sparkle.rotation,
-                }}
-                animate={{
-                  opacity: 0,
-                  scale: scale * sparkle.size,
-                  x: sparkle.x + (Math.random() - 0.5) * 100,
-                  y: sparkle.y + 200,
-                  rotate: sparkle.rotation + 720,
-                }}
-                exit={{ opacity: 0, scale: 0 }}
-                transition={{
-                  duration: sparkle.duration / 1000,
-                  ease: 'easeOut',
-                }}
-                style={{
-                  position: 'absolute',
-                  left: 0,
-                  top: 0,
-                }}
-              >
-                <PlusSvg color='red' size={24 * sparkle.size} />
-              </motion.div>
-            )
-          })}
+          return (
+            <motion.div
+              key={sparkle.id}
+              initial={{
+                opacity: 1,
+                scale: sparkle.size,
+                x: sparkle.x,
+                y: sparkle.y,
+                rotate: sparkle.rotation,
+              }}
+              animate={{
+                opacity: 0,
+                scale: scale * sparkle.size,
+                x: sparkle.x + (Math.random() - 0.5) * 100,
+                y: sparkle.y + 200,
+                rotate: sparkle.rotation + 720,
+              }}
+              exit={{ opacity: 0, scale: 0 }}
+              transition={{
+                duration: sparkle.duration / 1000,
+                ease: 'easeOut',
+              }}
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                pointerEvents: 'none',
+              }}
+            >
+              <PlusSvg color='red' size={24 * sparkle.size} />
+            </motion.div>
+          )
+        })}
       </AnimatePresence>
     </div>
   )
 }
+
+
+export default SparklyMouseTrail
