@@ -5,7 +5,7 @@ import PaneledPage from '../../../components/layouts/paneled-page'
 
 export default function NotFound() {
   return (
-    <PaneledPage sidebar={<></>}>
+    <PaneledPage>
       <Flex sx={{ justifyContent: 'center', alignItems: 'center', my: 150 }}>
         Preprint not found
       </Flex>

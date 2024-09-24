@@ -37,7 +37,7 @@ const useLoading = () => {
 const PaneledPage: React.FC<{
   children: ReactNode
   metadata?: ReactNode
-  sidebar: ReactNode
+  sidebar?: ReactNode
   title?: string
   leftCorner?: ReactNode
   rightCorner?: ReactNode

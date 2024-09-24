@@ -6,7 +6,7 @@ import PaneledPage from '../../../components/layouts/paneled-page'
 
 export default function PreprintLoading() {
   return (
-    <PaneledPage sidebar={<></>}>
+    <PaneledPage>
       <Flex sx={{ justifyContent: 'center', alignItems: 'center', my: 150 }}>
         <Loading />
       </Flex>
