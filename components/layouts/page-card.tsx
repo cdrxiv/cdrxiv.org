@@ -1,5 +1,7 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
+
 import React, { useState } from 'react'
 import { Box } from 'theme-ui'
 import useBackgroundColors from '../../hooks/use-background-colors'
@@ -8,8 +10,6 @@ import Header from '../header'
 import MouseTrail from '../mouse-trail'
 import PageCorner from '../page-corner'
 import SparklyMouseTrail from '../sparkly-mouse-trail'
-
-import { usePathname } from 'next/navigation'
 
 const margin = [2, 2, 3, 3]
 

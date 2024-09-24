@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useAnimationFrame } from 'framer-motion'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useThemeUI } from 'theme-ui'
 
 interface SparklePosition {
   x: number
@@ -34,15 +35,16 @@ const PlusSvg = ({ color, size }: { color: string; size: number }) => (
   </svg>
 )
 
-const SparklyMouseTrail = ({
-  isActive,
-}: SparklyMouseTrailProps) => {
+const SparklyMouseTrail = ({ isActive }: SparklyMouseTrailProps) => {
   const [sparkles, setSparkles] = useState<SparklePosition[]>([])
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const frameCount = useRef(0)
+  const { theme } = useThemeUI()
+  const color = theme?.colors?.blue as string
+
   const createSparkle = useCallback((x: number, y: number): SparklePosition => {
-    const offsetX = (Math.random() - 0.5) * 200
-    const offsetY = (Math.random() - 0.5) * 200
+    const offsetX = (Math.random() - 0.5) * 100
+    const offsetY = Math.random() * 50 + 50
 
     const initialDistance = Math.sqrt(offsetX * offsetX + offsetY * offsetY)
 
@@ -50,7 +52,7 @@ const SparklyMouseTrail = ({
       x: x + offsetX,
       y: y + offsetY,
       id: Date.now() + Math.random() * 200,
-      duration: Math.random() * 2000 + 2000,
+      duration: Math.random() * 1500 + 1500,
       rotation: Math.random() * 360,
       size: Math.random() * 0.5 + 0.5,
       initialDistance,
@@ -61,26 +63,28 @@ const SparklyMouseTrail = ({
     setMousePosition({ x: event.clientX, y: event.clientY })
   }, [])
 
-useEffect(() => {
-  if (isActive) {
-    window.addEventListener('mousemove', handleMouseMove)
-  } else {
-    window.removeEventListener('mousemove', handleMouseMove)
-  }
-  return () => window.removeEventListener('mousemove', handleMouseMove)
-}, [handleMouseMove, isActive])
+  useEffect(() => {
+    if (isActive) {
+      window.addEventListener('mousemove', handleMouseMove)
+    }
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [handleMouseMove, isActive])
 
   useAnimationFrame(() => {
+    if (!isActive) return
+
     frameCount.current += 1
 
-    // create new sparkles every 5 frames
     if (frameCount.current % 5 === 0) {
       const newSparkles = Array.from({ length: 3 }, () =>
         createSparkle(mousePosition.x, mousePosition.y),
       )
-      setSparkles((prevSparkles) => [...newSparkles, ...prevSparkles])
+      setSparkles((prevSparkles) => [
+        ...newSparkles,
+        ...prevSparkles.slice(0, 49),
+      ])
     }
-    // remove sparkles that have exceeded their duration
+
     setSparkles((prevSparkles) =>
       prevSparkles.filter(
         (sparkle) => Date.now() - sparkle.id < sparkle.duration,
@@ -97,11 +101,9 @@ useEffect(() => {
         inset: 0,
         pointerEvents: 'none',
         zIndex: 9999,
-        border: '2px solid red', // Debug border
         overflow: 'hidden',
       }}
     >
-      
       <AnimatePresence>
         {sparkles.map((sparkle) => {
           const distance = Math.sqrt(
@@ -123,9 +125,9 @@ useEffect(() => {
               animate={{
                 opacity: 0,
                 scale: scale * sparkle.size,
-                x: sparkle.x + (Math.random() - 0.5) * 100,
-                y: sparkle.y + 200,
-                rotate: sparkle.rotation + 720,
+                x: sparkle.x + (Math.random() - 0.5) * 50,
+                y: sparkle.y + 100,
+                rotate: sparkle.rotation + 360,
               }}
               exit={{ opacity: 0, scale: 0 }}
               transition={{
@@ -139,7 +141,7 @@ useEffect(() => {
                 pointerEvents: 'none',
               }}
             >
-              <PlusSvg color='red' size={24 * sparkle.size} />
+              <PlusSvg color={color} size={24 * sparkle.size} />
             </motion.div>
           )
         })}
@@ -147,6 +149,5 @@ useEffect(() => {
     </div>
   )
 }
-
 
 export default SparklyMouseTrail
