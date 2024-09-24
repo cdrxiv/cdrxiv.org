@@ -16,14 +16,13 @@ const foldSize = 100
 
 interface PageCornerProps {
   onToggle?: () => void
+  isHomePage: boolean
 }
 
-const PageCorner: React.FC<PageCornerProps> = ({ onToggle }) => {
+const PageCorner: React.FC<PageCornerProps> = ({ onToggle, isHomePage }) => {
   const { theme } = useThemeUI()
   const { overallBackground } = useBackgroundColors()
-  const pathname = usePathname()
 
-  const isHomePage = pathname === '/'
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (isHomePage) {
