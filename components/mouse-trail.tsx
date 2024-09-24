@@ -3,10 +3,12 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useCallback, useEffect, useState } from 'react'
 
+import { v4 as uuidv4 } from 'uuid'
+
 interface CursorPosition {
   x: number
   y: number
-  id: number
+  id: string
 }
 
 interface CursorTrailProps {
@@ -20,7 +22,7 @@ const MouseTrail = ({ isActive }: CursorTrailProps) => {
     (event: MouseEvent) => {
       if (isActive) {
         setCursorTrail((previousTrail) => [
-          { x: event.clientX, y: event.clientY, id: Date.now() },
+          { x: event.clientX, y: event.clientY, id: uuidv4() },
           ...previousTrail.slice(0, 10),
         ])
       }
