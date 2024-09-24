@@ -44,7 +44,7 @@ const SparklyMouseTrail = ({ isActive }: SparklyMouseTrailProps) => {
 
   const createSparkle = useCallback((x: number, y: number): SparklePosition => {
     const offsetX = (Math.random() - 0.5) * 100
-    const offsetY = Math.random() * 50 + 50
+    const offsetY = Math.random() * 50
 
     const initialDistance = Math.sqrt(offsetX * offsetX + offsetY * offsetY)
 
