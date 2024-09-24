@@ -12,7 +12,6 @@ import Outline from './preprint-outline'
 import { getAdditionalField } from '../utils/data'
 
 import type { Preprint } from '../types/preprint'
-import type { Deposition } from '../types/zenodo'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
 import Loading from '../components/loading'
 import useTracking from '../hooks/use-tracking'
@@ -22,11 +21,9 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 
 const PreprintViewer = ({
   preprint,
-  deposition,
   preview,
 }: {
   preprint: Preprint
-  deposition?: Deposition
   preview?: boolean
 }) => {
   const [containerWidth, setContainerWidth] = useState<number>(0)
@@ -76,13 +73,7 @@ const PreprintViewer = ({
     <PaneledPage
       title={preprint.title}
       sidebar={pdf ? <Outline pdf={pdf} onItemClick={onItemClicked} /> : null}
-      metadata={
-        <MetadataView
-          preprint={preprint}
-          deposition={deposition}
-          preview={preview}
-        />
-      }
+      metadata={<MetadataView preprint={preprint} preview={preview} />}
     >
       {preprint.doi && (
         <StyledLink

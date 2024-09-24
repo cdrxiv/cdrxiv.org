@@ -3,8 +3,6 @@ import { headers } from 'next/headers'
 import { getServerSession } from 'next-auth'
 
 import PreprintViewer from '../../../preprint-viewer'
-import { SupplementaryFile } from '../../../../types/preprint'
-import { fetchDataDeposition } from '../../../../actions/zenodo'
 import { fetchWithToken } from '../../../api/utils'
 import Forbidden from '../forbidden'
 import SharedLayout from '../../shared-layout'
@@ -52,15 +50,7 @@ const PreprintPreview = async ({
     preprint = await response.json()
   }
 
-  const dataUrl = preprint.supplementary_files.find(
-    (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
-  )?.url
-  let deposition
-  if (dataUrl) {
-    deposition = await fetchDataDeposition(dataUrl)
-  }
-
-  return <PreprintViewer preprint={preprint} deposition={deposition} preview />
+  return <PreprintViewer preprint={preprint} preview />
 }
 
 export default PreprintPreview
