@@ -18,8 +18,8 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
   const [isTrailActive, setIsTrailActive] = useState(false)
 
   const pathname = usePathname()
-  const isSuccessfullSubmissionPage = pathname === '/submit/success'
-  const isHomePage = pathname === '/'
+  const isSuccessfullSubmissionPage = pathname.startsWith('/submit/success')
+  const isHomePage = pathname === '/' || pathname.startsWith('/?')
 
   const toggleTrail = () => {
     if (isHomePage) {
