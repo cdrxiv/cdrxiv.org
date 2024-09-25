@@ -1,7 +1,6 @@
 import { SVGProps, useEffect, useRef, useState } from 'react'
-import { Box, BoxProps, Flex, ThemeUIStyleObject, useThemeUI } from 'theme-ui'
+import { Box, BoxProps, Flex, ThemeUIStyleObject } from 'theme-ui'
 import { usePathname, useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 
 import StyledLink from './link'
@@ -15,8 +14,6 @@ import { createPortal } from 'react-dom'
 
 type SVGBoxProps = BoxProps & SVGProps<SVGSVGElement>
 const SVGBox: React.FC<SVGBoxProps> = (props) => <Box as='svg' {...props} />
-
-const margin = [2, 2, 3, 3]
 
 const PATHS: { name: string; path: string; matchingPaths?: string[] }[] = [
   { name: 'Home', path: '/' },
@@ -84,7 +81,6 @@ const AccountLink = ({
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 })
-  const [mounted, setMounted] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const searchRef = useRef<HTMLInputElement>(null)
   const { cardBackground, overallBackground } = useBackgroundColors()
