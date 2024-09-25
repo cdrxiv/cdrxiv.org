@@ -79,6 +79,9 @@ const PreprintMetadata: React.FC<{
   const submissionType = getAdditionalField(preprint, 'Submission type')
   const hasArticle = ['Article', 'Both'].includes(submissionType ?? '')
   const hasData = ['Data', 'Both'].includes(submissionType ?? '')
+  const hasDraft = preprint.supplementary_files.find(
+    (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
+  )
   const conflictOfInterest = getAdditionalField(
     preprint,
     'Conflict of interest statement',
@@ -162,7 +165,11 @@ const PreprintMetadata: React.FC<{
               hasError={hasData && !deposition}
               preview={preview}
               pk={preprint.pk}
-              errorMessage={'Data missing in supplementary files.'}
+              errorMessage={
+                hasDraft
+                  ? "Data stored under 'CDRXIV_DATA_DRAFT' in supplementary files, but must be moved to 'CDRXIV_DATA_PUBLISHED'."
+                  : 'Data missing in supplementary files.'
+              }
             />
             <ErrorOrTrack
               mt={2}
