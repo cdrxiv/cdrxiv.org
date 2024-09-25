@@ -151,11 +151,12 @@ const PreprintMetadata: React.FC<{
         )}
         {hasData && (
           <Box>
-            {deposition?.submitted || preview ? (
-              <Button href={deposition && getDataDownload(deposition)}>
-                Download (data)
-              </Button>
-            ) : null}
+            <Button
+              disabled={!(deposition?.submitted || preview)}
+              href={deposition && getDataDownload(deposition)}
+            >
+              Download (data)
+            </Button>
             <ErrorOrTrack
               mt={2}
               hasError={hasData && !deposition}
