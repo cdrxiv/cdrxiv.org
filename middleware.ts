@@ -23,8 +23,7 @@ export const middleware = (
     if (AUTHED_ROUTES.includes(request.nextUrl.pathname)) {
       return withAuthMiddleware(request, event)
     } else {
-      NextResponse.next()
-      return
+      return NextResponse.next()
     }
   }
 
@@ -32,7 +31,7 @@ export const middleware = (
     return NextResponse.redirect(new URL('/', request.url))
   }
 
-  NextResponse.next()
+  return NextResponse.next()
 }
 
 export const config = {
