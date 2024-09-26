@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Box } from 'theme-ui'
 import useBackgroundColors from '../../hooks/use-background-colors'
 import Guide from '../guide'
@@ -21,14 +21,24 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
   const isSuccessfullSubmissionPage = pathname.startsWith('/submit/success')
   const isHomePage = pathname === '/' || pathname.startsWith('/?')
 
-  const toggleTrail = () => {
+  const toggleTrail = useCallback(() => {
     if (isHomePage) {
       setIsTrailActive((prev) => !prev)
     }
-  }
+  }, [isHomePage])
+
+  const handleMouseClick = useCallback(() => {
+    console.log('handleMouseClick')
+    if (isTrailActive) {
+      setIsTrailActive(false)
+    }
+  }, [isTrailActive])
 
   return (
-    <Box sx={{ bg: overallBackground, width: '100vw', height: '100vh' }}>
+    <Box
+      sx={{ bg: overallBackground, width: '100vw', height: '100vh' }}
+      onClick={handleMouseClick}
+    >
       <Box
         sx={{
           m: margin,
@@ -56,7 +66,9 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
           }}
         >
           <PageCorner onToggle={toggleTrail} isHomePage={isHomePage} />
-          <MouseTrail isActive={isTrailActive && isHomePage} />
+          <MouseTrail
+            isActive={isTrailActive && isHomePage}
+          />
           <SparklyMouseTrail isActive={isSuccessfullSubmissionPage} />
 
           <Box sx={{ contain: 'layout' }}>

@@ -30,11 +30,14 @@ const MouseTrail = ({ isActive }: CursorTrailProps) => {
     [isActive],
   )
 
+
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       window.addEventListener('mousemove', handleMouseMove)
       return () => {
         window.removeEventListener('mousemove', handleMouseMove)
+       
       }
     }
   }, [handleMouseMove])
