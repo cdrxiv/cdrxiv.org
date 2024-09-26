@@ -8,7 +8,7 @@ import React, {
   useRef,
   ReactNode,
 } from 'react'
-import { Box, Flex } from 'theme-ui'
+import { Box, Divider, Flex } from 'theme-ui'
 import { usePathname } from 'next/navigation'
 
 import Row from '../row'
@@ -44,6 +44,8 @@ const PaneledPage: React.FC<{
   rightCorner?: ReactNode
 }> = ({ children, sidebar, metadata, title, leftCorner, rightCorner }) => {
   const [isLoading, setIsLoading] = useState(false)
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false)
+  const [isMetadataExpanded, setIsMetadataExpanded] = useState(false)
   const contentRef = useRef<HTMLDivElement>(null)
   const pathRef = useRef<string | null>(null)
   const pathname = usePathname()
@@ -97,15 +99,55 @@ const PaneledPage: React.FC<{
           >
             <Box sx={{ contain: 'layout' }}>
               <Guide columns={[6, 6, 8, 8]} color='pink' opacity={0.2} />
-              <Box
-                sx={{ display: ['inherit', 'inherit', 'none', 'none'], mb: 4 }}
-              >
-                <Expander label='Overview'>
-                  <Box sx={{ pt: 4, position: 'relative', pl: 3, ml: -3 }}>
-                    {sidebar}
-                  </Box>
-                </Expander>
-              </Box>
+              {(sidebar || metadata) && (
+                <Box
+                  sx={{
+                    display: ['inherit', 'inherit', 'none', 'none'],
+                  }}
+                >
+                  <Flex
+                    sx={{
+                      gap: 5,
+                      pt: 4,
+                      mb: 4,
+                    }}
+                  >
+                    {sidebar && (
+                      <Expander
+                        label='Overview'
+                        expanded={isSidebarExpanded}
+                        setExpanded={(value) => {
+                          setIsSidebarExpanded(value)
+                          value && setIsMetadataExpanded(false)
+                        }}
+                      />
+                    )}
+
+                    {metadata && (
+                      <Expander
+                        label='More info'
+                        expanded={isMetadataExpanded}
+                        setExpanded={(value) => {
+                          setIsMetadataExpanded(value)
+                          value && setIsSidebarExpanded(false)
+                        }}
+                      />
+                    )}
+                  </Flex>
+
+                  {isSidebarExpanded && (
+                    <Box sx={{ position: 'relative', pl: 3, ml: -3 }}>
+                      {sidebar}
+                    </Box>
+                  )}
+
+                  {isMetadataExpanded && metadata}
+
+                  {(isSidebarExpanded || isMetadataExpanded) && (
+                    <Divider sx={{ my: 6 }} />
+                  )}
+                </Box>
+              )}
               <Row columns={[6, 6, 8, 8]}>
                 <Column start={1} width={[6, 6, 8, 8]}>
                   <Flex

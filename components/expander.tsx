@@ -1,20 +1,36 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Box, ThemeUIStyleObject } from 'theme-ui'
 
 import StyledLink from './link'
 
 interface Props {
   label: string
-  children: React.ReactNode
+  children?: React.ReactNode
   sx?: ThemeUIStyleObject
+  // Optional props for using as controlled input
+  expanded?: boolean
+  setExpanded?: (value: boolean) => void
 }
 
-const Expander: React.FC<Props> = ({ label, children, sx }) => {
-  const [expanded, setExpanded] = useState(false)
+const Expander: React.FC<Props> = ({
+  label,
+  children,
+  sx,
+  expanded: expandedProp,
+  setExpanded: setExpandedProp,
+}) => {
+  const [expanded, setExpanded] = useState(expandedProp ?? false)
 
   const handleClick = useCallback(() => {
-    setExpanded((prev) => !prev)
-  }, [])
+    setExpanded(!expanded)
+    setExpandedProp && setExpandedProp(!expanded)
+  }, [setExpandedProp, expanded])
+
+  useEffect(() => {
+    if (typeof expandedProp === 'boolean') {
+      setExpanded(expandedProp)
+    }
+  }, [expandedProp])
 
   return (
     <>
