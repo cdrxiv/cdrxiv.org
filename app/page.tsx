@@ -3,6 +3,7 @@ import LandingPage from './landing-page'
 import PreprintsView from './preprints-view'
 import StaticLandingPage from './static-landing-page'
 import { isFullSiteEnabled } from '../utils/flags'
+import LoadingWrapper from './loading-wrapper'
 interface HomeProps {
   searchParams: { [key: string]: string | string[] | undefined }
 }
@@ -24,7 +25,7 @@ const Home = async ({ searchParams }: HomeProps) => {
   const subject = searchParams.subject as string | undefined
   return isFullSiteEnabled() ? (
     <LandingPage>
-      <Suspense key={subject} fallback={<div>Loading...</div>}>
+      <Suspense fallback={<LoadingWrapper />}>
         <Preprints subject={subject} />
       </Suspense>
     </LandingPage>
