@@ -1,8 +1,8 @@
 import { SVGProps, useEffect, useRef, useState } from 'react'
-import { Box, BoxProps, Flex, ThemeUIStyleObject, useThemeUI } from 'theme-ui'
+import { Box, BoxProps, Flex, ThemeUIStyleObject } from 'theme-ui'
 import { usePathname, useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { useSession } from 'next-auth/react'
+import { createPortal } from 'react-dom'
 
 import StyledLink from './link'
 import Search from './search'
@@ -11,12 +11,10 @@ import Row from './row'
 import StyledButton from './button'
 import Menu from './menu'
 import useBackgroundColors from '../hooks/use-background-colors'
-import { createPortal } from 'react-dom'
+import { isFullSiteEnabled } from '../utils/flags'
 
 type SVGBoxProps = BoxProps & SVGProps<SVGSVGElement>
 const SVGBox: React.FC<SVGBoxProps> = (props) => <Box as='svg' {...props} />
-
-const margin = [2, 2, 3, 3]
 
 const PATHS: { name: string; path: string; matchingPaths?: string[] }[] = [
   { name: 'Home', path: '/' },
@@ -84,7 +82,6 @@ const AccountLink = ({
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 })
-  const [mounted, setMounted] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const searchRef = useRef<HTMLInputElement>(null)
   const { cardBackground, overallBackground } = useBackgroundColors()
@@ -164,7 +161,13 @@ const Header = () => {
           alignItems: 'center',
         }}
       >
-        <Column start={1} width={3}>
+        <Column
+          start={1}
+          width={3}
+          sx={{
+            display: isFullSiteEnabled() ? 'inherit' : 'none',
+          }}
+        >
           <Search
             ref={searchRef}
             placeholder='Search'
@@ -178,7 +181,11 @@ const Header = () => {
         <Column
           start={[4, 4, 5, 5]}
           width={[5, 5, 6, 6]}
-          sx={{ display: ['none', 'inherit', 'inherit', 'inherit'] }}
+          sx={{
+            display: isFullSiteEnabled()
+              ? ['none', 'inherit', 'inherit', 'inherit']
+              : 'none',
+          }}
         >
           <Flex
             sx={{
@@ -191,7 +198,11 @@ const Header = () => {
         <Column
           start={4}
           width={2}
-          sx={{ display: ['inherit', 'none', 'none', 'none'] }}
+          sx={{
+            display: isFullSiteEnabled()
+              ? ['inherit', 'none', 'none', 'none']
+              : 'none',
+          }}
         >
           <StyledButton
             ref={menuButtonRef}

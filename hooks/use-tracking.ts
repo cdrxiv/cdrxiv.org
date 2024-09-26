@@ -1,6 +1,8 @@
 import { usePlausible } from 'next-plausible'
 import { useCallback } from 'react'
 
+import { isFullSiteEnabled } from '../utils/flags'
+
 type Property =
   | 'preprint'
   | 'user'
@@ -15,7 +17,9 @@ const useTracking = () => {
 
   const track = useCallback(
     (name: string, options: Options) => {
-      plausible(name, { props: options })
+      plausible(name, {
+        props: { ...options, preview_only: !isFullSiteEnabled() },
+      })
     },
     [plausible],
   )
