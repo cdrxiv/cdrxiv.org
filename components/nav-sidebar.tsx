@@ -1,16 +1,19 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
-import { Box, Flex } from 'theme-ui'
+import { Box, Flex, ThemeUIStyleObject } from 'theme-ui'
 import { usePathname } from 'next/navigation'
 
 import { NavLink } from '.'
 
 interface NavSidebarProps {
   paths: {
+    key?: string
     href: string
     title: string
-    public?: boolean
+    sx?: ThemeUIStyleObject
+    onClick?: () => void
+    public: boolean
     adminOnly?: boolean
   }[]
   onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void
@@ -22,23 +25,40 @@ const NavSidebar: React.FC<NavSidebarProps> = ({ paths, onClick }) => {
 
   return (
     <Box>
-      <Box sx={{ variant: 'text.monoCaps', mb: [5, 5, 5, 6], mt: 5 }}>
+      <Box
+        sx={{
+          display: ['none', 'none', 'inherit', 'inherit'],
+          variant: 'text.monoCaps',
+          mb: [3, 5, 5, 6],
+          mt: 5,
+        }}
+      >
         Overview
       </Box>
-      <Flex sx={{ flexDirection: 'column', gap: [5, 5, 5, 6] }}>
-        {paths.map(({ href, title, public: publicPath, adminOnly }) =>
-          !adminOnly || session?.user?.email?.endsWith('@carbonplan.org') ? (
-            <NavLink
-              key={href}
-              href={href}
-              title={title}
-              active={pathname === href}
-              disabled={!publicPath && status === 'unauthenticated'}
-              onClick={onClick ? (e) => onClick(e) : undefined}
-            >
-              {title}
-            </NavLink>
-          ) : null,
+      <Flex sx={{ flexDirection: 'column', gap: [3, 5, 5, 6] }}>
+        {paths.map(
+          ({
+            key,
+            href,
+            title,
+            public: publicPath,
+            adminOnly,
+            sx,
+            onClick: onClickInner,
+          }) =>
+            !adminOnly || session?.user?.email?.endsWith('@carbonplan.org') ? (
+              <NavLink
+                key={key ?? href}
+                href={href}
+                title={title}
+                active={pathname === href}
+                disabled={!publicPath && status === 'unauthenticated'}
+                onClick={onClickInner ?? onClick}
+                sx={sx}
+              >
+                {title}
+              </NavLink>
+            ) : null,
         )}
       </Flex>
     </Box>

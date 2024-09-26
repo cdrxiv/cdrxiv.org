@@ -1,9 +1,14 @@
 export const PATHS = [
-  { title: 'Overview', href: '/submit/overview' },
-  { title: 'Information', href: '/submit/info' },
-  { title: 'Authors', href: '/submit/authors' },
-  { title: 'Confirmation', href: '/submit/confirm' },
-  { title: 'Submission successful', href: '/submit/success', hidden: true },
+  { title: 'Submission', href: '/submit/overview', public: false },
+  { title: 'Information', href: '/submit/info', public: false },
+  { title: 'Authors', href: '/submit/authors', public: false },
+  { title: 'Confirmation', href: '/submit/confirm', public: false },
+  {
+    title: 'Submission successful',
+    href: '/submit/success',
+    public: false,
+    hidden: true,
+  },
 ]
 
 export const LICENSE_MAPPING = {
