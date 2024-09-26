@@ -13,15 +13,10 @@ interface NavSidebarProps {
     public?: boolean
     adminOnly?: boolean
   }[]
-  label?: string
   onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void
 }
 
-const NavSidebar: React.FC<NavSidebarProps> = ({
-  label = 'Overview',
-  paths,
-  onClick,
-}) => {
+const NavSidebar: React.FC<NavSidebarProps> = ({ paths, onClick }) => {
   const pathname = usePathname()
   const { data: session, status } = useSession()
 
@@ -35,7 +30,7 @@ const NavSidebar: React.FC<NavSidebarProps> = ({
           mt: 5,
         }}
       >
-        {label}
+        Overview
       </Box>
       <Flex sx={{ flexDirection: 'column', gap: [3, 5, 5, 6] }}>
         {paths.map(({ href, title, public: publicPath, adminOnly }) =>
