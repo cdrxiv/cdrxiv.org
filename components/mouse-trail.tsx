@@ -30,14 +30,11 @@ const MouseTrail = ({ isActive }: CursorTrailProps) => {
     [isActive],
   )
 
-
-
   useEffect(() => {
     if (typeof window !== 'undefined') {
       window.addEventListener('mousemove', handleMouseMove)
       return () => {
         window.removeEventListener('mousemove', handleMouseMove)
-       
       }
     }
   }, [handleMouseMove])
@@ -64,7 +61,7 @@ const MouseTrail = ({ isActive }: CursorTrailProps) => {
                 position: 'absolute',
                 left: cursor.x,
                 top: cursor.y,
-                transform: 'translate(-50%, -50%)',
+                //transform: 'translate(-50%, -50%)',
               }}
             >
               <svg

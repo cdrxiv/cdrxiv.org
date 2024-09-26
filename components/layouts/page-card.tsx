@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 
-import React, { useState, useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Box } from 'theme-ui'
 import useBackgroundColors from '../../hooks/use-background-colors'
 import Guide from '../guide'
@@ -28,7 +28,6 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
   }, [isHomePage])
 
   const handleMouseClick = useCallback(() => {
-    console.log('handleMouseClick')
     if (isTrailActive) {
       setIsTrailActive(false)
     }
@@ -66,9 +65,7 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
           }}
         >
           <PageCorner onToggle={toggleTrail} isHomePage={isHomePage} />
-          <MouseTrail
-            isActive={isTrailActive && isHomePage}
-          />
+          <MouseTrail isActive={isTrailActive && isHomePage} />
           <SparklyMouseTrail isActive={isSuccessfullSubmissionPage} />
 
           <Box sx={{ contain: 'layout' }}>
