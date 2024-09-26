@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import LandingPage from './landing-page'
 import PreprintsView from './preprints-view'
+import LoadingWrapper from './loading-wrapper'
 interface HomeProps {
   searchParams: { [key: string]: string | string[] | undefined }
 }
@@ -22,7 +23,7 @@ const Home = async ({ searchParams }: HomeProps) => {
   const subject = searchParams.subject as string | undefined
   return (
     <LandingPage>
-      <Suspense key={subject} fallback={<div>Loading...</div>}>
+      <Suspense fallback={<LoadingWrapper />}>
         <Preprints subject={subject} />
       </Suspense>
     </LandingPage>

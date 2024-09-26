@@ -1,3 +1,5 @@
+'use client'
+
 import { Box, ThemeUIStyleObject } from 'theme-ui'
 import useLoadingText from '../hooks/use-loading-text'
 
