@@ -61,7 +61,7 @@ const MouseTrail = ({ isActive }: CursorTrailProps) => {
                 position: 'absolute',
                 left: cursor.x,
                 top: cursor.y,
-                //transform: 'translate(-50%, -50%)',
+                transform: 'translate(-10px, -10px)',
               }}
             >
               <svg
