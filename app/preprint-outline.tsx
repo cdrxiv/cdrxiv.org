@@ -1,68 +1,71 @@
-import React, { useState, useEffect } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { PDFDocumentProxy } from 'pdfjs-dist'
-import { Box } from 'theme-ui'
-import { NavLink } from '../components'
+import { ThemeUIStyleObject } from 'theme-ui'
+import { NavSidebar } from '../components'
 
 type PDFOutline = Awaited<ReturnType<PDFDocumentProxy['getOutline']>>
 type OutlineItem = PDFOutline[number]
 
 interface OutlineProps {
   pdf: PDFDocumentProxy
+  outline: PDFOutline
   onItemClick: (item: any) => void
 }
 
-const PreprintOutline = ({ pdf, onItemClick }: OutlineProps) => {
-  const [outline, setOutline] = useState<PDFOutline | null>(null)
+type OutlinePath = {
+  title: string
+  href: string
+  public: boolean
+  onClick: () => void
+  sx?: ThemeUIStyleObject
+}
 
-  useEffect(() => {
-    if (pdf) {
-      pdf.getOutline().then(setOutline).catch(console.error)
+const PreprintOutline = ({ pdf, outline, onItemClick }: OutlineProps) => {
+  const handleItemClick = useCallback(
+    async (item: OutlineItem) => {
+      if (item.dest && Array.isArray(item.dest)) {
+        const destRef = item.dest[0]
+        if (destRef) {
+          const pageIndex = await pdf.getPageIndex(destRef)
+          const pageNumber = pageIndex + 1
+          onItemClick({ pageNumber, title: item.title })
+        }
+      }
+    },
+    [onItemClick, pdf],
+  )
+
+  const outlinePaths = useMemo(() => {
+    if (!outline) {
+      return null
     }
-  }, [pdf])
 
-  if (!outline) {
+    const getOutlineItems = (items: PDFOutline, level = 0): OutlinePath[] => {
+      return items.reduce(
+        (accum: OutlinePath[], item, index) => [
+          ...accum,
+          {
+            key: `${item.title}-${index}`,
+            title: item.title,
+            href: item.url ?? '',
+            public: true,
+            onClick: () => handleItemClick(item),
+            sx: level > 0 ? { ml: `${level * 20}px` } : {},
+          },
+          ...getOutlineItems(item.items, level + 1),
+        ],
+        [],
+      )
+    }
+
+    return getOutlineItems(outline)
+  }, [outline, handleItemClick])
+
+  if (!outlinePaths) {
     return null
   }
 
-  const handleItemClick = async (item: OutlineItem) => {
-    if (item.dest && Array.isArray(item.dest)) {
-      const destRef = item.dest[0]
-      if (destRef) {
-        const pageIndex = await pdf.getPageIndex(destRef)
-        const pageNumber = pageIndex + 1
-        onItemClick({ pageNumber, title: item.title })
-      }
-    }
-  }
-
-  const renderOutlineItems = (items: PDFOutline, level = 0) => {
-    return items.map((item, index) => (
-      <React.Fragment key={index}>
-        <NavLink
-          active={false}
-          onClick={() => handleItemClick(item)}
-          sx={{
-            display: 'block',
-            marginBottom: '8px',
-            marginLeft: `${level * 20}px`,
-            cursor: 'pointer',
-          }}
-        >
-          {item.title}
-        </NavLink>
-        {item.items &&
-          item.items.length > 0 &&
-          renderOutlineItems(item.items, level + 1)}
-      </React.Fragment>
-    ))
-  }
-
-  return (
-    <Box>
-      <Box sx={{ variant: 'text.monoCaps', mt: 5, mb: 3 }}>Overview</Box>
-      {renderOutlineItems(outline)}
-    </Box>
-  )
+  return <NavSidebar paths={outlinePaths} />
 }
 
 export default PreprintOutline

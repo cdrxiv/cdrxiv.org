@@ -7,8 +7,13 @@ import PaneledPage from '../../components/layouts/paneled-page'
 
 const PATHS = [
   { href: '/account', title: 'Account', public: true },
-  { href: '/submissions', title: 'Submissions' },
-  { href: '/preview', title: 'Preprint preview', adminOnly: true },
+  { href: '/submissions', title: 'Submissions', public: false },
+  {
+    href: '/preview',
+    title: 'Preprint preview',
+    public: false,
+    adminOnly: true,
+  },
 ]
 
 const SharedLayout: React.FC<{
