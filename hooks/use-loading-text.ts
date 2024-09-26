@@ -13,7 +13,7 @@ const useLoadingText = ({
   interval = 250,
   maxDots = 3,
 }: UseLoadingTextOptions): string => {
-  const [dotCount, setDotCount] = useState(0)
+  const [dotCount, setDotCount] = useState(maxDots)
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout | null = null

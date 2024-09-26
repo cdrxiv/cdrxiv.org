@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 import { formatDate } from '../utils/formatters'
 import { getAdditionalField, getFunders, getZenodoLicense } from '../utils/data'
 import { Field, Button, Link } from '../components'
-import type { Preprint, Funder } from '../types/preprint'
+import type { Preprint, Funder, SupplementaryFile } from '../types/preprint'
 import type { Deposition } from '../types/zenodo'
 import useTracking from '../hooks/use-tracking'
+import { fetchDataDeposition } from '../actions/zenodo'
 
 const getDataDownload = (deposition: Deposition) => {
   return `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].filename}?download=1`
@@ -57,12 +58,30 @@ const PreprintMetadata: React.FC<{
   preprint: Preprint
   deposition?: Deposition
   preview?: boolean
-}> = ({ preprint, deposition, preview }) => {
+}> = ({ preprint, preview }) => {
+  const [deposition, setDeposition] = useState<Deposition>()
+
+  useEffect(() => {
+    const fetchDeposition = async () => {
+      const dataUrl = preprint.supplementary_files.find(
+        (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_PUBLISHED',
+      )?.url
+      if (dataUrl) {
+        const deposition = await fetchDataDeposition(dataUrl)
+        setDeposition(deposition)
+      }
+    }
+    fetchDeposition()
+  }, [preprint])
+
   const funders = getFunders(preprint) ?? []
 
   const submissionType = getAdditionalField(preprint, 'Submission type')
   const hasArticle = ['Article', 'Both'].includes(submissionType ?? '')
   const hasData = ['Data', 'Both'].includes(submissionType ?? '')
+  const hasDraft = preprint.supplementary_files.find(
+    (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
+  )
   const conflictOfInterest = getAdditionalField(
     preprint,
     'Conflict of interest statement',
@@ -135,17 +154,22 @@ const PreprintMetadata: React.FC<{
         )}
         {hasData && (
           <Box>
-            {deposition?.submitted || preview ? (
-              <Button href={deposition && getDataDownload(deposition)}>
-                Download (data)
-              </Button>
-            ) : null}
+            <Button
+              disabled={!(deposition?.submitted || preview)}
+              href={deposition && getDataDownload(deposition)}
+            >
+              Download (data)
+            </Button>
             <ErrorOrTrack
               mt={2}
               hasError={hasData && !deposition}
               preview={preview}
               pk={preprint.pk}
-              errorMessage={'Data missing in supplementary files.'}
+              errorMessage={
+                hasDraft
+                  ? "Data stored under 'CDRXIV_DATA_DRAFT' in supplementary files, but must be moved to 'CDRXIV_DATA_PUBLISHED'."
+                  : 'Data missing in supplementary files.'
+              }
             />
             <ErrorOrTrack
               mt={2}

@@ -10,7 +10,8 @@ import { SubjectsProvider } from './subjects-context'
 
 export const metadata: Metadata = {
   title: 'CDRXIV',
-  description: 'CDRXIV',
+  description:
+    'CDRXIV is a new open access platform for sharing preprints and data related to carbon dioxide removal (CDR).',
 }
 
 export default async function RootLayout({
