@@ -1,7 +1,7 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
-import { Box, Flex } from 'theme-ui'
+import { Box, Flex, ThemeUIStyleObject } from 'theme-ui'
 import { usePathname } from 'next/navigation'
 
 import { NavLink } from '.'
@@ -10,6 +10,8 @@ interface NavSidebarProps {
   paths: {
     href: string
     title: string
+    sx?: ThemeUIStyleObject
+    onClick?: () => void
     public?: boolean
     adminOnly?: boolean
   }[]
@@ -33,19 +35,28 @@ const NavSidebar: React.FC<NavSidebarProps> = ({ paths, onClick }) => {
         Overview
       </Box>
       <Flex sx={{ flexDirection: 'column', gap: [3, 5, 5, 6] }}>
-        {paths.map(({ href, title, public: publicPath, adminOnly }) =>
-          !adminOnly || session?.user?.email?.endsWith('@carbonplan.org') ? (
-            <NavLink
-              key={href}
-              href={href}
-              title={title}
-              active={pathname === href}
-              disabled={!publicPath && status === 'unauthenticated'}
-              onClick={onClick ? (e) => onClick(e) : undefined}
-            >
-              {title}
-            </NavLink>
-          ) : null,
+        {paths.map(
+          ({
+            href,
+            title,
+            public: publicPath,
+            adminOnly,
+            sx,
+            onClick: onClickInner,
+          }) =>
+            !adminOnly || session?.user?.email?.endsWith('@carbonplan.org') ? (
+              <NavLink
+                key={href}
+                href={href}
+                title={title}
+                active={pathname === href}
+                disabled={!publicPath && status === 'unauthenticated'}
+                onClick={onClickInner ?? onClick}
+                sx={sx}
+              >
+                {title}
+              </NavLink>
+            ) : null,
         )}
       </Flex>
     </Box>
