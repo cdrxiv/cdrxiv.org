@@ -15,6 +15,7 @@ interface OutlineProps {
 type OutlinePath = {
   title: string
   href: string
+  public: boolean
   onClick: () => void
   sx?: ThemeUIStyleObject
 }
@@ -46,6 +47,7 @@ const PreprintOutline = ({ pdf, outline, onItemClick }: OutlineProps) => {
           {
             title: item.title,
             href: item.url ?? item.title,
+            public: true,
             onClick: () => handleItemClick(item),
             sx: level > 0 ? { ml: `${level * 20}px` } : {},
           },

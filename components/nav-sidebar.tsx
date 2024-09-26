@@ -12,7 +12,7 @@ interface NavSidebarProps {
     title: string
     sx?: ThemeUIStyleObject
     onClick?: () => void
-    public?: boolean
+    public: boolean
     adminOnly?: boolean
   }[]
   onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void
