@@ -8,6 +8,7 @@ import { NavLink } from '.'
 
 interface NavSidebarProps {
   paths: {
+    key?: string
     href: string
     title: string
     sx?: ThemeUIStyleObject
@@ -37,6 +38,7 @@ const NavSidebar: React.FC<NavSidebarProps> = ({ paths, onClick }) => {
       <Flex sx={{ flexDirection: 'column', gap: [3, 5, 5, 6] }}>
         {paths.map(
           ({
+            key,
             href,
             title,
             public: publicPath,
@@ -46,7 +48,7 @@ const NavSidebar: React.FC<NavSidebarProps> = ({ paths, onClick }) => {
           }) =>
             !adminOnly || session?.user?.email?.endsWith('@carbonplan.org') ? (
               <NavLink
-                key={href}
+                key={key ?? href}
                 href={href}
                 title={title}
                 active={pathname === href}

@@ -42,11 +42,12 @@ const PreprintOutline = ({ pdf, outline, onItemClick }: OutlineProps) => {
 
     const getOutlineItems = (items: PDFOutline, level = 0): OutlinePath[] => {
       return items.reduce(
-        (accum: OutlinePath[], item) => [
+        (accum: OutlinePath[], item, index) => [
           ...accum,
           {
+            key: `${item.title}-${index}`,
             title: item.title,
-            href: item.url ?? item.title,
+            href: item.url ?? '',
             public: true,
             onClick: () => handleItemClick(item),
             sx: level > 0 ? { ml: `${level * 20}px` } : {},
