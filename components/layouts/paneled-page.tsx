@@ -131,6 +131,7 @@ const PaneledPage: React.FC<{
                           setIsMetadataExpanded(value)
                           value && setIsSidebarExpanded(false)
                         }}
+                        sx={{ display: ['inherit', 'none', 'none', 'none'] }}
                       />
                     )}
                   </Flex>
@@ -141,7 +142,11 @@ const PaneledPage: React.FC<{
                     </Box>
                   )}
 
-                  {isMetadataExpanded && metadata}
+                  {isMetadataExpanded && (
+                    <Box sx={{ display: ['inherit', 'none', 'none', 'none'] }}>
+                      {metadata}
+                    </Box>
+                  )}
 
                   {(isSidebarExpanded || isMetadataExpanded) && (
                     <Divider sx={{ my: 6 }} />
