@@ -19,29 +19,12 @@ interface SparklyMouseTrailProps {
   isActive: boolean
 }
 
-const PlusSvg = ({ color, size }: { color: string; size: number }) => (
-  <svg
-    xmlns='http://www.w3.org/2000/svg'
-    width={size}
-    height={size}
-    viewBox='0 0 24 24'
-    fill={color}
-    stroke={color}
-    strokeWidth='2'
-    strokeLinecap='round'
-    strokeLinejoin='round'
-  >
-    <path d='M5 12h14' />
-    <path d='M12 5v14' />
-  </svg>
-)
-
 const SparklyMouseTrail = ({ isActive }: SparklyMouseTrailProps) => {
   const [sparkles, setSparkles] = useState<SparklePosition[]>([])
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const frameCount = useRef(0)
   const { theme } = useThemeUI()
-  const color = theme?.colors?.blue as string
+
 
   const createSparkle = useCallback((x: number, y: number): SparklePosition => {
     const offsetX = (Math.random() - 0.5) * 100
@@ -136,9 +119,10 @@ const SparklyMouseTrail = ({ isActive }: SparklyMouseTrailProps) => {
                 left: 0,
                 top: 0,
                 pointerEvents: 'none',
+                fontSize: `${12 * sparkle.size}px`,
               }}
             >
-              <PlusSvg color={'black'} size={24 * sparkle.size} />
+              +
             </motion.div>
           )
         })}
