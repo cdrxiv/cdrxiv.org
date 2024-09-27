@@ -59,9 +59,8 @@ const MouseTrail = ({ isActive }: CursorTrailProps) => {
               transition={{ duration: 0.5, ease: 'easeOut' }}
               style={{
                 position: 'absolute',
-                left: cursor.x,
-                top: cursor.y,
-                transform: 'translate(-10px, -10px)',
+                left: cursor.x - 10,
+                top: cursor.y + 5,
               }}
             >
               <svg
