@@ -2,7 +2,6 @@
 
 import { AnimatePresence, motion, useAnimationFrame } from 'framer-motion'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useThemeUI } from 'theme-ui'
 import { v4 as uuidv4 } from 'uuid'
 
 interface SparklePosition {
@@ -23,8 +22,6 @@ const SparklyMouseTrail = ({ isActive }: SparklyMouseTrailProps) => {
   const [sparkles, setSparkles] = useState<SparklePosition[]>([])
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const frameCount = useRef(0)
-  const { theme } = useThemeUI()
-
 
   const createSparkle = useCallback((x: number, y: number): SparklePosition => {
     const offsetX = (Math.random() - 0.5) * 100
