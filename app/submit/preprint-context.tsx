@@ -7,9 +7,9 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { Preprint, PreprintFile, Preprints } from '../../../types/preprint'
+import { Preprint, PreprintFile, Preprints } from '../../types/preprint'
 import SelectPreprint from './select-preprint'
-import useTracking from '../../../hooks/use-tracking'
+import useTracking from '../../hooks/use-tracking'
 
 const PreprintContext = createContext<{
   preprint: Preprint | null

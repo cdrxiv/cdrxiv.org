@@ -1,13 +1,13 @@
 'use client'
 
-import { redirect, usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
 
 import { NavSidebar } from '../../components'
 import { PATHS } from './constants'
 import { NavigationProvider, useLinkWithWarning } from './navigation-context'
 import PaneledPage from '../../components/layouts/paneled-page'
-import { usePreprint } from './(authed)/preprint-context'
+import { usePreprint } from './preprint-context'
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname()

@@ -3,7 +3,7 @@ import React from 'react'
 import { redirect } from 'next/navigation'
 
 import { fetchWithToken } from '../api/utils'
-import { PreprintProvider } from './(authed)/preprint-context'
+import { PreprintProvider } from './preprint-context'
 import { createPreprint } from '../../actions/preprint'
 import SubmitLayout from './submit-layout'
 

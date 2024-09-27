@@ -5,7 +5,7 @@ import { useCallback, useState } from 'react'
 
 import { Checkbox, Field, FileInput, Form } from '../../../../components'
 import NavButtons from '../../nav-buttons'
-import { usePreprint, usePreprintFiles } from '../preprint-context'
+import { usePreprint, usePreprintFiles } from '../../preprint-context'
 import { useForm } from '../utils'
 import { FormData, initializeForm, validateForm, submitForm } from './utils'
 import DataFileInput from './data-file-input'

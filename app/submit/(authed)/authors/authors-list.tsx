@@ -1,6 +1,6 @@
 'use client'
 
-import { usePreprint } from '../preprint-context'
+import { usePreprint } from '../../preprint-context'
 import { Row } from '../../../../components'
 import AuthorCard from './author-card'
 

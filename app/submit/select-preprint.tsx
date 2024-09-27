@@ -1,6 +1,6 @@
-import { Card, Field, Form, Row } from '../../../components'
-import { Preprint, Preprints } from '../../../types/preprint'
-import { submissionTypes } from '../../../utils/formatters'
+import { Card, Field, Form, Row } from '../../components'
+import { Preprint, Preprints } from '../../types/preprint'
+import { submissionTypes } from '../../utils/formatters'
 
 type Props = {
   preprints: Preprints
