@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 
-import React, { useCallback, useState } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { Box } from 'theme-ui'
 import useBackgroundColors from '../../hooks/use-background-colors'
 import Guide from '../guide'
@@ -14,6 +14,9 @@ import SparklyMouseTrail from '../sparkly-mouse-trail'
 const margin = [2, 2, 3, 3]
 
 const PageCard = ({ children }: { children: React.ReactNode }) => {
+  const ref = useRef<HTMLDivElement>()
+  const pathname = usePathname()
+  const [scrollPosition, setScrollPosition] = useState(0)
   const { cardBackground, overallBackground } = useBackgroundColors()
   const [isTrailActive, setIsTrailActive] = useState(false)
 
@@ -32,6 +35,26 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
       setIsTrailActive(false)
     }
   }, [isTrailActive])
+
+  const showProgressBar = pathname.match(/\/preprint\/\d+/)
+  useEffect(() => {
+    const handleScroll = () => {
+      if (ref.current) {
+        const totalHeight = ref.current.scrollHeight - ref.current.clientHeight
+        if (totalHeight > 500) {
+          setScrollPosition(ref.current.scrollTop / totalHeight)
+        } else {
+          setScrollPosition(0)
+        }
+      }
+    }
+
+    if (showProgressBar && ref.current) {
+      const container = ref.current
+      container.addEventListener('scroll', handleScroll)
+      return () => container.removeEventListener('scroll', handleScroll)
+    }
+  }, [showProgressBar])
 
   return (
     <Box
@@ -55,6 +78,7 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
         }}
       >
         <Box
+          ref={ref}
           sx={{
             height: '100%',
             overflow: 'auto',
@@ -75,6 +99,25 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
           </Box>
         </Box>
       </Box>
+      {showProgressBar && (
+        <Box
+          sx={{
+            position: 'fixed',
+            bottom: 0,
+            ml: margin,
+            width: (theme) =>
+              margin.map(
+                (space) =>
+                  `calc(${scrollPosition} * (100vw - 2 * ${theme.space ? theme.space[space] : 0}px))`,
+              ),
+            height: (theme) =>
+              margin.map(
+                (space) => `${theme.space ? theme.space[space] : 0}px`,
+              ),
+            backgroundColor: 'blue',
+          }}
+        />
+      )}
     </Box>
   )
 }
