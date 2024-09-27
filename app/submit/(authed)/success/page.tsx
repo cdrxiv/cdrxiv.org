@@ -4,9 +4,8 @@ import { Box } from 'theme-ui'
 
 import { useEffect, useRef, useState } from 'react'
 import { Form, Link } from '../../../../components'
-import { usePreprint } from '../../preprint-context'
 import { getAdditionalField } from '../../../../utils/data'
-import { usePreprint } from '../preprint-context'
+import { usePreprint } from '../../preprint-context'
 
 const Success = () => {
   const [decoration, setDecoration] = useState('₊˚⊹⋆')
