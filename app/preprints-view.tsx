@@ -3,13 +3,13 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 
-import type { Preprints } from '../types/preprint'
+import type { PublishedPreprint } from '../types/preprint'
 import List from './list'
 import Grid from './grid'
 
 type ViewType = 'grid' | 'list'
 
-const PreprintsView = ({ preprints }: { preprints: Preprints }) => {
+const PreprintsView = ({ preprints }: { preprints: PublishedPreprint[] }) => {
   const searchParams = useSearchParams()
 
   const [currentView, setCurrentView] = useState<ViewType>(

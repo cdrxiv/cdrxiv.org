@@ -17,7 +17,6 @@ const NavLink: React.FC<NavLinkProps> = ({
       disabled={!interactive}
       {...props}
       sx={{
-        ...sx,
         color: 'text',
         ':visited': { color: 'text' },
         ':hover': interactive ? { color: 'blue' } : {},
@@ -30,6 +29,7 @@ const NavLink: React.FC<NavLinkProps> = ({
         '&:hover::before': interactive
           ? { content: '">"', position: 'absolute', left: 0 }
           : {},
+        ...sx,
       }}
     >
       {children}

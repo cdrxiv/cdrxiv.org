@@ -13,6 +13,7 @@ import {
   VersionQueueParams,
 } from '../types/preprint'
 import { fetchWithToken } from '../app/api/utils'
+import { PREPRINT_BASE } from './constants'
 
 export async function updatePreprint(
   preprint: Preprint,
@@ -57,25 +58,6 @@ export async function updatePreprint(
 
   revalidateTag('submit')
   return updatedPreprint
-}
-
-const PREPRINT_BASE = {
-  title: 'Placeholder',
-  abstract: null,
-  stage: 'preprint_unsubmitted',
-  license: null,
-  keywords: [],
-  date_submitted: null,
-  date_accepted: null,
-  date_published: null,
-  doi: null,
-  preprint_doi: null,
-  authors: [],
-  subject: [],
-  versions: [],
-  supplementary_files: [],
-  additional_field_answers: [],
-  repository: 1,
 }
 
 export async function createPreprint(): Promise<Preprint> {

@@ -19,7 +19,6 @@ import useTracking from '../hooks/use-tracking'
 import { AuthorsList } from '../components'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
-type PDFOutline = Awaited<ReturnType<PDFDocumentProxy['getOutline']>>
 
 const PreprintViewer = ({
   preprint,
@@ -85,7 +84,7 @@ const PreprintViewer = ({
 
   return (
     <PaneledPage
-      title={preprint.title}
+      title={preprint.title ?? ''}
       sidebar={
         pdf && pdfOutline ? (
           <Outline pdf={pdf} outline={pdfOutline} onItemClick={onItemClicked} />

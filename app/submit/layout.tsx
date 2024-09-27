@@ -1,46 +1,56 @@
-'use client'
+import { headers } from 'next/headers'
+import React from 'react'
+import { redirect } from 'next/navigation'
 
-import { usePathname } from 'next/navigation'
+import { fetchWithToken } from '../api/utils'
+import { PreprintProvider } from './preprint-context'
+import { createPreprint } from '../../actions/preprint'
+import SubmitLayout from './submit-layout'
 
-import { NavSidebar } from '../../components'
-import { PATHS } from './constants'
-import { NavigationProvider, useLinkWithWarning } from './navigation-context'
-import PaneledPage from '../../components/layouts/paneled-page'
-
-const Submit: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // this wrapper allows use of useLinkWithWarning below
-  return (
-    <NavigationProvider>
-      <SubmitContent>{children}</SubmitContent>
-    </NavigationProvider>
-  )
+interface Props {
+  children: React.ReactNode
 }
+const SubmissionOverview: React.FC<Props> = async ({ children }) => {
+  const [preprintRes, filesRes] = await Promise.all([
+    fetchWithToken(
+      headers(),
+      'https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/?stage=preprint_unsubmitted',
+      { next: { tags: ['submit'] } },
+    ),
+    fetchWithToken(
+      headers(),
+      'https://carbonplan.endurance.janeway.systems/carbonplan/api/preprint_files/',
+      { next: { tags: ['submit'] } },
+    ),
+  ])
 
-const SubmitContent: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const pathname = usePathname()
-  const { onClick } = useLinkWithWarning()
+  let files
+  if (preprintRes.status !== 200) {
+    redirect('/account?signOut=true&callbackUrl=/submit/overview')
+  }
 
-  let index = PATHS.findIndex((p) => p.href === pathname)
-  index = index >= 0 ? index : 0
-  const active = PATHS[index]
+  const [preprintsData, filesData] = await Promise.all([
+    preprintRes.json(),
+    files ?? filesRes.json(),
+  ])
+  let preprints = preprintsData.results
 
-  const visiblePaths = PATHS.filter((p) => !p.hidden)
+  let preprintCreated = false
+  if (preprints.length === 0) {
+    const preprint = await createPreprint()
+    preprintCreated = true
+    preprints = [preprint]
+  }
 
   return (
-    <PaneledPage
-      title={active.title}
-      rightCorner={
-        active.hidden
-          ? 'Success!'
-          : `Step ${index + 1} / ${visiblePaths.length}`
-      }
-      sidebar={<NavSidebar paths={visiblePaths} onClick={onClick} />}
+    <PreprintProvider
+      preprints={preprints}
+      files={filesData.results}
+      newlyCreated={preprintCreated}
     >
-      {children}
-    </PaneledPage>
+      <SubmitLayout>{children}</SubmitLayout>
+    </PreprintProvider>
   )
 }
 
-export default Submit
+export default SubmissionOverview

@@ -1,6 +1,6 @@
-import { Card, Field, Form, Row } from '../../../components'
-import { Preprint, Preprints } from '../../../types/preprint'
-import { submissionTypes } from '../../../utils/formatters'
+import { Card, Field, Form, Row } from '../../components'
+import { Preprint, Preprints } from '../../types/preprint'
+import { submissionTypes } from '../../utils/formatters'
 
 type Props = {
   preprints: Preprints
@@ -15,7 +15,7 @@ const SelectPreprint: React.FC<Props> = ({ preprints, setPreprint }) => {
             {preprints.map((preprint) => (
               <Card
                 key={preprint.pk}
-                title={preprint.title}
+                title={preprint.title ?? 'No title'}
                 authors={preprint.authors}
                 badges={submissionTypes(preprint)}
                 date={null}
