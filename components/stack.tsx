@@ -3,11 +3,11 @@ import Row from './row'
 import Column from './column'
 import { Flex, Box } from 'theme-ui'
 import Card from './card'
-import type { Preprints } from '../types/preprint'
+import type { PublishedPreprint } from '../types/preprint'
 import { submissionTypes } from '../utils/formatters'
 
 interface StackProps {
-  preprints: Preprints
+  preprints: PublishedPreprint[]
 }
 
 const Stack: React.FC<StackProps> = ({ preprints }) => {

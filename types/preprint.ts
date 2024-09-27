@@ -86,7 +86,7 @@ type UnsubmittedPreprint = CommonPreprintFields & {
   date_published: null
 }
 
-type ReviewPreprint = CommonPreprintFields & {
+export type ReviewPreprint = CommonPreprintFields & {
   stage: 'preprint_review'
   title: string
   abstract: string
@@ -96,7 +96,7 @@ type ReviewPreprint = CommonPreprintFields & {
   date_published: null
 }
 
-type PublishedPreprint = CommonPreprintFields & {
+export type PublishedPreprint = CommonPreprintFields & {
   stage: 'preprint_published'
   title: string
   abstract: string

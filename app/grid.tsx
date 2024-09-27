@@ -1,10 +1,10 @@
 import React from 'react'
 import { Card, Row } from '../components'
 import { submissionTypes } from '../utils/formatters'
-import type { Preprints } from '../types/preprint'
+import type { PublishedPreprint } from '../types/preprint'
 
 interface GridViewProps {
-  preprints: Preprints
+  preprints: PublishedPreprint[]
 }
 
 const GridView: React.FC<GridViewProps> = ({ preprints }) => {
