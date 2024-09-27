@@ -4,7 +4,7 @@ import { Box } from 'theme-ui'
 
 import { Form, Link } from '../../../../components'
 import { useEffect, useRef, useState } from 'react'
-import { usePreprint } from '../preprint-context'
+import { usePreprint } from '../../preprint-context'
 import { getAdditionalField } from '../../../../utils/data'
 
 const Success = () => {

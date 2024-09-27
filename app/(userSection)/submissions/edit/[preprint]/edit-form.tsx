@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
 
 import {
-  Preprint,
   VersionQueue,
   UpdateType,
+  ReviewPreprint,
+  PublishedPreprint,
 } from '../../../../../types/preprint'
 import VersionsList from './versions-list'
 import SharedLayout from '../../../shared-layout'
@@ -37,7 +38,7 @@ import {
 } from '../../../../../actions/zenodo'
 
 type Props = {
-  preprint: Preprint
+  preprint: ReviewPreprint | PublishedPreprint
   versions: VersionQueue[]
 }
 
@@ -51,7 +52,7 @@ type FormData = {
   articleFile: FileInputValue | null
   dataFile: FileInputValue | null
 }
-const initializeForm = (preprint: Preprint): FormData => {
+const initializeForm = (preprint: Props['preprint']): FormData => {
   return {
     preprint: preprint.pk,
     update_type: 'metadata_correction' as UpdateType,
@@ -65,7 +66,7 @@ const initializeForm = (preprint: Preprint): FormData => {
 }
 
 const validateForm = (
-  preprint: Preprint,
+  preprint: Props['preprint'],
   {
     update_type,
     title,
@@ -117,7 +118,7 @@ const validateForm = (
 }
 
 const submitForm = async (
-  preprint: Preprint,
+  preprint: Props['preprint'],
   {
     preprint: preprint_pk,
     update_type,

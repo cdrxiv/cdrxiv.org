@@ -20,12 +20,12 @@ export type FormData = {
 export const initializeForm = (preprint: Preprint): FormData => {
   const submissionType = getAdditionalField(preprint, 'Submission type') ?? ''
   return {
-    title: preprint.title === 'Placeholder' ? '' : preprint.title,
+    title: preprint.title === 'Placeholder' ? '' : (preprint.title ?? ''),
     abstract: preprint.abstract ?? '',
     license:
       typeof preprint.license === 'number'
         ? preprint.license
-        : preprint.license?.pk,
+        : (preprint.license?.pk ?? 0),
     data_license:
       submissionType === 'Article'
         ? ''

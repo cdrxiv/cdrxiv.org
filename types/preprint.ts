@@ -63,16 +63,9 @@ export type Stage =
   | 'preprint_review'
   | 'preprint_published'
 
-export type Preprint = {
+type CommonPreprintFields = {
   pk: number
-  title: string
-  abstract: string
-  stage: Stage
-  license: License
   keywords: Keyword[]
-  date_submitted: string | null
-  date_accepted: string | null
-  date_published: string | null
   doi: string | null
   preprint_doi: string | null
   authors: Author[]
@@ -82,6 +75,38 @@ export type Preprint = {
   additional_field_answers: AdditionalFieldAnswer[]
   owner: number
 }
+
+type UnsubmittedPreprint = CommonPreprintFields & {
+  stage: 'preprint_unsubmitted'
+  title: string | null
+  abstract: string | null
+  license: License | null
+  date_submitted: null
+  date_accepted: null
+  date_published: null
+}
+
+export type ReviewPreprint = CommonPreprintFields & {
+  stage: 'preprint_review'
+  title: string
+  abstract: string
+  license: License
+  date_submitted: string
+  date_accepted: null
+  date_published: null
+}
+
+export type PublishedPreprint = CommonPreprintFields & {
+  stage: 'preprint_published'
+  title: string
+  abstract: string
+  license: License
+  date_submitted: string
+  date_accepted: string
+  date_published: string
+}
+
+export type Preprint = UnsubmittedPreprint | ReviewPreprint | PublishedPreprint
 
 export type UpdateType = 'correction' | 'metadata_correction' | 'version'
 
@@ -105,7 +130,7 @@ export type PreprintParams = Partial<
   Modify<
     Preprint,
     {
-      license: number
+      license: number | null
       authors: Array<Author | { pk: number; email: string }>
     }
   >

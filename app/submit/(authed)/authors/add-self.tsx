@@ -2,7 +2,7 @@ import { useSession } from 'next-auth/react'
 import { useCallback } from 'react'
 
 import { Button } from '../../../../components'
-import { usePreprint } from '../preprint-context'
+import { usePreprint } from '../../preprint-context'
 import { updatePreprint } from '../../../../actions/preprint'
 
 const AddSelf = () => {

@@ -2,7 +2,7 @@ import { Box, Flex } from 'theme-ui'
 import { useSession } from 'next-auth/react'
 import { useCallback } from 'react'
 
-import { usePreprint } from '../preprint-context'
+import { usePreprint } from '../../preprint-context'
 import { Author } from '../../../../types/preprint'
 import { Link } from '../../../../components'
 import { updatePreprint } from '../../../../actions/preprint'

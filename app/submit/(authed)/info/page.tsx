@@ -13,7 +13,7 @@ import FundingSources from './funding-sources'
 import NavButtons from '../../nav-buttons'
 import Licenses from './licenses'
 import Subjects from './subjects'
-import { usePreprint } from '../preprint-context'
+import { usePreprint } from '../../preprint-context'
 import { useForm } from '../utils'
 import { FormData, initializeForm, validateForm, submitForm } from './utils'
 

@@ -1,6 +1,6 @@
 import { useNavigation } from '../navigation-context'
 import { useForm as useFormBase, Errors } from '../../../hooks/use-form'
-import { usePreprint } from './preprint-context'
+import { usePreprint } from '../preprint-context'
 
 export const createAdditionalField = (fieldName: string, value: string) => {
   return {

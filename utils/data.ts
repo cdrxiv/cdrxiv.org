@@ -58,8 +58,8 @@ export const getZenodoMetadata = (
 ): Deposition['metadata'] => {
   return {
     upload_type: 'dataset',
-    title: preprint.title,
-    description: preprint.abstract,
+    title: preprint.title as string,
+    description: preprint.abstract as string,
     doi: preprint.doi ?? undefined,
     communities: [{ identifier: 'cdrxiv' }],
     license: getAdditionalField(preprint, 'Data license') as string,
