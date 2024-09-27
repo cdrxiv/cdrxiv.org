@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 
-import React, { useEffect, useRef, useState, useCallback } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Box } from 'theme-ui'
 import useBackgroundColors from '../../hooks/use-background-colors'
 import Guide from '../guide'
@@ -15,7 +15,6 @@ const margin = [2, 2, 3, 3]
 
 const PageCard = ({ children }: { children: React.ReactNode }) => {
   const ref = useRef<HTMLDivElement>()
-  const pathname = usePathname()
   const [scrollPosition, setScrollPosition] = useState(0)
   const { cardBackground, overallBackground } = useBackgroundColors()
   const [isTrailActive, setIsTrailActive] = useState(false)
