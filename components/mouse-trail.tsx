@@ -39,6 +39,12 @@ const MouseTrail = ({ isActive }: CursorTrailProps) => {
     }
   }, [handleMouseMove])
 
+  useEffect(() => {
+    if (!isActive) {
+      setCursorTrail([])
+    }
+  }, [isActive])
+
   return (
     <div
       style={{
