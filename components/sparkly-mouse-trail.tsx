@@ -11,7 +11,6 @@ interface SparklePosition {
   id: string
   size: number
   duration: number
-  rotation: number
   initialDistance: number
   createdAt: number
 }
@@ -55,7 +54,6 @@ const SparklyMouseTrail = ({ isActive }: SparklyMouseTrailProps) => {
       y: y + offsetY,
       id: uuidv4(),
       duration: Math.random() * 1500 + 1500,
-      rotation: Math.random() * 360,
       size: Math.random() * 0.5 + 0.5,
       initialDistance,
       createdAt: Date.now(),
@@ -119,20 +117,16 @@ const SparklyMouseTrail = ({ isActive }: SparklyMouseTrailProps) => {
             <motion.div
               key={sparkle.id}
               initial={{
-                opacity: 1,
                 scale: sparkle.size,
                 x: sparkle.x,
                 y: sparkle.y,
-                rotate: sparkle.rotation,
               }}
               animate={{
-                opacity: 0,
                 scale: scale * sparkle.size,
                 x: sparkle.x + (Math.random() - 0.5) * 50,
                 y: sparkle.y + 100,
-                rotate: sparkle.rotation + 360,
               }}
-              exit={{ opacity: 0, scale: 0 }}
+              exit={{ scale: 0 }}
               transition={{
                 duration: sparkle.duration / 1000,
                 ease: 'easeOut',
@@ -144,7 +138,7 @@ const SparklyMouseTrail = ({ isActive }: SparklyMouseTrailProps) => {
                 pointerEvents: 'none',
               }}
             >
-              <PlusSvg color={color} size={24 * sparkle.size} />
+              <PlusSvg color={'black'} size={24 * sparkle.size} />
             </motion.div>
           )
         })}
