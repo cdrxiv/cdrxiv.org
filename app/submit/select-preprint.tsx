@@ -15,7 +15,7 @@ const SelectPreprint: React.FC<Props> = ({ preprints, setPreprint }) => {
             {preprints.map((preprint) => (
               <Card
                 key={preprint.pk}
-                title={preprint.title}
+                title={preprint.title ?? 'No title'}
                 authors={preprint.authors}
                 badges={submissionTypes(preprint)}
                 date={null}
