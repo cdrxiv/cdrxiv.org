@@ -22,7 +22,12 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
     const handleScroll = () => {
       if (ref.current) {
         const totalHeight = ref.current.scrollHeight - ref.current.clientHeight
-        setScrollPosition(ref.current.scrollTop / totalHeight)
+        if (totalHeight > 500) {
+          console.log(totalHeight)
+          setScrollPosition(ref.current.scrollTop / totalHeight)
+        } else {
+          setScrollPosition(0)
+        }
       }
     }
 
