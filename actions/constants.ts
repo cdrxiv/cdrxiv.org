@@ -1,0 +1,18 @@
+export const PREPRINT_BASE = {
+  title: 'Placeholder',
+  abstract: null,
+  stage: 'preprint_unsubmitted' as const,
+  license: null,
+  keywords: [],
+  date_submitted: null,
+  date_accepted: null,
+  date_published: null,
+  doi: null,
+  preprint_doi: null,
+  authors: [],
+  subject: [],
+  versions: [],
+  supplementary_files: [],
+  additional_field_answers: [],
+  repository: 1,
+}
