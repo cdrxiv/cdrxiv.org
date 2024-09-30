@@ -8,6 +8,10 @@ interface SearchProps {
   searchParams: { [key: string]: string | undefined }
 }
 
+export const metadata = {
+  title: 'Search – CDRXIV',
+}
+
 const Search = async ({ searchParams }: SearchProps) => {
   const { query: search, view, ...rest } = searchParams // map query -> search and omit view from params passed to Janeway
   const params = new URLSearchParams({ search: search ?? '', ...rest })
