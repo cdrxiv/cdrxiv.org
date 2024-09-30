@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 
 import ResultsWrapper from './results-wrapper'
 import PreprintsView from '../preprints-view'
+import LoadingWrapper from '../loading-wrapper'
 
 interface SearchProps {
   searchParams: { [key: string]: string | undefined }
@@ -17,7 +18,7 @@ const Search = async ({ searchParams }: SearchProps) => {
   const results = preprints.results || []
 
   return (
-    <Suspense key={search} fallback={<div>Loading...</div>}>
+    <Suspense key={search} fallback={<LoadingWrapper />}>
       <ResultsWrapper
         count={results.length}
         search={search ?? ''}

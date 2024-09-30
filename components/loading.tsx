@@ -11,7 +11,7 @@ const Loading = ({
   sx?: ThemeUIStyleObject
 }) => {
   const loadingText = useLoadingText({ isLoading: true, baseText })
-  return <Box sx={{ fontSize: 3, width: 100, ...sx }}>{loadingText}</Box>
+  return <Box sx={{ width: 100, ...sx }}>{loadingText}</Box>
 }
 
 export default Loading

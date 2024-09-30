@@ -6,7 +6,12 @@ import { Box, Flex, Input } from 'theme-ui'
 import { fetchDataDeposition } from '../../../../actions/zenodo'
 import { SupplementaryFile } from '../../../../types/preprint'
 import { Deposition } from '../../../../types/zenodo'
-import { Link, FileInput, FileInputValue } from '../../../../components'
+import {
+  Link,
+  FileInput,
+  FileInputValue,
+  Loading,
+} from '../../../../components'
 
 type Props = {
   file?: FileInputValue | null
@@ -61,7 +66,7 @@ const DataFileInput: React.FC<Props> = ({
   )
 
   if (loading) {
-    return 'Loading...'
+    return <Loading />
   } else if (mode === 'upload') {
     return (
       <>
