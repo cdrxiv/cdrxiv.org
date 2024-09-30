@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import { ResolvingMetadata } from 'next'
 import PreprintViewer from '../../preprint-viewer'
 
 // Polyfill for Promise.withResolvers
@@ -31,7 +32,26 @@ const getPreprint = async (id: string) => {
   return res.json()
 }
 
-const PreprintsPage = async ({ params }: { params: { id: string } }) => {
+type Props = { params: { id: string } }
+
+export const generateMetadata = async (
+  { params }: Props,
+  parent: ResolvingMetadata,
+) => {
+  try {
+    const preprint = await getPreprint(params.id)
+    return preprint
+      ? {
+          title: `${preprint.title} – CDRXIV`,
+          description: preprint.abstract,
+        }
+      : parent
+  } catch {
+    return parent
+  }
+}
+
+const PreprintsPage = async ({ params }: Props) => {
   const preprint = await getPreprint(params.id)
   if (!preprint) {
     notFound()
