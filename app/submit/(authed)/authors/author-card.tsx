@@ -41,14 +41,14 @@ const AuthorCard = ({
   }, [preprint, author, setPreprint])
 
   return (
-    <Box ref={setDroppableNodeRef}>
+    <Box ref={setDroppableNodeRef} sx={{ position: 'relative' }}>
       <Box
         ref={setDraggableNodeRef}
         sx={{
           cursor: draggable ? 'pointer' : 'default',
           variant: 'text.mono',
           width: '100%',
-          height: 'auto',
+          height: '100%',
           p: [3, 6, 6, 7],
           borderColor: 'text',
           borderWidth: '1px',
@@ -61,24 +61,30 @@ const AuthorCard = ({
         {...attributes}
       >
         <Flex sx={{ flexDirection: 'column', gap: 1 }}>
-          <Flex sx={{ justifyContent: 'space-between' }}>
-            <Box>
-              {author.first_name} {author.last_name}
-              {author.pk === session?.user?.id ? ' (owner)' : ''}
-            </Box>
-            {removable && (
-              <Link
-                sx={{ variant: 'text.monoCaps', textDecoration: 'none' }}
-                onClick={handleClick}
-              >
-                (X)
-              </Link>
-            )}
-          </Flex>
+          <Box>
+            {author.first_name} {author.last_name}
+            {author.pk === session?.user?.id ? ' (owner)' : ''}
+          </Box>
           <Box>{author.email}</Box>
           {author.institution && <Box>{author.institution}</Box>}
         </Flex>
       </Box>
+
+      {removable && (
+        <Link
+          sx={{
+            variant: 'text.monoCaps',
+            textDecoration: 'none',
+            position: 'absolute',
+            top: [3, 6, 6, 7],
+            right: [3, 6, 6, 7],
+            transform: CSS.Translate.toString(transform),
+          }}
+          onClick={handleClick}
+        >
+          (X)
+        </Link>
+      )}
     </Box>
   )
 }
