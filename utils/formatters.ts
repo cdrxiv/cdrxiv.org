@@ -63,3 +63,18 @@ export const submissionTypes = (
     [badge.label, 'Both'].find((el) => type?.match(new RegExp(el, 'i'))),
   )
 }
+
+export const decodeFilename = (filename: string) => {
+  return decodeURIComponent(
+    filename
+      .split('')
+      .map((char) => {
+        const code = char.charCodeAt(0)
+        if (code > 127) {
+          return '%' + code.toString(16).toUpperCase()
+        }
+        return char
+      })
+      .join(''),
+  )
+}
