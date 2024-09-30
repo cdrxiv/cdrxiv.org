@@ -3,6 +3,7 @@ import { Box, Flex } from 'theme-ui'
 
 import Button from './button'
 import Link from './link'
+import { decodeFilename } from '../utils/formatters'
 
 export type FileInputValue =
   | {
@@ -26,6 +27,7 @@ type Props = {
   description?: React.ReactNode
   onChange: (file: FileInputValue | null) => void
 }
+
 const FileInput: React.FC<Props> = ({
   accept = 'any',
   file,
@@ -71,7 +73,7 @@ const FileInput: React.FC<Props> = ({
             as='span'
             sx={{ variant: 'text.monoCaps', textTransform: 'none' }}
           >
-            {file.original_filename}&nbsp;
+            {decodeFilename(file.original_filename)}&nbsp;
             <Link
               sx={{
                 variant: 'text.monoCaps',

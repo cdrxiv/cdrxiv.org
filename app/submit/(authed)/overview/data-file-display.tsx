@@ -5,7 +5,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { fetchDataDeposition } from '../../../../actions/zenodo'
 import { Deposition } from '../../../../types/zenodo'
 import FileDisplay from './file-display'
-import { FileInputValue } from '../../../../components'
+import { FileInputValue, Loading } from '../../../../components'
 
 type Props = {
   file: FileInputValue
@@ -43,7 +43,7 @@ const DataFileDisplay: React.FC<Props> = ({ file: fileProp, onError }) => {
   )
 
   return loading ? (
-    'Loading...'
+    <Loading />
   ) : (
     <FileDisplay name={file?.name} href={file?.href} />
   )
