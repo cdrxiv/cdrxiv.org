@@ -12,9 +12,11 @@ import { updatePreprint } from '../../../../actions/preprint'
 const AuthorCard = ({
   author,
   removable,
+  draggable,
 }: {
   author: Author
   removable: boolean
+  draggable: boolean
 }) => {
   const { data: session } = useSession()
   const { preprint, setPreprint } = usePreprint()
@@ -29,6 +31,7 @@ const AuthorCard = ({
     isDragging,
   } = useDraggable({
     id: author.pk,
+    disabled: !draggable,
   })
 
   const handleClick = useCallback(() => {
@@ -42,7 +45,7 @@ const AuthorCard = ({
       <Box
         ref={setDraggableNodeRef}
         sx={{
-          cursor: 'pointer',
+          cursor: draggable ? 'pointer' : 'default',
           variant: 'text.mono',
           width: '100%',
           height: 'auto',
