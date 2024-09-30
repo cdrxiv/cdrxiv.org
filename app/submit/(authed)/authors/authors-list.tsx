@@ -18,17 +18,21 @@ const AuthorsList: React.FC<Props> = ({ removable = true }) => {
     ({ active, over }: { active: Active; over: Over | null }) => {
       if (over && active.id !== over.id) {
         setAuthors((prev) => {
-          const [lowIndex, highIndex] = [over.id, active.id]
-            .map((id) => prev.findIndex((author) => author.pk === id))
-            .sort()
+          const activeIndex = prev.findIndex(
+            (author) => author.pk === active.id,
+          )
+          const overIndex = prev.findIndex((author) => author.pk === over.id)
 
-          return [
-            ...prev.slice(0, lowIndex),
-            prev[highIndex],
-            prev[lowIndex],
-            ...prev.slice(lowIndex + 1, highIndex),
-            ...prev.slice(highIndex + 1),
-          ]
+          // Create a copy of the array
+          const updatedAuthors = [...prev]
+
+          // Remove the active item from its original position
+          const [movedAuthor] = updatedAuthors.splice(activeIndex, 1)
+
+          // Insert the active item at the new position
+          updatedAuthors.splice(overIndex, 0, movedAuthor)
+
+          return updatedAuthors
         })
       }
     },
