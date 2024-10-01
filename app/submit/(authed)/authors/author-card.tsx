@@ -40,12 +40,19 @@ const AuthorCard = ({
     }).then((updatedPreprint) => setPreprint(updatedPreprint))
   }, [preprint, author, setPreprint])
 
+  let cursor = 'default'
+  if (isDragging) {
+    cursor = 'grabbing'
+  } else if (draggable) {
+    cursor = 'grab'
+  }
+
   return (
     <Box ref={setDroppableNodeRef} sx={{ position: 'relative' }}>
       <Box
         ref={setDraggableNodeRef}
         sx={{
-          cursor: draggable ? 'pointer' : 'default',
+          cursor,
           variant: 'text.mono',
           width: '100%',
           height: '100%',
