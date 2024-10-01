@@ -56,6 +56,8 @@ const AuthorCard = ({
           outline: 'none', // use highlight style for focus instead
           transform: CSS.Translate.toString(transform),
           background: isOver && !isDragging ? 'background' : 'white',
+          zIndex: isDragging ? 2 : 1,
+          position: 'relative',
         }}
         {...listeners}
         {...attributes}
