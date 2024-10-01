@@ -81,6 +81,7 @@ const AuthorCard = ({
             top: [3, 6, 6, 7],
             right: [3, 6, 6, 7],
             transform: CSS.Translate.toString(transform),
+            zIndex: isDragging ? 2 : 1,
           }}
           onClick={handleClick}
         >
