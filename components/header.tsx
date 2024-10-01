@@ -21,9 +21,9 @@ const PATHS: { name: string; path: string; matchingPaths?: string[] }[] = [
   { name: 'About', path: '/about' },
   { name: 'Submit', path: '/submit/overview' },
   {
-    name: 'Login',
+    name: 'Account',
     path: '/account',
-    matchingPaths: ['/account', '/submissions'],
+    matchingPaths: ['/account', '/submissions', '/preview'],
   },
 ]
 
@@ -105,7 +105,7 @@ const Header = () => {
       const textDecoration = isActive(path, matchingPaths)
         ? 'underline'
         : 'none'
-      return name === 'Login' ? (
+      return name === 'Account' ? (
         <AccountLink
           key={name}
           sx={{ textDecoration }}
