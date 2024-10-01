@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 
 import { Button, Column, Field, Form, Link, Row } from '../../../components'
-import { Box, Divider } from 'theme-ui'
 
 const SignIn = () => {
   const searchParams = useSearchParams()
