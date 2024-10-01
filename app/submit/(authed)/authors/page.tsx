@@ -30,6 +30,10 @@ const Authors = () => {
               <li>
                 You can create new records for authors using the form below.
               </li>
+              <li>
+                You can reorder the authors by dragging and dropping entries
+                above.
+              </li>
             </ol>
           }
         >
