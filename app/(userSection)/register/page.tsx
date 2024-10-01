@@ -3,10 +3,10 @@
 import { useSession } from 'next-auth/react'
 import { useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Input } from 'theme-ui'
+import { Box, Input } from 'theme-ui'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
 
-import { Button, Column, Field, Form, Row } from '../../../components'
+import { Button, Column, Field, Form, Link, Row } from '../../../components'
 import { useForm } from '../../../hooks/use-form'
 import { useLoading } from '../../../components/layouts/paneled-page'
 import { verify } from '../../../actions/hcaptcha'
@@ -226,6 +226,11 @@ const Page = () => {
           onVerify={handleVerify}
         />
       </Field>
+
+      <Box>
+        By registering an account, you agree to our{' '}
+        <Link href='/TK'>Privacy Policy</Link>.
+      </Box>
       <Button onClick={onSubmit}>Create account</Button>
     </Form>
   )
