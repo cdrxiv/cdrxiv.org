@@ -32,7 +32,6 @@ const Login = () => {
   return (
     <Form>
       <Field
-        label=''
         id='signin'
         description={
           <>
