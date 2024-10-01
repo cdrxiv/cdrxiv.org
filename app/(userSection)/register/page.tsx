@@ -1,13 +1,15 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Input } from 'theme-ui'
+import HCaptcha from '@hcaptcha/react-hcaptcha'
 
 import { Button, Column, Field, Form, Row } from '../../../components'
 import { useForm } from '../../../hooks/use-form'
 import { useLoading } from '../../../components/layouts/paneled-page'
+import { verify } from '../../../actions/hcaptcha'
 
 type FormData = {
   email: string
@@ -18,6 +20,7 @@ type FormData = {
   institution: string
   password: string
   repeat_password: string
+  verified: boolean
 }
 
 const initializeForm = (): FormData => {
@@ -30,6 +33,7 @@ const initializeForm = (): FormData => {
     institution: '',
     password: '',
     repeat_password: '',
+    verified: false,
   }
 }
 
@@ -42,6 +46,7 @@ const validateForm = ({
   institution,
   password,
   repeat_password,
+  verified,
 }: FormData) => {
   let result: Partial<{ [K in keyof FormData]: string }> = {}
 
@@ -71,6 +76,10 @@ const validateForm = ({
     result.repeat_password = 'You must confirm your password.'
   }
 
+  if (!verified) {
+    result.verified = 'You must complete the challenge.'
+  }
+
   return result
 }
 
@@ -80,7 +89,7 @@ const submitForm = async (
 ) => {
   setIsLoading(true)
   // TODO
-
+  console.log('submitting')
   setIsLoading(false)
 }
 
@@ -106,6 +115,16 @@ const Page = () => {
       setIsLoading(false)
     }
   }, [submitError, setIsLoading])
+
+  const handleVerify = useCallback(
+    async (token: string) => {
+      const result = await verify(token)
+      if (result) {
+        setters.verified(true)
+      }
+    },
+    [setters],
+  )
 
   return (
     <Form error={submitError}>
@@ -200,6 +219,13 @@ const Page = () => {
           </Field>
         </Column>
       </Row>
+
+      <Field error={errors.verified}>
+        <HCaptcha
+          sitekey='04a4d35c-a606-49c8-8832-b0440842c0aa'
+          onVerify={handleVerify}
+        />
+      </Field>
       <Button onClick={onSubmit}>Create account</Button>
     </Form>
   )
