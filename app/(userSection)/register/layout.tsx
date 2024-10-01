@@ -5,7 +5,7 @@ export const metadata = {
   title: 'Register – CDRXIV',
 }
 
-export const Layout = ({ children }: { children: ReactNode }) => (
+const Layout = ({ children }: { children: ReactNode }) => (
   <SharedLayout title='Register'>{children}</SharedLayout>
 )
 
