@@ -10,6 +10,7 @@ const useBackgroundColors = (): ColorsObject => {
   if (
     pathname.startsWith('/submit/') ||
     pathname.startsWith('/account') ||
+    pathname.startsWith('/register') ||
     pathname.startsWith('/submissions') ||
     pathname.startsWith('/preview') ||
     pathname.startsWith('/preprint/') ||

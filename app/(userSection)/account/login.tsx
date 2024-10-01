@@ -4,7 +4,8 @@ import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 
-import { Button, Column, Field, Form, Row } from '../../../components'
+import { Button, Column, Field, Form, Link, Row } from '../../../components'
+import { Box, Divider } from 'theme-ui'
 
 const SignIn = () => {
   const searchParams = useSearchParams()
@@ -33,7 +34,16 @@ const Login = () => {
       <Field
         label=''
         id='signin'
-        description='CDRXIV uses Janeway for authentication. Use your Janeway account credentials to log in and get started with your submission.'
+        description={
+          <>
+            CDRXIV uses Janeway for authentication. Use your Janeway account
+            credentials to log in and get started with your submission. Or,{' '}
+            <Link href='/register' sx={{ variant: 'text.mono' }}>
+              create a new account
+            </Link>
+            .
+          </>
+        }
       >
         <Row columns={6}>
           <Column start={1} width={[3, 4, 3, 3]}>
