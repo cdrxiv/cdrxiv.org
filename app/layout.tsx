@@ -3,10 +3,10 @@ import { getServerSession } from 'next-auth/next'
 
 import '../components/fonts.css'
 import PageCard from '../components/layouts/page-card'
-import Providers from './providers'
-import { getSubjects } from './api/utils'
-import { SubjectsProvider } from './subjects-context'
 import { authOptions } from '../lib/auth'
+import { getSubjects } from './api/utils'
+import Providers from './providers'
+import { SubjectsProvider } from './subjects-context'
 
 export const metadata: Metadata = {
   title: 'CDRXIV',
