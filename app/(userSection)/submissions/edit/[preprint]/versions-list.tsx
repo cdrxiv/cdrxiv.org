@@ -1,7 +1,7 @@
 import { Box, Flex } from 'theme-ui'
 import React, { useEffect, useState } from 'react'
 
-import { Badge, Expander, Field } from '../../../../../components'
+import { Badge, Expander, Field, Loading } from '../../../../../components'
 import { VersionQueue } from '../../../../../types/preprint'
 import { formatDate } from '../../../../../utils/formatters'
 import { UPDATE_TYPE_LABELS } from './constants'
@@ -60,7 +60,7 @@ const VersionDetails = ({ version }: { version: VersionQueue }) => {
       {version.file && (
         <Field label='file'>
           <Box sx={{ variant: 'text.mono' }}>
-            {fileName ? fileName : 'Loading...'}
+            {fileName ? fileName : <Loading />}
           </Box>
         </Field>
       )}

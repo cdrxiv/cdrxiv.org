@@ -15,6 +15,9 @@ const sx = {
     color: 'listBorderGrey',
     textDecoration: 'none',
   },
+  button: {
+    ':visited': { color: 'blue' },
+  },
 }
 
 const StyledLink: React.FC<Props> = ({
@@ -50,7 +53,11 @@ const StyledLink: React.FC<Props> = ({
     <NextLink href={disabled ? '#' : href || '#'} passHref legacyBehavior>
       <ThemeUILink
         onClick={handleClick}
-        sx={{ ...(disabled ? sx.disabled : {}), ...sxProp }}
+        sx={{
+          ...(disabled ? sx.disabled : {}),
+          ...(!href ? sx.button : {}),
+          ...sxProp,
+        }}
         {...props}
       >
         {content}

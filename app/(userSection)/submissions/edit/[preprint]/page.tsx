@@ -3,7 +3,10 @@ import { redirect } from 'next/navigation'
 
 import { fetchWithToken } from '../../../../api/utils'
 import EditForm from './edit-form'
-import { VersionQueue } from '../../../../../types/preprint'
+
+export const metadata = {
+  title: 'Update Submission – CDRXIV',
+}
 
 const Page = async ({ params }: { params: { preprint: string } }) => {
   const [versionsRes, preprintRes] = await Promise.all([

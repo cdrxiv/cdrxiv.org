@@ -1,9 +1,10 @@
 'use client'
 
 import React from 'react'
+import { Box } from 'theme-ui'
 
 import { Link } from '../../../../components'
-import { Box } from 'theme-ui'
+import { decodeFilename } from '../../../../utils/formatters'
 
 type Props = {
   name?: string | null
@@ -18,7 +19,7 @@ const FileDisplay: React.FC<Props> = ({ name, href }) => {
         textTransform: 'none',
       }}
     >
-      {name}
+      {decodeFilename(name)}
     </Link>
   ) : (
     <Box

@@ -10,6 +10,11 @@ import SubmitLayout from './submit-layout'
 interface Props {
   children: React.ReactNode
 }
+
+export const metadata = {
+  title: 'Submit – CDRXIV',
+}
+
 const SubmissionOverview: React.FC<Props> = async ({ children }) => {
   const [preprintRes, filesRes] = await Promise.all([
     fetchWithToken(
