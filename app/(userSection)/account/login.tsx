@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 
 import { Button, Column, Field, Form, Link, Row } from '../../../components'
+import { Box } from 'theme-ui'
 
 const SignIn = () => {
   const searchParams = useSearchParams()
@@ -28,8 +29,15 @@ const SignIn = () => {
 }
 
 const Login = () => {
+  const searchParams = useSearchParams()
   return (
     <Form>
+      {searchParams.get('activated') === 'true' && (
+        <Box>
+          Your account has been activated! Log in below to complete account set
+          up.
+        </Box>
+      )}
       <Field
         id='signin'
         description={

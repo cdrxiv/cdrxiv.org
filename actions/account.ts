@@ -47,6 +47,32 @@ export async function registerAccount(
   return user
 }
 
+export async function activateAccount(user: number, confirmation_code: string) {
+  const res = await fetch(
+    `https://carbonplan.endurance.janeway.systems/carbonplan/api/activate/${user}`,
+    {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        confirmation_code,
+      }),
+    },
+  )
+
+  if (res.status > 200) {
+    throw new Error(
+      `Status ${res.status}: Unable to activate account. ${res.statusText}`,
+    )
+  }
+
+  const result = await res.json()
+
+  if (result) {
+    await sql`DELETE FROM confirmation_codes WHERE confirmation_code = ${confirmation_code};`
+  }
+  return result
+}
+
 export async function updateAccount(user: User, params: Partial<User>) {
   const res = await fetchWithToken(
     headers(),
