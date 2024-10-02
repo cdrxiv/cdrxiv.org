@@ -1,21 +1,39 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
-import { Box } from 'theme-ui'
 import { usePathname } from 'next/navigation'
 
-import Header from '../header'
-import PageCorner from '../page-corner'
-import Guide from '../guide'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { Box } from 'theme-ui'
 import useBackgroundColors from '../../hooks/use-background-colors'
+import Guide from '../guide'
+import Header from '../header'
+import MouseTrail from '../mouse-trail'
+import PageCorner from '../page-corner'
+import SparklyMouseTrail from '../sparkly-mouse-trail'
 
 const margin = [2, 2, 3, 3]
 
 const PageCard = ({ children }: { children: React.ReactNode }) => {
   const ref = useRef<HTMLDivElement>()
-  const pathname = usePathname()
   const [scrollPosition, setScrollPosition] = useState(0)
   const { cardBackground, overallBackground } = useBackgroundColors()
+  const [isTrailActive, setIsTrailActive] = useState(false)
+
+  const pathname = usePathname()
+  const isSuccessfullSubmissionPage = pathname.startsWith('/submit/success')
+  const isHomePage = pathname === '/' || pathname.startsWith('/?')
+
+  const toggleTrail = useCallback(() => {
+    if (isHomePage) {
+      setIsTrailActive((prev) => !prev)
+    }
+  }, [isHomePage])
+
+  const handleMouseClick = useCallback(() => {
+    if (isTrailActive) {
+      setIsTrailActive(false)
+    }
+  }, [isTrailActive])
 
   const showProgressBar = pathname.match(/\/preprint\/\d+/)
   useEffect(() => {
@@ -38,7 +56,10 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
   }, [showProgressBar])
 
   return (
-    <Box sx={{ bg: overallBackground, width: '100vw', height: '100vh' }}>
+    <Box
+      sx={{ bg: overallBackground, width: '100vw', height: '100vh' }}
+      onClick={handleMouseClick}
+    >
       <Box
         sx={{
           m: margin,
@@ -66,7 +87,9 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
             px: ['18px', '36px', '36px', '52px'],
           }}
         >
-          <PageCorner />
+          <PageCorner onToggle={toggleTrail} isHomePage={isHomePage} />
+          <MouseTrail isActive={isTrailActive && isHomePage} />
+          <SparklyMouseTrail isActive={isSuccessfullSubmissionPage} />
 
           <Box sx={{ contain: 'layout' }}>
             <Guide />
