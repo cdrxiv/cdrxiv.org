@@ -142,6 +142,13 @@ const Page = () => {
     [setters],
   )
 
+  const handleSubmit = useCallback(async () => {
+    const result = await onSubmit()
+    if (result) {
+      router.push('/register/success')
+    }
+  }, [onSubmit, router])
+
   return (
     <Form error={submitError}>
       <Field label='Email*' id='email' error={errors.email}>
@@ -247,7 +254,7 @@ const Page = () => {
         By registering an account, you agree to our{' '}
         <Link href='/TK'>Privacy Policy</Link>.
       </Box>
-      <Button onClick={onSubmit}>Create account</Button>
+      <Button onClick={handleSubmit}>Create account</Button>
     </Form>
   )
 }
