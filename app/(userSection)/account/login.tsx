@@ -3,9 +3,9 @@
 import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
+import { Box } from 'theme-ui'
 
 import { Button, Column, Field, Form, Link, Row } from '../../../components'
-import { Box } from 'theme-ui'
 
 const SignIn = () => {
   const searchParams = useSearchParams()
