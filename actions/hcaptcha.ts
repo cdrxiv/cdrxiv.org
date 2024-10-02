@@ -1,6 +1,6 @@
 'use server'
 
-export const verify = async (token: string) => {
+export const verify = async (token: string): Promise<boolean> => {
   const response = await fetch('https://api.hcaptcha.com/siteverify', {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
@@ -11,6 +11,5 @@ export const verify = async (token: string) => {
   })
 
   const result = await response.json()
-  console.log(result)
   return result.success
 }

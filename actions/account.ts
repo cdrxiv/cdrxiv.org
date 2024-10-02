@@ -5,6 +5,43 @@ import { User } from 'next-auth'
 
 import { fetchWithToken } from '../app/api/utils'
 
+export async function registerAccount(
+  params: Partial<User> & { password: string },
+) {
+  const res = await fetch(
+    'https://carbonplan.endurance.janeway.systems/carbonplan/api/register/',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...params,
+        repository: 1,
+      }),
+    },
+  )
+  if (res.status !== 201) {
+    let keyErrors
+    try {
+      const data = await res.json()
+      keyErrors = Object.keys(data).map((key) =>
+        data[key]
+          .map((err: string) => err[0].toUpperCase() + err.slice(1))
+          .join(' '),
+      )
+    } catch {
+      console.warn('Unable to extract error message from response')
+    }
+    throw new Error(
+      keyErrors
+        ? `Status ${res.status}: Unable to register account. ${keyErrors.join(' ')}`
+        : `Status ${res.status}: Unable to register account. ${res.statusText}`,
+    )
+  }
+
+  const user = await res.json()
+  return user
+}
+
 export async function updateAccount(user: User, params: Partial<User>) {
   const res = await fetchWithToken(
     headers(),
