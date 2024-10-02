@@ -2,6 +2,7 @@
 
 import { headers } from 'next/headers'
 import { User } from 'next-auth'
+import { sql } from '@vercel/postgres'
 
 import { fetchWithToken } from '../app/api/utils'
 
@@ -39,6 +40,10 @@ export async function registerAccount(
   }
 
   const user = await res.json()
+
+  if (user.confirmation_code && user.pk) {
+    await sql`INSERT INTO confirmation_codes (account_id, confirmation_code) VALUES (${user.pk}, ${user.confirmation_code});`
+  }
   return user
 }
 
