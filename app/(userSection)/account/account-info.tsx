@@ -40,10 +40,7 @@ const AccountInfo = () => {
             <SignOutListener />
           </Suspense>
 
-          <Field
-            label=''
-            description='CDRXIV uses Janeway for authentication. Signing out does not deactivate your Janeway session.'
-          >
+          <Field description='CDRXIV uses Janeway for authentication. Signing out does not deactivate your Janeway session.'>
             <Button
               onClick={() => signOut({ callbackUrl: '/' })}
               sx={{ width: 'fit-content' }}

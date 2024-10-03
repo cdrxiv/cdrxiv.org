@@ -1,7 +1,7 @@
 import { Box, Flex, Label } from 'theme-ui'
 
 interface Props {
-  label: React.ReactNode
+  label?: React.ReactNode
   id?: string
   children?: React.ReactNode
   description?: React.ReactNode
@@ -18,7 +18,7 @@ const Field: React.FC<Props> = ({
     <Flex sx={{ flexDirection: 'column', gap: 2 }}>
       <Label htmlFor={id}>
         {label}
-        {error && <Box sx={{ color: 'red' }}>&nbsp;(!)</Box>}{' '}
+        {error && label && <Box sx={{ color: 'red' }}>&nbsp;(!)</Box>}{' '}
       </Label>
       {children}
       {description && <Box sx={{ variant: 'text.mono' }}>{description}</Box>}
