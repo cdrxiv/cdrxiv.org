@@ -111,7 +111,6 @@ const PaneledPage: React.FC<{
                     sx={{
                       gap: 5,
                       pt: 4,
-                      mb: 4,
                     }}
                   >
                     {sidebar && (
@@ -139,7 +138,7 @@ const PaneledPage: React.FC<{
                   </Flex>
 
                   {isSidebarExpanded && (
-                    <Box sx={{ position: 'relative', pl: 3, ml: -3 }}>
+                    <Box sx={{ position: 'relative', mt: 4, pl: 3, ml: -3 }}>
                       {sidebar}
                     </Box>
                   )}
@@ -156,23 +155,33 @@ const PaneledPage: React.FC<{
                 </Box>
               )}
               <Row columns={[6, 6, 8, 8]}>
-                <Column start={1} width={[6, 6, 8, 8]}>
-                  <Flex
+                <Column
+                  start={1}
+                  width={[6, 6, 8, 8]}
+                  sx={{ pt: [6, 6, 8, 8] }}
+                >
+                  {(leftCorner || rightCorner) && (
+                    <Flex
+                      sx={{
+                        width: '100%',
+                        justifyContent: 'space-between',
+                        display: ['none', 'none', 'flex', 'flex'],
+                        mb: 7,
+                      }}
+                    >
+                      <Box sx={{ variant: 'text.monoCaps' }}>{leftCorner}</Box>
+                      <Box sx={{ variant: 'text.monoCaps' }}>{rightCorner}</Box>
+                    </Flex>
+                  )}
+
+                  <Box
+                    as='h1'
                     sx={{
-                      width: '100%',
-                      justifyContent: 'space-between',
-                      display: ['none', 'none', 'flex', 'flex'],
+                      variant: 'text.heading',
+                      mt: [0, 0, 5, 5],
+                      mb: [6, 6, 7, 7],
                     }}
                   >
-                    <Box sx={{ variant: 'text.monoCaps', mt: 8, mb: 7 }}>
-                      {leftCorner}
-                    </Box>
-                    <Box sx={{ variant: 'text.monoCaps', mt: 8, mb: 7 }}>
-                      {rightCorner}
-                    </Box>
-                  </Flex>
-
-                  <Box as='h1' sx={{ variant: 'text.heading', mb: 7 }}>
                     {title}
                   </Box>
                   {isLoading && (
