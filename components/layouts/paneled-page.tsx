@@ -81,7 +81,7 @@ const PaneledPage: React.FC<{
               pl: 3,
               ml: -3,
               mr: [0, 0, -6, -8], // push scrollbar to edge
-              pr: [0, 0, -6, -8],
+              pr: [0, 0, 6, 8],
             }}
           >
             {sidebar}
