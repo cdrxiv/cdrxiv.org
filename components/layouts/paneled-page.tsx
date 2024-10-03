@@ -17,7 +17,7 @@ import Guide from '../guide'
 import Loading from '../loading'
 import Expander from '../expander'
 
-const HEADER_HEIGHT = 100
+const HEADER_HEIGHT = [65, 65, 100, 100]
 
 const LoadingContext = createContext<
   | {
@@ -74,7 +74,9 @@ const PaneledPage: React.FC<{
           <Box
             sx={{
               height: 'fit-content',
-              maxHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
+              maxHeight: HEADER_HEIGHT.map(
+                (height) => `calc(100vh - ${height}px)`,
+              ),
               position: 'sticky',
               top: HEADER_HEIGHT,
               overflowY: 'auto',
@@ -203,18 +205,18 @@ const PaneledPage: React.FC<{
           width={[6, 2, 2, 2]}
           sx={{
             display: ['none', 'inherit', 'inherit', 'inherit'],
-            height: '100%',
           }}
         >
           <Box
             sx={{
-              height: 'fit-content',
               position: 'sticky',
               top: HEADER_HEIGHT,
-              maxHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
+              maxHeight: HEADER_HEIGHT.map(
+                (height) => `calc(100vh - ${height}px)`,
+              ),
               overflowY: 'auto',
               mr: [0, 0, -8, -10], // push scrollbar to edge
-              pr: [0, 0, -8, -10],
+              pr: [0, 0, 8, 10],
             }}
           >
             {metadata}
