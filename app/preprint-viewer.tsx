@@ -107,7 +107,7 @@ const PreprintViewer = ({
       <Box sx={{ variant: 'text.monoCaps', fontSize: [3, 3, 3, 4], mb: 4 }}>
         Abstract
       </Box>
-      <Box sx={{ variant: 'text.body', mb: 7 }}>{preprint.abstract}</Box>
+      <Box sx={{ variant: 'text.body', mb: 9 }}>{preprint.abstract}</Box>
       {hasArticle && preprint.versions.length > 0 && (
         <div ref={containerRef} style={{ width: '100%' }}>
           <Document
@@ -133,6 +133,14 @@ const PreprintViewer = ({
                     if (el) pageRefs.current[index] = el
                   }}
                 >
+                  <Box
+                    sx={{
+                      height: ['1px', '1px', 5, 8],
+                      background: ['text', 'text', 'background', 'background'],
+                      px: [5, 0, 6, 8],
+                      mx: [-5, 0, -6, -8],
+                    }}
+                  />
                   <Page
                     key={`page_${index + 1}`}
                     pageNumber={index + 1}

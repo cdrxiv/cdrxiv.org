@@ -2,7 +2,15 @@
 
 import { usePathname } from 'next/navigation'
 
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { Box } from 'theme-ui'
 import useBackgroundColors from '../../hooks/use-background-colors'
 import Guide from '../guide'
@@ -12,6 +20,18 @@ import PageCorner from '../page-corner'
 import SparklyMouseTrail from '../sparkly-mouse-trail'
 
 const margin = [2, 2, 3, 3]
+
+const CardContext = createContext<{
+  scrollToTop: () => void
+}>({ scrollToTop: () => {} })
+
+export const useCardContext = () => {
+  const context = useContext(CardContext)
+  if (context === undefined) {
+    throw new Error('useCardContext must be used within a PageCard')
+  }
+  return context
+}
 
 const PageCard = ({ children }: { children: React.ReactNode }) => {
   const ref = useRef<HTMLDivElement>()
@@ -55,6 +75,16 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
     }
   }, [showProgressBar])
 
+  const contextValue = useMemo(() => {
+    return {
+      scrollToTop: () => {
+        if (ref.current) {
+          ref.current.scrollTo(0, 0)
+        }
+      },
+    }
+  }, [])
+
   return (
     <Box
       sx={{ bg: overallBackground, width: '100vw', height: '100vh' }}
@@ -87,15 +117,17 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
             px: ['18px', '36px', '36px', '52px'],
           }}
         >
-          <PageCorner onToggle={toggleTrail} isHomePage={isHomePage} />
-          <MouseTrail isActive={isTrailActive && isHomePage} />
-          <SparklyMouseTrail isActive={isSuccessfullSubmissionPage} />
+          <CardContext.Provider value={contextValue}>
+            <PageCorner onToggle={toggleTrail} isHomePage={isHomePage} />
+            <MouseTrail isActive={isTrailActive && isHomePage} />
+            <SparklyMouseTrail isActive={isSuccessfullSubmissionPage} />
 
-          <Box sx={{ contain: 'layout' }}>
-            <Guide />
-            <Header />
-            {children}
-          </Box>
+            <Box sx={{ contain: 'layout' }}>
+              <Guide />
+              <Header />
+              {children}
+            </Box>
+          </CardContext.Provider>
         </Box>
       </Box>
       {showProgressBar && (

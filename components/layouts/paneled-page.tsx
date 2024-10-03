@@ -16,8 +16,9 @@ import Column from '../column'
 import Guide from '../guide'
 import Loading from '../loading'
 import Expander from '../expander'
+import { useCardContext } from './page-card'
 
-const HEADER_HEIGHT = 100
+const HEADER_HEIGHT = [65, 65, 100, 100]
 
 const LoadingContext = createContext<
   | {
@@ -46,19 +47,17 @@ const PaneledPage: React.FC<{
   const [isLoading, setIsLoading] = useState(false)
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false)
   const [isMetadataExpanded, setIsMetadataExpanded] = useState(false)
-  const contentRef = useRef<HTMLDivElement>(null)
   const pathRef = useRef<string | null>(null)
   const pathname = usePathname()
+  const { scrollToTop } = useCardContext()
 
   useEffect(() => {
-    if (contentRef.current) {
-      contentRef.current.scrollIntoView()
-    }
+    scrollToTop()
     if (pathRef.current !== pathname && isLoading) {
       setIsLoading(false)
     }
     pathRef.current = pathname
-  }, [pathname, setIsLoading, isLoading])
+  }, [pathname, setIsLoading, isLoading, scrollToTop])
 
   return (
     <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
@@ -74,14 +73,16 @@ const PaneledPage: React.FC<{
           <Box
             sx={{
               height: 'fit-content',
-              maxHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
+              maxHeight: HEADER_HEIGHT.map(
+                (height) => `calc(100vh - ${height}px)`,
+              ),
               position: 'sticky',
               top: HEADER_HEIGHT,
               overflowY: 'auto',
               pl: 3,
               ml: -3,
               mr: [0, 0, -6, -8], // push scrollbar to edge
-              pr: [0, 0, -6, -8],
+              pr: [0, 0, 6, 8],
             }}
           >
             {sidebar}
@@ -89,7 +90,6 @@ const PaneledPage: React.FC<{
         </Column>
         <Column start={[1, 1, 4, 4]} width={[6, 6, 6, 6]}>
           <Box
-            ref={contentRef}
             sx={{
               width: '100%',
               background: 'primary',
@@ -109,7 +109,6 @@ const PaneledPage: React.FC<{
                     sx={{
                       gap: 5,
                       pt: 4,
-                      mb: 4,
                     }}
                   >
                     {sidebar && (
@@ -137,7 +136,7 @@ const PaneledPage: React.FC<{
                   </Flex>
 
                   {isSidebarExpanded && (
-                    <Box sx={{ position: 'relative', pl: 3, ml: -3 }}>
+                    <Box sx={{ position: 'relative', mt: 4, pl: 3, ml: -3 }}>
                       {sidebar}
                     </Box>
                   )}
@@ -154,23 +153,33 @@ const PaneledPage: React.FC<{
                 </Box>
               )}
               <Row columns={[6, 6, 8, 8]}>
-                <Column start={1} width={[6, 6, 8, 8]}>
-                  <Flex
+                <Column
+                  start={1}
+                  width={[6, 6, 8, 8]}
+                  sx={{ pt: [6, 6, 8, 8] }}
+                >
+                  {(leftCorner || rightCorner) && (
+                    <Flex
+                      sx={{
+                        width: '100%',
+                        justifyContent: 'space-between',
+                        display: ['none', 'none', 'flex', 'flex'],
+                        mb: 7,
+                      }}
+                    >
+                      <Box sx={{ variant: 'text.monoCaps' }}>{leftCorner}</Box>
+                      <Box sx={{ variant: 'text.monoCaps' }}>{rightCorner}</Box>
+                    </Flex>
+                  )}
+
+                  <Box
+                    as='h1'
                     sx={{
-                      width: '100%',
-                      justifyContent: 'space-between',
-                      display: ['none', 'none', 'flex', 'flex'],
+                      variant: 'text.heading',
+                      mt: [0, 0, 5, 5],
+                      mb: [6, 6, 7, 7],
                     }}
                   >
-                    <Box sx={{ variant: 'text.monoCaps', mt: 8, mb: 7 }}>
-                      {leftCorner}
-                    </Box>
-                    <Box sx={{ variant: 'text.monoCaps', mt: 8, mb: 7 }}>
-                      {rightCorner}
-                    </Box>
-                  </Flex>
-
-                  <Box as='h1' sx={{ variant: 'text.heading', mb: 7 }}>
                     {title}
                   </Box>
                   {isLoading && (
@@ -203,18 +212,18 @@ const PaneledPage: React.FC<{
           width={[6, 2, 2, 2]}
           sx={{
             display: ['none', 'inherit', 'inherit', 'inherit'],
-            height: '100%',
           }}
         >
           <Box
             sx={{
-              height: 'fit-content',
               position: 'sticky',
               top: HEADER_HEIGHT,
-              maxHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
+              maxHeight: HEADER_HEIGHT.map(
+                (height) => `calc(100vh - ${height}px)`,
+              ),
               overflowY: 'auto',
               mr: [0, 0, -8, -10], // push scrollbar to edge
-              pr: [0, 0, -8, -10],
+              pr: [0, 0, 8, 10],
             }}
           >
             {metadata}

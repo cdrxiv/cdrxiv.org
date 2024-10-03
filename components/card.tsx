@@ -105,11 +105,12 @@ const Card: React.FC<CardProps> = ({
 
   return (
     <Link href={href || '#'} key={href} passHref legacyBehavior>
-      <a
-        style={{
+      <Box
+        sx={{
           textDecoration: 'none',
           color: 'inherit',
           height: '100%',
+          minHeight: ['178px', '202px', '202px', '202px'],
         }}
       >
         <Flex
@@ -164,6 +165,10 @@ const Card: React.FC<CardProps> = ({
                   mb: [3, 3, 3, 4],
                   pr: [36, 36, 48, 48],
                   color,
+                  display: '-webkit-box',
+                  WebkitLineClamp: 4,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
                 }}
               >
                 {title}
@@ -206,7 +211,7 @@ const Card: React.FC<CardProps> = ({
             </Flex>
           </Flex>
         </Flex>
-      </a>
+      </Box>
     </Link>
   )
 }
