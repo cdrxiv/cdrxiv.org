@@ -133,6 +133,14 @@ const PreprintViewer = ({
                     if (el) pageRefs.current[index] = el
                   }}
                 >
+                  <Box
+                    sx={{
+                      height: ['1px', '1px', 5, 5],
+                      background: ['text', 'text', 'background', 'background'],
+                      px: [5, 0, 6, 8],
+                      mx: [-5, 0, -6, -8],
+                    }}
+                  />
                   <Page
                     key={`page_${index + 1}`}
                     pageNumber={index + 1}
