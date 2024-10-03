@@ -16,6 +16,7 @@ import Column from '../column'
 import Guide from '../guide'
 import Loading from '../loading'
 import Expander from '../expander'
+import { useCardContext } from './page-card'
 
 const HEADER_HEIGHT = [65, 65, 100, 100]
 
@@ -46,19 +47,17 @@ const PaneledPage: React.FC<{
   const [isLoading, setIsLoading] = useState(false)
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false)
   const [isMetadataExpanded, setIsMetadataExpanded] = useState(false)
-  const contentRef = useRef<HTMLDivElement>(null)
   const pathRef = useRef<string | null>(null)
   const pathname = usePathname()
+  const { scrollToTop } = useCardContext()
 
   useEffect(() => {
-    if (contentRef.current) {
-      contentRef.current.scrollIntoView()
-    }
+    scrollToTop()
     if (pathRef.current !== pathname && isLoading) {
       setIsLoading(false)
     }
     pathRef.current = pathname
-  }, [pathname, setIsLoading, isLoading])
+  }, [pathname, setIsLoading, isLoading, scrollToTop])
 
   return (
     <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
@@ -91,7 +90,6 @@ const PaneledPage: React.FC<{
         </Column>
         <Column start={[1, 1, 4, 4]} width={[6, 6, 6, 6]}>
           <Box
-            ref={contentRef}
             sx={{
               width: '100%',
               background: 'primary',
