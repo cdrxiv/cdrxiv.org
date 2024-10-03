@@ -135,7 +135,7 @@ const PreprintViewer = ({
                 >
                   <Box
                     sx={{
-                      height: ['1px', '1px', 5, 5],
+                      height: ['1px', '1px', 5, 8],
                       background: ['text', 'text', 'background', 'background'],
                       px: [5, 0, 6, 8],
                       mx: [-5, 0, -6, -8],
