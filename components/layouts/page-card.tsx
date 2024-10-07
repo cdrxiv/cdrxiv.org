@@ -18,6 +18,7 @@ import Header from '../header'
 import MouseTrail from '../mouse-trail'
 import PageCorner from '../page-corner'
 import SparklyMouseTrail from '../sparkly-mouse-trail'
+import CustomCursor from '../custom-cursor'
 
 const margin = [2, 2, 3, 3]
 
@@ -118,6 +119,7 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
           }}
         >
           <CardContext.Provider value={contextValue}>
+            <CustomCursor />
             <PageCorner onToggle={toggleTrail} isHomePage={isHomePage} />
             <MouseTrail isActive={isTrailActive && isHomePage} />
             <SparklyMouseTrail isActive={isSuccessfullSubmissionPage} />
