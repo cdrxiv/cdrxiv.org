@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, ThemeUIStyleObject } from 'theme-ui'
+import { Box, Global, ThemeUIStyleObject } from 'theme-ui'
 import useLoadingText from '../hooks/use-loading-text'
 
 const Loading = ({
@@ -11,7 +11,18 @@ const Loading = ({
   sx?: ThemeUIStyleObject
 }) => {
   const loadingText = useLoadingText({ isLoading: true, baseText })
-  return <Box sx={{ width: 100, ...sx }}>{loadingText}</Box>
+  return (
+    <>
+      <Global
+        styles={{
+          'html, body, *': {
+            cursor: "url('/cursors/wait_l.cur'), wait !important",
+          },
+        }}
+      />
+      <Box sx={{ width: 100, ...sx }}>{loadingText}</Box>
+    </>
+  )
 }
 
 export default Loading
