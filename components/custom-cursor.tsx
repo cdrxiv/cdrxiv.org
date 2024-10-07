@@ -55,7 +55,7 @@ const CustomCursor = () => {
             cursor: 'none !important',
           },
           'a, button': {
-            cursor: 'none !important',
+           cursor: 'none !important',
           },
         }}
       />
@@ -74,7 +74,7 @@ const CustomCursor = () => {
             backgroundImage:
               cursorType === 'hover'
                 ? "url('/cursors/harrow.cur')"
-                : "url('/cursors/arrow_m.cur')",
+                      : "url('/cursors/arrow_m.cur')",
             backgroundSize: 'contain',
             backgroundRepeat: 'no-repeat',
           }}
