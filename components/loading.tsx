@@ -16,11 +16,13 @@ const Loading = ({
       <Global
         styles={{
           'html, body, *': {
-            cursor: "url('/cursors/wait_l.cur'), wait !important",
+            cursor: 'wait !important',
           },
         }}
       />
-      <Box sx={{ width: 100, ...sx }}>{loadingText}</Box>
+      <Box className='loading-area' sx={{ width: 100, ...sx }}>
+        {loadingText}
+      </Box>
     </>
   )
 }
