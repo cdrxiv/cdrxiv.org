@@ -22,7 +22,7 @@ const MouseTrail = ({ isActive }: CursorTrailProps) => {
       if (isActive) {
         setCursorTrail((previousTrail) => [
           { x: event.clientX, y: event.clientY, id: uuidv4() },
-          ...previousTrail.slice(0, 9),
+          ...previousTrail.slice(0, 14),
         ])
       }
     },
@@ -72,17 +72,31 @@ const MouseTrail = ({ isActive }: CursorTrailProps) => {
                 transition={{ duration: 0.5, ease: 'easeOut' }}
                 style={{
                   position: 'absolute',
-                  left: cursor.x,
-                  top: cursor.y,
-                  width: '32px',
-                  height: '32px',
-                  backgroundImage: "url('/cursors/arrow_m.cur')",
-                  backgroundSize: 'contain',
-                  backgroundRepeat: 'no-repeat',
-                  opacity: 1 - index * 0.1,
-                  transform: 'translate(-50%, -50%)',
+                  left: cursor.x - 10,
+                  top: cursor.y + 5,
                 }}
-              />
+              >
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  height='32'
+                  viewBox='0 0 32 32'
+                  width='32'
+                  style={{
+                    opacity: 1 - index * 0.1,
+                  }}
+                >
+                  <g fill='none' fillRule='evenodd' transform='translate(10 7)'>
+                    <path
+                      d='m6.148 18.473 1.863-1.003 1.615-.839-2.568-4.816h4.332l-11.379-11.408v16.015l3.316-3.221z'
+                      fill='#fff'
+                    />
+                    <path
+                      d='m6.431 17 1.765-.941-2.775-5.202h3.604l-8.025-8.043v11.188l2.53-2.442z'
+                      fill='#000'
+                    />
+                  </g>
+                </svg>
+              </motion.div>
             ))}
         </AnimatePresence>
       </div>
