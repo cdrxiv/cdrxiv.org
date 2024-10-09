@@ -22,6 +22,8 @@ export const middleware = (
   if (isFullSiteEnabled()) {
     if (AUTHED_ROUTES.includes(request.nextUrl.pathname)) {
       return withAuthMiddleware(request, event)
+    } else if (request.nextUrl.pathname === '/home.html') {
+      return NextResponse.redirect(new URL('/', request.url))
     } else {
       return NextResponse.next()
     }
