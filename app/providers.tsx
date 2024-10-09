@@ -18,9 +18,12 @@ const Providers = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      {/* TODO: Configure production domain */}
       <PlausibleProvider
-        domain='staging.cdrxiv.org'
+        domain={
+          process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF === 'production'
+            ? 'cdrxiv.org'
+            : 'staging.cdrxiv.org'
+        }
         trackOutboundLinks
         trackFileDownloads
       >
