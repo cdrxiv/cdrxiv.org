@@ -7,7 +7,19 @@ import { usePathname } from 'next/navigation'
 const PATHS = [
   { href: '/about', title: 'About', public: true },
   { href: '/about/faq', title: 'FAQ', public: true },
-  { href: '/about/scope', title: 'Scope', public: true },
+  { href: '/about/resources', title: 'Resources', public: true },
+  {
+    href: '/about/resources/scope',
+    title: 'Scope',
+    public: true,
+    sx: { ml: '20px' },
+  },
+  {
+    href: '/about/resources/privacy',
+    title: 'Privacy policy',
+    public: true,
+    sx: { ml: '20px' },
+  },
   { href: '/about/team', title: 'Team', public: true },
 ]
 
