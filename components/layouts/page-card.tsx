@@ -18,6 +18,7 @@ import Header from '../header'
 import MouseTrail from '../mouse-trail'
 import PageCorner from '../page-corner'
 import SparklyMouseTrail from '../sparkly-mouse-trail'
+import { isFullSiteEnabled } from '../../utils/flags'
 
 const margin = [2, 2, 3, 3]
 
@@ -119,7 +120,9 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
         >
           <CardContext.Provider value={contextValue}>
             <PageCorner onToggle={toggleTrail} isHomePage={isHomePage} />
-            <MouseTrail isActive={isTrailActive && isHomePage} />
+            <MouseTrail
+              isActive={isFullSiteEnabled() && isTrailActive && isHomePage}
+            />
             <SparklyMouseTrail isActive={isSuccessfullSubmissionPage} />
 
             <Box sx={{ contain: 'layout' }}>
