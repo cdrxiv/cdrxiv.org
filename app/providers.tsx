@@ -16,14 +16,13 @@ const Providers = ({
   session: Session | null
   children: React.ReactNode
 }) => {
+  const isLiveSite =
+    process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF === 'production'
   return (
     <SessionProvider session={session}>
       <PlausibleProvider
-        domain={
-          process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF === 'production'
-            ? 'cdrxiv.org'
-            : 'staging.cdrxiv.org'
-        }
+        domain={isLiveSite ? 'cdrxiv.org' : 'staging.cdrxiv.org'}
+        enabled={isLiveSite ? true : undefined} // Explicitly enable on live site, otherwise fall back to Next ENV
         trackOutboundLinks
         trackFileDownloads
       >
