@@ -16,7 +16,6 @@ const Providers = ({
   session: Session | null
   children: React.ReactNode
 }) => {
-  console.log('testing', process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF)
   return (
     <SessionProvider session={session}>
       <PlausibleProvider
