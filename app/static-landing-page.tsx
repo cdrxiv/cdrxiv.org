@@ -21,16 +21,16 @@ const StaticLandingPage = () => {
           <Box sx={{ variant: 'text.monoCaps', mb: 7 }}>About</Box>
           <Box sx={{ mb: 7 }}>
             CDRXIV is a new open-access platform for sharing preprints and data
-            related to carbon dioxide removal (CDR). Development is being led by{' '}
-            <Link href='https://carbonplan.org/'>CarbonPlan</Link> with input
-            from other collaborating organizations.
+            related to carbon dioxide removal (CDR).{' '}
+            <Link href='https://carbonplan.org/'>CarbonPlan</Link> is leading
+            the development with input from other collaborating organizations.
           </Box>
 
           <Box>
             We are now accepting pre-submissions. If you’re interested in
             submitting a CDR preprint article and/or data, email{' '}
             <Link href='mailto:hello@cdrxiv.org'>hello@cdrxiv.org</Link> with
-            the subject “Pre-Submission”.
+            the subject “Pre-Submission.”
           </Box>
         </Column>
       </Row>
