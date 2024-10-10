@@ -38,6 +38,6 @@ export const middleware = (
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
+    '/((?!api|proxy|_next/static|_next/image|favicon.ico|icon.png|sitemap.xml|robots.txt).*)',
   ],
 }
