@@ -88,7 +88,7 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <Box
-      sx={{ bg: overallBackground, width: '100vw', height: '100vh' }}
+      sx={{ bg: overallBackground, width: '100vw', height: '100dvh' }}
       onClick={handleMouseClick}
     >
       <Box
@@ -97,7 +97,7 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
           height: (theme) =>
             margin.map(
               (space) =>
-                `calc(100vh - 2 * ${theme.space ? theme.space[space] : 0}px)`,
+                `calc(100dvh - 2 * ${theme.space ? theme.space[space] : 0}px)`,
             ),
           width: (theme) =>
             margin.map(
