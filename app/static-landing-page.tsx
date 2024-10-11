@@ -24,6 +24,7 @@ const StaticLandingPage = () => {
             related to carbon dioxide removal (CDR).{' '}
             <Link href='https://carbonplan.org/'>CarbonPlan</Link> is leading
             the development with input from other collaborating organizations.
+            CDRXIV’s launch is planned for the end of 2024.
           </Box>
 
           <Box>
