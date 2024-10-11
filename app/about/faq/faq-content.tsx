@@ -4,14 +4,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Box } from 'theme-ui'
 import { useParams } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
-import { Link } from '../../../components'
-
-type ValidTag =
-  | 'general'
-  | 'account'
-  | 'submissions'
-  | 'submissions-article'
-  | 'submissions-data'
+import { ValidTag } from './tag-selector'
+import { useTag } from './tag-selector'
 
 interface FAQ {
   question: string
@@ -19,14 +13,6 @@ interface FAQ {
   slug: string
   tags: ValidTag[]
 }
-
-const tags: ValidTag[] = [
-  'general',
-  'account',
-  'submissions',
-  'submissions-article',
-  'submissions-data',
-]
 
 const faqData: FAQ[] = [
   {
@@ -102,9 +88,8 @@ const faqData: FAQ[] = [
 ]
 
 const FAQContent: React.FC = () => {
-  const [selectedTag, setSelectedTag] = useState<ValidTag | null>(null)
   const params = useParams()
-
+  const { selectedTag } = useTag()
   const filteredFAQs = selectedTag
     ? faqData.filter((faq) => faq.tags.includes(selectedTag))
     : faqData
@@ -124,33 +109,8 @@ const FAQContent: React.FC = () => {
 
   return (
     <>
-      <h2>Frequently Asked Questions</h2>
-      <Box sx={{ mb: 4 }}>
-        <Link
-          aria-pressed={selectedTag === null}
-          onClick={() => setSelectedTag(null)}
-          variant={selectedTag === null ? 'primary' : 'secondary'}
-          sx={{
-            mr: 2,
-            textDecoration: selectedTag === null ? 'underline' : 'none',
-          }}
-        >
-          All
-        </Link>
-        {tags.map((tag) => (
-          <Link
-            aria-pressed={selectedTag === tag}
-            key={tag}
-            onClick={() => setSelectedTag(tag)}
-            variant={selectedTag === tag ? 'primary' : 'secondary'}
-            sx={{
-              mr: 2,
-              textDecoration: selectedTag === tag ? 'underline' : 'none',
-            }}
-          >
-            {tag}
-          </Link>
-        ))}
+      <Box as='h2' sx={{ mb: 4 }}>
+        Frequently Asked Questions
       </Box>
       {filteredFAQs.map((faq, index) => (
         <Box key={index} sx={{ mb: 4 }} id={faq.slug}>
