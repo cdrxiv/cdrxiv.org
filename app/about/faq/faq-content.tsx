@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { Box } from 'theme-ui'
-import { Link } from '../../../components'
 import { useParams } from 'next/navigation'
+import ReactMarkdown from 'react-markdown'
+import { Link } from '../../../components'
 
 type ValidTag =
   | 'general'
@@ -14,7 +15,7 @@ type ValidTag =
 
 interface FAQ {
   question: string
-  answer: string
+  answer: string // markdown
   slug: string
   tags: ValidTag[]
 }
@@ -154,7 +155,7 @@ const FAQContent: React.FC = () => {
       {filteredFAQs.map((faq, index) => (
         <Box key={index} sx={{ mb: 4 }} id={faq.slug}>
           <Box as='h3'>{faq.question}</Box>
-          <Box>{faq.answer}</Box>
+          <ReactMarkdown>{faq.answer}</ReactMarkdown>
         </Box>
       ))}
     </>
