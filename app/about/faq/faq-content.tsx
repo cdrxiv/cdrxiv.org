@@ -90,9 +90,10 @@ const faqData: FAQ[] = [
 const FAQContent: React.FC = () => {
   const params = useParams()
   const { selectedTag } = useTag()
-  const filteredFAQs = selectedTag
-    ? faqData.filter((faq) => faq.tags.includes(selectedTag))
-    : faqData
+  const filteredFAQs =
+    selectedTag !== 'All'
+      ? faqData.filter((faq) => faq.tags.includes(selectedTag as ValidTag))
+      : faqData
 
   useEffect(() => {
     const hash = window.location.hash.substring(1)

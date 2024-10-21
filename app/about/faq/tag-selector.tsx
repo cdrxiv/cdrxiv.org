@@ -1,24 +1,22 @@
 import React, { createContext, useState, useContext } from 'react'
 import { Box, Flex } from 'theme-ui'
 
-export type ValidTag =
-  | 'general'
-  | 'account'
-  | 'submissions'
-  | 'submissions-article'
-  | 'submissions-data'
+const tagLabels = {
+  All: 'All',
+  general: 'General',
+  account: 'Account',
+  submissions: 'Submissions',
+  'submissions-article': 'Article submissions',
+  'submissions-data': 'Data submissions',
+} as const
 
-const tags: ValidTag[] = [
-  'general',
-  'account',
-  'submissions',
-  'submissions-article',
-  'submissions-data',
-]
+export type ValidTag = keyof typeof tagLabels
+
+const tags = Object.keys(tagLabels) as ValidTag[]
 
 interface TagContextType {
-  selectedTag: ValidTag | null
-  setSelectedTag: (tag: ValidTag | null) => void
+  selectedTag: ValidTag
+  setSelectedTag: (tag: ValidTag) => void
 }
 
 const TagContext = createContext<TagContextType | undefined>(undefined)
@@ -26,7 +24,7 @@ const TagContext = createContext<TagContextType | undefined>(undefined)
 export const TagProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [selectedTag, setSelectedTag] = useState<ValidTag | null>(null)
+  const [selectedTag, setSelectedTag] = useState<ValidTag>('All')
 
   return (
     <TagContext.Provider value={{ selectedTag, setSelectedTag }}>
@@ -43,35 +41,35 @@ export const useTag = () => {
   return context
 }
 
+const Tag: React.FC<{
+  tag: ValidTag
+  isSelected: boolean
+  onClick: () => void
+}> = ({ tag, isSelected, onClick }) => (
+  <Box
+    as='button'
+    onClick={onClick}
+    sx={{
+      display: 'block',
+      variant: 'text.body',
+      cursor: 'pointer',
+      width: 'fit-content',
+      padding: 0,
+      border: 'none',
+      textAlign: 'left',
+      bg: isSelected ? 'highlight' : 'transparent',
+      mb: '2px',
+      ':hover': {
+        bg: 'highlight',
+      },
+    }}
+  >
+    {tagLabels[tag]}
+  </Box>
+)
+
 export const TagSelector = () => {
   const { selectedTag, setSelectedTag } = useTag()
-
-  const renderTag = (tag: ValidTag | 'All') => (
-    <Box
-      as='button'
-      onClick={() => setSelectedTag(tag === 'All' ? null : tag)}
-      key={tag}
-      sx={{
-        display: 'block',
-        variant: 'text.body',
-        cursor: 'pointer',
-        width: 'fit-content',
-        padding: 0,
-        border: 'none',
-        textAlign: 'left',
-        bg:
-          selectedTag === tag || (tag === 'All' && selectedTag === null)
-            ? 'highlight'
-            : 'transparent',
-        mb: '2px',
-        ':hover': {
-          bg: 'highlight',
-        },
-      }}
-    >
-      {tag}
-    </Box>
-  )
 
   return (
     <>
@@ -85,8 +83,14 @@ export const TagSelector = () => {
           mt: 5,
         }}
       >
-        {renderTag('All')}
-        {tags.map((tag) => renderTag(tag))}
+        {tags.map((tag) => (
+          <Tag
+            key={tag}
+            tag={tag}
+            isSelected={selectedTag === tag}
+            onClick={() => setSelectedTag(tag)}
+          />
+        ))}
       </Flex>
     </>
   )
