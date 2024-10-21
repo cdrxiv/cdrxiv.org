@@ -123,7 +123,7 @@ const Team: React.FC = () => {
                   target='_blank'
                   variant='text.mono'
                 >
-                  ({affiliation})
+                  {affiliation}
                 </Link>
               </Box>
             </Column>
@@ -142,7 +142,7 @@ const Team: React.FC = () => {
             variant='text.mono'
             sx={{ ml: 2 }}
           >
-            ({affiliation})
+            {affiliation}
           </Link>
         </Box>
       ))}
