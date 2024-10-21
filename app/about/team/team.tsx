@@ -142,7 +142,7 @@ const Team: React.FC = () => {
             variant='text.mono'
             sx={{ ml: 2 }}
           >
-            ({affiliation})
+            {affiliation}
           </Link>
         </Box>
       ))}
