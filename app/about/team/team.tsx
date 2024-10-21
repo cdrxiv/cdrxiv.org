@@ -134,16 +134,15 @@ const Team: React.FC = () => {
         Affiliates
       </Box>
       {affiliates.map(({ name, affiliation, affiliationLink }, index) => (
-        <Box key={name + index} variant='text.mono'>
+        <Box key={name + index}>
           {name}
-          <Link
-            href={affiliationLink}
-            target='_blank'
-            variant='text.mono'
-            sx={{ ml: 2 }}
-          >
-            {affiliation}
-          </Link>
+          <Box as='span' variant='text.mono'>
+            {' ('}
+            <Link href={affiliationLink} target='_blank' variant='text.mono'>
+              {affiliation}
+            </Link>
+            {')'}
+          </Box>
         </Box>
       ))}
     </Box>
