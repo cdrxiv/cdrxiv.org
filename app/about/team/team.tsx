@@ -18,7 +18,6 @@ type EditorialBoardMember = {
   image: StaticImageData
   affiliation: string
   affiliationLink: string
-  link: string
 }
 
 const editorialBoard: EditorialBoardMember[] = [
@@ -28,7 +27,6 @@ const editorialBoard: EditorialBoardMember[] = [
     image: tk,
     affiliation: 'CarbonPlan',
     affiliationLink: 'https://carbonplan.org/',
-    link: 'https://tylerkukla.com/',
   },
   {
     name: 'Tyler Kukla',
@@ -36,7 +34,6 @@ const editorialBoard: EditorialBoardMember[] = [
     image: tk,
     affiliation: 'CarbonPlan',
     affiliationLink: 'https://carbonplan.org/',
-    link: 'https://tylerkukla.com/',
   },
   {
     name: 'Tyler Kukla',
@@ -44,7 +41,6 @@ const editorialBoard: EditorialBoardMember[] = [
     image: tk,
     affiliation: 'CarbonPlan',
     affiliationLink: 'https://carbonplan.org/',
-    link: 'https://tylerkukla.com/',
   },
   {
     name: 'Tyler Kukla',
@@ -52,7 +48,6 @@ const editorialBoard: EditorialBoardMember[] = [
     image: tk,
     affiliation: 'CarbonPlan',
     affiliationLink: 'https://carbonplan.org/',
-    link: 'https://tylerkukla.com/',
   },
   {
     name: 'Tyler Kukla',
@@ -60,7 +55,6 @@ const editorialBoard: EditorialBoardMember[] = [
     image: tk,
     affiliation: 'CarbonPlan',
     affiliationLink: 'https://carbonplan.org/',
-    link: 'https://tylerkukla.com/',
   },
 ]
 
@@ -95,10 +89,7 @@ const Team: React.FC = () => {
       </Box>
       <Row columns={[6, 6, 8, 8]}>
         {editorialBoard.map(
-          (
-            { name, role, link, image, affiliation, affiliationLink },
-            index,
-          ) => (
+          ({ name, role, image, affiliation, affiliationLink }, index) => (
             <Column
               key={name + index}
               start={[index % 2 === 0 ? 1 : 4, index % 2 === 0 ? 1 : 5]}
@@ -110,18 +101,14 @@ const Team: React.FC = () => {
                 alt={name}
                 style={{ width: '100%', height: 'auto' }}
               />
-              <Box as='h3'>
-                {name}
-                <Link target='_blank' href={link} sx={{ ml: 2 }}>
-                  {'→'}
-                </Link>
-              </Box>
+              <Box>{name}</Box>
               <Box variant='text.monoCaps'>{role}</Box>
               <Box>
                 <Link
                   href={affiliationLink}
                   target='_blank'
                   variant='text.mono'
+                  sx={{ fontSize: [1, 1, 2, 2] }}
                 >
                   {affiliation}
                 </Link>
@@ -134,15 +121,16 @@ const Team: React.FC = () => {
         Affiliates
       </Box>
       {affiliates.map(({ name, affiliation, affiliationLink }, index) => (
-        <Box key={name + index}>
-          {name}
-          <Box as='span' variant='text.mono'>
-            {' ('}
-            <Link href={affiliationLink} target='_blank' variant='text.mono'>
+        <Box key={name + index} sx={{ mb: 1 }}>
+          {name}{' '}
+          <Link href={affiliationLink}>
+            <Box
+              as='span'
+              sx={{ variant: 'text.mono', fontSize: [1, 1, 2, 2] }}
+            >
               {affiliation}
-            </Link>
-            {')'}
-          </Box>
+            </Box>
+          </Link>
         </Box>
       ))}
     </Box>
