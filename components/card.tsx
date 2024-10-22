@@ -1,6 +1,7 @@
 import React, { useState, SVGProps } from 'react'
 import { Box, Flex, BoxProps, ThemeUIStyleObject } from 'theme-ui'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 import Badge from './badge'
 import type { Author } from '../types/preprint'
@@ -87,6 +88,7 @@ const Card: React.FC<CardProps> = ({
   sx = {},
 }) => {
   const [hovered, setHovered] = useState<boolean>(false)
+  const router = useRouter()
 
   const color = hovered ? 'blue' : 'text'
 
@@ -99,30 +101,34 @@ const Card: React.FC<CardProps> = ({
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
-      handleClick()
+      if (onClick) {
+        onClick()
+      } else if (href) {
+        router.push(href)
+      }
     }
   }
 
   return (
-    <Link href={href || '#'} key={href} passHref legacyBehavior>
-      <Box
-        sx={{
-          textDecoration: 'none',
-          color: 'inherit',
-          height: '100%',
-          minHeight: ['178px', '202px', '202px', '202px'],
-        }}
-      >
+    <Box
+      as='li'
+      sx={{
+        listStyle: 'none',
+        height: '100%',
+        minHeight: ['178px', '202px', '202px', '202px'],
+      }}
+    >
+      <Link href={href || '#'} passHref legacyBehavior>
         <Flex
+          as='a'
           onClick={handleClick}
           onKeyDown={handleKeyDown}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
           onFocus={() => setHovered(true)}
           onBlur={() => setHovered(false)}
-          tabIndex={0}
-          role='button'
-          aria-label={`${title} by ${authorList(authors)}, published on ${date ? formatDate(date) : 'unknown date'}`}
+          aria-labelledby={`card-title-${title}`}
+          aria-describedby={`card-description-${title}`}
           sx={{
             position: 'relative',
             width: '100%',
@@ -133,6 +139,8 @@ const Card: React.FC<CardProps> = ({
             borderWidth,
             borderStyle: 'solid',
             outline: 'none', // use highlight style for focus instead
+            textDecoration: 'none',
+            color: 'inherit',
             ...sx,
           }}
         >
@@ -160,6 +168,7 @@ const Card: React.FC<CardProps> = ({
           >
             <Flex sx={{ flexDirection: 'column' }}>
               <Box
+                id={`card-title-${title}`}
                 sx={{
                   variant: 'text.body',
                   mb: [3, 3, 3, 4],
@@ -173,7 +182,10 @@ const Card: React.FC<CardProps> = ({
               >
                 {title}
               </Box>
-              <Box sx={{ variant: 'text.mono' }}>
+              <Box
+                id={`card-description-${title}`}
+                sx={{ variant: 'text.mono' }}
+              >
                 <AuthorsList authors={authors} />
               </Box>
             </Flex>
@@ -211,8 +223,8 @@ const Card: React.FC<CardProps> = ({
             </Flex>
           </Flex>
         </Flex>
-      </Box>
-    </Link>
+      </Link>
+    </Box>
   )
 }
 

@@ -29,7 +29,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
     <>
       <Row columns={12} sx={{ mb: [4, 4, 8, 8] }}>
         <Column start={1} width={[10, 10, 3, 3]}>
-          <Box sx={{ variant: 'text.heading', mb: 4 }}>
+          <Box as='h1' sx={{ variant: 'text.heading', mb: 4 }}>
             Preprints and Data for Carbon Dioxide Removal
           </Box>
         </Column>
@@ -44,9 +44,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
               flexDirection: ['column', 'column', 'row', 'row'],
             }}
           >
-            <Box sx={{ variant: 'text.monoCaps' }}>Recent preprints</Box>
-            <Flex sx={{ gap: 3 }}>
+            <Box as='h1' sx={{ variant: 'text.monoCaps' }}>
+              Recent preprints
+            </Box>
+            <Flex role='listbox' aria-label='View options' sx={{ gap: 3 }}>
               <Link
+                role='option'
+                aria-selected={currentView === 'grid'}
                 sx={{
                   variant: 'text.body',
                   fontSize: [2, 2, 2, 3],
@@ -60,6 +64,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
                 Grid
               </Link>
               <Link
+                role='option'
+                aria-selected={currentView === 'list'}
                 sx={{
                   variant: 'text.body',
                   fontSize: [2, 2, 2, 3],

@@ -22,7 +22,7 @@ const StyledButton = React.forwardRef<Ref, Props>(
                   -1px -1px 0px 1px ${theme?.colors?.text} inset`,
       outline: 'none',
       ':focus-visible': {
-        borderColor: 'blue',
+        outline: '1px solid blue',
       },
       ':active': {
         boxShadow: (theme) => `1px 1px 0px 1px ${theme?.colors?.text} inset, 
