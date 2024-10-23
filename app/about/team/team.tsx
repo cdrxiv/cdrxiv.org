@@ -101,14 +101,13 @@ const Team: React.FC = () => {
                 alt={name}
                 style={{ width: '100%', height: 'auto' }}
               />
-              <Box>{name}</Box>
+              <Box sx={{ fontSize: [3, 3, 4, 4] }}>{name}</Box>
               <Box variant='text.monoCaps'>{role}</Box>
               <Box>
                 <Link
                   href={affiliationLink}
                   target='_blank'
                   variant='text.mono'
-                  sx={{ fontSize: [1, 1, 2, 2] }}
                 >
                   {affiliation}
                 </Link>
@@ -121,16 +120,13 @@ const Team: React.FC = () => {
         Affiliates
       </Box>
       {affiliates.map(({ name, affiliation, affiliationLink }, index) => (
-        <Box key={name + index} sx={{ mb: 1 }}>
-          {name}{' '}
-          <Link href={affiliationLink}>
-            <Box
-              as='span'
-              sx={{ variant: 'text.mono', fontSize: [1, 1, 2, 2] }}
-            >
+        <Box key={name + index} sx={{ mb: 3 }}>
+          <Box>{name}</Box>
+          <Box sx={{ variant: 'text.mono' }}>
+            <Link href={affiliationLink} variant='text.mono'>
               {affiliation}
-            </Box>
-          </Link>
+            </Link>
+          </Box>
         </Box>
       ))}
     </Box>
