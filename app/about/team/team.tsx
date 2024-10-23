@@ -85,7 +85,7 @@ const Team: React.FC = () => {
   return (
     <Box>
       <Box as='h2' sx={{ mb: 4 }}>
-        Editorial Board
+        Editorial board
       </Box>
       <Row columns={[6, 6, 8, 8]}>
         {editorialBoard.map(
