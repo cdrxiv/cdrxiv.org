@@ -74,7 +74,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <PaneledPage
       title={active.title}
-      rightCorner={active.hidden ? 'Success!' : `Step ${index + 1} / ${count}`}
+      rightCorner={active.hidden ? <>&nbsp;</> : `Step ${index + 1} / ${count}`}
       sidebar={<NavSidebar paths={paths} onClick={onClick} />}
     >
       {children}
