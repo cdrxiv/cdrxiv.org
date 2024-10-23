@@ -33,7 +33,7 @@ const UserProfile = () => {
       as='svg'
       xmlns='http://www.w3.org/2000/svg'
       viewBox='0 0 448 512'
-      sx={{ height: '12px', ml: '-20px' }}
+      sx={{ height: '12px', ml: '-20px', flexShrink: 0 }}
     >
       {/* Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc. */}
       <path
@@ -56,6 +56,14 @@ const AccountLink = ({
   const { data: session, status } = useSession()
   const authenticated = status === 'authenticated' && !!session
 
+  let accountName = name
+  if (authenticated) {
+    accountName = `${session.user.first_name} ${session.user.last_name}`
+    if (accountName.length > 20) {
+      accountName = session.user.first_name
+    }
+  }
+
   return (
     <StyledLink
       href={path}
@@ -68,10 +76,8 @@ const AccountLink = ({
         ...sx,
       }}
     >
-      <Box as='span'>
-        {authenticated
-          ? `${session.user.first_name} ${session.user.last_name}`
-          : name}
+      <Box as='span' sx={{ flexShrink: 0 }}>
+        {accountName}
         &nbsp;&nbsp;&nbsp;&nbsp;
       </Box>
       <UserProfile />
