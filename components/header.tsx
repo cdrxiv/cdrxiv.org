@@ -84,43 +84,17 @@ const Header = () => {
   const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 })
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const searchRef = useRef<HTMLInputElement>(null)
-  const { cardBackground, overallBackground } = useBackgroundColors()
+  const { cardBackground } = useBackgroundColors()
 
   const pathname = usePathname()
   const router = useRouter()
 
-  const isActive = (path: string, matchingPaths?: string[]) => {
-    if (path === '/') {
-      return pathname === '/'
-    } else if (path.startsWith('/submit')) {
-      return pathname.startsWith('/submit')
-    } else if (matchingPaths) {
-      return matchingPaths.some((p) => pathname.startsWith(p))
-    }
-
-    return pathname.startsWith(path)
-  }
   const renderLinks = () => {
-    return PATHS.map(({ name, path, matchingPaths }) => {
-      const textDecoration = isActive(path, matchingPaths)
-        ? 'underline'
-        : 'none'
+    return PATHS.map(({ name, path }) => {
       return name === 'Account' ? (
-        <AccountLink
-          key={name}
-          sx={{ textDecoration }}
-          name={name}
-          path={path}
-        />
+        <AccountLink key={name} name={name} path={path} />
       ) : (
-        <StyledLink
-          key={name}
-          href={path}
-          sx={{
-            textDecoration,
-            width: 'fit-content',
-          }}
-        >
+        <StyledLink key={name} href={path} sx={{ width: 'fit-content' }}>
           {name}
         </StyledLink>
       )
