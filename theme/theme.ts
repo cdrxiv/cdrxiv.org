@@ -14,26 +14,33 @@ export const theme: Theme = {
     mono: 400,
     monoCaps: 400,
   },
+  lineHeights: {
+    body: 1.5,
+    heading: 1,
+    mono: 1.3,
+  },
   text: {
     heading: {
       fontFamily: 'heading',
       fontWeight: 'heading',
-      fontSize: [5, 5, 5, 6],
+      lineHeight: 'heading',
     },
     body: {
       fontFamily: 'body',
       fontWeight: 'body',
+      lineHeight: 'body',
       fontSize: [3, 3, 3, 3],
     },
     mono: {
       fontFamily: 'mono',
       fontWeight: 'mono',
+      lineHeight: 'mono',
       fontSize: [0, 0, 0, 1],
-      lineHeight: '130%',
     },
     monoCaps: {
       fontFamily: 'mono',
       fontWeight: 'monoCaps',
+      lineHeight: 'mono',
       textTransform: 'uppercase',
       letterSpacing: '0.03em',
       fontSize: [1, 1, 1, 2],
@@ -48,10 +55,15 @@ export const theme: Theme = {
     },
     h1: {
       variant: 'text.heading',
+      fontSize: [5, 5, 5, 6],
     },
     h2: {
       variant: 'text.heading',
-      fontSize: [3, 4, 4, 5],
+      fontSize: [3, 3, 3, 4],
+    },
+    h3: {
+      variant: 'text.heading',
+      fontSize: [2, 2, 2, 3],
     },
     a: {
       variant: 'text.body',

@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react'
-import { Box } from 'theme-ui'
+import { Box, Flex } from 'theme-ui'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Column, Link, Menu, Row } from '../components'
 import { useSubjects } from './subjects-context'
@@ -43,7 +43,7 @@ const Topics: React.FC = () => {
       key={name}
       sx={{
         display: 'block',
-        variant: 'text.body',
+        variant: 'styles.h2',
         cursor: 'pointer',
         width: 'fit-content',
         padding: 0,
@@ -81,27 +81,25 @@ const Topics: React.FC = () => {
             </Box>
           </Column>
         </Row>
-        <Row
-          columns={8}
-          sx={{
-            display: ['none', 'none', 'flex', 'flex'],
-            height: '100%',
-          }}
-        >
+        <Row columns={8} sx={{ display: ['none', 'none', 'grid', 'grid'] }}>
           <Column start={1} width={4}>
-            {renderSubject('All', totalCount)}
-            {subjects
-              .slice(0, midPoint)
-              .map((subject) =>
-                renderSubject(subject.name, subject.preprints.length),
-              )}
+            <Flex sx={{ flexDirection: 'column', gap: [2, 2, 2, 3] }}>
+              {renderSubject('All', totalCount)}
+              {subjects
+                .slice(0, midPoint)
+                .map((subject) =>
+                  renderSubject(subject.name, subject.preprints.length),
+                )}
+            </Flex>
           </Column>
           <Column start={5} width={4}>
-            {subjects
-              .slice(midPoint)
-              .map((subject) =>
-                renderSubject(subject.name, subject.preprints.length),
-              )}
+            <Flex sx={{ flexDirection: 'column', gap: [2, 2, 2, 3] }}>
+              {subjects
+                .slice(midPoint)
+                .map((subject) =>
+                  renderSubject(subject.name, subject.preprints.length),
+                )}
+            </Flex>
           </Column>
         </Row>
 

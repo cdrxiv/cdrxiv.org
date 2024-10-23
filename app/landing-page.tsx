@@ -29,8 +29,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
     <>
       <Row columns={12} sx={{ mb: [4, 4, 8, 8] }}>
         <Column start={1} width={[10, 10, 3, 3]}>
-          <Box sx={{ variant: 'text.heading', mb: 4 }}>
-            Preprints and Data for Carbon Dioxide Removal
+          <Box as='h1' sx={{ variant: 'styles.h1', mb: 4 }}>
+            Preprints and&nbsp;Data for Carbon&nbsp;Dioxide Removal
           </Box>
         </Column>
 
@@ -41,6 +41,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
             sx={{
               gap: [0, 0, 6, 6],
               justifyContent: 'flex-start',
+              alignItems: 'baseline',
               flexDirection: ['column', 'column', 'row', 'row'],
             }}
           >

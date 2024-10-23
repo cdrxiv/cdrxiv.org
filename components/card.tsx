@@ -161,7 +161,7 @@ const Card: React.FC<CardProps> = ({
             <Flex sx={{ flexDirection: 'column' }}>
               <Box
                 sx={{
-                  variant: 'text.body',
+                  variant: 'styles.h3',
                   mb: [3, 3, 3, 4],
                   pr: [36, 36, 48, 48],
                   color,
