@@ -111,7 +111,7 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
           ref={ref}
           sx={{
             height: '100%',
-            overflow: 'auto',
+            overflowY: 'scroll',
             bg: cardBackground,
             border: '1px solid',
             borderColor: 'text',
