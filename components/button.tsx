@@ -21,10 +21,17 @@ const StyledButton = React.forwardRef<Ref, Props>(
       boxShadow: (theme) => `1px 1px 0px 1px ${theme?.colors?.muted} inset, 
                   -1px -1px 0px 1px ${theme?.colors?.text} inset`,
       outline: 'none',
+      transition: '0.05s all',
+      ':hover': {
+        color: 'primary',
+        background: 'blue',
+      },
       ':focus-visible': {
         borderColor: 'blue',
       },
       ':active': {
+        color: 'blue',
+        background: 'primary',
         boxShadow: (theme) => `1px 1px 0px 1px ${theme?.colors?.text} inset, 
                   -1px -1px 0px 1px ${theme?.colors?.muted} inset`,
         '& > div': {
