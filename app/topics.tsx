@@ -60,7 +60,7 @@ const Topics: React.FC = () => {
 
       <Box
         as='sup'
-        sx={{ display: ['none', 'none', 'initial', 'initial'], ml: 1 }}
+        sx={{ display: ['none', 'none', 'initial', 'initial'], ml: 2 }}
       >
         {count}
       </Box>
