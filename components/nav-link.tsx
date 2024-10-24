@@ -12,6 +12,8 @@ const NavLink: React.FC<NavLinkProps> = ({
   ...props
 }) => {
   const interactive = !disabled && !active
+  const ml = 'ml' in sx ? sx.ml : 0
+
   return (
     <StyledLink
       disabled={!interactive}
@@ -24,10 +26,10 @@ const NavLink: React.FC<NavLinkProps> = ({
         opacity: disabled ? 0.65 : 1,
         textDecoration: 'none',
         '::before': active
-          ? { content: '">"', position: 'absolute', left: 0 }
+          ? { content: '">"', position: 'absolute', left: ml }
           : {},
         '&:hover::before': interactive
-          ? { content: '">"', position: 'absolute', left: 0 }
+          ? { content: '">"', position: 'absolute', left: ml }
           : {},
         ...sx,
       }}
