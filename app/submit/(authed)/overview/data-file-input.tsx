@@ -77,6 +77,7 @@ const DataFileInput: React.FC<Props> = ({
             <>
               Or{' '}
               <Link
+                as='button'
                 onClick={() => {
                   setMode('link')
                   setFileProp(null)
@@ -128,6 +129,7 @@ const DataFileInput: React.FC<Props> = ({
         <Box sx={{ variant: 'text.mono', flexShrink: 0, pb: '10px' }}>
           Or{' '}
           <Link
+            as='button'
             onClick={() => {
               setMode('upload')
               setExternalFile(null)
