@@ -50,8 +50,8 @@ export const theme: Theme = {
     root: {
       variant: 'text.body',
       background: 'white',
-      '-webkit-font-smoothing': 'antialiased',
-      '-moz-osx-font-smoothing': 'grayscale',
+      WebkitFontSmoothing: 'antialiased',
+      MozOsxFontSmoothing: 'grayscale',
     },
     h1: {
       variant: 'text.heading',
