@@ -124,6 +124,7 @@ export const theme: Theme = {
       variant: 'forms.input',
     },
     label: {
+      cursor: 'pointer',
       variant: 'text.monoCaps',
       fontSize: [1, 1, 1, 2],
     },
