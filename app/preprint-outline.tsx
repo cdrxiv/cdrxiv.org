@@ -20,6 +20,20 @@ type OutlinePath = {
   sx?: ThemeUIStyleObject
 }
 
+const levelStyles = {
+  0: {},
+  1: {
+    ml: '20px',
+    fontSize: [1, 1, 1, 2],
+    '&:hover::before': {
+      content: '">"',
+      position: 'absolute',
+      left: 0,
+      ml: '20px',
+    } as any,
+  },
+}
+
 const PreprintOutline = ({ pdf, outline, onItemClick }: OutlineProps) => {
   const handleItemClick = useCallback(
     async (item: OutlineItem) => {
@@ -50,9 +64,9 @@ const PreprintOutline = ({ pdf, outline, onItemClick }: OutlineProps) => {
             href: item.url ?? '',
             public: true,
             onClick: () => handleItemClick(item),
-            sx: level > 0 ? { ml: `${level * 20}px` } : {},
+            sx: levelStyles[level as 0 | 1],
           },
-          ...getOutlineItems(item.items, level + 1),
+          ...(level < 1 ? getOutlineItems(item.items, level + 1) : []),
         ],
         [],
       )
