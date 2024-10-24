@@ -49,6 +49,7 @@ const Tag: React.FC<{
   <Box
     as='button'
     role='option'
+    aria-selected={isSelected}
     onClick={onClick}
     sx={{
       display: 'block',
