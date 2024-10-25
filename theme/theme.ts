@@ -29,7 +29,7 @@ export const theme: Theme = {
       fontFamily: 'body',
       fontWeight: 'body',
       lineHeight: 'body',
-      fontSize: [3, 3, 3, 3],
+      fontSize: [2, 2, 3, 3],
     },
     mono: {
       fontFamily: 'mono',
@@ -43,7 +43,7 @@ export const theme: Theme = {
       lineHeight: 'mono',
       textTransform: 'uppercase',
       letterSpacing: '0.03em',
-      fontSize: [1, 1, 1, 2],
+      fontSize: [0, 0, 1, 2],
     },
   },
   styles: {
@@ -59,7 +59,7 @@ export const theme: Theme = {
     },
     h2: {
       variant: 'text.heading',
-      fontSize: [3, 3, 3, 4],
+      fontSize: [2, 2, 3, 4],
     },
     h3: {
       variant: 'text.heading',
