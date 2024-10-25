@@ -176,6 +176,7 @@ const Header = () => {
             }}
             arrows={true}
             inverted
+            aria-label='Preprint search'
           />
         </Column>
         <Column
@@ -188,6 +189,7 @@ const Header = () => {
           }}
         >
           <Flex
+            as='nav'
             sx={{
               gap: [4, 4, 8, 10],
             }}
@@ -208,6 +210,9 @@ const Header = () => {
             ref={menuButtonRef}
             onClick={handleMenuToggle}
             sx={{ width: 'fit-content' }}
+            aria-expanded={menuOpen}
+            aria-haspopup='true'
+            aria-controls='mobile-menu'
           >
             Menu
           </StyledButton>
@@ -216,6 +221,7 @@ const Header = () => {
               <Menu
                 setMenuOpen={setMenuOpen}
                 sx={{ top: menuPosition.top, right: menuPosition.right }}
+                aria-label='Mobile navigation menu'
               >
                 {renderLinks()}
               </Menu>,

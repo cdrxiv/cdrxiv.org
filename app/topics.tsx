@@ -41,6 +41,9 @@ const Topics: React.FC = () => {
       as='button'
       onClick={() => handleFilterChange(name)}
       key={name}
+      role='option'
+      aria-selected={currentSubject === name}
+      aria-label={`${name} (${count} preprints)`}
       sx={{
         display: 'block',
         variant: 'text.body',
@@ -76,34 +79,44 @@ const Topics: React.FC = () => {
       >
         <Row columns={8}>
           <Column start={1} width={4}>
-            <Box ref={topicsBoxRef} sx={{ variant: 'text.monoCaps', mb: 3 }}>
+            <Box
+              as='h2'
+              ref={topicsBoxRef}
+              sx={{ variant: 'text.monoCaps', mb: 3 }}
+            >
               Topics
             </Box>
           </Column>
         </Row>
-        <Row
-          columns={8}
-          sx={{
-            display: ['none', 'none', 'flex', 'flex'],
-            height: '100%',
-          }}
+        <Box
+          role='listbox'
+          aria-labelledby='topics-heading'
+          aria-label='Topics'
         >
-          <Column start={1} width={4}>
-            {renderSubject('All', totalCount)}
-            {subjects
-              .slice(0, midPoint)
-              .map((subject) =>
-                renderSubject(subject.name, subject.preprints.length),
-              )}
-          </Column>
-          <Column start={5} width={4}>
-            {subjects
-              .slice(midPoint)
-              .map((subject) =>
-                renderSubject(subject.name, subject.preprints.length),
-              )}
-          </Column>
-        </Row>
+          <Row
+            columns={8}
+            sx={{
+              display: ['none', 'none', 'flex', 'flex'],
+              height: '100%',
+            }}
+          >
+            <Column start={1} width={4}>
+              {renderSubject('All', totalCount)}
+              {subjects
+                .slice(0, midPoint)
+                .map((subject) =>
+                  renderSubject(subject.name, subject.preprints.length),
+                )}
+            </Column>
+            <Column start={5} width={4}>
+              {subjects
+                .slice(midPoint)
+                .map((subject) =>
+                  renderSubject(subject.name, subject.preprints.length),
+                )}
+            </Column>
+          </Row>
+        </Box>
 
         {/* Mobile */}
         <Row columns={8} sx={{ display: ['flex', 'flex', 'none', 'none'] }}>
@@ -116,6 +129,7 @@ const Topics: React.FC = () => {
                 }
                 setSubjectsMenuOpen(true)
               }}
+              aria-expanded={subjectsMenuOpen}
               sx={{
                 variant: 'text.body',
                 fontSize: [2, 2, 2, 3],
@@ -130,6 +144,7 @@ const Topics: React.FC = () => {
       {subjectsMenuOpen && (
         <Menu
           setMenuOpen={setSubjectsMenuOpen}
+          aria-label='Topics menu'
           sx={{
             top: `${menuPosition.top}px`,
             height: '50vh',

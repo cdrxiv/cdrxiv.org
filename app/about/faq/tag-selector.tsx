@@ -48,6 +48,8 @@ const Tag: React.FC<{
 }> = ({ tag, isSelected, onClick }) => (
   <Box
     as='button'
+    role='option'
+    aria-selected={isSelected}
     onClick={onClick}
     sx={{
       display: 'block',
@@ -82,6 +84,8 @@ export const TagSelector = () => {
           gap: 2,
           mt: 5,
         }}
+        role='listbox'
+        aria-label='FAQ topics'
       >
         {tags.map((tag) => (
           <Tag

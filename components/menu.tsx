@@ -43,6 +43,8 @@ const Menu: React.FC<MenuProps> = ({ setMenuOpen, children, sx }) => {
     >
       <Flex
         ref={menuItemsRef}
+        id='mobile-menu'
+        role='menu'
         sx={{
           flexDirection: 'column',
           gap: 2,
