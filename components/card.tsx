@@ -118,9 +118,11 @@ const Card: React.FC<CardProps> = ({
         minHeight: ['178px', '202px', '202px', '202px'],
       }}
     >
-      <Link href={href || '#'} passHref legacyBehavior>
+      <Link
+        href={href || '#'}
+        style={{ textDecoration: 'none', color: 'inherit' }}
+      >
         <Flex
-          as='a'
           onClick={handleClick}
           onKeyDown={handleKeyDown}
           onMouseEnter={() => setHovered(true)}
@@ -139,8 +141,6 @@ const Card: React.FC<CardProps> = ({
             borderWidth,
             borderStyle: 'solid',
             outline: 'none', // use highlight style for focus instead
-            textDecoration: 'none',
-            color: 'inherit',
             ...sx,
           }}
         >
