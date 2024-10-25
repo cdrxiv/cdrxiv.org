@@ -63,7 +63,7 @@ export const theme: Theme = {
     },
     h3: {
       variant: 'text.heading',
-      fontSize: [2, 2, 2, 3],
+      fontSize: [2, 2, 3, 3],
     },
     a: {
       variant: 'text.body',
