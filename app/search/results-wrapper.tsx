@@ -36,11 +36,9 @@ const ResultsWrapper: React.FC<ResultsWrapperProps> = ({
 
   return (
     <>
-      <Row columns={12} sx={{ mt: 4, mb: 6 }}>
-        <Column start={1} width={[10, 10, 8, 8]}>
-          <Box sx={{ variant: 'text.heading', mb: 4 }}>
-            Search for “{search}”
-          </Box>
+      <Row columns={[6, 8, 12, 12]} sx={{ mt: 4, mb: [4, 4, 8, 8] }}>
+        <Column start={1} width={[6, 8, 8, 8]}>
+          <Box sx={{ variant: 'styles.h1', mb: 8 }}>Search for “{search}”</Box>
         </Column>
 
         <Column start={1} width={6}>
@@ -48,12 +46,11 @@ const ResultsWrapper: React.FC<ResultsWrapperProps> = ({
             sx={{
               gap: [0, 0, 6, 6],
               justifyContent: 'flex-start',
+              alignItems: 'baseline',
               flexDirection: ['column', 'column', 'row', 'row'],
             }}
           >
-            <Box sx={{ variant: 'text.monoCaps', mb: 3 }}>
-              Results ({count} total)
-            </Box>
+            <Box sx={{ variant: 'text.monoCaps' }}>Results ({count} total)</Box>
             <Flex sx={{ gap: 3 }}>
               <Link
                 sx={{
