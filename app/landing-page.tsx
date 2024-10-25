@@ -50,9 +50,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
               flexDirection: ['column', 'column', 'row', 'row'],
             }}
           >
-            <Box sx={{ variant: 'text.monoCaps' }}>Recent preprints</Box>
-            <Flex sx={{ gap: 3 }}>
+            <Box as='h2' sx={{ variant: 'text.monoCaps' }}>
+              Recent preprints
+            </Box>
+            <Flex role='listbox' aria-label='View options' sx={{ gap: 3 }}>
               <Link
+                role='option'
+                aria-selected={currentView === 'grid'}
                 sx={{
                   variant: 'text.body',
                   fontSize: [2, 2, 2, 3],
@@ -66,6 +70,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
                 Grid
               </Link>
               <Link
+                role='option'
+                aria-selected={currentView === 'list'}
                 sx={{
                   variant: 'text.body',
                   fontSize: [2, 2, 2, 3],

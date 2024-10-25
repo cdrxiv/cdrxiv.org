@@ -53,20 +53,25 @@ const FileInput: React.FC<Props> = ({
     ref.current?.value && (ref.current.value = '')
   }, [onChange])
 
+  const handleButtonClick = () => {
+    ref.current?.click()
+  }
+
   return (
     <div>
       <Flex sx={{ alignItems: 'baseline', gap: 3 }}>
-        <Button as='label' sx={{ flexShrink: 0 }}>
+        <Button sx={{ flexShrink: 0 }} onClick={handleButtonClick}>
           Choose file
-          <input
-            name='file'
-            ref={ref}
-            type='file'
-            accept={accept}
-            hidden
-            onChange={handleChange}
-          />
         </Button>
+        <input
+          id='file'
+          name='file'
+          ref={ref}
+          type='file'
+          accept={accept}
+          hidden
+          onChange={handleChange}
+        />
 
         {file && (
           <Box

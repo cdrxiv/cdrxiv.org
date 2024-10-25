@@ -11,20 +11,23 @@ interface ListViewProps {
 
 const ListView: React.FC<ListViewProps> = ({ preprints }) => {
   return (
-    <>
+    <Box
+      as='ul'
+      aria-label='Preprints'
+      sx={{
+        padding: 0,
+      }}
+    >
       {preprints.map((preprint, i) => (
-        <Link
-          href={`/preprint/${preprint.pk}`}
-          key={preprint.pk}
-          passHref
-          legacyBehavior
-        >
-          <a
+        <Box as='li' key={preprint.pk} sx={{ listStyle: 'none' }}>
+          <Link
+            href={`/preprint/${preprint.pk}`}
             style={{
               textDecoration: 'none',
               color: 'inherit',
-              display: 'block',
             }}
+            aria-labelledby={`preprint-title-${preprint.pk}`}
+            aria-describedby={`preprint-description-${preprint.pk}`}
           >
             <Box
               sx={{
@@ -44,7 +47,7 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
               <Row columns={12} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
                 <Column start={[1, 1, 1, 1]} width={[12, 12, 4, 4]}>
                   <Box
-                    id='title'
+                    id={`preprint-title-${preprint.pk}`}
                     sx={{
                       variant: 'text.body',
                       color: ['blue', 'blue', 'inherit', 'inherit'],
@@ -56,6 +59,7 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
                 </Column>
                 <Column start={[1, 1, 5, 5]} width={[12, 12, 2, 2]}>
                   <Box
+                    id={`preprint-description-${preprint.pk}`}
                     sx={{
                       variant: 'text.mono',
                       mb: [2, 2, -1, 0], // baseline adjustment at [2]
@@ -109,10 +113,10 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
                 </Column>
               </Row>
             </Box>
-          </a>
-        </Link>
+          </Link>
+        </Box>
       ))}
-    </>
+    </Box>
   )
 }
 

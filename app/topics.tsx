@@ -41,6 +41,9 @@ const Topics: React.FC = () => {
       as='button'
       onClick={() => handleFilterChange(name)}
       key={name}
+      role='option'
+      aria-selected={currentSubject === name}
+      aria-label={`${name} (${count} preprints)`}
       sx={{
         display: 'block',
         variant: 'styles.h2',
@@ -77,6 +80,7 @@ const Topics: React.FC = () => {
         <Row columns={8}>
           <Column start={1} width={4}>
             <Box
+              as='h2'
               ref={topicsBoxRef}
               sx={{ variant: 'text.monoCaps', mb: [1, 1, 3, 3] }}
             >
@@ -84,7 +88,12 @@ const Topics: React.FC = () => {
             </Box>
           </Column>
         </Row>
-        <Row columns={8} sx={{ display: ['none', 'none', 'grid', 'grid'] }}>
+        <Row
+          columns={8}
+          sx={{ display: ['none', 'none', 'grid', 'grid'] }}
+          role='listbox'
+          aria-label='Topics'
+        >
           <Column start={1} width={4}>
             <Flex sx={{ flexDirection: 'column', gap: [2, 2, 2, 3] }}>
               {renderSubject('All', totalCount)}
@@ -117,6 +126,7 @@ const Topics: React.FC = () => {
                 }
                 setSubjectsMenuOpen(true)
               }}
+              aria-expanded={subjectsMenuOpen}
               sx={{
                 variant: 'text.body',
                 fontSize: [2, 2, 2, 3],
@@ -131,6 +141,7 @@ const Topics: React.FC = () => {
       {subjectsMenuOpen && (
         <Menu
           setMenuOpen={setSubjectsMenuOpen}
+          aria-label='Topics menu'
           sx={{
             top: `${menuPosition.top}px`,
             height: '50vh',

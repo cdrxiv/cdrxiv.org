@@ -77,6 +77,7 @@ const DataFileInput: React.FC<Props> = ({
             <>
               Or{' '}
               <Link
+                as='button'
                 onClick={() => {
                   setMode('link')
                   setFileProp(null)

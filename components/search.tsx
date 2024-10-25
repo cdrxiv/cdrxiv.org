@@ -78,7 +78,7 @@ const Search = forwardRef<HTMLInputElement, SearchProps>(
               {...{
                 type: 'submit',
                 disabled: disabled,
-                'aria-label': 'Submit author search',
+                'aria-label': 'Submit search',
               }}
             >
               &gt;&gt;

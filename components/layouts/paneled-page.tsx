@@ -71,6 +71,8 @@ const PaneledPage: React.FC<{
           }}
         >
           <Box
+            as='nav'
+            aria-label='Section navigation'
             sx={{
               height: 'fit-content',
               maxHeight: HEADER_HEIGHT.map(
