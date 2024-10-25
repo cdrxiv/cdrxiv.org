@@ -31,9 +31,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
         <Column start={1} width={[10, 10, 3, 3]}>
           <Box
             as='h1'
-            sx={{ variant: 'styles.h1', mt: [2, 2, 0, 0], mb: [4, 6, 4, 4] }}
+            sx={{ variant: 'styles.h1', mt: [2, 2, 0, 0], mb: [6, 6, 4, 4] }}
           >
-            Preprints and&nbsp;Data for Carbon&nbsp;Dioxide Removal
+            Preprints&nbsp;and <br />
+            Data&nbsp;for&nbsp;Carbon <br />
+            Dioxide&nbsp;Removal
           </Box>
         </Column>
 
