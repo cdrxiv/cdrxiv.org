@@ -1,11 +1,14 @@
 import type { Author, Preprint } from '../types/preprint'
 import { getAdditionalField } from './data'
 
-export const formatDate = (date: Date): string => {
+export const formatDate = (
+  date: Date,
+  dateOptions?: Intl.DateTimeFormatOptions,
+): string => {
   const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+    year: dateOptions?.year ?? 'numeric',
+    month: dateOptions?.month ?? 'long',
+    day: dateOptions?.day ?? 'numeric',
   }
   return date.toLocaleDateString('en-US', options)
 }
