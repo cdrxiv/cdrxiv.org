@@ -44,7 +44,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
               flexDirection: ['column', 'column', 'row', 'row'],
             }}
           >
-            <Box as='h1' sx={{ variant: 'text.monoCaps' }}>
+            <Box as='h2' sx={{ variant: 'text.monoCaps' }}>
               Recent preprints
             </Box>
             <Flex role='listbox' aria-label='View options' sx={{ gap: 3 }}>
