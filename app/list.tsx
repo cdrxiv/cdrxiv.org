@@ -20,12 +20,7 @@ const ListView: React.FC<ListViewProps> = ({ preprints }) => {
     >
       {preprints.map((preprint, i) => (
         <Box as='li' key={preprint.pk} sx={{ listStyle: 'none' }}>
-          <Link
-            href={`/preprint/${preprint.pk}`}
-            key={preprint.pk}
-            passHref
-            legacyBehavior
-          >
+          <Link href={`/preprint/${preprint.pk}`} passHref legacyBehavior>
             <a
               style={{
                 textDecoration: 'none',

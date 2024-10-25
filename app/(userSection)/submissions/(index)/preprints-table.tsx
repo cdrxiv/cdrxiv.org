@@ -55,7 +55,6 @@ const PreprintsTable: React.FC<PreprintsTableProps> = ({ preprints, date }) => {
           <Box as='li' key={preprint.pk} sx={{ listStyle: 'none' }}>
             <NextLink
               href={`/submissions/edit/${preprint.pk}`}
-              key={preprint.pk}
               style={{ textDecoration: 'none' }}
             >
               <Box
