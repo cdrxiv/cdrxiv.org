@@ -21,9 +21,6 @@ const StyledButton = React.forwardRef<Ref, Props>(
       boxShadow: (theme) => `1px 1px 0px 1px ${theme?.colors?.muted} inset, 
                   -1px -1px 0px 1px ${theme?.colors?.text} inset`,
       outline: 'none',
-      ':focus-visible': {
-        outline: '1px solid blue',
-      },
       ':active': {
         boxShadow: (theme) => `1px 1px 0px 1px ${theme?.colors?.text} inset, 
                   -1px -1px 0px 1px ${theme?.colors?.muted} inset`,
@@ -45,7 +42,13 @@ const StyledButton = React.forwardRef<Ref, Props>(
       <Button
         ref={ref as React.Ref<HTMLButtonElement>}
         onClick={href ? undefined : onClick}
-        sx={commonStyles}
+        sx={{
+          ...commonStyles,
+          ':focus-visible': {
+            outline: '1px solid blue',
+            outlineOffset: '-1px',
+          },
+        }}
         {...props}
       >
         <Box>{children}</Box>
@@ -56,6 +59,7 @@ const StyledButton = React.forwardRef<Ref, Props>(
       <Link
         href={href}
         ref={ref as React.Ref<HTMLAnchorElement>}
+        tabIndex={-1}
         sx={{
           textDecoration: 'none',
         }}
