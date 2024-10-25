@@ -76,7 +76,10 @@ const Topics: React.FC = () => {
       >
         <Row columns={8}>
           <Column start={1} width={4}>
-            <Box ref={topicsBoxRef} sx={{ variant: 'text.monoCaps', mb: 3 }}>
+            <Box
+              ref={topicsBoxRef}
+              sx={{ variant: 'text.monoCaps', mb: [1, 1, 3, 3] }}
+            >
               Topics
             </Box>
           </Column>
