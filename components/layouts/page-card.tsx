@@ -41,7 +41,7 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
   const [isTrailActive, setIsTrailActive] = useState(false)
 
   const pathname = usePathname()
-  const isSuccessfullSubmissionPage = pathname.startsWith('/submit/success')
+  const isSuccessfulSubmissionPage = pathname.startsWith('/submit/success')
   const isHomePage = pathname === '/' || pathname.startsWith('/?')
 
   const toggleTrail = useCallback(() => {
@@ -123,7 +123,7 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
             <MouseTrail
               isActive={isFullSiteEnabled() && isTrailActive && isHomePage}
             />
-            <SparklyMouseTrail isActive={isSuccessfullSubmissionPage} />
+            <SparklyMouseTrail isActive={isSuccessfulSubmissionPage} />
 
             <Box sx={{ contain: 'layout' }}>
               <Guide />
