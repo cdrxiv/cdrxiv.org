@@ -130,7 +130,7 @@ const Header = () => {
       sx={{
         position: 'sticky',
         top: 0,
-        mt: -22,
+        mt: [-24, -24, -27, -27],
         bg: cardBackground,
         zIndex: 2,
       }}
