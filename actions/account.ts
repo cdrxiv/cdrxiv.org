@@ -10,7 +10,7 @@ export async function registerAccount(
   params: Partial<User> & { password: string },
 ) {
   const res = await fetch(
-    'https://carbonplan.endurance.janeway.systems/carbonplan/api/register/',
+    'https://carbonplan.endurance.janeway.systems/carbonplan/api/account/register/',
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -49,7 +49,7 @@ export async function registerAccount(
 
 export async function activateAccount(user: number, confirmation_code: string) {
   const res = await fetch(
-    `https://carbonplan.endurance.janeway.systems/carbonplan/api/activate/${user}`,
+    `https://carbonplan.endurance.janeway.systems/carbonplan/api/account/activate/${user}`,
     {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -76,7 +76,7 @@ export async function activateAccount(user: number, confirmation_code: string) {
 export async function updateAccount(user: User, params: Partial<User>) {
   const res = await fetchWithToken(
     headers(),
-    `https://carbonplan.endurance.janeway.systems/carbonplan/api/accounts/${user.id}/`,
+    `https://carbonplan.endurance.janeway.systems/carbonplan/api/account/update/`,
     {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
