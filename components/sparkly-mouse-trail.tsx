@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -59,7 +59,7 @@ interface SparkleData {
 }
 
 const SparklyMouseTrail = () => {
-  const [sparkles, setSparkles] = useState<SparkleData[]>([])
+  const [sparkles, setSparkles] = useState<{ [key: string]: SparkleData }>({})
   const [isMouseActive, setIsMouseActive] = useState(false)
   const mousePosition = useRef({ x: 0, y: 0 })
   const frameCount = useRef(0)
@@ -95,25 +95,25 @@ const SparklyMouseTrail = () => {
           const x = mousePosition.current.x + offsetX
           const y = mousePosition.current.y + offsetY
 
-          return {
-            id,
-            x,
-            y,
-            size,
-            duration,
-          }
+          return [id, { id, x, y, size, duration }] as const
         })
-        setSparkles((prevSparkles) => [...prevSparkles, ...newSparkles])
+        setSparkles((prevSparkles) => ({
+          ...prevSparkles,
+          ...Object.fromEntries(newSparkles),
+        }))
       }
     }, 16)
 
     return () => clearInterval(interval)
   }, [isMouseActive])
+  console.log(sparkles)
 
   const removeSparkle = useCallback((id: string) => {
-    setSparkles((prevSparkles) =>
-      prevSparkles.filter((sparkle) => sparkle.id !== id),
-    )
+    setSparkles((prevSparkles) => {
+      const newSparkles = { ...prevSparkles }
+      delete newSparkles[id]
+      return newSparkles
+    })
   }, [])
 
   return (
@@ -126,19 +126,17 @@ const SparklyMouseTrail = () => {
         overflow: 'hidden',
       }}
     >
-      <AnimatePresence>
-        {sparkles.map((sparkle) => (
-          <Sparkle
-            key={sparkle.id}
-            id={sparkle.id}
-            x={sparkle.x}
-            y={sparkle.y}
-            size={sparkle.size}
-            duration={sparkle.duration}
-            removeSparkle={removeSparkle}
-          />
-        ))}
-      </AnimatePresence>
+      {Object.values(sparkles).map((sparkle) => (
+        <Sparkle
+          key={sparkle.id}
+          id={sparkle.id}
+          x={sparkle.x}
+          y={sparkle.y}
+          size={sparkle.size}
+          duration={sparkle.duration}
+          removeSparkle={removeSparkle}
+        />
+      ))}
     </div>
   )
 }
