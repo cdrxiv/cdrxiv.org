@@ -98,7 +98,7 @@ export async function createPreprint(): Promise<Preprint> {
 export async function createAuthor(author: AuthorParams): Promise<Author> {
   const res = await fetchWithToken(
     headers(),
-    'https://carbonplan.endurance.janeway.systems/carbonplan/api/accounts/',
+    'https://carbonplan.endurance.janeway.systems/carbonplan/api/account/register/',
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
