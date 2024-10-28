@@ -1,79 +1,120 @@
 'use client'
 
-import { AnimatePresence, motion, useAnimationFrame } from 'framer-motion'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
-interface SparklePosition {
+interface SparkleProps {
+  id: string
   x: number
   y: number
-  id: string
   size: number
   duration: number
-  initialDistance: number
-  createdAt: number
+  removeSparkle: (id: string) => void
 }
 
-interface SparklyMouseTrailProps {
-  isActive: boolean
+const Sparkle = ({ id, x, y, size, duration, removeSparkle }: SparkleProps) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      removeSparkle(id)
+    }, duration)
+    return () => clearTimeout(timer)
+  }, [id, duration, removeSparkle])
+
+  return (
+    <motion.div
+      initial={{
+        scale: size,
+        x: x,
+        y: y,
+      }}
+      animate={{
+        scale: 0,
+        x: x + (Math.random() - 0.5) * 50,
+        y: y + 100,
+      }}
+      transition={{
+        duration: duration / 1000,
+        ease: 'easeOut',
+      }}
+      style={{
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        pointerEvents: 'none',
+        fontSize: `${16 * size}px`,
+      }}
+    >
+      +
+    </motion.div>
+  )
 }
 
-const SparklyMouseTrail = ({ isActive }: SparklyMouseTrailProps) => {
-  const [sparkles, setSparkles] = useState<SparklePosition[]>([])
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+interface SparkleData {
+  id: string
+  x: number
+  y: number
+  size: number
+  duration: number
+}
+
+const SparklyMouseTrail = () => {
+  const [sparkles, setSparkles] = useState<SparkleData[]>([])
+  const [isMouseActive, setIsMouseActive] = useState(false)
+  const mousePosition = useRef({ x: 0, y: 0 })
   const frameCount = useRef(0)
 
-  const createSparkle = useCallback((x: number, y: number): SparklePosition => {
-    const offsetX = (Math.random() - 0.5) * 100
-    const offsetY = Math.random() * 50
-
-    const initialDistance = Math.sqrt(offsetX * offsetX + offsetY * offsetY)
-
-    return {
-      x: x + offsetX,
-      y: y + offsetY,
-      id: uuidv4(),
-      duration: Math.random() * 1500 + 1500,
-      size: Math.random() * 0.5 + 0.5,
-      initialDistance,
-      createdAt: Date.now(),
-    }
+  const handleMouseMove = useCallback((event: MouseEvent) => {
+    mousePosition.current = { x: event.clientX, y: event.clientY }
+    setIsMouseActive(true)
   }, [])
 
-  const handleMouseMove = useCallback((event: MouseEvent) => {
-    setMousePosition({ x: event.clientX, y: event.clientY })
+  const handleMouseLeave = useCallback(() => {
+    setIsMouseActive(false)
   }, [])
 
   useEffect(() => {
-    if (isActive) {
-      window.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseleave', handleMouseLeave)
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseleave', handleMouseLeave)
     }
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [handleMouseMove, isActive])
+  }, [handleMouseMove, handleMouseLeave])
 
-  useAnimationFrame(() => {
-    if (!isActive) return
+  useEffect(() => {
+    const interval = setInterval(() => {
+      frameCount.current += 1
+      if (frameCount.current % 3 === 0 && isMouseActive) {
+        const newSparkles = Array.from({ length: 5 }, () => {
+          const id = uuidv4()
+          const size = Math.random() * 0.5 + 0.5
+          const duration = Math.random() * 1500 + 1500
+          const offsetX = (Math.random() - 0.5) * 100
+          const offsetY = Math.random() * 50
+          const x = mousePosition.current.x + offsetX
+          const y = mousePosition.current.y + offsetY
 
-    frameCount.current += 1
+          return {
+            id,
+            x,
+            y,
+            size,
+            duration,
+          }
+        })
+        setSparkles((prevSparkles) => [...prevSparkles, ...newSparkles])
+      }
+    }, 16)
 
-    if (frameCount.current % 5 === 0) {
-      const newSparkles = Array.from({ length: 3 }, () =>
-        createSparkle(mousePosition.x, mousePosition.y),
-      )
-      setSparkles((prevSparkles) => [
-        ...newSparkles,
-        ...prevSparkles.slice(0, 49),
-      ])
-    }
+    return () => clearInterval(interval)
+  }, [isMouseActive])
 
+  const removeSparkle = useCallback((id: string) => {
     setSparkles((prevSparkles) =>
-      prevSparkles.filter(
-        (sparkle) => Date.now() - sparkle.createdAt < sparkle.duration,
-      ),
+      prevSparkles.filter((sparkle) => sparkle.id !== id),
     )
-  })
-
-  if (!isActive) return null
+  }, [])
 
   return (
     <div
@@ -86,43 +127,17 @@ const SparklyMouseTrail = ({ isActive }: SparklyMouseTrailProps) => {
       }}
     >
       <AnimatePresence>
-        {sparkles.map((sparkle) => {
-          const distance = Math.sqrt(
-            Math.pow(mousePosition.x - sparkle.x, 2) +
-              Math.pow(mousePosition.y - sparkle.y, 2),
-          )
-          const scale = Math.max(0.05, 1 - (distance / 300) ** 1.5) // Enhanced depth effect
-
-          return (
-            <motion.div
-              key={sparkle.id}
-              initial={{
-                scale: sparkle.size,
-                x: sparkle.x,
-                y: sparkle.y,
-              }}
-              animate={{
-                scale: scale * sparkle.size,
-                x: sparkle.x + (Math.random() - 0.5) * 50,
-                y: sparkle.y + 100,
-              }}
-              exit={{ scale: 0 }}
-              transition={{
-                duration: sparkle.duration / 1000,
-                ease: 'easeOut',
-              }}
-              style={{
-                position: 'absolute',
-                left: 0,
-                top: 0,
-                pointerEvents: 'none',
-                fontSize: `${12 * sparkle.size}px`,
-              }}
-            >
-              +
-            </motion.div>
-          )
-        })}
+        {sparkles.map((sparkle) => (
+          <Sparkle
+            key={sparkle.id}
+            id={sparkle.id}
+            x={sparkle.x}
+            y={sparkle.y}
+            size={sparkle.size}
+            duration={sparkle.duration}
+            removeSparkle={removeSparkle}
+          />
+        ))}
       </AnimatePresence>
     </div>
   )
