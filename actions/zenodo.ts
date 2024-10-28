@@ -11,7 +11,12 @@ export async function createDataDeposition(): Promise<Deposition> {
         Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ metadata: { upload_type: 'dataset' } }),
+      body: JSON.stringify({
+        metadata: {
+          upload_type: 'dataset',
+          communities: [{ identifier: 'cdrxiv' }],
+        },
+      }),
     },
   )
 
