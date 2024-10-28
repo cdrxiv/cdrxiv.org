@@ -170,7 +170,7 @@ const Card: React.FC<CardProps> = ({
               <Box
                 id={`card-title-${title}`}
                 sx={{
-                  variant: 'text.body',
+                  variant: 'styles.h3',
                   mb: [3, 3, 3, 4],
                   pr: [36, 36, 48, 48],
                   color,
@@ -217,7 +217,7 @@ const Card: React.FC<CardProps> = ({
                     alignSelf: 'center',
                   }}
                 >
-                  {formatDate(date)}
+                  {formatDate(date, { month: 'short' })}
                 </Box>
               )}
             </Flex>

@@ -43,9 +43,9 @@ const StyledLink: React.FC<Props> = ({
 
   const content = (
     <>
-      {backArrow && '<< '}
+      {backArrow && <>{'<<'}&nbsp;</>}
       {children}
-      {forwardArrow && ' >>'}
+      {forwardArrow && <>&nbsp;{'>>'}</>}
     </>
   )
 

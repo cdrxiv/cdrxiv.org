@@ -13,12 +13,7 @@ const Subjects: React.FC<{
   return (
     <Flex sx={{ flexDirection: 'column' }} role='group'>
       {subjects.map(({ name }) => (
-        <Label
-          key={name}
-          sx={{
-            cursor: 'pointer',
-          }}
-        >
+        <Label key={name}>
           <Checkbox
             checked={value.includes(name)}
             onChange={(e) =>

@@ -33,7 +33,13 @@ const CheckboxDisplay = ({ sx }: { sx?: ThemeUIStyleObject }) => {
           cursor: 'pointer',
         },
         'input:hover:enabled ~ &': {
-          textDecoration: 'underline',
+          '.x': {
+            display: 'initial',
+            color: 'listBorderGrey',
+          },
+          '.space': {
+            display: 'none',
+          },
         },
         ...sx,
       }}

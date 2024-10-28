@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react'
-import { Box } from 'theme-ui'
+import { Box, Flex } from 'theme-ui'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Column, Link, Menu, Row } from '../components'
 import { useSubjects } from './subjects-context'
@@ -46,7 +46,7 @@ const Topics: React.FC = () => {
       aria-label={`${name} (${count} preprints)`}
       sx={{
         display: 'block',
-        variant: 'text.body',
+        variant: 'styles.h2',
         cursor: 'pointer',
         width: 'fit-content',
         padding: 0,
@@ -63,7 +63,7 @@ const Topics: React.FC = () => {
 
       <Box
         as='sup'
-        sx={{ display: ['none', 'none', 'initial', 'initial'], ml: 1 }}
+        sx={{ display: ['none', 'none', 'initial', 'initial'], ml: 2 }}
       >
         {count}
       </Box>
@@ -82,41 +82,38 @@ const Topics: React.FC = () => {
             <Box
               as='h2'
               ref={topicsBoxRef}
-              sx={{ variant: 'text.monoCaps', mb: 3 }}
+              sx={{ variant: 'text.monoCaps', mb: [1, 1, 3, 3] }}
             >
               Topics
             </Box>
           </Column>
         </Row>
-        <Box
+        <Row
+          columns={8}
+          sx={{ display: ['none', 'none', 'grid', 'grid'] }}
           role='listbox'
-          aria-labelledby='topics-heading'
           aria-label='Topics'
         >
-          <Row
-            columns={8}
-            sx={{
-              display: ['none', 'none', 'flex', 'flex'],
-              height: '100%',
-            }}
-          >
-            <Column start={1} width={4}>
+          <Column start={1} width={4}>
+            <Flex sx={{ flexDirection: 'column', gap: [2, 2, 2, 3] }}>
               {renderSubject('All', totalCount)}
               {subjects
                 .slice(0, midPoint)
                 .map((subject) =>
                   renderSubject(subject.name, subject.preprints.length),
                 )}
-            </Column>
-            <Column start={5} width={4}>
+            </Flex>
+          </Column>
+          <Column start={5} width={4}>
+            <Flex sx={{ flexDirection: 'column', gap: [2, 2, 2, 3] }}>
               {subjects
                 .slice(midPoint)
                 .map((subject) =>
                   renderSubject(subject.name, subject.preprints.length),
                 )}
-            </Column>
-          </Row>
-        </Box>
+            </Flex>
+          </Column>
+        </Row>
 
         {/* Mobile */}
         <Row columns={8} sx={{ display: ['flex', 'flex', 'none', 'none'] }}>
