@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react'
-import { Box } from 'theme-ui'
+import { Box, Flex } from 'theme-ui'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Column, Link, Menu, Row } from '../components'
 import { useSubjects } from './subjects-context'
@@ -41,9 +41,12 @@ const Topics: React.FC = () => {
       as='button'
       onClick={() => handleFilterChange(name)}
       key={name}
+      role='option'
+      aria-selected={currentSubject === name}
+      aria-label={`${name} (${count} preprints)`}
       sx={{
         display: 'block',
-        variant: 'text.body',
+        variant: 'styles.h2',
         cursor: 'pointer',
         width: 'fit-content',
         padding: 0,
@@ -60,7 +63,7 @@ const Topics: React.FC = () => {
 
       <Box
         as='sup'
-        sx={{ display: ['none', 'none', 'initial', 'initial'], ml: 1 }}
+        sx={{ display: ['none', 'none', 'initial', 'initial'], ml: 2 }}
       >
         {count}
       </Box>
@@ -76,32 +79,39 @@ const Topics: React.FC = () => {
       >
         <Row columns={8}>
           <Column start={1} width={4}>
-            <Box ref={topicsBoxRef} sx={{ variant: 'text.monoCaps', mb: 3 }}>
+            <Box
+              as='h2'
+              ref={topicsBoxRef}
+              sx={{ variant: 'text.monoCaps', mb: [1, 1, 3, 3] }}
+            >
               Topics
             </Box>
           </Column>
         </Row>
         <Row
           columns={8}
-          sx={{
-            display: ['none', 'none', 'flex', 'flex'],
-            height: '100%',
-          }}
+          sx={{ display: ['none', 'none', 'grid', 'grid'] }}
+          role='listbox'
+          aria-label='Topics'
         >
           <Column start={1} width={4}>
-            {renderSubject('All', totalCount)}
-            {subjects
-              .slice(0, midPoint)
-              .map((subject) =>
-                renderSubject(subject.name, subject.preprints.length),
-              )}
+            <Flex sx={{ flexDirection: 'column', gap: [2, 2, 2, 3] }}>
+              {renderSubject('All', totalCount)}
+              {subjects
+                .slice(0, midPoint)
+                .map((subject) =>
+                  renderSubject(subject.name, subject.preprints.length),
+                )}
+            </Flex>
           </Column>
           <Column start={5} width={4}>
-            {subjects
-              .slice(midPoint)
-              .map((subject) =>
-                renderSubject(subject.name, subject.preprints.length),
-              )}
+            <Flex sx={{ flexDirection: 'column', gap: [2, 2, 2, 3] }}>
+              {subjects
+                .slice(midPoint)
+                .map((subject) =>
+                  renderSubject(subject.name, subject.preprints.length),
+                )}
+            </Flex>
           </Column>
         </Row>
 
@@ -116,6 +126,7 @@ const Topics: React.FC = () => {
                 }
                 setSubjectsMenuOpen(true)
               }}
+              aria-expanded={subjectsMenuOpen}
               sx={{
                 variant: 'text.body',
                 fontSize: [2, 2, 2, 3],
@@ -130,6 +141,7 @@ const Topics: React.FC = () => {
       {subjectsMenuOpen && (
         <Menu
           setMenuOpen={setSubjectsMenuOpen}
+          aria-label='Topics menu'
           sx={{
             top: `${menuPosition.top}px`,
             height: '50vh',

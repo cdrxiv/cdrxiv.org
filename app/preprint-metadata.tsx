@@ -92,7 +92,7 @@ const PreprintMetadata: React.FC<{
     conflictOfInterest && conflictOfInterest !== 'None'
 
   return (
-    <Flex sx={{ flexDirection: 'column', mt: 5, gap: [6, 9, 9, 9] }}>
+    <Flex sx={{ flexDirection: 'column', mt: 5, gap: [6, 8, 9, 9] }}>
       <ErrorOrTrack
         hasError={!hasArticle && !hasData}
         preview={preview}

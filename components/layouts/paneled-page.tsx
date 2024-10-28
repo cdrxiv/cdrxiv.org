@@ -71,6 +71,8 @@ const PaneledPage: React.FC<{
           }}
         >
           <Box
+            as='nav'
+            aria-label='Section navigation'
             sx={{
               height: 'fit-content',
               maxHeight: HEADER_HEIGHT.map(
@@ -103,12 +105,20 @@ const PaneledPage: React.FC<{
                 <Box
                   sx={{
                     display: ['inherit', 'inherit', 'none', 'none'],
+                    position: 'sticky',
+                    top: HEADER_HEIGHT,
+                    backgroundColor: 'white',
+                    px: [5, 6, 0, 0],
+                    mx: [-5, -6, 0, 0],
+                    pt: 4,
+                    pb: isSidebarExpanded || isMetadataExpanded ? 2 : 0,
+                    zIndex: 3, // Based on react-pdf `Page`'s z-index=2
                   }}
                 >
                   <Flex
                     sx={{
                       gap: 5,
-                      pt: 4,
+                      pb: 4,
                     }}
                   >
                     {sidebar && (
@@ -148,7 +158,7 @@ const PaneledPage: React.FC<{
                   )}
 
                   {(isSidebarExpanded || isMetadataExpanded) && (
-                    <Divider sx={{ my: 6 }} />
+                    <Divider sx={{ mt: 6 }} />
                   )}
                 </Box>
               )}

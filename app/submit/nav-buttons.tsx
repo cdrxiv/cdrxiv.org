@@ -76,6 +76,8 @@ const NavButtons: React.FC<Props> = ({ onClick }) => {
 
   return (
     <Flex
+      as='nav'
+      aria-label='Navigation buttons'
       sx={{
         justifyContent: index > 0 ? 'space-between' : 'flex-end',
         mt: 8,

@@ -33,7 +33,7 @@ const UserProfile = () => {
       as='svg'
       xmlns='http://www.w3.org/2000/svg'
       viewBox='0 0 448 512'
-      sx={{ height: '12px', ml: '-20px' }}
+      sx={{ height: '12px', ml: '-20px', flexShrink: 0 }}
     >
       {/* Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc. */}
       <path
@@ -56,6 +56,14 @@ const AccountLink = ({
   const { data: session, status } = useSession()
   const authenticated = status === 'authenticated' && !!session
 
+  let accountName = name
+  if (authenticated) {
+    accountName = `${session.user.first_name} ${session.user.last_name}`
+    if (accountName.length > 20) {
+      accountName = session.user.first_name
+    }
+  }
+
   return (
     <StyledLink
       href={path}
@@ -68,10 +76,8 @@ const AccountLink = ({
         ...sx,
       }}
     >
-      <Box as='span'>
-        {authenticated
-          ? `${session.user.first_name} ${session.user.last_name}`
-          : name}
+      <Box as='span' sx={{ flexShrink: 0 }}>
+        {accountName}
         &nbsp;&nbsp;&nbsp;&nbsp;
       </Box>
       <UserProfile />
@@ -84,43 +90,17 @@ const Header = () => {
   const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 })
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const searchRef = useRef<HTMLInputElement>(null)
-  const { cardBackground, overallBackground } = useBackgroundColors()
+  const { cardBackground } = useBackgroundColors()
 
   const pathname = usePathname()
   const router = useRouter()
 
-  const isActive = (path: string, matchingPaths?: string[]) => {
-    if (path === '/') {
-      return pathname === '/'
-    } else if (path.startsWith('/submit')) {
-      return pathname.startsWith('/submit')
-    } else if (matchingPaths) {
-      return matchingPaths.some((p) => pathname.startsWith(p))
-    }
-
-    return pathname.startsWith(path)
-  }
   const renderLinks = () => {
-    return PATHS.map(({ name, path, matchingPaths }) => {
-      const textDecoration = isActive(path, matchingPaths)
-        ? 'underline'
-        : 'none'
+    return PATHS.map(({ name, path }) => {
       return name === 'Account' ? (
-        <AccountLink
-          key={name}
-          sx={{ textDecoration }}
-          name={name}
-          path={path}
-        />
+        <AccountLink key={name} name={name} path={path} />
       ) : (
-        <StyledLink
-          key={name}
-          href={path}
-          sx={{
-            textDecoration,
-            width: 'fit-content',
-          }}
-        >
+        <StyledLink key={name} href={path} sx={{ width: 'fit-content' }}>
           {name}
         </StyledLink>
       )
@@ -150,7 +130,7 @@ const Header = () => {
       sx={{
         position: 'sticky',
         top: 0,
-        mt: -22,
+        mt: [-24, -24, -27, -27],
         bg: cardBackground,
         zIndex: 2,
       }}
@@ -176,6 +156,7 @@ const Header = () => {
             }}
             arrows={true}
             inverted
+            aria-label='Preprint search'
           />
         </Column>
         <Column
@@ -188,6 +169,7 @@ const Header = () => {
           }}
         >
           <Flex
+            as='nav'
             sx={{
               gap: [4, 4, 8, 10],
             }}
@@ -208,6 +190,9 @@ const Header = () => {
             ref={menuButtonRef}
             onClick={handleMenuToggle}
             sx={{ width: 'fit-content' }}
+            aria-expanded={menuOpen}
+            aria-haspopup='true'
+            aria-controls='mobile-menu'
           >
             Menu
           </StyledButton>
@@ -216,6 +201,7 @@ const Header = () => {
               <Menu
                 setMenuOpen={setMenuOpen}
                 sx={{ top: menuPosition.top, right: menuPosition.right }}
+                aria-label='Mobile navigation menu'
               >
                 {renderLinks()}
               </Menu>,

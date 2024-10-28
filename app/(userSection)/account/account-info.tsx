@@ -5,7 +5,7 @@ import { Box } from 'theme-ui'
 import { useSearchParams } from 'next/navigation'
 import { Suspense, useEffect } from 'react'
 
-import { Button, Field } from '../../../components'
+import { Button, Column, Field, Row } from '../../../components'
 import SharedLayout from '../shared-layout'
 import AccountForm from './account-form'
 import Login from './login'
@@ -40,14 +40,18 @@ const AccountInfo = () => {
             <SignOutListener />
           </Suspense>
 
-          <Field description='CDRXIV uses Janeway for authentication. Signing out does not deactivate your Janeway session.'>
-            <Button
-              onClick={() => signOut({ callbackUrl: '/' })}
-              sx={{ width: 'fit-content' }}
-            >
-              Sign out
-            </Button>
-          </Field>
+          <Row columns={[6, 6, 8, 8]}>
+            <Column start={1} width={[6, 4, 5, 4]}>
+              <Field description='CDRXIV uses Janeway for authentication. Signing out does not deactivate your Janeway session.'>
+                <Button
+                  onClick={() => signOut({ callbackUrl: '/' })}
+                  sx={{ width: 'fit-content' }}
+                >
+                  Sign out
+                </Button>
+              </Field>
+            </Column>
+          </Row>
 
           <Box as='hr' sx={{ mt: 7, mb: 4 }} />
         </>

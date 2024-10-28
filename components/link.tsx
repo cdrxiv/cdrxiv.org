@@ -43,26 +43,27 @@ const StyledLink: React.FC<Props> = ({
 
   const content = (
     <>
-      {backArrow && '<< '}
+      {backArrow && <>{'<<'}&nbsp;</>}
       {children}
-      {forwardArrow && ' >>'}
+      {forwardArrow && <>&nbsp;{'>>'}</>}
     </>
   )
 
   return (
-    <NextLink href={disabled ? '#' : href || '#'} passHref legacyBehavior>
-      <ThemeUILink
-        onClick={handleClick}
-        sx={{
-          ...(disabled ? sx.disabled : {}),
-          ...(!href ? sx.button : {}),
-          ...sxProp,
-        }}
-        {...props}
-      >
-        {content}
-      </ThemeUILink>
-    </NextLink>
+    <ThemeUILink
+      as={NextLink}
+      href={disabled ? '#' : href || '#'}
+      onClick={handleClick}
+      role={onClick && !href ? 'button' : undefined}
+      sx={{
+        ...(disabled ? sx.disabled : {}),
+        ...(!href ? sx.button : {}),
+        ...sxProp,
+      }}
+      {...props}
+    >
+      {content}
+    </ThemeUILink>
   )
 }
 
