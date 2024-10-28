@@ -10,24 +10,15 @@ interface CursorPosition {
   id: string
 }
 
-interface CursorTrailProps {
-  isActive: boolean
-}
-
-const MouseTrail = ({ isActive }: CursorTrailProps) => {
+const MouseTrail = () => {
   const [cursorTrail, setCursorTrail] = useState<CursorPosition[]>([])
 
-  const handleMouseMove = useCallback(
-    (event: MouseEvent) => {
-      if (isActive) {
-        setCursorTrail((previousTrail) => [
-          { x: event.clientX, y: event.clientY, id: uuidv4() },
-          ...previousTrail.slice(0, 14),
-        ])
-      }
-    },
-    [isActive],
-  )
+  const handleMouseMove = useCallback((event: MouseEvent) => {
+    setCursorTrail((previousTrail) => [
+      { x: event.clientX, y: event.clientY, id: uuidv4() },
+      ...previousTrail.slice(0, 14),
+    ])
+  }, [])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -38,21 +29,13 @@ const MouseTrail = ({ isActive }: CursorTrailProps) => {
     }
   }, [handleMouseMove])
 
-  useEffect(() => {
-    if (!isActive) {
-      setCursorTrail([])
-    }
-  }, [isActive])
-
   return (
     <>
-      {isActive && (
-        <style jsx global>{`
-          * {
-            cursor: none !important;
-          }
-        `}</style>
-      )}
+      <style jsx global>{`
+        * {
+          cursor: none !important;
+        }
+      `}</style>
       <div
         style={{
           position: 'fixed',
@@ -62,42 +45,41 @@ const MouseTrail = ({ isActive }: CursorTrailProps) => {
         }}
       >
         <AnimatePresence>
-          {isActive &&
-            cursorTrail.map((cursor, index) => (
-              <motion.div
-                key={cursor.id}
-                initial={{ opacity: 0.8, scale: 1 }}
-                animate={{ opacity: 0, scale: 0.8 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                transition={{ duration: 0.5, ease: 'easeOut' }}
+          {cursorTrail.map((cursor, index) => (
+            <motion.div
+              key={cursor.id}
+              initial={{ opacity: 0.8, scale: 1 }}
+              animate={{ opacity: 0, scale: 0.8 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+              style={{
+                position: 'absolute',
+                left: cursor.x - 10,
+                top: cursor.y + 5,
+              }}
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                height='32'
+                viewBox='0 0 32 32'
+                width='32'
                 style={{
-                  position: 'absolute',
-                  left: cursor.x - 10,
-                  top: cursor.y + 5,
+                  opacity: 1 - index * 0.1,
                 }}
               >
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  height='32'
-                  viewBox='0 0 32 32'
-                  width='32'
-                  style={{
-                    opacity: 1 - index * 0.1,
-                  }}
-                >
-                  <g fill='none' fillRule='evenodd' transform='translate(10 7)'>
-                    <path
-                      d='m6.148 18.473 1.863-1.003 1.615-.839-2.568-4.816h4.332l-11.379-11.408v16.015l3.316-3.221z'
-                      fill='#fff'
-                    />
-                    <path
-                      d='m6.431 17 1.765-.941-2.775-5.202h3.604l-8.025-8.043v11.188l2.53-2.442z'
-                      fill='#000'
-                    />
-                  </g>
-                </svg>
-              </motion.div>
-            ))}
+                <g fill='none' fillRule='evenodd' transform='translate(10 7)'>
+                  <path
+                    d='m6.148 18.473 1.863-1.003 1.615-.839-2.568-4.816h4.332l-11.379-11.408v16.015l3.316-3.221z'
+                    fill='#fff'
+                  />
+                  <path
+                    d='m6.431 17 1.765-.941-2.775-5.202h3.604l-8.025-8.043v11.188l2.53-2.442z'
+                    fill='#000'
+                  />
+                </g>
+              </svg>
+            </motion.div>
+          ))}
         </AnimatePresence>
       </div>
     </>
