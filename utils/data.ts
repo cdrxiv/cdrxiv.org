@@ -56,6 +56,10 @@ const getZenodoCreators = (authors: Author[]): Creator[] => {
 export const getZenodoMetadata = (
   preprint: Preprint,
 ): Deposition['metadata'] => {
+  const domain =
+    process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
+      ? 'https://cdrxiv.org'
+      : 'https://staging.cdrxiv.org'
   return {
     upload_type: 'dataset',
     title: preprint.title as string,
@@ -66,13 +70,13 @@ export const getZenodoMetadata = (
     keywords: preprint.keywords.map((keyword) => keyword.word),
     subjects: preprint.subject.map((s) => ({
       term: s.name,
-      identifier: `https://cdrxiv.org/?subject=${s.name}`,
+      identifier: `${domain}/?subject=${s.name}`,
     })),
     creators: getZenodoCreators(preprint.authors),
     related_identifiers: [
       {
         relation: 'isPartOf',
-        identifier: `https://cdrxiv.org/preprint/${preprint.pk}`,
+        identifier: `${domain}/preprint/${preprint.pk}`,
       },
     ],
   }
