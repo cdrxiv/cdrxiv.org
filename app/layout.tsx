@@ -7,7 +7,6 @@ import { authOptions } from '../lib/auth'
 import { getSubjects } from './api/utils'
 import Providers from './providers'
 import { SubjectsProvider } from './subjects-context'
-import { isFullSiteEnabled } from '../utils/flags'
 
 export const metadata: Metadata = {
   title: 'CDRXIV',
