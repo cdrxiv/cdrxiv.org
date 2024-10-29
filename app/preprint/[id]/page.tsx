@@ -21,7 +21,7 @@ if (typeof Promise.withResolvers !== 'function') {
 
 const getPreprint = async (id: string) => {
   const res = await fetch(
-    `https://carbonplan.endurance.janeway.systems/carbonplan/api/published_preprints/${id}`,
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/${id}`,
   )
   if (!res.ok) {
     if (res.status === 404) {

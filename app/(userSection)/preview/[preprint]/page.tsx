@@ -36,7 +36,7 @@ const PreprintPreview = async ({
 
   const response = await fetchWithToken(
     headers(),
-    `https://carbonplan.endurance.janeway.systems/carbonplan/api/preprints/${params.preprint}`,
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprints/${params.preprint}`,
   )
 
   let preprint
