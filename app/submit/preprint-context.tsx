@@ -10,6 +10,7 @@ import React, {
 import { Preprint, PreprintFile, Preprints } from '../../types/preprint'
 import SelectPreprint from './select-preprint'
 import useTracking from '../../hooks/use-tracking'
+import PaneledPage from '../../components/layouts/paneled-page'
 
 const PreprintContext = createContext<{
   preprint: Preprint | null
@@ -64,7 +65,9 @@ export const PreprintProvider: React.FC<ProviderProps> = ({
       {value ? (
         children
       ) : (
-        <SelectPreprint preprints={preprints} setPreprint={setValue} />
+        <PaneledPage title='Submit'>
+          <SelectPreprint preprints={preprints} setPreprint={setValue} />
+        </PaneledPage>
       )}
     </PreprintContext.Provider>
   )
