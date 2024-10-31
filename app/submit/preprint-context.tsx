@@ -58,6 +58,15 @@ export const PreprintProvider: React.FC<ProviderProps> = ({
     }
   }, [newlyCreated, track])
 
+  useEffect(() => {
+    if (!preprints[0]) {
+      return
+    }
+
+    // Update reference to new preprint if old preprint has been submitted
+    setValue((prev) => (prev?.pk === preprints[0].pk ? prev : preprints[0]))
+  }, [preprints[0]?.pk])
+
   return (
     <PreprintContext.Provider
       value={{ preprint: value, setPreprint: setValue, files, setFiles }}

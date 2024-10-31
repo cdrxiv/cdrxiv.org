@@ -153,7 +153,7 @@ const SubmissionConfirmation = () => {
           user: preprint.owner,
           submission_type: submissionType,
         })
-        router.push('/submit/success')
+        router.push(`/submit/success?type=${submissionType}`)
       })
       .catch((err) => {
         track('preprint_submitted_error', {
