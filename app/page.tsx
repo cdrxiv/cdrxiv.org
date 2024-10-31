@@ -9,8 +9,7 @@ interface HomeProps {
 }
 
 const Preprints = async ({ subject }: { subject: string | undefined }) => {
-  let url =
-    'https://carbonplan.endurance.janeway.systems/carbonplan/api/published_preprints/'
+  let url = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/`
   if (subject) {
     const queryString = `subject=${subject}`
     url = `${url}?${queryString}`

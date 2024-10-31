@@ -41,7 +41,7 @@ export const fetchWithToken = async (
 
 export const getSubjects = async () => {
   const res = await fetch(
-    'https://carbonplan.endurance.janeway.systems/carbonplan/api/repository_subjects/',
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/repository_subjects/`,
     { next: { revalidate: 3600 } },
   )
 

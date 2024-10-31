@@ -12,6 +12,12 @@ export const metadata: Metadata = {
   title: 'CDRXIV',
   description:
     'CDRXIV is a new open access platform for sharing preprints and data related to carbon dioxide removal (CDR).',
+  icons: {
+    icon:
+      process.env.VERCEL_ENV === 'production'
+        ? '/images/icon.png'
+        : '/images/staging-icon.png',
+  },
 }
 
 export default async function RootLayout({

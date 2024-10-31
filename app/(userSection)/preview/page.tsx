@@ -16,7 +16,7 @@ const PreviewPage = async () => {
 
   const response = await fetchWithToken(
     headers(),
-    'https://carbonplan.endurance.janeway.systems/carbonplan/api/preprints/?stage=preprint_review',
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprints/?stage=preprint_review`,
   )
 
   if (response.status !== 200) {

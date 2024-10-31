@@ -12,11 +12,11 @@ const Page = async ({ params }: { params: { preprint: string } }) => {
   const [versionsRes, preprintRes] = await Promise.all([
     fetchWithToken(
       headers(),
-      `https://carbonplan.endurance.janeway.systems/carbonplan/api/version_queue/?preprint=${params.preprint}`,
+      `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/version_queue/?preprint=${params.preprint}`,
     ),
     fetchWithToken(
       headers(),
-      `https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/${params.preprint}`,
+      `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/user_preprints/${params.preprint}`,
     ),
   ])
   if (versionsRes.status !== 200 || preprintRes.status !== 200) {
