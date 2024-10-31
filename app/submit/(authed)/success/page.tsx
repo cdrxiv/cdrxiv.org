@@ -1,17 +1,16 @@
 'use client'
 
 import { Box } from 'theme-ui'
-
+import { useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
+
 import { Form, Link } from '../../../../components'
-import { getAdditionalField } from '../../../../utils/data'
-import { usePreprint } from '../../preprint-context'
 
 const Success = () => {
   const [decoration, setDecoration] = useState('₊˚⊹⋆')
+  const searchParams = useSearchParams()
   const timeout = useRef<NodeJS.Timeout | null>(null)
-  const { preprint } = usePreprint()
-  const type = getAdditionalField(preprint, 'Submission type')
+  const type = searchParams.get('type') ?? 'work'
   const printedType = (
     type === 'Both' ? 'article and data were' : type + ' was'
   ).toLowerCase()
