@@ -152,7 +152,9 @@ const Header = () => {
             ref={searchRef}
             placeholder='Search'
             onSubmit={() => {
-              router.push(`/search?query=${searchRef.current?.value ?? ''}`)
+              router.push(
+                `/search?query=${searchRef.current?.value?.replace(/"/g, '') ?? ''}`,
+              )
             }}
             arrows={true}
             inverted
