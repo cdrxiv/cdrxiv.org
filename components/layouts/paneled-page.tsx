@@ -185,7 +185,7 @@ const PaneledPage: React.FC<{
                   <Box
                     as='h1'
                     sx={{
-                      variant: 'text.heading',
+                      variant: 'styles.h1',
                       mt: [0, 0, 5, 5],
                       mb: [6, 6, 7, 7],
                     }}
