@@ -42,7 +42,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         await Promise.all(filesCleanup)
       }
       await updatePreprint(preprint, PREPRINT_BASE)
-      router.push('/')
+      router.push('/submit')
     }
   }, [router, preprint, files])
 
