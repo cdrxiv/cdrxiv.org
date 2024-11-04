@@ -1,3 +1,4 @@
+import { PREPRINT_BASE } from '../actions/constants'
 import { Author, Funder, Preprint } from '../types/preprint'
 import { Creator, Deposition } from '../types/zenodo'
 
@@ -101,4 +102,24 @@ export const getZenodoLicense = (preprint: Preprint) => {
   }
 
   return LICENSE_DISPLAY[dataLicense as 'cc-by-4.0' | 'cc-by-nc-4.0']
+}
+
+const { repository, ...CHECKABLE_FIELDS } = PREPRINT_BASE
+type BaseKey = keyof typeof CHECKABLE_FIELDS
+
+export const isPreprintEmpty = (preprint: Preprint) => {
+  return Object.keys(CHECKABLE_FIELDS).every((key) => {
+    const value = preprint[key as BaseKey]
+    const baseValue = PREPRINT_BASE[key as BaseKey]
+    if (value === baseValue) {
+      return true
+    } else if (Array.isArray(value) || typeof value === 'object') {
+      return JSON.stringify(value) === JSON.stringify(baseValue)
+    } else if (Array.isArray(baseValue) && baseValue.length === 0 && !value) {
+      // handle inconsistent empty array representations
+      return true
+    }
+
+    return false
+  })
 }

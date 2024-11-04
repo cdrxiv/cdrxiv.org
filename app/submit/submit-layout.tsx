@@ -11,6 +11,7 @@ import { usePreprint, usePreprintFiles } from './preprint-context'
 import { deletePreprintFile, updatePreprint } from '../../actions/preprint'
 import { deleteZenodoEntity } from '../../actions/zenodo'
 import { PREPRINT_BASE } from '../../actions/constants'
+import { isPreprintEmpty } from '../../utils/data'
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname()
@@ -56,9 +57,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           href: '',
           title: '(X) Discard draft',
           sx: {
+            display: isPreprintEmpty(preprint) ? 'none' : 'initial',
             variant: 'text.mono',
             color: 'blue',
-            // textDecoration: 'underline',
             ':hover': {},
             '::before': {},
             '&:hover::before': {},
