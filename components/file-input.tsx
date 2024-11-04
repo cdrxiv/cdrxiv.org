@@ -76,7 +76,11 @@ const FileInput: React.FC<Props> = ({
         {file && (
           <Box
             as='span'
-            sx={{ variant: 'text.monoCaps', textTransform: 'none' }}
+            sx={{
+              variant: 'text.monoCaps',
+              textTransform: 'none',
+              overflowWrap: 'break-word',
+            }}
           >
             {decodeFilename(file.original_filename)}&nbsp;
             <Link
