@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 import { formatDate } from '../utils/formatters'
 import { getAdditionalField, getFunders, getZenodoLicense } from '../utils/data'
-import { Field, Button, Link } from '../components'
+import { Field, Button, Link, Loading } from '../components'
 import type { Preprint, Funder, SupplementaryFile } from '../types/preprint'
 import type { Deposition } from '../types/zenodo'
 import useTracking from '../hooks/use-tracking'
@@ -49,19 +49,19 @@ const PreprintMetadata: React.FC<{
   preview?: boolean
 }> = ({ preprint, preview }) => {
   const [deposition, setDeposition] = useState<Deposition>()
+  const dataUrl = preprint.supplementary_files.find(
+    (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_PUBLISHED',
+  )?.url
 
   useEffect(() => {
     const fetchDeposition = async () => {
-      const dataUrl = preprint.supplementary_files.find(
-        (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_PUBLISHED',
-      )?.url
       if (dataUrl) {
         const deposition = await fetchDataDeposition(dataUrl)
         setDeposition(deposition)
       }
     }
     fetchDeposition()
-  }, [preprint])
+  }, [dataUrl])
 
   const funders = getFunders(preprint) ?? []
 
@@ -146,8 +146,12 @@ const PreprintMetadata: React.FC<{
             <Button
               disabled={!(deposition?.submitted || preview)}
               href={deposition && getDataDownload(deposition)}
+              sx={{
+                textAlign: deposition ? 'center' : 'left',
+                width: [129, 129, 146, 164],
+              }}
             >
-              Download (data)
+              {deposition ? 'Download (data)' : <Loading sx={{ px: 5 }} />}
             </Button>
             <ErrorOrTrack
               mt={2}
