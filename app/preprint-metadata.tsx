@@ -52,12 +52,21 @@ const PreprintMetadata: React.FC<{
   const dataUrl = preprint.supplementary_files.find(
     (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_PUBLISHED',
   )?.url
-
+  const submissionType = getAdditionalField(preprint, 'Submission type')
+  const hasArticle = ['Article', 'Both'].includes(submissionType ?? '')
+  const hasData = ['Data', 'Both'].includes(submissionType ?? '')
+  const hasDraft = preprint.supplementary_files.find(
+    (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
+  )
+  const [isDepositionLoading, setIsDepositionLoading] = useState<boolean>(
+    hasData && !!dataUrl,
+  )
   useEffect(() => {
     const fetchDeposition = async () => {
       if (dataUrl) {
         const deposition = await fetchDataDeposition(dataUrl)
         setDeposition(deposition)
+        setIsDepositionLoading(false)
       }
     }
     fetchDeposition()
@@ -65,12 +74,6 @@ const PreprintMetadata: React.FC<{
 
   const funders = getFunders(preprint) ?? []
 
-  const submissionType = getAdditionalField(preprint, 'Submission type')
-  const hasArticle = ['Article', 'Both'].includes(submissionType ?? '')
-  const hasData = ['Data', 'Both'].includes(submissionType ?? '')
-  const hasDraft = preprint.supplementary_files.find(
-    (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
-  )
   const conflictOfInterest = getAdditionalField(
     preprint,
     'Conflict of interest statement',
@@ -87,13 +90,6 @@ const PreprintMetadata: React.FC<{
         preview={preview}
         pk={preprint.pk}
         errorMessage={`Invalid submissionType: “${submissionType}” found.`}
-      />
-      <ErrorOrTrack
-        hasError={hasData && !deposition}
-        preview={preview}
-        pk={preprint.pk}
-        errorMessage={`No data deposition found. Update submission type or add data before
-          publishing.`}
       />
       <ErrorOrTrack
         hasError={preprint.versions.length == 0}
@@ -147,21 +143,25 @@ const PreprintMetadata: React.FC<{
               disabled={!(deposition?.submitted || preview)}
               href={deposition && getDataDownload(deposition)}
               sx={{
-                textAlign: deposition ? 'center' : 'left',
+                textAlign: isDepositionLoading ? 'left' : 'center',
                 width: [129, 129, 146, 164],
               }}
             >
-              {deposition ? 'Download (data)' : <Loading sx={{ px: 5 }} />}
+              {isDepositionLoading ? (
+                <Loading sx={{ px: 5 }} />
+              ) : (
+                'Download (data)'
+              )}
             </Button>
             <ErrorOrTrack
               mt={2}
-              hasError={hasData && !deposition}
+              hasError={hasData && !isDepositionLoading && !deposition}
               preview={preview}
               pk={preprint.pk}
               errorMessage={
                 hasDraft
                   ? "Data stored under 'CDRXIV_DATA_DRAFT' in supplementary files, but must be moved to 'CDRXIV_DATA_PUBLISHED'."
-                  : 'Data missing in supplementary files.'
+                  : 'Data missing in supplementary files. Update submission type or add data before publishing.'
               }
             />
             <ErrorOrTrack
