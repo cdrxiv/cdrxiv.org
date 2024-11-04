@@ -12,17 +12,6 @@ const getDataDownload = (deposition: Deposition) => {
   return `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].filename}?download=1`
 }
 
-const LICENSE_DISPLAY = {
-  'cc-by-nc-4.0': {
-    url: 'https://creativecommons.org/licenses/by-nc/4.0/',
-    name: 'CC BY-NC 4.0',
-  },
-  'cc-by-4.0': {
-    url: 'https://creativecommons.org/licenses/by/4.0/',
-    name: 'CC BY 4.0',
-  },
-}
-
 const ErrorOrTrack = ({
   hasError,
   preview,
