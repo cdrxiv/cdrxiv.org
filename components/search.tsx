@@ -47,8 +47,8 @@ const Search = forwardRef<HTMLInputElement, SearchProps>(
                 ? {
                     boxShadow: (
                       theme,
-                    ) => `1px 1px 1px 1px ${theme?.colors?.text} inset,
-          -1px -1px 1px 1px ${theme?.colors?.muted} inset`,
+                    ) => `1px 1px 0px 1px ${theme?.colors?.text} inset,
+          -1px -1px 0px 1px ${theme?.colors?.muted} inset`,
                     background: 'primary',
                   }
                 : {}),
