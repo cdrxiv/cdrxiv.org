@@ -64,9 +64,13 @@ const PreprintMetadata: React.FC<{
   useEffect(() => {
     const fetchDeposition = async () => {
       if (dataUrl) {
-        const deposition = await fetchDataDeposition(dataUrl)
-        setDeposition(deposition)
-        setIsDepositionLoading(false)
+        try {
+          const deposition = await fetchDataDeposition(dataUrl)
+          setDeposition(deposition)
+          setIsDepositionLoading(false)
+        } catch {
+          setIsDepositionLoading(false)
+        }
       }
     }
     fetchDeposition()
@@ -155,13 +159,26 @@ const PreprintMetadata: React.FC<{
             </Button>
             <ErrorOrTrack
               mt={2}
-              hasError={hasData && !isDepositionLoading && !deposition}
+              hasError={
+                hasData && !hasDraft && !isDepositionLoading && !deposition
+              }
               preview={preview}
               pk={preprint.pk}
               errorMessage={
-                hasDraft
-                  ? "Data stored under 'CDRXIV_DATA_DRAFT' in supplementary files, but must be moved to 'CDRXIV_DATA_PUBLISHED'."
+                dataUrl
+                  ? 'Data could not be fetched. Update submission type or fix data before publishing.'
                   : 'Data missing in supplementary files. Update submission type or add data before publishing.'
+              }
+            />
+            <ErrorOrTrack
+              mt={2}
+              hasError={
+                hasData && !!hasDraft && !isDepositionLoading && !deposition
+              }
+              preview={preview}
+              pk={preprint.pk}
+              errorMessage={
+                "Data stored under 'CDRXIV_DATA_DRAFT' in supplementary files, but must be moved to 'CDRXIV_DATA_PUBLISHED'."
               }
             />
             <ErrorOrTrack
