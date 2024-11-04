@@ -68,7 +68,7 @@ export const submissionTypes = (
 }
 
 export const decodeFilename = (filename: string) => {
-  return decodeURIComponent(
+  const decoded = decodeURIComponent(
     filename
       .split('')
       .map((char) => {
@@ -80,4 +80,10 @@ export const decodeFilename = (filename: string) => {
       })
       .join(''),
   )
+
+  if (decoded.length < 100) {
+    return decoded
+  } else {
+    return `${decoded.slice(0, 100)}...`
+  }
 }
