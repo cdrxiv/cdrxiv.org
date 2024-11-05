@@ -33,7 +33,11 @@ const UserProfile = () => {
       as='svg'
       xmlns='http://www.w3.org/2000/svg'
       viewBox='0 0 448 512'
-      sx={{ height: '12px', ml: '-20px', flexShrink: 0 }}
+      sx={{
+        height: ['12px', '12px', '12px', '16px'],
+        ml: ['-20px', '-20px', '-20px', '-24px'],
+        flexShrink: 0,
+      }}
     >
       {/* Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc. */}
       <path
@@ -74,6 +78,9 @@ const AccountLink = ({
         display: 'flex',
         alignItems: 'baseline',
         gap: 2,
+        '&:visited path': {
+          fill: 'purple',
+        },
         ...sx,
       }}
     >
