@@ -75,9 +75,7 @@ export const TagSelector = () => {
 
   return (
     <>
-      <Box variant='text.monoCaps' sx={{ mt: 5 }}>
-        Topics
-      </Box>
+      <Box variant='text.monoCaps'>Topics</Box>
       <Flex
         sx={{
           flexDirection: 'column',

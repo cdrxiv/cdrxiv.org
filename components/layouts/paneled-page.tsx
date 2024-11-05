@@ -85,6 +85,7 @@ const PaneledPage: React.FC<{
               ml: -3,
               mr: [0, 0, -6, -8], // push scrollbar to edge
               pr: [0, 0, 6, 8],
+              pt: 5,
             }}
           >
             {sidebar}
@@ -222,10 +223,12 @@ const PaneledPage: React.FC<{
           width={[6, 2, 2, 2]}
           sx={{
             display: ['none', 'inherit', 'inherit', 'inherit'],
+            height: '100%',
           }}
         >
           <Box
             sx={{
+              height: 'fit-content',
               position: 'sticky',
               top: HEADER_HEIGHT,
               maxHeight: HEADER_HEIGHT.map(
@@ -234,6 +237,7 @@ const PaneledPage: React.FC<{
               overflowY: 'auto',
               mr: [0, 0, -8, -10], // push scrollbar to edge
               pr: [0, 0, 8, 10],
+              pt: 5,
             }}
           >
             {metadata}
