@@ -29,7 +29,7 @@ export const theme: Theme = {
       fontFamily: 'body',
       fontWeight: 'body',
       lineHeight: 'body',
-      fontSize: [2, 2, 3, 3],
+      fontSize: [2, 2, 2, 3],
     },
     mono: {
       fontFamily: 'mono',

@@ -20,6 +20,8 @@ const NavLink: React.FC<NavLinkProps> = ({
       {...props}
       sx={{
         color: 'text',
+        variant: 'styles.h2',
+        lineHeight: 'body',
         ':visited': { color: 'text' },
         ':hover': interactive ? { color: 'blue' } : {},
         cursor: interactive ? 'pointer' : 'default',

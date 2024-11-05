@@ -4,7 +4,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { createPortal } from 'react-dom'
 
-import StyledLink from './link'
+import Link from './link'
 import Search from './search'
 import Column from './column'
 import Row from './row'
@@ -65,10 +65,11 @@ const AccountLink = ({
   }
 
   return (
-    <StyledLink
+    <Link
       href={path}
       sx={{
         width: 'fit-content',
+        variant: 'styles.h2',
         whiteSpace: 'nowrap',
         display: 'flex',
         alignItems: 'baseline',
@@ -81,7 +82,7 @@ const AccountLink = ({
         &nbsp;&nbsp;&nbsp;&nbsp;
       </Box>
       <UserProfile />
-    </StyledLink>
+    </Link>
   )
 }
 
@@ -100,9 +101,13 @@ const Header = () => {
       return name === 'Account' ? (
         <AccountLink key={name} name={name} path={path} />
       ) : (
-        <StyledLink key={name} href={path} sx={{ width: 'fit-content' }}>
+        <Link
+          key={name}
+          href={path}
+          sx={{ width: 'fit-content', variant: 'styles.h2' }}
+        >
           {name}
-        </StyledLink>
+        </Link>
       )
     })
   }
