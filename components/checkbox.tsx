@@ -1,4 +1,5 @@
 import React from 'react'
+import { darken } from '@theme-ui/color'
 import { Box, CheckboxProps, ThemeUIStyleObject } from 'theme-ui'
 
 const CheckboxDisplay = ({ sx }: { sx?: ThemeUIStyleObject }) => {
@@ -33,13 +34,7 @@ const CheckboxDisplay = ({ sx }: { sx?: ThemeUIStyleObject }) => {
           cursor: 'pointer',
         },
         'input:hover:enabled ~ &': {
-          '.x': {
-            display: 'initial',
-            color: 'listBorderGrey',
-          },
-          '.space': {
-            display: 'none',
-          },
+          color: darken('blue', 0.25),
         },
         ...sx,
       }}

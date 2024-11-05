@@ -6,7 +6,15 @@ import { useRouter } from 'next/navigation'
 import { Box, Input } from 'theme-ui'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
 
-import { Button, Column, Field, Form, Link, Row } from '../../../components'
+import {
+  Button,
+  Column,
+  Field,
+  Form,
+  Link,
+  PasswordInput,
+  Row,
+} from '../../../components'
 import { useForm } from '../../../hooks/use-form'
 import { useLoading } from '../../../components/layouts/paneled-page'
 import { verify } from '../../../actions/hcaptcha'
@@ -219,9 +227,8 @@ const Page = () => {
       <Row columns={[6, 6, 8, 8]}>
         <Column start={1} width={[6, 3, 4, 4]}>
           <Field label='Password*' id='password' error={errors.password}>
-            <Input
+            <PasswordInput
               value={data.password}
-              type='password'
               onChange={(e) => setters.password(e.target.value)}
               id='password'
             />
@@ -233,9 +240,8 @@ const Page = () => {
             id='repeat_password'
             error={errors.repeat_password}
           >
-            <Input
+            <PasswordInput
               value={data.repeat_password}
-              type='password'
               onChange={(e) => setters.repeat_password(e.target.value)}
               id='repeat_password'
             />

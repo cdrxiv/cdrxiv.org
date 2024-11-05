@@ -11,7 +11,7 @@ const NavLink: React.FC<NavLinkProps> = ({
   sx = {},
   ...props
 }) => {
-  const interactive = !disabled && !active
+  const interactive = !disabled
   const ml = 'ml' in sx ? sx.ml : 0
 
   return (

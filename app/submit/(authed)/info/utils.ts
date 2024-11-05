@@ -49,6 +49,7 @@ export const validateForm = ({
   data_license,
   doi,
   subject,
+  keywords,
   conflict_of_interest,
   submission_type,
 }: FormData) => {
@@ -79,6 +80,10 @@ export const validateForm = ({
 
   if (subject.length === 0) {
     result.subject = 'Please select at least one subject.'
+  }
+
+  if (keywords.length > 10) {
+    result.keywords = 'Please provide no more than ten keywords.'
   }
 
   if (conflict_of_interest === '') {
