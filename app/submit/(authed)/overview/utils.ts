@@ -7,13 +7,11 @@ import { createAdditionalField } from '../utils'
 import {
   deletePreprintFile,
   updatePreprint,
-  createPreprintFile,
 } from '../../../../actions/preprint'
 import {
   deleteZenodoEntity,
   fetchDataDeposition,
   createDataDeposition,
-  createDataDepositionFile,
 } from '../../../../actions/zenodo'
 import { FileInputValue } from '../../../../components'
 import { LICENSE_MAPPING } from '../../constants'
@@ -157,7 +155,17 @@ export const submitForm = async (
     formData.set('mime_type', articleFile.mime_type)
     formData.set('original_filename', articleFile.original_filename)
 
-    const preprintFile = await createPreprintFile(formData)
+    const res = await fetch('/api/files/janeway', {
+      method: 'POST',
+      body: formData,
+    })
+
+    if (!res.ok) {
+      const error = await res.json()
+      throw new Error(error.error || 'Failed to upload file')
+    }
+
+    const preprintFile = await res.json()
     preprintFiles = [preprintFile]
   }
 
@@ -192,7 +200,20 @@ export const submitForm = async (
         deposition.files.map((f) => deleteZenodoEntity(f.links.self)), // delete previous data deposition files
       ])
     }
-    await createDataDepositionFile(deposition.id, formData)
+
+    formData.set('deposition', deposition.id.toString())
+
+    const res = await fetch('/api/files/zenodo', {
+      method: 'POST',
+      body: formData,
+    })
+
+    if (!res.ok) {
+      const error = await res.json()
+      throw new Error(error.error || 'Failed to upload file')
+    }
+
+    await res.json()
 
     supplementaryFiles = [
       { label: 'CDRXIV_DATA_DRAFT', url: deposition.links.self },

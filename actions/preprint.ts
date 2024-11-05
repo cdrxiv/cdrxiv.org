@@ -134,29 +134,6 @@ export async function searchAuthor(
   return result
 }
 
-export async function createPreprintFile(
-  formData: FormData,
-): Promise<PreprintFile> {
-  const res = await fetchWithToken(
-    headers(),
-    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/`,
-    {
-      method: 'POST',
-      body: formData,
-    },
-  )
-
-  if (![200, 201].includes(res.status)) {
-    throw new Error(
-      `Status ${res.status}: Unable to create file. ${res.statusText}`,
-    )
-  }
-
-  const result = res.json()
-
-  revalidateTag('submit')
-  return result
-}
 export async function fetchPreprintFile(pk: number): Promise<PreprintFile> {
   const res = await fetchWithToken(
     headers(),

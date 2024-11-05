@@ -26,12 +26,10 @@ import { useForm } from '../../../../../hooks/use-form'
 import { UPDATE_TYPE_DESCRIPTIONS, UPDATE_TYPE_LABELS } from './constants'
 import { getAdditionalField } from '../../../../../utils/data'
 import {
-  createPreprintFile,
   createVersionQueue,
   updatePreprint,
 } from '../../../../../actions/preprint'
 import {
-  createDataDepositionFile,
   createDataDepositionVersion,
   deleteZenodoEntity,
   fetchDataDeposition,
@@ -144,7 +142,17 @@ const submitForm = async (
     formData.set('mime_type', articleFile.mime_type)
     formData.set('original_filename', articleFile.original_filename)
 
-    const preprintFile = await createPreprintFile(formData)
+    const res = await fetch('/api/files/janeway', {
+      method: 'POST',
+      body: formData,
+    })
+
+    if (!res.ok) {
+      const error = await res.json()
+      throw new Error(error.error || 'Failed to upload file')
+    }
+
+    const preprintFile = await res.json()
     file = preprintFile.pk
   }
 
@@ -200,8 +208,18 @@ const submitForm = async (
 
     formData.set('name', dataFile.original_filename)
     formData.set('file', dataFile.file)
+    formData.set('deposition', depositionId.toString())
 
-    await createDataDepositionFile(depositionId, formData)
+    const res = await fetch('/api/files/zenodo', {
+      method: 'POST',
+      body: formData,
+    })
+    if (!res.ok) {
+      const error = await res.json()
+      throw new Error(error.error || 'Failed to upload file')
+    }
+
+    await res.json()
 
     if (newUrl) {
       await updatePreprint(preprint, {
