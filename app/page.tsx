@@ -14,7 +14,7 @@ const Preprints = async ({ subject }: { subject: string | undefined }) => {
     const queryString = `subject=${subject}`
     url = `${url}?${queryString}`
   }
-  const res = await fetch(url, { next: { revalidate: 360 } })
+  const res = await fetch(url, { next: { revalidate: 180 } })
   const preprints = await res.json()
   const results = preprints.results || []
   return <PreprintsView preprints={results} />
