@@ -24,7 +24,7 @@ const levelStyles = {
   0: {},
   1: {
     ml: '20px',
-    fontSize: [1, 1, 1, 2],
+    fontSize: [1, 1, 2, 3],
     '&:hover::before': {
       content: '">"',
       position: 'absolute',

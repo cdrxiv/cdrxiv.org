@@ -30,7 +30,6 @@ const NavSidebar: React.FC<NavSidebarProps> = ({ paths, onClick }) => {
           display: ['none', 'none', 'inherit', 'inherit'],
           variant: 'text.monoCaps',
           mb: [3, 5, 5, 6],
-          mt: 5,
         }}
       >
         Overview

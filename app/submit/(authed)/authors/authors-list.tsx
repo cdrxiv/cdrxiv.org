@@ -48,9 +48,10 @@ const AuthorsList: React.FC<Props> = ({ removable = true }) => {
   return (
     <Row columns={[1, 1, 2, 2]} gap={[5, 6, 6, 8]}>
       <DndContext onDragEnd={handleDrag}>
-        {authors.map((a) => (
+        {authors.map((a, i) => (
           <AuthorCard
             key={a.email}
+            index={i}
             author={a}
             removable={removable}
             draggable={authors.length > 1}
