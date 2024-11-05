@@ -11,10 +11,12 @@ import { updatePreprint } from '../../../../actions/preprint'
 
 const AuthorCard = ({
   author,
+  index,
   removable,
   draggable,
 }: {
   author: Author
+  index: number
   removable: boolean
   draggable: boolean
 }) => {
