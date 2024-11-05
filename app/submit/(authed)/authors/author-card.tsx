@@ -72,11 +72,13 @@ const AuthorCard = ({
       >
         <Flex sx={{ flexDirection: 'column', gap: 1 }}>
           <Box>
-            {author.first_name} {author.last_name}
+            {index + 1}. {author.first_name} {author.last_name}
             {author.pk === session?.user?.id ? ' (owner)' : ''}
           </Box>
-          <Box>{author.email}</Box>
-          {author.institution && <Box>{author.institution}</Box>}
+          <Box sx={{ ml: [5, 5, 5, 6] }}>{author.email}</Box>
+          {author.institution && (
+            <Box sx={{ ml: [5, 5, 5, 6] }}>{author.institution}</Box>
+          )}
         </Flex>
       </Box>
 
