@@ -1,9 +1,12 @@
 'use server'
 
-export async function wrapServerAction<R>(serverAction: () => Promise<R>) {
+export async function wrapServerAction<A, R>(
+  args: A,
+  serverAction: (args: A) => Promise<R>,
+) {
   let result
   try {
-    result = await serverAction()
+    result = await serverAction(args)
     return result
   } catch (e: any) {
     return {

@@ -10,7 +10,7 @@ export type Setter<T> = {
 export function useForm<T>(
   initialize: () => T,
   validate: (values: T) => Errors<T>,
-  submit: (values: T) => Promise<void>,
+  submit: (values: T) => Promise<any>,
   analyticsIdentifier: { [label: string]: number | string },
   setNavigationWarning?: (shouldWarn: boolean) => void,
 ) {
@@ -66,6 +66,14 @@ export function useForm<T>(
     } else {
       return submit(data)
         .then((res) => {
+          if (res?.error) {
+            track('form_error', {
+              error: res.error,
+              ...analyticsIdentifier,
+            })
+            setSubmitError(res.error)
+            return false
+          }
           return true
         })
         .catch((err) => {
