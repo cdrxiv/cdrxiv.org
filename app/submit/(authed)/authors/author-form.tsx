@@ -6,8 +6,9 @@ import { useCallback } from 'react'
 import { Button, Column, Field, Row } from '../../../../components'
 import { usePreprint } from '../../preprint-context'
 import { useForm } from '../utils'
-import { Preprint } from '../../../../types/preprint'
+import { Author, Preprint } from '../../../../types/preprint'
 import { createAuthor, updatePreprint } from '../../../../actions/preprint'
+import { wrapServerAction } from '../../../../actions/utils'
 
 type FormData = {
   email: string
@@ -53,7 +54,7 @@ const submitForm = async (
   setPreprint: (p: Preprint) => void,
   { email, first_name, middle_name, last_name, institution }: FormData,
 ) => {
-  const author = await createAuthor({
+  const author = await wrapServerAction(createAuthor, {
     email,
     first_name,
     middle_name,
@@ -61,9 +62,19 @@ const submitForm = async (
     institution,
   })
 
-  return updatePreprint(preprint, {
-    authors: [...preprint?.authors, author],
-  }).then((updated) => setPreprint(updated))
+  if (author.hasOwnProperty('error')) {
+    return author as { error: string }
+  }
+
+  const updated = await wrapServerAction(updatePreprint, preprint, {
+    authors: [...preprint?.authors, author as Author],
+  })
+
+  if (updated.hasOwnProperty('error')) {
+    return updated as { error: string }
+  }
+
+  setPreprint(updated as Preprint)
 }
 
 const AuthorForm = () => {

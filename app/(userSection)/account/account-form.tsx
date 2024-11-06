@@ -8,6 +8,7 @@ import { Button, Column, Field, Form, Row } from '../../../components'
 import { useForm } from '../../../hooks/use-form'
 import { updateAccount } from '../../../actions/account'
 import { useLoading } from '../../../components/layouts/paneled-page'
+import { wrapServerAction } from '../../../actions/utils'
 
 type FormData = {
   email: string
@@ -79,6 +80,12 @@ const submitForm = async (
   )
 
   setIsLoading(true)
+  const result = await wrapServerAction(updateAccount, user, params)
+  if (result.error) {
+    setIsLoading(false)
+    return result
+  }
+
   const { pk, ...updated } = await updateAccount(user, params)
   updateUser({ user: { id: pk, ...updated } })
 

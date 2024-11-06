@@ -106,18 +106,15 @@ const submitForm = async (
   }: FormData,
 ) => {
   setIsLoading(true)
-  const result = await wrapServerAction(
-    {
-      email,
-      first_name,
-      middle_name: middle_name || null,
-      last_name,
-      orcid: orcid || null,
-      institution: institution || null,
-      password,
-    },
-    registerAccount,
-  )
+  const result = await wrapServerAction(registerAccount, {
+    email,
+    first_name,
+    middle_name: middle_name || null,
+    last_name,
+    orcid: orcid || null,
+    institution: institution || null,
+    password,
+  })
   setIsLoading(false)
 
   return result

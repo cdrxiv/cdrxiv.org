@@ -14,7 +14,7 @@ export const createAdditionalField = (fieldName: string, value: string) => {
 export function useForm<T>(
   initialize: () => T,
   validate: (values: T) => Errors<T>,
-  submit: (values: T) => Promise<void>,
+  submit: (values: T) => Promise<any>,
   showNavigationWarning: boolean = true,
 ) {
   const { setNavigationWarning } = useNavigation()

@@ -2,6 +2,7 @@ import { createAdditionalField } from '../utils'
 import { Preprint } from '../../../../types/preprint'
 import { getAdditionalField } from '../../../../utils/data'
 import { updatePreprint } from '../../../../actions/preprint'
+import { wrapServerAction } from '../../../../actions/utils'
 
 export type FormData = {
   title: string
@@ -94,7 +95,7 @@ export const validateForm = ({
   return result
 }
 
-export const submitForm = (
+export const submitForm = async (
   preprint: Preprint,
   setPreprint: (p: Preprint) => void,
   {
@@ -144,7 +145,11 @@ export const submitForm = (
     ...(comments_editor ? { comments_editor } : {}),
   }
 
-  return updatePreprint(preprint, params).then((updated) =>
-    setPreprint(updated),
-  )
+  const updated = await wrapServerAction(updatePreprint, preprint, params)
+
+  if (updated.hasOwnProperty('error')) {
+    return updated as { error: string }
+  }
+
+  setPreprint(updated as Preprint)
 }
