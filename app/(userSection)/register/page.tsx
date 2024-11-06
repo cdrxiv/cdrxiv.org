@@ -19,6 +19,7 @@ import { useForm } from '../../../hooks/use-form'
 import { useLoading } from '../../../components/layouts/paneled-page'
 import { verify } from '../../../actions/hcaptcha'
 import { registerAccount } from '../../../actions/account'
+import { wrapServerAction } from '../../../actions/utils'
 
 type FormData = {
   email: string
@@ -105,16 +106,21 @@ const submitForm = async (
   }: FormData,
 ) => {
   setIsLoading(true)
-  await registerAccount({
-    email,
-    first_name,
-    middle_name: middle_name || null,
-    last_name,
-    orcid: orcid || null,
-    institution: institution || null,
-    password,
-  })
+  const result = await wrapServerAction(
+    {
+      email,
+      first_name,
+      middle_name: middle_name || null,
+      last_name,
+      orcid: orcid || null,
+      institution: institution || null,
+      password,
+    },
+    registerAccount,
+  )
   setIsLoading(false)
+
+  return result
 }
 
 const Page = () => {
