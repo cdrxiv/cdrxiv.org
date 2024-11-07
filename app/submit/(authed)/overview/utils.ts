@@ -201,12 +201,13 @@ export const submitForm = async (
       ])
     }
 
-    formData.set('deposition', deposition.id.toString())
-
-    const res = await fetch('/api/files/zenodo', {
-      method: 'POST',
-      body: formData,
-    })
+    const res = await fetch(
+      `https://cdrxiv-file-uploader.fly.dev/zenodo/upload-file?deposition_id=${deposition.id}`,
+      {
+        method: 'POST',
+        body: formData,
+      },
+    )
 
     if (!res.ok) {
       const error = await res.json()

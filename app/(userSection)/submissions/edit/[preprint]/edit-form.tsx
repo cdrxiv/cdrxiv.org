@@ -210,10 +210,14 @@ const submitForm = async (
     formData.set('file', dataFile.file)
     formData.set('deposition', depositionId.toString())
 
-    const res = await fetch('/api/files/zenodo', {
-      method: 'POST',
-      body: formData,
-    })
+    const res = await fetch(
+      `https://cdrxiv-file-uploader.fly.dev/zenodo/upload-file?deposition_id=${depositionId}`,
+      {
+        method: 'POST',
+        body: formData,
+      },
+    )
+
     if (!res.ok) {
       const error = await res.json()
       throw new Error(error.error || 'Failed to upload file')
