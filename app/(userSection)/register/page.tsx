@@ -257,7 +257,9 @@ const Page = () => {
 
       <Box>
         By registering an account, you agree to our{' '}
-        <Link href='/TK'>Privacy Policy</Link>.
+        <Link href='/TK'>Terms of Use</Link> and acknowledge our{' '}
+        <Link href='/TK'>Privacy Policy</Link> and{' '}
+        <Link href='/TK'>Cookies Disclosure</Link>.
       </Box>
       <Button onClick={handleSubmit}>Create account</Button>
     </Form>
