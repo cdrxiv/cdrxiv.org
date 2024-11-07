@@ -9,7 +9,7 @@ import { usePreprint, usePreprintFiles } from '../../preprint-context'
 import { useForm } from '../utils'
 import { FormData, initializeForm, validateForm, submitForm } from './utils'
 import DataFileInput from './data-file-input'
-import { updatePreprint } from '../../../../actions/preprint'
+import { updatePreprint } from '../../../../actions'
 
 const SubmissionOverview = () => {
   const { preprint, setPreprint } = usePreprint()

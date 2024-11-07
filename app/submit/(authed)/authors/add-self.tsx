@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 
 import { Button } from '../../../../components'
 import { usePreprint } from '../../preprint-context'
-import { updatePreprint } from '../../../../actions/preprint'
+import { updatePreprint } from '../../../../actions'
 
 const AddSelf = () => {
   const { data: session } = useSession()

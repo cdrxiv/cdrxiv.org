@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Box, Flex, Input } from 'theme-ui'
 
-import { fetchDataDeposition } from '../../../../actions/zenodo'
+import { fetchDataDeposition } from '../../../../actions'
 import { SupplementaryFile } from '../../../../types/preprint'
 import { Deposition } from '../../../../types/zenodo'
 import {

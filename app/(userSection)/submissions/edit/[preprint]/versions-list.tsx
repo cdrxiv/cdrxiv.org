@@ -5,7 +5,7 @@ import { Badge, Expander, Field, Loading } from '../../../../../components'
 import { VersionQueue } from '../../../../../types/preprint'
 import { formatDate } from '../../../../../utils/formatters'
 import { UPDATE_TYPE_LABELS } from './constants'
-import { fetchPreprintFile } from '../../../../../actions/preprint'
+import { fetchPreprintFile } from '../../../../../actions'
 
 type Props = {
   versions: VersionQueue[]

@@ -29,13 +29,11 @@ import {
   createPreprintFile,
   createVersionQueue,
   updatePreprint,
-} from '../../../../../actions/preprint'
-import {
   createDataDepositionFile,
   createDataDepositionVersion,
   deleteZenodoEntity,
   fetchDataDeposition,
-} from '../../../../../actions/zenodo'
+} from '../../../../../actions'
 
 type Props = {
   preprint: ReviewPreprint | PublishedPreprint

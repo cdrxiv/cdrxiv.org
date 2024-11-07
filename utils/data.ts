@@ -1,4 +1,4 @@
-import { PREPRINT_BASE } from '../actions/constants'
+import { PREPRINT_BASE } from '../actions'
 import { Author, Funder, Preprint } from '../types/preprint'
 import { Creator, Deposition } from '../types/zenodo'
 
