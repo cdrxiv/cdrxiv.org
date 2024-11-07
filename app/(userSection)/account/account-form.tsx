@@ -6,7 +6,7 @@ import { Input } from 'theme-ui'
 
 import { Button, Column, Field, Form, Row } from '../../../components'
 import { useForm } from '../../../hooks/use-form'
-import { updateAccount } from '../../../actions/account'
+import { updateAccount } from '../../../actions'
 import { useLoading } from '../../../components/layouts/paneled-page'
 
 type FormData = {

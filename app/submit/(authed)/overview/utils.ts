@@ -8,13 +8,11 @@ import {
   deletePreprintFile,
   updatePreprint,
   createPreprintFile,
-} from '../../../../actions/preprint'
-import {
   deleteZenodoEntity,
   fetchDataDeposition,
   createDataDeposition,
   createDataDepositionFile,
-} from '../../../../actions/zenodo'
+} from '../../../../actions'
 import { FileInputValue } from '../../../../components'
 import { LICENSE_MAPPING } from '../../constants'
 

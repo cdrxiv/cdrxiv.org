@@ -6,7 +6,7 @@ import { Active, DndContext, Over } from '@dnd-kit/core'
 import { usePreprint } from '../../preprint-context'
 import { Row } from '../../../../components'
 import AuthorCard from './author-card'
-import { updatePreprint } from '../../../../actions/preprint'
+import { updatePreprint } from '../../../../actions'
 
 type Props = {
   removable?: boolean

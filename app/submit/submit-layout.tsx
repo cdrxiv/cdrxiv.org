@@ -8,9 +8,12 @@ import { PATHS } from './constants'
 import { NavigationProvider, useLinkWithWarning } from './navigation-context'
 import PaneledPage from '../../components/layouts/paneled-page'
 import { usePreprint, usePreprintFiles } from './preprint-context'
-import { deletePreprintFile, updatePreprint } from '../../actions/preprint'
-import { deleteZenodoEntity } from '../../actions/zenodo'
-import { PREPRINT_BASE } from '../../actions/constants'
+import {
+  deletePreprintFile,
+  updatePreprint,
+  deleteZenodoEntity,
+  PREPRINT_BASE,
+} from '../../actions'
 import { isPreprintEmpty } from '../../utils/data'
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {

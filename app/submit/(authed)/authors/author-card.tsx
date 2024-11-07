@@ -7,7 +7,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { usePreprint } from '../../preprint-context'
 import { Author } from '../../../../types/preprint'
 import { Link } from '../../../../components'
-import { updatePreprint } from '../../../../actions/preprint'
+import { updatePreprint } from '../../../../actions'
 
 const AuthorCard = ({
   author,

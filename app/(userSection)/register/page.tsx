@@ -17,8 +17,7 @@ import {
 } from '../../../components'
 import { useForm } from '../../../hooks/use-form'
 import { useLoading } from '../../../components/layouts/paneled-page'
-import { verify } from '../../../actions/hcaptcha'
-import { registerAccount } from '../../../actions/account'
+import { registerAccount, verifyHCaptcha } from '../../../actions'
 
 type FormData = {
   email: string
@@ -142,7 +141,7 @@ const Page = () => {
 
   const handleVerify = useCallback(
     async (token: string) => {
-      const result = await verify(token)
+      const result = await verifyHCaptcha(token)
       if (result) {
         setters.verified(true)
       }
