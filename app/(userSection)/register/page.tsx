@@ -157,7 +157,28 @@ const Page = () => {
   }, [onSubmit, router])
 
   return (
-    <Form error={submitError}>
+    <Form
+      error={
+        submitError ? (
+          <>
+            {submitError}
+            {submitError.includes('already exists') ? (
+              <>
+                {' '}
+                Create a new account below or reset your password{' '}
+                <Link
+                  href='https://janeway.cdrxiv.org/reset/step/1/'
+                  sx={{ color: 'red' }}
+                >
+                  here
+                </Link>
+                .
+              </>
+            ) : null}
+          </>
+        ) : null
+      }
+    >
       <Field label='Email*' id='email' error={errors.email}>
         <Input
           value={data.email}
