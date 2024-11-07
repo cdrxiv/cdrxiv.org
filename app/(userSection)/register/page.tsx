@@ -18,7 +18,7 @@ import {
 import { useForm } from '../../../hooks/use-form'
 import { useLoading } from '../../../components/layouts/paneled-page'
 import { verify } from '../../../actions/hcaptcha'
-import { registerAccount } from '../../../actions/account'
+import { registerAccount } from '../../../actions'
 
 type FormData = {
   email: string
