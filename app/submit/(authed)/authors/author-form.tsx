@@ -44,6 +44,9 @@ const validateForm = ({
   if (!last_name) {
     result.last_name = 'You must provide a last name.'
   }
+  if (!institution) {
+    result.institution = 'You must provide an affiliation.'
+  }
 
   return result
 }
@@ -146,7 +149,7 @@ const AuthorForm = () => {
           </Column>
           <Column start={[1, 4, 5, 5]} width={[6, 3, 4, 4]}>
             <Field
-              label='Affiliation'
+              label='Affiliation*'
               id='institution'
               error={errors.institution}
             >

@@ -31,7 +31,7 @@ const SubmissionOverview = () => {
     <>
       <Form error={submitError}>
         <Field
-          label='Submission agreement'
+          label='Submission agreement*'
           id='agreement'
           error={errors.agreement}
         >
@@ -43,7 +43,7 @@ const SubmissionOverview = () => {
               disabled={disableAgreement}
             />
             Authors grant us the right to publish, on this website, their
-            uploaded manuscript, supplementary materials and any supplied
+            uploaded Manuscript, Supplementary Materials and any supplied
             metadata.
           </Label>
         </Field>
@@ -64,7 +64,7 @@ const SubmissionOverview = () => {
         <Field
           label='Data file'
           id='dataFile'
-          description='Your submission must be represented by a single file of any format, including ZIP.'
+          description='Your data submission must be a single file of any format, including ZIP.'
           error={errors.dataFile ?? errors.externalFile}
         >
           <DataFileInput
