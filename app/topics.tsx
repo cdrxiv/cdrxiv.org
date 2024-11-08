@@ -17,7 +17,7 @@ const Topics: React.FC = () => {
   const [subjectsMenuOpen, setSubjectsMenuOpen] = useState(false)
   const [menuPosition, setMenuPosition] = useState({ top: 0 })
 
-  const midPoint = Math.ceil(subjects.length / 2) - 1 // -1 accounts for All option
+  const midPoint = Math.ceil(subjects.length / 2)
 
   const totalCount = useMemo(
     () => subjects.reduce((sum, subject) => sum + subject.preprints.length, 0),
