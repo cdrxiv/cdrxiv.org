@@ -63,6 +63,7 @@ const SubmissionInformation = () => {
               Learn more about licensing{' '}
               <Link
                 href='https://creativecommons.org/share-your-work/cclicenses/'
+                target='__blank'
                 sx={{ variant: 'text.mono' }}
               >
                 here
