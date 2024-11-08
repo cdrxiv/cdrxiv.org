@@ -73,7 +73,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       ],
       count: visiblePaths.length,
     }
-  }, [handleDiscard])
+  }, [handleDiscard, preprint])
 
   return (
     <PaneledPage

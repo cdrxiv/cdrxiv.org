@@ -102,7 +102,7 @@ const Licenses: React.FC<Props> = ({
   setDataLicense,
   submissionType,
 }) => {
-  if (submissionType === 'Article') {
+  if (submissionType === 'Article' || !submissionType) {
     return <ArticleLicense license={license} setLicense={setLicense} />
   } else if (submissionType === 'Data') {
     return (

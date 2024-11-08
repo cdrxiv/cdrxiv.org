@@ -18,7 +18,6 @@ const PATHS = [
     title: 'Privacy policy',
     public: true,
   },
-  { href: '/about/team', title: 'Team', public: true },
 ]
 
 const About: React.FC<{ children: React.ReactNode }> = ({ children }) => {
