@@ -51,7 +51,7 @@ const NavButton: React.FC<ButtonProps> = ({
       {...props}
       href={href}
       onClick={onClickProp}
-      sx={{ variant: 'text.monoCaps' }}
+      sx={{ variant: 'text.monoCaps', ':visited': { color: 'blue' } }}
     >
       {children}
     </Link>
