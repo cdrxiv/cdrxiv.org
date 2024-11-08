@@ -15,6 +15,7 @@ import {
 } from '../../../../actions/zenodo'
 import { FileInputValue } from '../../../../components'
 import { LICENSE_MAPPING } from '../../constants'
+import { fetchWithTokenClient } from '../../../utils/fetch-with-token/client'
 
 export type FormData = {
   agreement: boolean
@@ -155,10 +156,13 @@ export const submitForm = async (
     formData.set('mime_type', articleFile.mime_type)
     formData.set('original_filename', articleFile.original_filename)
 
-    const res = await fetch('/api/files/janeway', {
-      method: 'POST',
-      body: formData,
-    })
+    const res = await fetchWithTokenClient(
+      `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/`,
+      {
+        method: 'POST',
+        body: formData,
+      },
+    )
 
     if (!res.ok) {
       const error = await res.json()
@@ -201,7 +205,7 @@ export const submitForm = async (
       ])
     }
 
-    const res = await fetch(
+    const res = await fetchWithTokenClient(
       `https://cdrxiv-file-uploader.fly.dev/zenodo/upload-file?deposition_id=${deposition.id}`,
       {
         method: 'POST',

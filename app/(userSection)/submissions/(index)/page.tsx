@@ -3,7 +3,7 @@ import React from 'react'
 import { redirect } from 'next/navigation'
 
 import SubmissionsView from './submissions-view'
-import { fetchWithToken } from '../../../api/utils'
+import { fetchWithToken } from '../../../utils/fetch-with-token/server'
 
 const SubmissionOverview = async () => {
   const responses = await Promise.all([

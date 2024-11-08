@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth/next'
 import '../components/fonts.css'
 import PageCard from '../components/layouts/page-card'
 import { authOptions } from '../lib/auth'
-import { getSubjects } from './api/utils'
+import { getSubjects } from './utils/fetch-with-token/server'
 import Providers from './providers'
 import { SubjectsProvider } from './subjects-context'
 

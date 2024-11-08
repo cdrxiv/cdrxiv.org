@@ -1,7 +1,7 @@
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-import { fetchWithToken } from '../../../../api/utils'
+import { fetchWithToken } from '../../../../utils/fetch-with-token/server'
 import EditForm from './edit-form'
 
 export const metadata = {

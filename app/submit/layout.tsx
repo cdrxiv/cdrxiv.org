@@ -2,7 +2,7 @@ import { headers } from 'next/headers'
 import React from 'react'
 import { redirect } from 'next/navigation'
 
-import { fetchWithToken } from '../api/utils'
+import { fetchWithToken } from '../utils/fetch-with-token/server'
 import { PreprintProvider } from './preprint-context'
 import { createPreprint } from '../../actions/preprint'
 import SubmitLayout from './submit-layout'

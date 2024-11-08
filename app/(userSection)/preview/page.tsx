@@ -3,7 +3,7 @@ import React from 'react'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 
-import { fetchWithToken } from '../../api/utils'
+import { fetchWithToken } from '../../utils/fetch-with-token/server'
 import SharedLayout from '../shared-layout'
 import PreprintsTable from './preprints-preview-table'
 import Forbidden from './forbidden'

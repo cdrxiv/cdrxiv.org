@@ -12,7 +12,7 @@ import {
   PreprintFile,
   VersionQueueParams,
 } from '../types/preprint'
-import { fetchWithToken } from '../app/api/utils'
+import { fetchWithToken } from '../app/utils/fetch-with-token/server'
 import { PREPRINT_BASE } from './constants'
 
 export async function updatePreprint(

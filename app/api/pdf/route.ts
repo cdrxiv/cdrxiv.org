@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { authOptions } from '../../../lib/auth'
-import { fetchWithToken } from '../utils'
+import { fetchWithToken } from '../../utils/fetch-with-token/server'
 
 export async function GET(request: NextRequest) {
   const url = request.nextUrl.searchParams.get('url')
