@@ -1,13 +1,13 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { Box } from 'theme-ui'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 import { fetchPublishedPreprints } from '../actions'
 import type { PublishedPreprint } from '../types/preprint'
 import List from './list'
 import Grid from './grid'
-import { Link } from '../components'
 
 type ViewType = 'grid' | 'list'
 type Props = {
@@ -16,8 +16,10 @@ type Props = {
 }
 
 const PreprintsView = (props: Props) => {
+  const sentinelRef = useRef<HTMLDivElement>()
   const [nextPage, setNextPage] = useState(props.nextPage)
   const [preprints, setPreprints] = useState(props.preprints)
+
   const searchParams = useSearchParams()
 
   const [currentView, setCurrentView] = useState<ViewType>(
@@ -45,6 +47,31 @@ const PreprintsView = (props: Props) => {
     }
   }, [nextPage])
 
+  const handleObserver = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const target = entries[0]
+      if (target.isIntersecting && nextPage) {
+        handleNextPage()
+      }
+    },
+    [handleNextPage, nextPage],
+  )
+
+  useEffect(() => {
+    const currentObserver = new IntersectionObserver(handleObserver)
+    const currentSentinel = sentinelRef.current
+
+    if (currentSentinel) {
+      currentObserver.observe(currentSentinel)
+    }
+
+    return () => {
+      if (currentSentinel) {
+        currentObserver.unobserve(currentSentinel)
+      }
+    }
+  }, [handleObserver])
+
   return (
     <>
       {currentView === 'list' ? (
@@ -52,7 +79,10 @@ const PreprintsView = (props: Props) => {
       ) : (
         <Grid preprints={preprints} />
       )}
-      {nextPage && <Link onClick={handleNextPage}>View more</Link>}
+
+      {nextPage && (
+        <Box ref={sentinelRef} sx={{ height: '1px' }} /> // Invisible sentinel
+      )}
     </>
   )
 }
