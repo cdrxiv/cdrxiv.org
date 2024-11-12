@@ -15,7 +15,7 @@ export const metadata = {
 const Search = async ({ searchParams }: SearchProps) => {
   const { query: search, view, ...rest } = searchParams // map query -> search and omit view from params passed to Janeway
   const params = new URLSearchParams({ search: search ?? '', ...rest })
-  const url = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/?${params.toString()}&limit=12`
+  const url = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/?${params.toString()}&limit=48`
 
   const res = await fetch(url, { next: { revalidate: 180 } })
   const preprints = await res.json()

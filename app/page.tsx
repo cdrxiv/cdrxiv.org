@@ -9,7 +9,7 @@ interface HomeProps {
 }
 
 const Preprints = async ({ subject }: { subject: string | undefined }) => {
-  let url = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/?limit=12`
+  let url = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/?limit=48`
   if (subject) {
     url += `&subject=${subject}`
   }
