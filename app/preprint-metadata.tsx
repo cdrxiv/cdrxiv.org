@@ -6,7 +6,6 @@ import { Field, Button, Link, Loading } from '../components'
 import type { Preprint, Funder, SupplementaryFile } from '../types/preprint'
 import type { Deposition } from '../types/zenodo'
 import useTracking from '../hooks/use-tracking'
-import { fetchDataDeposition } from '../actions'
 
 const getDataDownload = (deposition: Deposition) => {
   return `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].filename}?download=1`
@@ -46,9 +45,9 @@ const ErrorOrTrack = ({
 const PreprintMetadata: React.FC<{
   preprint: Preprint
   deposition?: Deposition
+  isDepositionLoading: boolean
   preview?: boolean
-}> = ({ preprint, preview }) => {
-  const [deposition, setDeposition] = useState<Deposition>()
+}> = ({ deposition, isDepositionLoading, preprint, preview }) => {
   const dataUrl = preprint.supplementary_files.find(
     (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_PUBLISHED',
   )?.url
@@ -58,23 +57,6 @@ const PreprintMetadata: React.FC<{
   const hasDraft = preprint.supplementary_files.find(
     (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
   )
-  const [isDepositionLoading, setIsDepositionLoading] = useState<boolean>(
-    hasData && !!dataUrl,
-  )
-  useEffect(() => {
-    const fetchDeposition = async () => {
-      if (dataUrl) {
-        try {
-          const deposition = await fetchDataDeposition(dataUrl)
-          setDeposition(deposition)
-          setIsDepositionLoading(false)
-        } catch {
-          setIsDepositionLoading(false)
-        }
-      }
-    }
-    fetchDeposition()
-  }, [dataUrl])
 
   const funders = getFunders(preprint) ?? []
 

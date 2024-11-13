@@ -13,10 +13,12 @@ import MetadataView from './preprint-metadata'
 import Outline from './preprint-outline'
 import { getAdditionalField } from '../utils/data'
 
-import type { Preprint } from '../types/preprint'
+import type { Preprint, SupplementaryFile } from '../types/preprint'
 import Loading from '../components/loading'
 import useTracking from '../hooks/use-tracking'
 import { AuthorsList } from '../components'
+import { Deposition } from '../types/zenodo'
+import { fetchDataDeposition } from '../actions/zenodo'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
@@ -38,6 +40,30 @@ const PreprintViewer = ({
 
   const submissionType = getAdditionalField(preprint, 'Submission type')
   const hasArticle = ['Article', 'Both'].includes(submissionType ?? '')
+  const hasData = ['Data', 'Both'].includes(submissionType ?? '')
+  const [deposition, setDeposition] = useState<Deposition>()
+  const dataUrl = preprint.supplementary_files.find(
+    (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_PUBLISHED',
+  )?.url
+  const [isDepositionLoading, setIsDepositionLoading] = useState<boolean>(
+    hasData && !!dataUrl,
+  )
+
+  useEffect(() => {
+    const fetchDeposition = async () => {
+      if (dataUrl) {
+        try {
+          const deposition = await fetchDataDeposition(dataUrl)
+          setDeposition(deposition)
+          console.log(dataUrl, deposition)
+          setIsDepositionLoading(false)
+        } catch {
+          setIsDepositionLoading(false)
+        }
+      }
+    }
+    fetchDeposition()
+  }, [dataUrl])
 
   useEffect(() => {
     const updateWidth = () => {
@@ -90,7 +116,14 @@ const PreprintViewer = ({
           <Outline pdf={pdf} outline={pdfOutline} onItemClick={onItemClicked} />
         ) : null
       }
-      metadata={<MetadataView preprint={preprint} preview={preview} />}
+      metadata={
+        <MetadataView
+          preprint={preprint}
+          deposition={deposition}
+          isDepositionLoading={isDepositionLoading}
+          preview={preview}
+        />
+      }
     >
       {preprint.doi && (
         <StyledLink
