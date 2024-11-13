@@ -11,6 +11,7 @@ import {
   deletePreprintFile as deletePreprintFileBase,
   createAuthor as createAuthorBase,
   searchAuthor as searchAuthorBase,
+  fetchPublishedPreprints as fetchPublishedPreprintsBase,
 } from './preprint'
 import {
   fetchDataDeposition as fetchDataDepositionBase,
@@ -32,6 +33,9 @@ export const fetchPreprintFile = throwActionErrors(fetchPreprintFileBase)
 export const deletePreprintFile = throwActionErrors(deletePreprintFileBase)
 export const createAuthor = throwActionErrors(createAuthorBase)
 export const searchAuthor = throwActionErrors(searchAuthorBase)
+export const fetchPublishedPreprints = throwActionErrors(
+  fetchPublishedPreprintsBase,
+)
 
 export const fetchDataDeposition = throwActionErrors(fetchDataDepositionBase)
 export const createDataDeposition = throwActionErrors(createDataDepositionBase)

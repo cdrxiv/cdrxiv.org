@@ -221,3 +221,15 @@ export async function createVersionQueue(versionQueue: VersionQueueParams) {
   const result = res.json()
   return result
 }
+
+export async function fetchPublishedPreprints(url: string) {
+  const res = await fetch(url)
+  if (![200].includes(res.status)) {
+    throw new Error(
+      `Status ${res.status}: Unable to fetch preprints. ${res.statusText}`,
+    )
+  }
+
+  const result = res.json()
+  return result
+}

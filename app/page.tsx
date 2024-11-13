@@ -9,15 +9,16 @@ interface HomeProps {
 }
 
 const Preprints = async ({ subject }: { subject: string | undefined }) => {
-  let url = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/`
+  let url = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/?limit=48`
   if (subject) {
-    const queryString = `subject=${subject}`
-    url = `${url}?${queryString}`
+    url += `&subject=${subject}`
   }
   const res = await fetch(url, { next: { revalidate: 180 } })
   const preprints = await res.json()
   const results = preprints.results || []
-  return <PreprintsView preprints={results} />
+  return (
+    <PreprintsView preprints={results} nextPage={preprints.next as string} />
+  )
 }
 
 const Home = async ({ searchParams }: HomeProps) => {
