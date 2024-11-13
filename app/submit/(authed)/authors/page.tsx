@@ -45,7 +45,7 @@ const Authors = () => {
           id='self'
           description={
             <>
-              Your account will be the owner of this submission, but is not an
+              Your account will own this submission, but it is not made an
               author by default. Click the button above to add yourself as an
               author.
               <br />
