@@ -51,6 +51,11 @@ const validateForm = ({
     result.last_name = 'You must provide a last name.'
   }
 
+  if (orcid && !orcid.match(/^\d{4}-\d{4}-\d{4}-\d{4}$/)) {
+    result.orcid =
+      'Please provide a valid ORCID identifier of the format 0000-0000-0000-0000.'
+  }
+
   return result
 }
 
@@ -158,7 +163,7 @@ const AccountForm = ({
       </Row>
       <Row columns={[6, 6, 8, 8]}>
         <Column start={1} width={[6, 3, 4, 4]}>
-          <Field label='ORCID' id='orcid'>
+          <Field label='ORCID' id='orcid' error={errors.orcid}>
             <Input
               value={data.orcid}
               onChange={(e) => setters.orcid(e.target.value)}
