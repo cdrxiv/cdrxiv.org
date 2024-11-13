@@ -6,6 +6,9 @@ export type Errors<T> = Partial<{ [K in keyof T]: string }>
 export type Setter<T> = {
   [K in keyof T]: (value: T[K]) => void
 }
+export type Blur<T> = {
+  [K in keyof T]: () => void
+}
 export type Dirtied<T> = Partial<{ [K in keyof T]: boolean }>
 
 export function useForm<T>(
@@ -44,6 +47,15 @@ export function useForm<T>(
       return accum
     }, {} as Setter<T>)
   }, [setDataWrapper])
+
+  const blurs = useMemo<Blur<T>>(() => {
+    return keys.current.reduce((accum, key) => {
+      accum[key as keyof T] = () => {
+        setDirtiedFields((prev) => ({ ...prev, [key]: true }))
+      }
+      return accum
+    }, {} as Blur<T>)
+  }, [])
 
   const [errors, setErrors] = useState<Errors<T>>({})
   const [submitError, setSubmitError] = useState<string | null>(null)
@@ -100,6 +112,7 @@ export function useForm<T>(
   return {
     data,
     setters,
+    blurs,
     setData: setDataWrapper,
     errors,
     onSubmit: handleSubmit,
