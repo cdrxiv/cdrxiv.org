@@ -19,6 +19,7 @@ import useTracking from '../../../hooks/use-tracking'
 import { AuthorsList } from '../../../components'
 import { Deposition } from '../../../types/zenodo'
 import { fetchDataDeposition } from '../../../actions/zenodo'
+import ErrorOrTrack from './error-or-track'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
@@ -129,6 +130,14 @@ const PreprintViewer = ({
         {preprint.preprint_doi && (
           <DOIDisplay label='DOI' doi={preprint.preprint_doi} />
         )}
+        <ErrorOrTrack
+          hasError={!preprint.preprint_doi}
+          preview={preview}
+          pk={preprint.pk}
+          errorMessage={
+            'No `preprint_doi` found. Ensure that Crossref DOI has been minted before publishing.'
+          }
+        />
         {preprint.doi && preprint.preprint_doi !== preprint.doi && (
           <DOIDisplay label='Published DOI' doi={preprint.doi} />
         )}
