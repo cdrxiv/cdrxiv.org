@@ -8,7 +8,6 @@ import { Box, Flex } from 'theme-ui'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
 
 import PaneledPage from '../components/layouts/paneled-page'
-import StyledLink from '../components/link'
 import MetadataView from './preprint-metadata'
 import Outline from './preprint-outline'
 import { getAdditionalField } from '../utils/data'
@@ -19,6 +18,7 @@ import useTracking from '../hooks/use-tracking'
 import { AuthorsList } from '../components'
 import { Deposition } from '../types/zenodo'
 import { fetchDataDeposition } from '../actions/zenodo'
+import DOIDisplay from './doi-display'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
@@ -125,15 +125,17 @@ const PreprintViewer = ({
         />
       }
     >
-      {preprint.doi && (
-        <StyledLink
-          href={preprint.doi}
-          forwardArrow
-          sx={{ variant: 'text.mono' }}
-        >
-          {preprint.doi}
-        </StyledLink>
-      )}
+      <Flex sx={{ flexDirection: 'column' }}>
+        {preprint.preprint_doi && (
+          <DOIDisplay label='DOI' doi={preprint.preprint_doi} />
+        )}
+        {preprint.doi && preprint.preprint_doi !== preprint.doi && (
+          <DOIDisplay label='Published DOI' doi={preprint.doi} />
+        )}
+        {(isDepositionLoading || deposition) && (
+          <DOIDisplay label='Dataset DOI' doi={deposition?.doi_url} />
+        )}
+      </Flex>
       <Box sx={{ variant: 'text.mono', mt: 3, mb: 7 }}>
         <AuthorsList authors={preprint.authors} orcidLinks />
       </Box>
