@@ -29,8 +29,18 @@ export function useForm<T>(
   )
 
   const setDataWrapper = useCallback(
-    (value: T | ((prev: T) => T)) => {
-      setNavigationWarning && setNavigationWarning(true)
+    (value: T | ((prev: T) => T), resetErrors?: boolean) => {
+      if (resetErrors) {
+        // Set all fields to "clean"
+        setDirtiedFields(
+          keys.current.reduce((accum, key) => {
+            accum[key as keyof T] = false
+            return accum
+          }, {} as Dirtied<T>),
+        )
+      } else {
+        setNavigationWarning && setNavigationWarning(true)
+      }
       return setData(value)
     },
     [setNavigationWarning],
