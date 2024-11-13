@@ -60,7 +60,10 @@ const validateForm = ({
 
   if (!email) {
     result.email = 'You must provide an email.'
+  } else if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+    result.email = 'Please provide a valid email.'
   }
+
   if (!first_name) {
     result.first_name = 'You must provide a first name.'
   }
