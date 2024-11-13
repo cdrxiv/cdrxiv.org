@@ -18,6 +18,8 @@ export type Subject = {
 export type Deposition = {
   created: string
   id: number
+  doi?: string
+  doi_url?: string
   metadata?: {
     upload_type: 'dataset'
     title: string
