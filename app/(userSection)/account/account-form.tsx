@@ -98,7 +98,7 @@ const AccountForm = ({
   updateUser: ({ user }: { user: User }) => void
 }) => {
   const { setIsLoading } = useLoading()
-  const { errors, submitError, data, setters, onSubmit } = useForm(
+  const { errors, submitError, data, blurs, setters, onSubmit } = useForm(
     initializeForm.bind(null, user),
     validateForm,
     submitForm.bind(null, user, updateUser, setIsLoading),
@@ -122,6 +122,7 @@ const AccountForm = ({
           <Flex sx={{ gap: 2 }}>
             <Input
               value={data.email}
+              onBlur={blurs.email}
               onChange={(e) => setters.email(e.target.value)}
               id='email'
             />
@@ -133,6 +134,7 @@ const AccountForm = ({
           <Field label='First name*' id='first_name' error={errors.first_name}>
             <Input
               value={data.first_name}
+              onBlur={blurs.first_name}
               onChange={(e) => setters.first_name(e.target.value)}
               id='first_name'
             />
@@ -146,6 +148,7 @@ const AccountForm = ({
           >
             <Input
               value={data.middle_name}
+              onBlur={blurs.middle_name}
               onChange={(e) => setters.middle_name(e.target.value)}
               id='middle_name'
             />
@@ -155,6 +158,7 @@ const AccountForm = ({
           <Field label='Last name*' id='last_name' error={errors.last_name}>
             <Input
               value={data.last_name}
+              onBlur={blurs.last_name}
               onChange={(e) => setters.last_name(e.target.value)}
               id='last_name'
             />
@@ -166,6 +170,7 @@ const AccountForm = ({
           <Field label='ORCID' id='orcid' error={errors.orcid}>
             <Input
               value={data.orcid}
+              onBlur={blurs.orcid}
               onChange={(e) => setters.orcid(e.target.value)}
               id='orcid'
             />
@@ -179,6 +184,7 @@ const AccountForm = ({
           >
             <Input
               value={data.institution}
+              onBlur={blurs.institution}
               onChange={(e) => setters.institution(e.target.value)}
               id='institution'
             />
