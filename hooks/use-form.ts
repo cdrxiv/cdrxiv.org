@@ -20,6 +20,9 @@ export function useForm<T>(
 ) {
   const [data, setData] = useState<T>(initialize)
   const keys = useRef(Object.keys(data ?? {}))
+  const [errors, setErrors] = useState<Errors<T>>({})
+  const [visibleErrors, setVisibleErrors] = useState<Errors<T>>({})
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const [dirtiedFields, setDirtiedFields] = useState<Dirtied<T>>(
     keys.current.reduce((accum, key) => {
@@ -48,7 +51,6 @@ export function useForm<T>(
   const setters = useMemo<Setter<T>>(() => {
     return keys.current.reduce((accum, key) => {
       accum[key as keyof T] = (value: T[keyof T]) => {
-        setDirtiedFields((prev) => ({ ...prev, [key]: true }))
         setDataWrapper((prev) => ({
           ...prev,
           [key]: value,
@@ -67,8 +69,6 @@ export function useForm<T>(
     }, {} as Blur<T>)
   }, [])
 
-  const [errors, setErrors] = useState<Errors<T>>({})
-  const [submitError, setSubmitError] = useState<string | null>(null)
   const track = useTracking()
   // Turn off navigation warning on unmount
   useEffect(() => {
@@ -84,7 +84,8 @@ export function useForm<T>(
       return accum
     }, {} as Errors<T>)
 
-    setErrors(dirtiedErrors)
+    setErrors(fullErrors)
+    setVisibleErrors(dirtiedErrors)
   }, [data, validate, dirtiedFields])
 
   const handleSubmit = useCallback(() => {
@@ -124,7 +125,7 @@ export function useForm<T>(
     setters,
     blurs,
     setData: setDataWrapper,
-    errors,
+    errors: visibleErrors,
     onSubmit: handleSubmit,
     submitError,
   }
