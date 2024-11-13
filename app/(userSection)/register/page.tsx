@@ -68,6 +68,11 @@ const validateForm = ({
     result.last_name = 'You must provide a last name.'
   }
 
+  if (orcid && !orcid.match(/^\d{4}-\d{4}-\d{4}-\d{4}$/)) {
+    result.orcid =
+      'Please provide a valid ORCID identifier of the format 0000-0000-0000-0000.'
+  }
+
   if (password.length < 12) {
     result.password = 'Your password must be at least 12 characters long.'
   }
