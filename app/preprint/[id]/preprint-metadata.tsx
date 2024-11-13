@@ -1,45 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Box, Flex } from 'theme-ui'
-import { formatDate } from '../utils/formatters'
-import { getAdditionalField, getFunders, getZenodoLicense } from '../utils/data'
-import { Field, Button, Link, Loading } from '../components'
-import type { Preprint, Funder, SupplementaryFile } from '../types/preprint'
-import type { Deposition } from '../types/zenodo'
-import useTracking from '../hooks/use-tracking'
+
+import { formatDate } from '../../../utils/formatters'
+import {
+  getAdditionalField,
+  getFunders,
+  getZenodoLicense,
+} from '../../../utils/data'
+import { Field, Button, Link, Loading } from '../../../components'
+import type {
+  Preprint,
+  Funder,
+  SupplementaryFile,
+} from '../../../types/preprint'
+import type { Deposition } from '../../../types/zenodo'
+import ErrorOrTrack from './error-or-track'
 
 const getDataDownload = (deposition: Deposition) => {
   return `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].filename}?download=1`
-}
-
-const ErrorOrTrack = ({
-  hasError,
-  preview,
-  errorMessage,
-  pk,
-  mt = 0,
-}: {
-  hasError: boolean
-  preview?: boolean
-  errorMessage: string
-  pk: number
-  mt?: number
-}) => {
-  const track = useTracking()
-
-  useEffect(() => {
-    // track error when present and viewing outside of preview setting
-    if (!preview && hasError) {
-      track('preprint_metadata_error', { error: errorMessage, preprint: pk })
-    }
-  }, [track, preview, hasError, errorMessage, pk])
-
-  if (preview && hasError) {
-    // in preview setting, render error message for repository manager to triage when an error is present
-    return <Box sx={{ variant: 'styles.error', mt }}>{errorMessage}</Box>
-  }
-
-  // otherwise do not render
-  return null
 }
 
 const PreprintMetadata: React.FC<{

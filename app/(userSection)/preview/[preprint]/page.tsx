@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
 import { getServerSession } from 'next-auth'
 
-import PreprintViewer from '../../../preprint-viewer'
+import PreprintViewer from '../../../preprint/[id]/preprint-viewer'
 import { fetchWithToken } from '../../../api/utils'
 import Forbidden from '../forbidden'
 import SharedLayout from '../../shared-layout'

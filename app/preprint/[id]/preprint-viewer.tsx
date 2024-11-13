@@ -7,18 +7,18 @@ import 'react-pdf/dist/Page/AnnotationLayer.css'
 import { Box, Flex } from 'theme-ui'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
 
-import PaneledPage from '../components/layouts/paneled-page'
+import PaneledPage from '../../../components/layouts/paneled-page'
 import MetadataView from './preprint-metadata'
 import Outline from './preprint-outline'
-import { getAdditionalField } from '../utils/data'
-
-import type { Preprint, SupplementaryFile } from '../types/preprint'
-import Loading from '../components/loading'
-import useTracking from '../hooks/use-tracking'
-import { AuthorsList } from '../components'
-import { Deposition } from '../types/zenodo'
-import { fetchDataDeposition } from '../actions/zenodo'
 import DOIDisplay from './doi-display'
+import { getAdditionalField } from '../../../utils/data'
+
+import type { Preprint, SupplementaryFile } from '../../../types/preprint'
+import Loading from '../../../components/loading'
+import useTracking from '../../../hooks/use-tracking'
+import { AuthorsList } from '../../../components'
+import { Deposition } from '../../../types/zenodo'
+import { fetchDataDeposition } from '../../../actions/zenodo'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 

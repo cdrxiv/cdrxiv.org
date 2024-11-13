@@ -1,5 +1,5 @@
 import { Box, Flex } from 'theme-ui'
-import { Link, Loading } from '../components'
+import { Link, Loading } from '../../../components'
 
 type Props = {
   label: string
