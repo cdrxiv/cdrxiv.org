@@ -60,12 +60,20 @@ const validateForm = ({
 
   if (!email) {
     result.email = 'You must provide an email.'
+  } else if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+    result.email = 'Please provide a valid email.'
   }
+
   if (!first_name) {
     result.first_name = 'You must provide a first name.'
   }
   if (!last_name) {
     result.last_name = 'You must provide a last name.'
+  }
+
+  if (orcid && !orcid.match(/^\d{4}-\d{4}-\d{4}-\d{4}$/)) {
+    result.orcid =
+      'Please provide a valid ORCID identifier of the format 0000-0000-0000-0000.'
   }
 
   if (password.length < 12) {
@@ -120,7 +128,7 @@ const Page = () => {
   const { status } = useSession()
   const router = useRouter()
   const { setIsLoading } = useLoading()
-  const { errors, submitError, data, setters, onSubmit } = useForm(
+  const { errors, submitError, data, setters, blurs, onSubmit } = useForm(
     initializeForm,
     validateForm,
     submitForm.bind(null, setIsLoading),
@@ -183,6 +191,7 @@ const Page = () => {
         <Input
           value={data.email}
           onChange={(e) => setters.email(e.target.value)}
+          onBlur={blurs.email}
           id='email'
         />
       </Field>
@@ -192,6 +201,7 @@ const Page = () => {
             <Input
               value={data.first_name}
               onChange={(e) => setters.first_name(e.target.value)}
+              onBlur={blurs.first_name}
               id='first_name'
             />
           </Field>
@@ -205,6 +215,7 @@ const Page = () => {
             <Input
               value={data.middle_name}
               onChange={(e) => setters.middle_name(e.target.value)}
+              onBlur={blurs.middle_name}
               id='middle_name'
             />
           </Field>
@@ -214,6 +225,7 @@ const Page = () => {
             <Input
               value={data.last_name}
               onChange={(e) => setters.last_name(e.target.value)}
+              onBlur={blurs.last_name}
               id='last_name'
             />
           </Field>
@@ -225,6 +237,7 @@ const Page = () => {
             <Input
               value={data.orcid}
               onChange={(e) => setters.orcid(e.target.value)}
+              onBlur={blurs.orcid}
               id='orcid'
             />
           </Field>
@@ -239,6 +252,7 @@ const Page = () => {
             <Input
               value={data.institution}
               onChange={(e) => setters.institution(e.target.value)}
+              onBlur={blurs.institution}
               id='institution'
             />
           </Field>
@@ -250,6 +264,7 @@ const Page = () => {
             <PasswordInput
               value={data.password}
               onChange={(e) => setters.password(e.target.value)}
+              onBlur={blurs.password}
               id='password'
             />
           </Field>
@@ -263,6 +278,7 @@ const Page = () => {
             <PasswordInput
               value={data.repeat_password}
               onChange={(e) => setters.repeat_password(e.target.value)}
+              onBlur={blurs.repeat_password}
               id='repeat_password'
             />
           </Field>
