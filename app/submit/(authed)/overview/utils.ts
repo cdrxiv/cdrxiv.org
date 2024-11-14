@@ -143,6 +143,16 @@ export const submitForm = async (
     updater: (prev: UploadProgress) => UploadProgress,
   ) => void,
 ) => {
+  const uploads: Promise<any>[] = []
+
+  // Make sure the progress bars show from beginning
+  if (articleFile && !articleFile.persisted) {
+    setUploadProgress((prev) => ({ ...prev, article: 0 }))
+  }
+  if (dataFile && !dataFile.persisted) {
+    setUploadProgress((prev) => ({ ...prev, data: 0 }))
+  }
+
   if (!preprint) {
     throw new Error('Tried to submit without active preprint')
   }
@@ -162,24 +172,26 @@ export const submitForm = async (
     formData.set('mime_type', articleFile.mime_type)
     formData.set('original_filename', articleFile.original_filename)
 
-    const preprintFile = await fetchWithTokenClient<PreprintFile>(
-      `https://cdrxiv-file-uploader.fly.dev/janeway/create-preprint-file`,
-      {
-        method: 'POST',
-        body: formData,
-        onProgress: (progress) =>
-          setUploadProgress((prev: UploadProgress) => ({
-            ...prev,
-            article: progress,
-          })),
-        progressOptions: {
-          baseProgress: 60,
-          maxProgress: 95,
+    uploads.push(
+      fetchWithTokenClient<PreprintFile>(
+        `https://cdrxiv-file-uploader.fly.dev/janeway/create-preprint-file`,
+        {
+          method: 'POST',
+          body: formData,
+          onProgress: (progress) =>
+            setUploadProgress((prev: UploadProgress) => ({
+              ...prev,
+              article: progress,
+            })),
+          progressOptions: {
+            baseProgress: 60,
+            maxProgress: 95,
+          },
         },
-      },
+      ).then((preprintFile) => {
+        preprintFiles = [preprintFile]
+      }),
     )
-
-    preprintFiles = [preprintFile]
   }
 
   let cleanUpFiles: () => Promise<any> = async () => null
@@ -214,29 +226,33 @@ export const submitForm = async (
       ])
     }
 
-    await fetchWithTokenClient(
-      `https://cdrxiv-file-uploader.fly.dev/zenodo/upload-file?deposition_id=${deposition.id}`,
-      {
-        method: 'POST',
-        body: formData,
-        onProgress: (progress) =>
-          setUploadProgress((prev: UploadProgress) => ({
-            ...prev,
-            data: progress,
-          })),
-        progressOptions: {
-          baseProgress: 70,
-          maxProgress: 95,
+    uploads.push(
+      fetchWithTokenClient(
+        `https://cdrxiv-file-uploader.fly.dev/zenodo/upload-file?deposition_id=${deposition.id}`,
+        {
+          method: 'POST',
+          body: formData,
+          onProgress: (progress) =>
+            setUploadProgress((prev: UploadProgress) => ({
+              ...prev,
+              data: progress,
+            })),
+          progressOptions: {
+            baseProgress: 70,
+            maxProgress: 95,
+          },
         },
-      },
+      ).then(() => {
+        supplementaryFiles = [
+          { label: 'CDRXIV_DATA_DRAFT', url: deposition.links.self },
+        ]
+      }),
     )
-
-    supplementaryFiles = [
-      { label: 'CDRXIV_DATA_DRAFT', url: deposition.links.self },
-    ]
   } else {
     supplementaryFiles = externalFile ? [externalFile] : []
   }
+
+  await Promise.all(uploads)
 
   const additionalFieldAnswers = [
     ...preprint.additional_field_answers.filter(
