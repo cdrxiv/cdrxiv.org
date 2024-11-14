@@ -9,6 +9,7 @@ import {
   UpdateType,
   ReviewPreprint,
   PublishedPreprint,
+  PreprintFile,
 } from '../../../../../types/preprint'
 import VersionsList from './versions-list'
 import SharedLayout from '../../../shared-layout'
@@ -141,7 +142,7 @@ const submitForm = async (
     formData.set('mime_type', articleFile.mime_type)
     formData.set('original_filename', articleFile.original_filename)
 
-    const res = await fetchWithTokenClient(
+    const preprintFile = await fetchWithTokenClient<PreprintFile>(
       `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/`,
       {
         method: 'POST',
@@ -149,12 +150,6 @@ const submitForm = async (
       },
     )
 
-    if (!res.ok) {
-      const error = await res.json()
-      throw new Error(error.error || 'Failed to upload file')
-    }
-
-    const preprintFile = await res.json()
     file = preprintFile.pk
   }
 
@@ -212,20 +207,13 @@ const submitForm = async (
     formData.set('file', dataFile.file)
     formData.set('deposition', depositionId.toString())
 
-    const res = await fetchWithTokenClient(
+    await fetchWithTokenClient(
       `https://cdrxiv-file-uploader.fly.dev/zenodo/upload-file?deposition_id=${depositionId}`,
       {
         method: 'POST',
         body: formData,
       },
     )
-
-    if (!res.ok) {
-      const error = await res.json()
-      throw new Error(error.error || 'Failed to upload file')
-    }
-
-    await res.json()
 
     if (newUrl) {
       await updatePreprint(preprint, {
