@@ -111,7 +111,7 @@ const PreprintViewer = ({
       {hasArticle && preprint.versions.length > 0 && (
         <div ref={containerRef} style={{ width: '100%' }}>
           <Document
-            file={`/api/pdf?url=${encodeURIComponent(preprint.versions[0].public_download_url)}`}
+            file={`https://cdrxiv-file-uploader.fly.dev/janeway/pdf?url=${encodeURIComponent(preprint.versions[0].public_download_url)}`}
             onLoadSuccess={onDocumentLoadSuccess}
             loading={
               <Flex
