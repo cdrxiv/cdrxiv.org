@@ -46,6 +46,34 @@ const useLoading = () => {
   return context
 }
 
+interface ProgressBarProps {
+  progress: number
+  sx?: any
+}
+
+const ProgressBar: React.FC<ProgressBarProps> = ({ progress, sx }) => {
+  return (
+    <Box
+      sx={{
+        width: '100%',
+        height: '0.5em',
+        bg: 'muted',
+        overflow: 'hidden',
+        ...sx,
+      }}
+    >
+      <Box
+        sx={{
+          width: `${progress}%`,
+          height: '100%',
+          bg: 'blue',
+          transition: 'width 0.3s ease',
+        }}
+      />
+    </Box>
+  )
+}
+
 const PaneledPage: React.FC<{
   children: ReactNode
   metadata?: ReactNode
@@ -69,9 +97,9 @@ const PaneledPage: React.FC<{
     scrollToTop()
     if (pathRef.current !== pathname && isLoading) {
       setIsLoading(false)
+      setUploadProgress({})
     }
     pathRef.current = pathname
-    setUploadProgress({})
   }, [pathname, setIsLoading, isLoading, scrollToTop])
 
   return (
@@ -232,29 +260,16 @@ const PaneledPage: React.FC<{
                         gap: 4,
                       }}
                     >
+                      {uploadProgress.article === undefined &&
+                        uploadProgress.data === undefined && <Loading />}
+
                       {uploadProgress.article !== undefined && (
                         <Box sx={{ width: '80%', maxWidth: '400px' }}>
                           <Loading
                             baseText='Uploading article'
                             sx={{ width: '100%', mb: 2 }}
                           />
-                          <Box
-                            sx={{
-                              width: '100%',
-                              height: '4px',
-                              bg: 'muted',
-                              overflow: 'hidden',
-                            }}
-                          >
-                            <Box
-                              sx={{
-                                width: `${uploadProgress.article}%`,
-                                height: '100%',
-                                bg: 'blue',
-                                transition: 'width 0.3s ease',
-                              }}
-                            />
-                          </Box>
+                          <ProgressBar progress={uploadProgress.article} />
                         </Box>
                       )}
                       {uploadProgress.data !== undefined && (
@@ -263,23 +278,7 @@ const PaneledPage: React.FC<{
                             baseText='Uploading data'
                             sx={{ width: '100%', mb: 2 }}
                           />
-                          <Box
-                            sx={{
-                              width: '100%',
-                              height: '4px',
-                              bg: 'muted',
-                              overflow: 'hidden',
-                            }}
-                          >
-                            <Box
-                              sx={{
-                                width: `${uploadProgress.data}%`,
-                                height: '100%',
-                                bg: 'blue',
-                                transition: 'width 0.3s ease',
-                              }}
-                            />
-                          </Box>
+                          <ProgressBar progress={uploadProgress.data} />
                         </Box>
                       )}
                     </Flex>
