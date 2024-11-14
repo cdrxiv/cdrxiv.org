@@ -56,7 +56,6 @@ const PreprintViewer = ({
         try {
           const deposition = await fetchDataDeposition(dataUrl)
           setDeposition(deposition)
-          console.log(dataUrl, deposition)
           setIsDepositionLoading(false)
         } catch {
           setIsDepositionLoading(false)
