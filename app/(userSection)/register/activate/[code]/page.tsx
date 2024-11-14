@@ -1,18 +1,29 @@
-import { sql } from '@vercel/postgres'
+import { db } from '@vercel/postgres'
 import { redirect } from 'next/navigation'
 
 import { activateAccount } from '../../../../../actions/account'
 import ErrorState from './error-state'
+import AuthorActivation from './author-activation'
 
 type Props = { params: { code: string } }
 const Page = async ({ params: { code } }: Props) => {
-  const { rows } =
-    await sql`SELECT account_id FROM confirmation_codes WHERE confirmation_code = ${code}`
-  if (rows.length === 1 && rows[0].account_id) {
-    try {
-      await activateAccount(rows[0].account_id, code)
-    } catch {
-      return <ErrorState />
+  const client = await db.connect()
+  const { rows: confirmationCodes } =
+    await client.sql`SELECT account_id FROM confirmation_codes WHERE confirmation_code = ${code}`
+
+  const user = confirmationCodes.length === 1 && confirmationCodes[0].account_id
+
+  if (user) {
+    const { rows: userAgreements } =
+      await client.sql`SELECT * FROM user_agreements WHERE account_id = ${user}`
+    if (userAgreements.length === 1) {
+      try {
+        await activateAccount(user, code, { recordAgreement: false })
+      } catch {
+        return <ErrorState />
+      }
+    } else {
+      return <AuthorActivation user={user} code={code} />
     }
   } else {
     return (
