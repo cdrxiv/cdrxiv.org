@@ -35,6 +35,9 @@ const PreprintMetadata: React.FC<{
   const hasDraft = preprint.supplementary_files.find(
     (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
   )
+  const externalData = preprint.supplementary_files.find(
+    (file: SupplementaryFile) => !file.label.startsWith('CDRXIV_DATA_'),
+  )
 
   const funders = getFunders(preprint) ?? []
 
@@ -178,6 +181,14 @@ const PreprintMetadata: React.FC<{
           </Field>
         )}
       </Flex>
+
+      {externalData && (
+        <Field label='External data'>
+          <Link href={externalData.url} sx={{ variant: 'text.mono' }}>
+            {externalData.label}
+          </Link>
+        </Field>
+      )}
 
       <Field label='Funders'>
         {funders.map((item: Funder) => (
