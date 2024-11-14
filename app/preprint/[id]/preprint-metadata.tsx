@@ -183,11 +183,20 @@ const PreprintMetadata: React.FC<{
       </Flex>
 
       {externalData && (
-        <Field label='External data'>
-          <Link href={externalData.url} sx={{ variant: 'text.mono' }}>
-            {externalData.label}
-          </Link>
-        </Field>
+        <Box>
+          <Field label='External data'>
+            <Link href={externalData.url} sx={{ variant: 'text.mono' }}>
+              {externalData.label}
+            </Link>
+          </Field>
+          <ErrorOrTrack
+            mt={2}
+            hasError={hasData}
+            preview={preview}
+            pk={preprint.pk}
+            errorMessage={'External data present on a data submission.'}
+          />
+        </Box>
       )}
 
       <Field label='Funders'>
