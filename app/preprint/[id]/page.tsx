@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { ResolvingMetadata } from 'next'
-import PreprintViewer from '../../preprint-viewer'
+
+import PreprintViewer from './preprint-viewer'
 
 // Polyfill for Promise.withResolvers
 if (typeof Promise.withResolvers !== 'function') {
