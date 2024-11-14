@@ -4,7 +4,6 @@ import {
   updateAccount as updateAccountBase,
 } from './account'
 import {
-  createPreprintFile as createPreprintFileBase,
   createVersionQueue as createVersionQueueBase,
   updatePreprint as updatePreprintBase,
   fetchPreprintFile as fetchPreprintFileBase,
@@ -26,7 +25,6 @@ import { verify as verifyBase } from './hcaptcha'
 export const registerAccount = throwActionErrors(registerAccountBase)
 export const updateAccount = throwActionErrors(updateAccountBase)
 
-export const createPreprintFile = throwActionErrors(createPreprintFileBase)
 export const createVersionQueue = throwActionErrors(createVersionQueueBase)
 export const updatePreprint = throwActionErrors(updatePreprintBase)
 export const fetchPreprintFile = throwActionErrors(fetchPreprintFileBase)

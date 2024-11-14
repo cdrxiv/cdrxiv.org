@@ -10,14 +10,25 @@ import { useForm } from '../utils'
 import { FormData, initializeForm, validateForm, submitForm } from './utils'
 import DataFileInput from './data-file-input'
 import { updatePreprint } from '../../../../actions'
+import { useLoading } from '../../../../components/layouts/paneled-page'
 
 const SubmissionOverview = () => {
   const { preprint, setPreprint } = usePreprint()
   const { files, setFiles } = usePreprintFiles()
+  const { setUploadProgress } = useLoading()
+
   const { data, setters, errors, onSubmit, submitError } = useForm<FormData>(
     () => initializeForm(preprint, files),
     validateForm,
-    submitForm.bind(null, preprint, setPreprint, files, setFiles),
+    (values: FormData) =>
+      submitForm(
+        preprint,
+        setPreprint,
+        files,
+        setFiles,
+        values,
+        setUploadProgress,
+      ),
   )
   const [disableAgreement] = useState<boolean>(data.agreement)
 

@@ -128,12 +128,20 @@ export const getSubmissionType = ({
   return submissionType
 }
 
+type UploadProgress = {
+  article?: number
+  data?: number
+}
+
 export const submitForm = async (
   preprint: Preprint,
   setPreprint: (p: Preprint) => void,
   files: PreprintFile[],
   setFiles: (files: PreprintFile[]) => void,
   { articleFile, dataFile, externalFile }: FormData,
+  setUploadProgress: (
+    updater: (prev: UploadProgress) => UploadProgress,
+  ) => void,
 ) => {
   if (!preprint) {
     throw new Error('Tried to submit without active preprint')
@@ -154,20 +162,23 @@ export const submitForm = async (
     formData.set('mime_type', articleFile.mime_type)
     formData.set('original_filename', articleFile.original_filename)
 
-    const res = await fetchWithTokenClient(
-      `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/`,
+    const preprintFile = await fetchWithTokenClient<PreprintFile>(
+      `https://cdrxiv-file-uploader.fly.dev/janeway/create-preprint-file`,
       {
         method: 'POST',
         body: formData,
+        onProgress: (progress) =>
+          setUploadProgress((prev: UploadProgress) => ({
+            ...prev,
+            article: progress,
+          })),
+        progressOptions: {
+          baseProgress: 60,
+          maxProgress: 95,
+        },
       },
     )
 
-    if (!res.ok) {
-      const error = await res.json()
-      throw new Error(error.error || 'Failed to upload file')
-    }
-
-    const preprintFile = await res.json()
     preprintFiles = [preprintFile]
   }
 
@@ -203,20 +214,22 @@ export const submitForm = async (
       ])
     }
 
-    const res = await fetchWithTokenClient(
+    await fetchWithTokenClient(
       `https://cdrxiv-file-uploader.fly.dev/zenodo/upload-file?deposition_id=${deposition.id}`,
       {
         method: 'POST',
         body: formData,
+        onProgress: (progress) =>
+          setUploadProgress((prev: UploadProgress) => ({
+            ...prev,
+            data: progress,
+          })),
+        progressOptions: {
+          baseProgress: 70,
+          maxProgress: 95,
+        },
       },
     )
-
-    if (!res.ok) {
-      const error = await res.json()
-      throw new Error(error.error || 'Failed to upload file')
-    }
-
-    await res.json()
 
     supplementaryFiles = [
       { label: 'CDRXIV_DATA_DRAFT', url: deposition.links.self },
