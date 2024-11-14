@@ -34,8 +34,8 @@ export async function registerAccount(
     }
     throw new Error(
       keyErrors
-        ? `Status ${res.status}: Unable to register account. ${keyErrors.join(' ')}`
-        : `Status ${res.status}: Unable to register account. ${res.statusText}`,
+        ? `Unable to register account. ${keyErrors.join(' ')}`
+        : `Unable to register account. ${res.statusText}`,
     )
   }
 
@@ -60,9 +60,7 @@ export async function activateAccount(user: number, confirmation_code: string) {
   )
 
   if (res.status > 200) {
-    throw new Error(
-      `Status ${res.status}: Unable to activate account. ${res.statusText}`,
-    )
+    throw new Error(`Unable to activate account. ${res.statusText}`)
   }
 
   const result = await res.json()
@@ -98,8 +96,8 @@ export async function updateAccount(user: User, params: Partial<User>) {
     }
     throw new Error(
       keyErrors
-        ? `Status ${res.status}: Unable to update account. Error updating field(s): ${keyErrors.join('; ')}.`
-        : `Status ${res.status}: Unable to update account ${user.id}. ${res.statusText}`,
+        ? `Unable to update account. Error updating field(s): ${keyErrors.join('; ')}.`
+        : `Unable to update account ${user.id}. ${res.statusText}`,
     )
   }
 

@@ -7,12 +7,10 @@ import { createAdditionalField } from '../utils'
 import {
   deletePreprintFile,
   updatePreprint,
-} from '../../../../actions/preprint'
-import {
   deleteZenodoEntity,
   fetchDataDeposition,
   createDataDeposition,
-} from '../../../../actions/zenodo'
+} from '../../../../actions/'
 import { FileInputValue } from '../../../../components'
 import { LICENSE_MAPPING } from '../../constants'
 import { fetchWithTokenClient } from '../../../utils/fetch-with-token/client'

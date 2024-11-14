@@ -3,6 +3,8 @@
 import { headers, cookies } from 'next/headers'
 import { getToken } from 'next-auth/jwt'
 import { revalidatePath, revalidateTag } from 'next/cache'
+import { sql } from '@vercel/postgres'
+
 import {
   Author,
   AuthorParams,
@@ -112,7 +114,12 @@ export async function createAuthor(author: AuthorParams): Promise<Author> {
     )
   }
 
-  const result = res.json()
+  const result = await res.json()
+
+  if (result.confirmation_code && result.pk) {
+    await sql`INSERT INTO confirmation_codes (account_id, confirmation_code) VALUES (${result.pk}, ${result.confirmation_code});`
+  }
+
   return result
 }
 
@@ -187,6 +194,18 @@ export async function createVersionQueue(versionQueue: VersionQueueParams) {
   }
 
   revalidatePath(`/submissions/edit/${versionQueue.preprint}`)
+
+  const result = res.json()
+  return result
+}
+
+export async function fetchPublishedPreprints(url: string) {
+  const res = await fetch(url)
+  if (![200].includes(res.status)) {
+    throw new Error(
+      `Status ${res.status}: Unable to fetch preprints. ${res.statusText}`,
+    )
+  }
 
   const result = res.json()
   return result

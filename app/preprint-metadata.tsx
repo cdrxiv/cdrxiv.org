@@ -6,7 +6,7 @@ import { Field, Button, Link, Loading } from '../components'
 import type { Preprint, Funder, SupplementaryFile } from '../types/preprint'
 import type { Deposition } from '../types/zenodo'
 import useTracking from '../hooks/use-tracking'
-import { fetchDataDeposition } from '../actions/zenodo'
+import { fetchDataDeposition } from '../actions'
 
 const getDataDownload = (deposition: Deposition) => {
   return `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].filename}?download=1`
@@ -88,7 +88,7 @@ const PreprintMetadata: React.FC<{
     conflictOfInterest && conflictOfInterest !== 'None'
 
   return (
-    <Flex sx={{ flexDirection: 'column', mt: 5, gap: [6, 8, 9, 9] }}>
+    <Flex sx={{ flexDirection: 'column', gap: [6, 8, 9, 9] }}>
       <ErrorOrTrack
         hasError={!hasArticle && !hasData}
         preview={preview}

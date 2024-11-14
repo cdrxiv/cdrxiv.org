@@ -1,7 +1,7 @@
 import { Box, Flex } from 'theme-ui'
 
 type Props = {
-  error?: string | null
+  error?: React.ReactNode
   children: React.ReactNode
 }
 const Form: React.FC<Props> = ({ error, children }) => {
