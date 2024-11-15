@@ -81,18 +81,6 @@ const SubmissionInformation = () => {
             submissionType={data.submission_type}
           />
         </Field>
-        <Field
-          label='DOI'
-          id='doi'
-          description="You can add a DOI linking to this item's published version using this field. Please provide the full DOI, e.g., https://doi.org/10.1017/CBO9781316161012."
-          error={errors.doi}
-        >
-          <Input
-            value={data.doi}
-            onChange={(e) => setters.doi(e.target.value)}
-            id='doi'
-          />
-        </Field>
         <Field label='Topic*' id='subject' error={errors.subject}>
           <Subjects value={data.subject} onChange={setters.subject} />
         </Field>

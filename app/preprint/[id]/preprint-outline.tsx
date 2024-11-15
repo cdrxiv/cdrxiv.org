@@ -1,7 +1,8 @@
 import React, { useCallback, useMemo } from 'react'
 import { PDFDocumentProxy } from 'pdfjs-dist'
 import { ThemeUIStyleObject } from 'theme-ui'
-import { NavSidebar } from '../components'
+
+import { NavSidebar } from '../../../components'
 
 type PDFOutline = Awaited<ReturnType<PDFDocumentProxy['getOutline']>>
 type OutlineItem = PDFOutline[number]

@@ -2,7 +2,7 @@
 
 import { headers } from 'next/headers'
 import { User } from 'next-auth'
-import { sql } from '@vercel/postgres'
+import { db } from '@vercel/postgres'
 
 import { fetchWithToken } from '../app/utils/fetch-with-token/server'
 
@@ -40,14 +40,28 @@ export async function registerAccount(
   }
 
   const user = await res.json()
-
-  if (user.confirmation_code && user.pk) {
-    await sql`INSERT INTO confirmation_codes (account_id, confirmation_code) VALUES (${user.pk}, ${user.confirmation_code});`
+  if (user.pk) {
+    const client = await db.connect()
+    if (params.password) {
+      await client.sql`INSERT INTO user_agreements (account_id) VALUES (${user.pk});`
+    }
+    if (user.confirmation_code) {
+      await client.sql`INSERT INTO confirmation_codes (account_id, confirmation_code) VALUES (${user.pk}, ${user.confirmation_code});`
+    }
   }
   return user
 }
 
-export async function activateAccount(user: number, confirmation_code: string) {
+export async function activateAccount(
+  user: number,
+  confirmation_code: string,
+  { recordAgreement }: { recordAgreement: boolean },
+) {
+  const client = await db.connect()
+
+  if (recordAgreement) {
+    await client.sql`INSERT INTO user_agreements (account_id) VALUES (${user});`
+  }
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/account/activate/${user}`,
     {
@@ -66,7 +80,7 @@ export async function activateAccount(user: number, confirmation_code: string) {
   const result = await res.json()
 
   if (result) {
-    await sql`DELETE FROM confirmation_codes WHERE confirmation_code = ${confirmation_code};`
+    await client.sql`DELETE FROM confirmation_codes WHERE confirmation_code = ${confirmation_code};`
   }
   return result
 }

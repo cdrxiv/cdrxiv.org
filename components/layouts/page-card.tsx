@@ -11,10 +11,11 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { Box } from 'theme-ui'
+import { Box, Flex } from 'theme-ui'
 import useBackgroundColors from '../../hooks/use-background-colors'
 import Guide from '../guide'
 import Header from '../header'
+import Link from '../link'
 import MouseTrail from '../mouse-trail'
 import PageCorner from '../page-corner'
 import SparklyMouseTrail from '../sparkly-mouse-trail'
@@ -34,6 +35,11 @@ export const useCardContext = () => {
   return context
 }
 
+const sx = {
+  footer: {
+    variant: 'text.mono',
+  },
+}
 const PageCard = ({ children }: { children: React.ReactNode }) => {
   const ref = useRef<HTMLDivElement>()
   const [scrollPosition, setScrollPosition] = useState(0)
@@ -118,19 +124,45 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
             px: ['18px', '36px', '36px', '52px'],
           }}
         >
-          <CardContext.Provider value={contextValue}>
-            <PageCorner onToggle={toggleTrail} isHomePage={isHomePage} />
-            {isFullSiteEnabled() && isTrailActive && isHomePage && (
-              <MouseTrail />
-            )}
-            {isSuccessfulSubmissionPage && <SparklyMouseTrail />}
+          <Flex
+            sx={{
+              flexDirection: 'column',
+              height: '100%',
+              gap: 5,
+              justifyContent: 'space-between',
+            }}
+          >
+            <Box>
+              <CardContext.Provider value={contextValue}>
+                <PageCorner onToggle={toggleTrail} isHomePage={isHomePage} />
+                {isFullSiteEnabled() && isTrailActive && isHomePage && (
+                  <MouseTrail />
+                )}
+                {isSuccessfulSubmissionPage && <SparklyMouseTrail />}
 
-            <Box sx={{ contain: 'layout' }}>
-              <Guide />
-              <Header />
-              {children}
+                <Box sx={{ contain: 'layout' }}>
+                  <Guide />
+                  <Header />
+                  {children}
+                </Box>
+              </CardContext.Provider>
             </Box>
-          </CardContext.Provider>
+
+            <Flex sx={{ columnGap: 3, rowGap: 2, flexWrap: 'wrap', pb: 2 }}>
+              <Box sx={{ ...sx.footer, flexBasis: ['100%', 'inherit'] }}>
+                Powered by Janeway
+              </Box>
+              <Link href='/terms-of-use' sx={sx.footer}>
+                Terms of Use
+              </Link>
+              <Link href='/privacy-policy' sx={sx.footer}>
+                Privacy Policy
+              </Link>
+              <Link href='/cookies-notice' sx={sx.footer}>
+                Cookies Notice
+              </Link>
+            </Flex>
+          </Flex>
         </Box>
       </Box>
       {showProgressBar && (
