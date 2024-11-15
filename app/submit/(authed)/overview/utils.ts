@@ -3,6 +3,8 @@ import {
   PreprintFile,
   SupplementaryFile,
 } from '../../../../types/preprint'
+import { DepositionFile } from '../../../../types/zenodo'
+
 import { createAdditionalField } from '../utils'
 import {
   deletePreprintFile,
@@ -133,126 +135,190 @@ type UploadProgress = {
   data?: number
 }
 
-export const submitForm = async (
-  preprint: Preprint,
-  setPreprint: (p: Preprint) => void,
-  files: PreprintFile[],
-  setFiles: (files: PreprintFile[]) => void,
-  { articleFile, dataFile, externalFile }: FormData,
-  setUploadProgress: (
-    updater: (prev: UploadProgress) => UploadProgress,
-  ) => void,
-) => {
-  const uploads: Promise<any>[] = []
+type SubmissionContext = {
+  preprint: Preprint
+  setPreprint: (p: Preprint) => void
+  files: PreprintFile[]
+  setFiles: (files: PreprintFile[]) => void
+  formData: FormData
+  setUploadProgress: (updater: (prev: UploadProgress) => UploadProgress) => void
+}
 
-  // Make sure the progress bars show from beginning
+const initializeUploadProgress = (
+  articleFile: FormData['articleFile'],
+  dataFile: FormData['dataFile'],
+  setUploadProgress: SubmissionContext['setUploadProgress'],
+) => {
   if (articleFile && !articleFile.persisted) {
-    setUploadProgress((prev) => ({ ...prev, article: 0 }))
+    setUploadProgress((prev) => ({ ...prev, article: 1 }))
   }
   if (dataFile && !dataFile.persisted) {
-    setUploadProgress((prev) => ({ ...prev, data: 0 }))
+    setUploadProgress((prev) => ({ ...prev, data: 1 }))
+  }
+}
+
+const handleArticleUpload = async (
+  articleFile: FormData['articleFile'],
+  preprint: Preprint,
+  setUploadProgress: SubmissionContext['setUploadProgress'],
+): Promise<PreprintFile | null> => {
+  if (!articleFile || articleFile.persisted) return null
+
+  const formData = new FormData()
+  formData.set('file', articleFile.file)
+  formData.set('preprint', String(preprint?.pk))
+  formData.set('mime_type', articleFile.mime_type)
+  formData.set('original_filename', articleFile.original_filename)
+
+  return fetchWithTokenClient<PreprintFile>(
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/`,
+    {
+      method: 'POST',
+      body: formData,
+      onProgress: (progress) =>
+        setUploadProgress((prev) => ({ ...prev, article: progress })),
+      progressOptions: {
+        baseProgress: 100,
+        maxProgress: 100,
+      },
+      type: 'Article',
+    },
+  )
+}
+
+const wakeUpServer = async () => {
+  const healthUrl = `${process.env.NEXT_PUBLIC_FILE_UPLOADER_URL}/health`
+  const maxAttempts = 3
+  const delayMs = 500
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    try {
+      const response = await fetch(healthUrl)
+      if (response.ok) return
+      await new Promise((resolve) => setTimeout(resolve, delayMs))
+    } catch (error) {
+      if (attempt === maxAttempts - 1) {
+        throw new Error(
+          'Unable to connect to the file upload service. Please try again in a few moments.',
+        )
+      }
+      await new Promise((resolve) => setTimeout(resolve, delayMs))
+    }
   }
 
+  // If we've exhausted all attempts without success
+  throw new Error(
+    'The file upload service is currently unavailable. Please try again in a few moments.',
+  )
+}
+
+const handleDataUpload = async (
+  dataFile: FormData['dataFile'],
+  existingDataFile: SupplementaryFile | undefined,
+  setUploadProgress: SubmissionContext['setUploadProgress'],
+): Promise<{ label: string; url: string }[] | null> => {
+  if (!dataFile || dataFile.persisted) return null
+
+  // Wake up the server before attempting upload
+  await wakeUpServer()
+
+  // Save data file if it hasn't already been persisted
+  const formData = new FormData()
+  formData.set('name', dataFile.original_filename)
+  formData.set('file', dataFile.file)
+
+  const deposition = await (existingDataFile
+    ? fetchDataDeposition(existingDataFile.url)
+    : createDataDeposition())
+
+  if (deposition.files.length > 0) {
+    await Promise.all(
+      deposition.files.map((f) => deleteZenodoEntity(f.links.self)),
+    )
+  }
+
+  await fetchWithTokenClient<DepositionFile>(
+    `${process.env.NEXT_PUBLIC_FILE_UPLOADER_URL}/zenodo/upload-file?deposition_id=${deposition.id}`,
+    {
+      method: 'POST',
+      body: formData,
+      onProgress: (progress) =>
+        setUploadProgress((prev) => ({ ...prev, data: progress })),
+      progressOptions: {
+        baseProgress: 50,
+        maxProgress: 95,
+      },
+      type: 'Data',
+    },
+  )
+
+  return [{ label: 'CDRXIV_DATA_DRAFT', url: deposition.links.self }]
+}
+
+const getCleanupFunction = (
+  existingDataFile: SupplementaryFile | undefined,
+  submissionType: string,
+  files: PreprintFile[],
+  articleFile: FormData['articleFile'],
+): (() => Promise<any>) => {
+  return async () => {
+    const cleanupTasks: Promise<any>[] = []
+
+    if (existingDataFile && submissionType === 'Article') {
+      cleanupTasks.push(deleteZenodoEntity(existingDataFile.url))
+    }
+
+    if (files.length > 0 && submissionType === 'Data') {
+      cleanupTasks.push(...files.map((file) => deletePreprintFile(file.pk)))
+    }
+
+    // clear other article files if needed
+    if (files.length > 0 && articleFile && !articleFile?.persisted) {
+      files.forEach((file) => cleanupTasks.push(deletePreprintFile(file.pk)))
+    }
+
+    return Promise.all(cleanupTasks)
+  }
+}
+
+export const submitForm = async ({
+  preprint,
+  setPreprint,
+  files,
+  setFiles,
+  formData: { articleFile, dataFile, externalFile },
+  setUploadProgress,
+}: SubmissionContext) => {
+  console.log(preprint, files, { articleFile, dataFile, externalFile })
   if (!preprint) {
     throw new Error('Tried to submit without active preprint')
   }
+
+  initializeUploadProgress(articleFile, dataFile, setUploadProgress)
 
   const existingDataFile = preprint.supplementary_files.find(
     (file) => file.label === 'CDRXIV_DATA_DRAFT',
   )
   const submissionType = getSubmissionType({ dataFile, articleFile })
 
-  let preprintFiles: PreprintFile[]
-  // Save article PDF if it hasn't already been persisted
-  if (articleFile && !articleFile.persisted) {
-    const formData = new FormData()
+  const cleanUpFiles = getCleanupFunction(
+    existingDataFile,
+    submissionType,
+    files,
+    articleFile,
+  )
 
-    formData.set('file', articleFile.file)
-    formData.set('preprint', String(preprint?.pk))
-    formData.set('mime_type', articleFile.mime_type)
-    formData.set('original_filename', articleFile.original_filename)
+  await cleanUpFiles()
 
-    uploads.push(
-      fetchWithTokenClient<PreprintFile>(
-        `https://cdrxiv-file-uploader.fly.dev/janeway/create-preprint-file`,
-        {
-          method: 'POST',
-          body: formData,
-          onProgress: (progress) =>
-            setUploadProgress((prev: UploadProgress) => ({
-              ...prev,
-              article: progress,
-            })),
-          progressOptions: {
-            baseProgress: 60,
-            maxProgress: 95,
-          },
-        },
-      ).then((preprintFile) => {
-        preprintFiles = [preprintFile]
-      }),
-    )
-  }
+  const [newPreprintFile, supplementaryFiles] = await Promise.all([
+    handleArticleUpload(articleFile, preprint, setUploadProgress),
+    handleDataUpload(dataFile, existingDataFile, setUploadProgress),
+  ])
 
-  let cleanUpFiles: () => Promise<any> = async () => null
-
-  // If the data file has been cleared...
-  if (existingDataFile && submissionType === 'Article') {
-    cleanUpFiles = () => deleteZenodoEntity(existingDataFile.url) // delete the data deposition
-  }
-
-  // If the article PDF file has been cleared...
-  if (files.length > 0 && submissionType === 'Data') {
-    preprintFiles = []
-    cleanUpFiles = () =>
-      Promise.all(files.map((file) => deletePreprintFile(file.pk))) // delete previous preprint files
-  }
-
-  let supplementaryFiles
-  if (dataFile?.persisted) {
-    supplementaryFiles = preprint.supplementary_files
-  } else if (dataFile) {
-    // Save data file if it hasn't already been persisted
-    const formData = new FormData()
-    formData.set('name', dataFile.original_filename)
-    formData.set('file', dataFile.file)
-
-    const deposition = await (existingDataFile
-      ? fetchDataDeposition(existingDataFile.url)
-      : createDataDeposition())
-    if (deposition.files.length > 0) {
-      await Promise.all([
-        deposition.files.map((f) => deleteZenodoEntity(f.links.self)), // delete previous data deposition files
-      ])
-    }
-
-    uploads.push(
-      fetchWithTokenClient(
-        `https://cdrxiv-file-uploader.fly.dev/zenodo/upload-file?deposition_id=${deposition.id}`,
-        {
-          method: 'POST',
-          body: formData,
-          onProgress: (progress) =>
-            setUploadProgress((prev: UploadProgress) => ({
-              ...prev,
-              data: progress,
-            })),
-          progressOptions: {
-            baseProgress: 70,
-            maxProgress: 95,
-          },
-        },
-      ).then(() => {
-        supplementaryFiles = [
-          { label: 'CDRXIV_DATA_DRAFT', url: deposition.links.self },
-        ]
-      }),
-    )
-  } else {
-    supplementaryFiles = externalFile ? [externalFile] : []
-  }
-
-  await Promise.all(uploads)
+  // Prepare final supplementary files
+  const finalSupplementaryFiles = dataFile?.persisted
+    ? preprint.supplementary_files
+    : (supplementaryFiles ?? (externalFile ? [externalFile] : []))
 
   const additionalFieldAnswers = [
     ...preprint.additional_field_answers.filter(
@@ -277,11 +343,10 @@ export const submitForm = async (
 
   const params = {
     additional_field_answers: additionalFieldAnswers,
-    supplementary_files: supplementaryFiles,
+    supplementary_files: finalSupplementaryFiles,
   }
 
   return updatePreprint(preprint, params)
     .then((updated) => setPreprint(updated))
-    .then(cleanUpFiles)
-    .then(() => (preprintFiles ? setFiles(preprintFiles) : undefined))
+    .then(() => (newPreprintFile ? setFiles([newPreprintFile]) : undefined))
 }

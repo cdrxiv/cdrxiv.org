@@ -21,14 +21,14 @@ const SubmissionOverview = () => {
     () => initializeForm(preprint, files),
     validateForm,
     (values: FormData) =>
-      submitForm(
+      submitForm({
         preprint,
         setPreprint,
         files,
         setFiles,
-        values,
+        formData: values,
         setUploadProgress,
-      ),
+      }),
   )
   const [disableAgreement] = useState<boolean>(data.agreement)
 

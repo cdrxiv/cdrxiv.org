@@ -89,7 +89,7 @@ export const fetchWithTokenClient = async <T>(
         console.error(xhr.responseText)
         reject(
           new Error(
-            `${options?.type ? `${options.type} ` : ''}upload failed with status ${xhr.status}`,
+            `${options?.type ? `${options.type} error: ` : ''}${JSON.parse(xhr.responseText).file?.[0] || xhr.responseText}`,
           ),
         )
       }
