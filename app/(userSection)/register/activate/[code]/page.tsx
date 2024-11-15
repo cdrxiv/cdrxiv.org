@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 
 import { activateAccount } from '../../../../../actions/account'
 import ErrorState from './error-state'
-import AuthorActivation from './author-activation'
+import AgreementActivation from './agreement-activation'
 
 type Props = { params: { code: string } }
 const Page = async ({ params: { code } }: Props) => {
@@ -18,12 +18,14 @@ const Page = async ({ params: { code } }: Props) => {
       await client.sql`SELECT * FROM user_agreements WHERE account_id = ${user}`
     if (userAgreements.length === 1) {
       try {
+        // If user has seen and accepted agreements, activate immediately and redirect.
         await activateAccount(user, code, { recordAgreement: false })
       } catch {
         return <ErrorState />
       }
     } else {
-      return <AuthorActivation user={user} code={code} />
+      // Otherwise, show + record agreement before activating.
+      return <AgreementActivation user={user} code={code} />
     }
   } else {
     return (

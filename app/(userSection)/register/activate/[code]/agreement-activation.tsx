@@ -6,7 +6,13 @@ import { useCallback, useState } from 'react'
 import { Button, Form, Link } from '../../../../../components'
 import { activateAccount } from '../../../../../actions/account'
 
-const AuthorActivation = ({ user, code }: { user: number; code: string }) => {
+const AgreementActivation = ({
+  user,
+  code,
+}: {
+  user: number
+  code: string
+}) => {
   const [activateError, setActivateError] = useState<string>()
   const [successful, setSuccessful] = useState<boolean>(false)
   const handleClick = useCallback(async () => {
@@ -51,4 +57,4 @@ const AuthorActivation = ({ user, code }: { user: number; code: string }) => {
   )
 }
 
-export default AuthorActivation
+export default AgreementActivation
