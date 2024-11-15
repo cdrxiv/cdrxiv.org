@@ -13,11 +13,6 @@ const PATHS = [
     title: 'Scope',
     public: true,
   },
-  {
-    href: '/about/privacy',
-    title: 'Privacy policy',
-    public: true,
-  },
 ]
 
 const About: React.FC<{ children: React.ReactNode }> = ({ children }) => {

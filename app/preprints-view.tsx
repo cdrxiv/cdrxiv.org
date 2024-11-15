@@ -1,11 +1,12 @@
 'use client'
 
-import { Box } from 'theme-ui'
+import { Box, Flex } from 'theme-ui'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 import { fetchPublishedPreprints } from '../actions'
 import type { PublishedPreprint } from '../types/preprint'
+import { Loading } from '../components'
 import List from './list'
 import Grid from './grid'
 
@@ -19,7 +20,7 @@ const PreprintsView = (props: Props) => {
   const sentinelRef = useRef<HTMLDivElement>()
   const [nextPage, setNextPage] = useState(props.nextPage)
   const [preprints, setPreprints] = useState(props.preprints)
-
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const searchParams = useSearchParams()
 
   const [currentView, setCurrentView] = useState<ViewType>(
@@ -40,9 +41,11 @@ const PreprintsView = (props: Props) => {
 
   const handleNextPage = useCallback(() => {
     if (nextPage) {
+      setIsLoading(true)
       fetchPublishedPreprints(nextPage).then((results) => {
         setNextPage(results.next)
         setPreprints((prev) => [...prev, ...results.results])
+        setIsLoading(false)
       })
     }
   }, [nextPage])
@@ -78,6 +81,12 @@ const PreprintsView = (props: Props) => {
         <List preprints={preprints} />
       ) : (
         <Grid preprints={preprints} />
+      )}
+
+      {isLoading && (
+        <Flex sx={{ justifyContent: 'center', mt: 5 }}>
+          <Loading />
+        </Flex>
       )}
 
       {nextPage && (

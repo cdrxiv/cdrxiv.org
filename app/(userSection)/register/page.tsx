@@ -3,9 +3,10 @@
 import { useSession } from 'next-auth/react'
 import { useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Box, Input } from 'theme-ui'
+import { Input } from 'theme-ui'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
 
+import Agreement from './agreement'
 import {
   Button,
   Column,
@@ -29,6 +30,7 @@ type FormData = {
   password: string
   repeat_password: string
   verified: boolean
+  agreement: boolean
 }
 
 const initializeForm = (): FormData => {
@@ -42,6 +44,7 @@ const initializeForm = (): FormData => {
     password: '',
     repeat_password: '',
     verified: false,
+    agreement: false,
   }
 }
 
@@ -55,6 +58,7 @@ const validateForm = ({
   password,
   repeat_password,
   verified,
+  agreement,
 }: FormData) => {
   let result: Partial<{ [K in keyof FormData]: string }> = {}
 
@@ -94,6 +98,10 @@ const validateForm = ({
 
   if (!verified) {
     result.verified = 'You must complete the challenge.'
+  }
+  if (!agreement) {
+    result.agreement =
+      'You must agree and acknowledge in order to create an account.'
   }
 
   return result
@@ -285,6 +293,13 @@ const Page = () => {
         </Column>
       </Row>
 
+      <Field error={errors.agreement}>
+        <Agreement
+          checked={data.agreement}
+          onChange={(e) => setters.agreement(e.target.checked)}
+        />
+      </Field>
+
       <Field error={errors.verified}>
         <HCaptcha
           sitekey='04a4d35c-a606-49c8-8832-b0440842c0aa'
@@ -292,12 +307,6 @@ const Page = () => {
         />
       </Field>
 
-      <Box>
-        By registering an account, you agree to our{' '}
-        <Link href='/TK'>Terms of Use</Link> and acknowledge our{' '}
-        <Link href='/TK'>Privacy Policy</Link> and{' '}
-        <Link href='/TK'>Cookies Disclosure</Link>.
-      </Box>
       <Button onClick={handleSubmit}>Create account</Button>
     </Form>
   )
