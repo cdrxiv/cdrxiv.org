@@ -15,7 +15,6 @@ import {
 import {
   fetchDataDeposition as fetchDataDepositionBase,
   createDataDeposition as createDataDepositionBase,
-  createDataDepositionFile as createDataDepositionFileBase,
   createDataDepositionVersion as createDataDepositionVersionBase,
   deleteZenodoEntity as deleteZenodoEntityBase,
   updateDataDeposition as updateDataDepositionBase,
@@ -37,9 +36,6 @@ export const fetchPublishedPreprints = throwActionErrors(
 
 export const fetchDataDeposition = throwActionErrors(fetchDataDepositionBase)
 export const createDataDeposition = throwActionErrors(createDataDepositionBase)
-export const createDataDepositionFile = throwActionErrors(
-  createDataDepositionFileBase,
-)
 export const createDataDepositionVersion = throwActionErrors(
   createDataDepositionVersionBase,
 )
