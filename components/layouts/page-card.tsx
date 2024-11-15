@@ -152,14 +152,14 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
               <Box sx={{ ...sx.footer, flexBasis: ['100%', 'inherit'] }}>
                 Powered by Janeway
               </Box>
-              <Link href='/TK' sx={sx.footer}>
+              <Link href='/terms-of-use' sx={sx.footer}>
                 Terms of Use
               </Link>
-              <Link href='/TK' sx={sx.footer}>
+              <Link href='/privacy-policy' sx={sx.footer}>
                 Privacy Policy
               </Link>
-              <Link href='/TK' sx={sx.footer}>
-                Cookies Disclosure
+              <Link href='/cookies-notice' sx={sx.footer}>
+                Cookies Notice
               </Link>
             </Flex>
           </Flex>

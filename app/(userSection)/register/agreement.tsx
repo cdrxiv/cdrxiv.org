@@ -5,9 +5,9 @@ const Agreement = ({ action = 'registering' }: { action?: string }) => {
   return (
     <Box>
       By {action} your account, you agree to our{' '}
-      <Link href='/TK'>Terms of Use</Link> and acknowledge our{' '}
-      <Link href='/TK'>Privacy Policy</Link> and{' '}
-      <Link href='/TK'>Cookies Disclosure</Link>.
+      <Link href='/terms-of-use'>Terms of Use</Link> and acknowledge our{' '}
+      <Link href='/privacy-policy'>Privacy Policy</Link> and{' '}
+      <Link href='/cookies-notice'>Cookies Notice</Link>.
     </Box>
   )
 }
