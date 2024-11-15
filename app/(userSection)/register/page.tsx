@@ -30,6 +30,7 @@ type FormData = {
   password: string
   repeat_password: string
   verified: boolean
+  agreement: boolean
 }
 
 const initializeForm = (): FormData => {
@@ -43,6 +44,7 @@ const initializeForm = (): FormData => {
     password: '',
     repeat_password: '',
     verified: false,
+    agreement: false,
   }
 }
 
@@ -56,6 +58,7 @@ const validateForm = ({
   password,
   repeat_password,
   verified,
+  agreement,
 }: FormData) => {
   let result: Partial<{ [K in keyof FormData]: string }> = {}
 
@@ -95,6 +98,10 @@ const validateForm = ({
 
   if (!verified) {
     result.verified = 'You must complete the challenge.'
+  }
+  if (!agreement) {
+    result.agreement =
+      'You must agree and acknowledge in order to create an account.'
   }
 
   return result
@@ -286,6 +293,13 @@ const Page = () => {
         </Column>
       </Row>
 
+      <Field error={errors.agreement}>
+        <Agreement
+          checked={data.agreement}
+          onChange={(e) => setters.agreement(e.target.checked)}
+        />
+      </Field>
+
       <Field error={errors.verified}>
         <HCaptcha
           sitekey='04a4d35c-a606-49c8-8832-b0440842c0aa'
@@ -293,7 +307,6 @@ const Page = () => {
         />
       </Field>
 
-      <Agreement />
       <Button onClick={handleSubmit}>Create account</Button>
     </Form>
   )
