@@ -16,7 +16,6 @@ const GridView: React.FC<GridViewProps> = ({ preprints }) => {
       gap={[5, 6, 6, 8]}
       sx={{
         gridAutoRows: '1fr',
-        mb: ['18px', '36px', '36px', '52px'],
         padding: 0,
       }}
     >
