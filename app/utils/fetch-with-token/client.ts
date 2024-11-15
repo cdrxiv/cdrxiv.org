@@ -15,6 +15,7 @@ export const fetchWithTokenClient = async <T>(
   options?: RequestInit & {
     onProgress?: ProgressCallback
     progressOptions?: ProgressOptions
+    type?: 'Article' | 'Data'
   },
 ): Promise<T> => {
   const session = (await getSession()) as Session | null
@@ -31,8 +32,7 @@ export const fetchWithTokenClient = async <T>(
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest()
     const startTime = Date.now()
-    let uploadComplete = false
-    let progressInterval: NodeJS.Timeout | null = null
+    let progressInterval: ReturnType<typeof window.setInterval> | null = null
 
     const baseProgress = options?.progressOptions?.baseProgress ?? 100
     const maxProgress = options?.progressOptions?.maxProgress ?? 100
@@ -48,7 +48,6 @@ export const fetchWithTokenClient = async <T>(
 
     // When upload completes, start simulating progress from baseProgress to maxProgress
     xhr.upload.addEventListener('loadend', () => {
-      uploadComplete = true
       const uploadDuration = Date.now() - startTime
 
       if (options?.onProgress) {
@@ -80,18 +79,30 @@ export const fetchWithTokenClient = async <T>(
           const response = JSON.parse(xhr.responseText)
           resolve(response as T)
         } catch (error) {
-          reject(new Error('Failed to parse response'))
+          reject(
+            new Error(
+              `${options?.type ? `${options.type} issue ; ` : ''}failed to parse response: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            ),
+          )
         }
       } else {
-        reject(new Error(`Upload failed with status ${xhr.status}`))
+        console.error(xhr.responseText)
+        reject(
+          new Error(
+            `${options?.type ? `${options.type} ` : ''}upload failed with status ${xhr.status}`,
+          ),
+        )
       }
     })
 
-    xhr.addEventListener('error', () => {
+    xhr.addEventListener('error', (error) => {
+      console.error(error)
       if (progressInterval) {
         clearInterval(progressInterval)
       }
-      reject(new Error('Upload failed'))
+      reject(
+        new Error(`${options?.type ? `${options.type} ` : ''}upload failed`),
+      )
     })
 
     xhr.open('POST', url, true)
