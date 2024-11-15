@@ -3,9 +3,10 @@
 import { useSession } from 'next-auth/react'
 import { useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Box, Input } from 'theme-ui'
+import { Input } from 'theme-ui'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
 
+import Agreement from './agreement'
 import {
   Button,
   Column,
@@ -292,12 +293,7 @@ const Page = () => {
         />
       </Field>
 
-      <Box>
-        By registering an account, you agree to our{' '}
-        <Link href='/TK'>Terms of Use</Link> and acknowledge our{' '}
-        <Link href='/TK'>Privacy Policy</Link> and{' '}
-        <Link href='/TK'>Cookies Disclosure</Link>.
-      </Box>
+      <Agreement />
       <Button onClick={handleSubmit}>Create account</Button>
     </Form>
   )

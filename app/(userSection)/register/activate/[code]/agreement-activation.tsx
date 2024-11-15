@@ -3,6 +3,7 @@
 import { Box, Flex } from 'theme-ui'
 import { useCallback, useState } from 'react'
 
+import Agreement from '../../agreement'
 import { Button, Form, Link } from '../../../../../components'
 import { activateAccount } from '../../../../../actions/account'
 
@@ -43,12 +44,7 @@ const AgreementActivation = ({
         </>
       ) : (
         <>
-          <Box>
-            By activating your account, you agree to our{' '}
-            <Link href='/TK'>Terms of Use</Link> and acknowledge our{' '}
-            <Link href='/TK'>Privacy Policy</Link> and{' '}
-            <Link href='/TK'>Cookies Disclosure</Link>.
-          </Box>
+          <Agreement action='activating' />
 
           <Button onClick={handleClick}>Activate account</Button>
         </>
