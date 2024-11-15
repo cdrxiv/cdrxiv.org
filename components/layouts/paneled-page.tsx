@@ -56,7 +56,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ progress, sx }) => {
     <Box
       sx={{
         width: '100%',
-        height: '0.5em',
+        height: '0.4em',
         bg: 'muted',
         overflow: 'hidden',
         ...sx,
@@ -264,20 +264,32 @@ const PaneledPage: React.FC<{
                         uploadProgress.data === undefined && <Loading />}
 
                       {uploadProgress.article !== undefined && (
-                        <Box sx={{ width: '80%', maxWidth: '400px' }}>
-                          <Loading
-                            baseText='Uploading article'
-                            sx={{ width: '100%', mb: 2 }}
-                          />
+                        <Box sx={{ width: '80%', maxWidth: '400px', mb: 4 }}>
+                          {uploadProgress.article === 100 ? (
+                            <Box sx={{ width: '100%', mb: 2 }}>
+                              Article upload complete
+                            </Box>
+                          ) : (
+                            <Loading
+                              baseText='Uploading article'
+                              sx={{ width: '100%', mb: 2 }}
+                            />
+                          )}
                           <ProgressBar progress={uploadProgress.article} />
                         </Box>
                       )}
                       {uploadProgress.data !== undefined && (
                         <Box sx={{ width: '80%', maxWidth: '400px' }}>
-                          <Loading
-                            baseText='Uploading data'
-                            sx={{ width: '100%', mb: 2 }}
-                          />
+                          {uploadProgress.data === 100 ? (
+                            <Box sx={{ width: '100%', mb: 2 }}>
+                              Data upload complete
+                            </Box>
+                          ) : (
+                            <Loading
+                              baseText='Uploading data'
+                              sx={{ width: '100%', mb: 2 }}
+                            />
+                          )}
                           <ProgressBar progress={uploadProgress.data} />
                         </Box>
                       )}
