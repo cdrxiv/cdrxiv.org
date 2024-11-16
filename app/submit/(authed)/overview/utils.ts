@@ -16,6 +16,7 @@ import {
 import { FileInputValue } from '../../../../components'
 import { LICENSE_MAPPING } from '../../constants'
 import { fetchWithTokenClient } from '../../../utils/fetch-with-token/client'
+import { revalidateTag } from 'next/cache'
 
 export type FormData = {
   agreement: boolean
@@ -219,9 +220,6 @@ const handleDataUpload = async (
 ): Promise<{ label: string; url: string }[] | null> => {
   if (!dataFile || dataFile.persisted) return null
 
-  // Wake up the server before attempting upload
-  await wakeUpServer()
-
   // Save data file if it hasn't already been persisted
   const formData = new FormData()
   formData.set('name', dataFile.original_filename)
@@ -237,7 +235,10 @@ const handleDataUpload = async (
     )
   }
 
-  await fetchWithTokenClient<DepositionFile>(
+  // Wake up the server before attempting upload
+  await wakeUpServer()
+
+  const depositionFile = await fetchWithTokenClient<DepositionFile>(
     `${process.env.NEXT_PUBLIC_FILE_UPLOADER_URL}/zenodo/upload-file?deposition_id=${deposition.id}`,
     {
       method: 'POST',
@@ -252,33 +253,31 @@ const handleDataUpload = async (
     },
   )
 
+  if (!depositionFile) {
+    throw new Error('Failed to upload data file')
+  }
+
   return [{ label: 'CDRXIV_DATA_DRAFT', url: deposition.links.self }]
 }
 
-const getCleanupFunction = (
+const cleanupFiles = async (
   existingDataFile: SupplementaryFile | undefined,
   submissionType: string,
   files: PreprintFile[],
   articleFile: FormData['articleFile'],
-): (() => Promise<any>) => {
-  return async () => {
-    const cleanupTasks: Promise<any>[] = []
-
-    if (existingDataFile && submissionType === 'Article') {
-      cleanupTasks.push(deleteZenodoEntity(existingDataFile.url))
-    }
-
-    if (files.length > 0 && submissionType === 'Data') {
-      cleanupTasks.push(...files.map((file) => deletePreprintFile(file.pk)))
-    }
-
-    // clear other article files if needed
-    if (files.length > 0 && articleFile && !articleFile?.persisted) {
-      files.forEach((file) => cleanupTasks.push(deletePreprintFile(file.pk)))
-    }
-
-    return Promise.all(cleanupTasks)
+) => {
+  const cleanupTasks: Promise<any>[] = []
+  if (existingDataFile && submissionType === 'Article') {
+    cleanupTasks.push(deleteZenodoEntity(existingDataFile.url))
   }
+  if (files.length > 0 && submissionType === 'Data') {
+    cleanupTasks.push(...files.map((file) => deletePreprintFile(file.pk)))
+  }
+  // clear other article files if needed
+  if (files.length > 0 && articleFile && !articleFile?.persisted) {
+    files.forEach((file) => cleanupTasks.push(deletePreprintFile(file.pk)))
+  }
+  await Promise.all(cleanupTasks)
 }
 
 export const submitForm = async ({
@@ -289,7 +288,6 @@ export const submitForm = async ({
   formData: { articleFile, dataFile, externalFile },
   setUploadProgress,
 }: SubmissionContext) => {
-  console.log(preprint, files, { articleFile, dataFile, externalFile })
   if (!preprint) {
     throw new Error('Tried to submit without active preprint')
   }
@@ -301,14 +299,7 @@ export const submitForm = async ({
   )
   const submissionType = getSubmissionType({ dataFile, articleFile })
 
-  const cleanUpFiles = getCleanupFunction(
-    existingDataFile,
-    submissionType,
-    files,
-    articleFile,
-  )
-
-  await cleanUpFiles()
+  await cleanupFiles(existingDataFile, submissionType, files, articleFile)
 
   const [newPreprintFile, supplementaryFiles] = await Promise.all([
     handleArticleUpload(articleFile, preprint, setUploadProgress),
