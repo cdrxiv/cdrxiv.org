@@ -159,25 +159,32 @@ const submitForm = async (
     dataFile &&
     !dataFile.persisted
   ) {
-    const label =
-      preprint.stage === 'preprint_published'
-        ? 'CDRXIV_DATA_PUBLISHED'
-        : 'CDRXIV_DATA_DRAFT'
-    const depositionUrl =
-      preprint.supplementary_files.find((file) => file.label === label)?.url ??
-      null
+    const [published, draft] = [
+      'CDRXIV_DATA_PUBLISHED',
+      'CDRXIV_DATA_DRAFT',
+    ].map((label) =>
+      preprint.supplementary_files.find((file) => file.label === label),
+    )
 
-    if (!depositionUrl) {
-      throw new Error('No published data uploads found.')
+    let activeUrl
+
+    if (draft) {
+      // Always work with latest CDRXIV_DATA_DRAFT, when present
+      activeUrl = draft.url
+    } else if (published) {
+      // Otherwise check depositions stored under CDRXIV_DATA_PUBLISHED
+      activeUrl = published.url
+    } else {
+      throw new Error('No existing data upload found.')
     }
 
-    const existingDeposition = await fetchDataDeposition(depositionUrl)
+    const existingDeposition = await fetchDataDeposition(activeUrl)
 
-    if (label === 'CDRXIV_DATA_PUBLISHED' && !existingDeposition.submitted) {
+    if (!draft && !existingDeposition.submitted) {
       throw new Error(
         "Expected data to have been previously published, but it wasn't.",
       )
-    } else if (label === 'CDRXIV_DATA_DRAFT' && existingDeposition.submitted) {
+    } else if (draft && existingDeposition.submitted) {
       throw new Error(
         'Data has been published, but your preprint has not. Unable to update data.',
       )
@@ -217,7 +224,10 @@ const submitForm = async (
 
     if (newUrl) {
       await updatePreprint(preprint, {
-        supplementary_files: [{ label: 'CDRXIV_DATA_DRAFT', url: newUrl }],
+        supplementary_files: [
+          ...(published ? [published] : []),
+          { label: 'CDRXIV_DATA_DRAFT', url: newUrl },
+        ],
       })
     }
   }
