@@ -201,10 +201,13 @@ const EditFormContent: React.FC<Props> = ({ versions, preprint }) => {
   )
 
   const handleSubmit = useCallback(async () => {
-    setIsLoading(true) // toggle off handled in paneled-page
+    setIsLoading(true)
     const result = await onSubmit()
     if (result) {
       router.push('/submissions')
+      // Loading toggle off handled in paneled-page
+    } else {
+      setIsLoading(false)
     }
   }, [onSubmit, router, setIsLoading])
 
