@@ -2,6 +2,7 @@ import { throwActionErrors } from './client-utils'
 import {
   registerAccount as registerAccountBase,
   updateAccount as updateAccountBase,
+  activateAccount as activateAccountBase,
 } from './account'
 import {
   createPreprintFile as createPreprintFileBase,
@@ -25,6 +26,7 @@ import { verify as verifyBase } from './hcaptcha'
 
 export const registerAccount = throwActionErrors(registerAccountBase)
 export const updateAccount = throwActionErrors(updateAccountBase)
+export const activateAccount = throwActionErrors(activateAccountBase)
 
 export const createPreprintFile = throwActionErrors(createPreprintFileBase)
 export const createVersionQueue = throwActionErrors(createVersionQueueBase)
