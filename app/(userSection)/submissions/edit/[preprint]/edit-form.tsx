@@ -208,7 +208,7 @@ const submitForm = async (
     formData.set('deposition', depositionId.toString())
 
     await fetchWithTokenClient(
-      `https://cdrxiv-file-uploader.fly.dev/zenodo/upload-file?deposition_id=${depositionId}`,
+      `${process.env.NEXT_PUBLIC_FILE_UPLOADER_URL}/zenodo/upload-file?deposition_id=${depositionId}`,
       {
         method: 'POST',
         body: formData,
