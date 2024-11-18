@@ -298,7 +298,7 @@ const EditFormContent: React.FC<Props> = ({ versions, preprint }) => {
         <Field
           label='Data file'
           id='dataFile'
-          description='Your data submission must be a single file of any format, including ZIP.'
+          description='Your data submission must be a single file of any format, including ZIP, up to 10 GB.'
           error={errors.dataFile}
         >
           <FileInput file={data.dataFile} onChange={setters.dataFile} />
