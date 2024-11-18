@@ -16,7 +16,6 @@ import {
 import { FileInputValue } from '../../../../components'
 import { LICENSE_MAPPING } from '../../constants'
 import { fetchWithTokenClient } from '../../../utils/fetch-with-token/client'
-import { revalidateTag } from 'next/cache'
 
 export type FormData = {
   agreement: boolean
