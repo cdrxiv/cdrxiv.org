@@ -3,19 +3,20 @@ import {
   PreprintFile,
   SupplementaryFile,
 } from '../../../../types/preprint'
-import { DepositionFile } from '../../../../types/zenodo'
 
 import { createAdditionalField } from '../utils'
 import {
   deletePreprintFile,
   updatePreprint,
   deleteZenodoEntity,
-  fetchDataDeposition,
-  createDataDeposition,
 } from '../../../../actions/'
 import { FileInputValue } from '../../../../components'
 import { LICENSE_MAPPING } from '../../constants'
-import { fetchWithTokenClient } from '../../../utils/fetch-with-token/client'
+import {
+  handleArticleUpload,
+  handleDataUpload,
+  initializeUploadProgress,
+} from '../../../utils/upload-handlers'
 
 export type FormData = {
   agreement: boolean
@@ -144,121 +145,6 @@ type SubmissionContext = {
   setUploadProgress: (updater: (prev: UploadProgress) => UploadProgress) => void
 }
 
-const initializeUploadProgress = (
-  articleFile: FormData['articleFile'],
-  dataFile: FormData['dataFile'],
-  setUploadProgress: SubmissionContext['setUploadProgress'],
-) => {
-  if (articleFile && !articleFile.persisted) {
-    setUploadProgress((prev) => ({ ...prev, article: 1 }))
-  }
-  if (dataFile && !dataFile.persisted) {
-    setUploadProgress((prev) => ({ ...prev, data: 1 }))
-  }
-}
-
-const handleArticleUpload = async (
-  articleFile: FormData['articleFile'],
-  preprint: Preprint,
-  setUploadProgress: SubmissionContext['setUploadProgress'],
-): Promise<PreprintFile | null> => {
-  if (!articleFile || articleFile.persisted) return null
-
-  const formData = new FormData()
-  formData.set('file', articleFile.file)
-  formData.set('preprint', String(preprint?.pk))
-  formData.set('mime_type', articleFile.mime_type)
-  formData.set('original_filename', articleFile.original_filename)
-
-  return fetchWithTokenClient<PreprintFile>(
-    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/`,
-    {
-      method: 'POST',
-      body: formData,
-      onProgress: (progress) =>
-        setUploadProgress((prev) => ({ ...prev, article: progress })),
-      progressOptions: {
-        baseProgress: 100,
-        maxProgress: 100,
-      },
-      type: 'Article',
-    },
-  )
-}
-
-const wakeUpServer = async () => {
-  const healthUrl = `${process.env.NEXT_PUBLIC_FILE_UPLOADER_URL}/health`
-  const maxAttempts = 3
-  const delayMs = 500
-
-  for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    try {
-      const response = await fetch(healthUrl)
-      if (response.ok) return
-      await new Promise((resolve) => setTimeout(resolve, delayMs))
-    } catch (error) {
-      if (attempt === maxAttempts - 1) {
-        throw new Error(
-          'Unable to connect to the file upload service. Please try again in a few moments.',
-        )
-      }
-      await new Promise((resolve) => setTimeout(resolve, delayMs))
-    }
-  }
-
-  // If we've exhausted all attempts without success
-  throw new Error(
-    'The file upload service is currently unavailable. Please try again in a few moments.',
-  )
-}
-
-const handleDataUpload = async (
-  dataFile: FormData['dataFile'],
-  existingDataFile: SupplementaryFile | undefined,
-  setUploadProgress: SubmissionContext['setUploadProgress'],
-): Promise<{ label: string; url: string }[] | null> => {
-  if (!dataFile || dataFile.persisted) return null
-
-  // Save data file if it hasn't already been persisted
-  const formData = new FormData()
-  formData.set('name', dataFile.original_filename)
-  formData.set('file', dataFile.file)
-
-  const deposition = await (existingDataFile
-    ? fetchDataDeposition(existingDataFile.url)
-    : createDataDeposition())
-
-  if (deposition.files.length > 0) {
-    await Promise.all(
-      deposition.files.map((f) => deleteZenodoEntity(f.links.self)),
-    )
-  }
-
-  // Wake up the server before attempting upload
-  await wakeUpServer()
-
-  const depositionFile = await fetchWithTokenClient<DepositionFile>(
-    `${process.env.NEXT_PUBLIC_FILE_UPLOADER_URL}/zenodo/upload-file?deposition_id=${deposition.id}`,
-    {
-      method: 'POST',
-      body: formData,
-      onProgress: (progress) =>
-        setUploadProgress((prev) => ({ ...prev, data: progress })),
-      progressOptions: {
-        baseProgress: 50,
-        maxProgress: 95,
-      },
-      type: 'Data',
-    },
-  )
-
-  if (!depositionFile) {
-    throw new Error('Failed to upload data file')
-  }
-
-  return [{ label: 'CDRXIV_DATA_DRAFT', url: deposition.links.self }]
-}
-
 const cleanupFiles = async (
   existingDataFile: SupplementaryFile | undefined,
   submissionType: string,
@@ -301,7 +187,7 @@ export const submitForm = async ({
   await cleanupFiles(existingDataFile, submissionType, files, articleFile)
 
   const [newPreprintFile, supplementaryFiles] = await Promise.all([
-    handleArticleUpload(articleFile, preprint, setUploadProgress),
+    handleArticleUpload(articleFile, preprint.pk, setUploadProgress),
     handleDataUpload(dataFile, existingDataFile, setUploadProgress),
   ])
 
