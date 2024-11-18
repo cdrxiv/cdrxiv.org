@@ -135,9 +135,7 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
             <Box>
               <CardContext.Provider value={contextValue}>
                 <PageCorner onToggle={toggleTrail} isHomePage={isHomePage} />
-                {isFullSiteEnabled() && isTrailActive && isHomePage && (
-                  <MouseTrail />
-                )}
+                {isTrailActive && isHomePage && <MouseTrail />}
                 {isSuccessfulSubmissionPage && <SparklyMouseTrail />}
 
                 <Box sx={{ contain: 'layout' }}>

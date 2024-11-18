@@ -10,6 +10,9 @@ const AUTHED_ROUTES = [
   '/submit/authors',
   '/submit/confirm',
 ]
+
+const FULL_SITE_ROUTES = ['/search', '/preprint/']
+
 const withAuthMiddleware = withAuth({
   pages: {
     signIn: '/account',
@@ -29,7 +32,7 @@ export const middleware = (
     }
   }
 
-  if (request.nextUrl.pathname !== '/') {
+  if (FULL_SITE_ROUTES.includes(request.nextUrl.pathname)) {
     return NextResponse.redirect(new URL('/', request.url))
   }
 

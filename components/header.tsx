@@ -177,9 +177,7 @@ const Header = () => {
           start={[4, 4, 5, 5]}
           width={[5, 5, 6, 6]}
           sx={{
-            display: isFullSiteEnabled()
-              ? ['none', 'inherit', 'inherit', 'inherit']
-              : 'none',
+            display: ['none', 'inherit', 'inherit', 'inherit'],
           }}
         >
           <Flex
@@ -195,9 +193,7 @@ const Header = () => {
           start={4}
           width={2}
           sx={{
-            display: isFullSiteEnabled()
-              ? ['inherit', 'none', 'none', 'none']
-              : 'none',
+            display: ['inherit', 'none', 'none', 'none'],
           }}
         >
           <StyledButton
