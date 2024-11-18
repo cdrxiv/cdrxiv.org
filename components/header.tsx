@@ -95,7 +95,11 @@ const AccountLink = ({
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 })
+  const [menuPosition, setMenuPosition] = useState({
+    top: 0,
+    right: 0,
+    left: 0,
+  })
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const searchRef = useRef<HTMLInputElement>(null)
   const { cardBackground } = useBackgroundColors()
@@ -125,6 +129,7 @@ const Header = () => {
       setMenuPosition({
         top: rect.bottom,
         right: window.innerWidth - rect.right,
+        left: rect.left,
       })
     }
     setMenuOpen((open) => !open)
@@ -174,7 +179,7 @@ const Header = () => {
           />
         </Column>
         <Column
-          start={[4, 4, 5, 5]}
+          start={isFullSiteEnabled() ? [4, 4, 5, 5] : 1}
           width={[5, 5, 6, 6]}
           sx={{
             display: ['none', 'inherit', 'inherit', 'inherit'],
@@ -190,7 +195,7 @@ const Header = () => {
           </Flex>
         </Column>
         <Column
-          start={4}
+          start={isFullSiteEnabled() ? 4 : 1}
           width={2}
           sx={{
             display: ['inherit', 'none', 'none', 'none'],
@@ -210,7 +215,11 @@ const Header = () => {
             createPortal(
               <Menu
                 setMenuOpen={setMenuOpen}
-                sx={{ top: menuPosition.top, right: menuPosition.right }}
+                sx={
+                  isFullSiteEnabled()
+                    ? { top: menuPosition.top, right: menuPosition.right }
+                    : { top: menuPosition.top, left: menuPosition.left }
+                }
                 aria-label='Mobile navigation menu'
               >
                 {renderLinks()}

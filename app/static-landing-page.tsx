@@ -7,7 +7,7 @@ import { Column, Link, Row } from '../components'
 const StaticLandingPage = () => {
   return (
     <>
-      <Row columns={[6, 8, 12, 12]} sx={{ mb: [4, 4, 8, 8] }}>
+      <Row columns={[6, 8, 12, 12]} sx={{ my: [4, 4, 8, 8] }}>
         <Column start={[1, 1, 2, 2]} width={[6, 6, 5, 5]} sx={{ mb: 9 }}>
           <Box sx={{ variant: 'styles.h1' }} as='h1'>
             Preprints and Data for Carbon Dioxide Removal
