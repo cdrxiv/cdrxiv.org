@@ -25,13 +25,17 @@ import {
 import { formatDate } from '../../../../../utils/formatters'
 import { useForm } from '../../../../../hooks/use-form'
 import { UPDATE_TYPE_DESCRIPTIONS, UPDATE_TYPE_LABELS } from './constants'
-import { getAdditionalField } from '../../../../../utils/data'
+import {
+  getAdditionalField,
+  getZenodoMetadata,
+} from '../../../../../utils/data'
 import {
   createVersionQueue,
   updatePreprint,
   createDataDepositionVersion,
   deleteZenodoEntity,
   fetchDataDeposition,
+  updateDataDeposition,
 } from '../../../../../actions'
 import { fetchWithTokenClient } from '../../../../utils/fetch-with-token/client'
 
@@ -153,31 +157,33 @@ const submitForm = async (
     file = preprintFile.pk
   }
 
-  if (
-    submissionType !== 'Article' &&
-    update_type === 'version' &&
-    dataFile &&
-    !dataFile.persisted
-  ) {
-    const label =
-      preprint.stage === 'preprint_published'
-        ? 'CDRXIV_DATA_PUBLISHED'
-        : 'CDRXIV_DATA_DRAFT'
-    const depositionUrl =
-      preprint.supplementary_files.find((file) => file.label === label)?.url ??
-      null
+  if (submissionType !== 'Article') {
+    const [published, draft] = [
+      'CDRXIV_DATA_PUBLISHED',
+      'CDRXIV_DATA_DRAFT',
+    ].map((label) =>
+      preprint.supplementary_files.find((file) => file.label === label),
+    )
 
-    if (!depositionUrl) {
-      throw new Error('No published data uploads found.')
+    let existingUrl
+
+    if (draft) {
+      // Always work with latest CDRXIV_DATA_DRAFT, when present
+      existingUrl = draft.url
+    } else if (published) {
+      // Otherwise check depositions stored under CDRXIV_DATA_PUBLISHED
+      existingUrl = published.url
+    } else {
+      throw new Error('No existing data upload found.')
     }
 
-    const existingDeposition = await fetchDataDeposition(depositionUrl)
+    const existingDeposition = await fetchDataDeposition(existingUrl)
 
-    if (label === 'CDRXIV_DATA_PUBLISHED' && !existingDeposition.submitted) {
+    if (!draft && !existingDeposition.submitted) {
       throw new Error(
         "Expected data to have been previously published, but it wasn't.",
       )
-    } else if (label === 'CDRXIV_DATA_DRAFT' && existingDeposition.submitted) {
+    } else if (draft && existingDeposition.submitted) {
       throw new Error(
         'Data has been published, but your preprint has not. Unable to update data.',
       )
@@ -195,34 +201,54 @@ const submitForm = async (
     } else {
       // otherwise replace existing files with newly added file.
       depositionId = existingDeposition.id
-      if (existingDeposition.files.length > 0) {
-        await Promise.all([
-          existingDeposition.files.map((f) => deleteZenodoEntity(f.links.self)), // delete previous data deposition files
-        ])
-      }
     }
-    const formData = new FormData()
 
-    formData.set('name', dataFile.original_filename)
-    formData.set('file', dataFile.file)
-    formData.set('deposition', depositionId.toString())
+    if (update_type === 'version' && dataFile && !dataFile.persisted) {
+      const formData = new FormData()
+      // If working with an existing deposition draft...
+      if (!existingDeposition.submitted) {
+        // clean up the old files.
+        if (existingDeposition.files.length > 0) {
+          await Promise.all([
+            existingDeposition.files.map((f) =>
+              deleteZenodoEntity(f.links.self),
+            ),
+          ])
+        }
+      }
 
-    await fetchWithTokenClient(
-      `${process.env.NEXT_PUBLIC_FILE_UPLOADER_URL}/zenodo/upload-file?deposition_id=${depositionId}`,
-      {
-        method: 'POST',
-        body: formData,
-      },
-    )
+      formData.set('name', dataFile.original_filename)
+      formData.set('file', dataFile.file)
+      formData.set('deposition', depositionId.toString())
+
+      // Upload new file to deposition
+      await fetchWithTokenClient(
+        `${process.env.NEXT_PUBLIC_FILE_UPLOADER_URL}/zenodo/upload-file?deposition_id=${depositionId}`,
+        {
+          method: 'POST',
+          body: formData,
+        },
+      )
+    }
 
     if (newUrl) {
+      // Store pointer to new deposition under CDRXIV_DATA_DRAFT if newly created.
       await updatePreprint(preprint, {
-        supplementary_files: [{ label: 'CDRXIV_DATA_DRAFT', url: newUrl }],
+        supplementary_files: [
+          ...(published ? [published] : []),
+          { label: 'CDRXIV_DATA_DRAFT', url: newUrl },
+        ],
       })
     }
-  }
 
-  // TODO: update metadata on Zenodo deposition metadata if changed
+    await updateDataDeposition(newUrl ?? existingUrl, {
+      metadata: getZenodoMetadata({
+        ...preprint,
+        title,
+        abstract,
+      }),
+    })
+  }
 
   return createVersionQueue({
     preprint: preprint_pk,
