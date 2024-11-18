@@ -32,7 +32,9 @@ export const middleware = (
     }
   }
 
-  if (FULL_SITE_ROUTES.includes(request.nextUrl.pathname)) {
+  if (
+    FULL_SITE_ROUTES.some((path) => request.nextUrl.pathname.startsWith(path))
+  ) {
     return NextResponse.redirect(new URL('/', request.url))
   }
 
