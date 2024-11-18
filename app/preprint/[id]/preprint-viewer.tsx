@@ -18,7 +18,7 @@ import Loading from '../../../components/loading'
 import useTracking from '../../../hooks/use-tracking'
 import { AuthorsList } from '../../../components'
 import { Deposition } from '../../../types/zenodo'
-import { fetchDataDeposition } from '../../../actions/zenodo'
+import { fetchDataDeposition } from '../../../actions'
 import ErrorOrTrack from './error-or-track'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`

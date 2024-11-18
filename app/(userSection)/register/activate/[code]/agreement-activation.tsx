@@ -5,7 +5,7 @@ import { useCallback, useState } from 'react'
 
 import Agreement from '../../agreement'
 import { Button, Field, Form, Link } from '../../../../../components'
-import { activateAccount } from '../../../../../actions/account'
+import { activateAccount } from '../../../../../actions'
 
 const AgreementActivation = ({
   user,
