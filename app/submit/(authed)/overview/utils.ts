@@ -9,6 +9,8 @@ import {
   deletePreprintFile,
   updatePreprint,
   deleteZenodoEntity,
+  fetchDataDeposition,
+  createDataDeposition,
 } from '../../../../actions/'
 import { FileInputValue } from '../../../../components'
 import { LICENSE_MAPPING } from '../../constants'
@@ -17,6 +19,7 @@ import {
   handleDataUpload,
   initializeUploadProgress,
 } from '../../../utils/upload-handlers'
+import { Deposition } from '../../../../types/zenodo'
 
 export type FormData = {
   agreement: boolean
@@ -150,6 +153,7 @@ const cleanupFiles = async (
   submissionType: string,
   files: PreprintFile[],
   articleFile: FormData['articleFile'],
+  deposition: Deposition | null,
 ) => {
   const cleanupTasks: Promise<any>[] = []
   if (existingDataFile && submissionType === 'Article') {
@@ -162,6 +166,13 @@ const cleanupFiles = async (
   if (files.length > 0 && articleFile && !articleFile?.persisted) {
     files.forEach((file) => cleanupTasks.push(deletePreprintFile(file.pk)))
   }
+
+  if (deposition?.files?.length && deposition.files.length > 0) {
+    cleanupTasks.push(
+      ...deposition.files.map((f) => deleteZenodoEntity(f.links.self)),
+    )
+  }
+
   await Promise.all(cleanupTasks)
 }
 
@@ -184,11 +195,28 @@ export const submitForm = async ({
   )
   const submissionType = getSubmissionType({ dataFile, articleFile })
 
-  await cleanupFiles(existingDataFile, submissionType, files, articleFile)
+  let deposition: Deposition | null = null
+  if (submissionType !== 'Article') {
+    if (existingDataFile) {
+      deposition = await fetchDataDeposition(existingDataFile.url)
+    } else {
+      deposition = await createDataDeposition()
+    }
+  }
+
+  await cleanupFiles(
+    existingDataFile,
+    submissionType,
+    files,
+    articleFile,
+    deposition,
+  )
 
   const [newPreprintFile, supplementaryFiles] = await Promise.all([
     handleArticleUpload(articleFile, preprint.pk, setUploadProgress),
-    handleDataUpload(dataFile, existingDataFile, setUploadProgress),
+    deposition
+      ? handleDataUpload(deposition, dataFile, setUploadProgress)
+      : null,
   ])
 
   // Prepare final supplementary files

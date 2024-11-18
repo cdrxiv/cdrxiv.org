@@ -1,5 +1,5 @@
 import { PreprintFile, SupplementaryFile } from '../../types/preprint'
-import { DepositionFile } from '../../types/zenodo'
+import { Deposition, DepositionFile } from '../../types/zenodo'
 import { fetchWithTokenClient } from './fetch-with-token/client'
 import {
   deleteZenodoEntity,
@@ -89,21 +89,11 @@ export const handleArticleUpload = async (
 }
 
 export const handleDataUpload = async (
+  deposition: Deposition,
   dataFile: FileInputValue | null,
-  existingDataFile: SupplementaryFile | undefined,
   setUploadProgress?: SetUploadProgress,
 ): Promise<{ label: string; url: string }[] | null> => {
   if (!dataFile || dataFile.persisted) return null
-
-  const deposition = await (existingDataFile
-    ? fetchDataDeposition(existingDataFile.url)
-    : createDataDeposition())
-
-  if (deposition?.files?.length && deposition.files.length > 0) {
-    await Promise.all(
-      deposition.files.map((f) => deleteZenodoEntity(f.links.self)),
-    )
-  }
 
   // Wake up the server before attempting upload
   await wakeUpServer()
