@@ -25,13 +25,17 @@ import {
 import { formatDate } from '../../../../../utils/formatters'
 import { useForm } from '../../../../../hooks/use-form'
 import { UPDATE_TYPE_DESCRIPTIONS, UPDATE_TYPE_LABELS } from './constants'
-import { getAdditionalField } from '../../../../../utils/data'
+import {
+  getAdditionalField,
+  getZenodoMetadata,
+} from '../../../../../utils/data'
 import {
   createVersionQueue,
   updatePreprint,
   createDataDepositionVersion,
   deleteZenodoEntity,
   fetchDataDeposition,
+  updateDataDeposition,
 } from '../../../../../actions'
 import { fetchWithTokenClient } from '../../../../utils/fetch-with-token/client'
 
@@ -153,12 +157,7 @@ const submitForm = async (
     file = preprintFile.pk
   }
 
-  if (
-    submissionType !== 'Article' &&
-    update_type === 'version' &&
-    dataFile &&
-    !dataFile.persisted
-  ) {
+  if (submissionType !== 'Article') {
     const [published, draft] = [
       'CDRXIV_DATA_PUBLISHED',
       'CDRXIV_DATA_DRAFT',
@@ -166,19 +165,19 @@ const submitForm = async (
       preprint.supplementary_files.find((file) => file.label === label),
     )
 
-    let activeUrl
+    let existingUrl
 
     if (draft) {
       // Always work with latest CDRXIV_DATA_DRAFT, when present
-      activeUrl = draft.url
+      existingUrl = draft.url
     } else if (published) {
       // Otherwise check depositions stored under CDRXIV_DATA_PUBLISHED
-      activeUrl = published.url
+      existingUrl = published.url
     } else {
       throw new Error('No existing data upload found.')
     }
 
-    const existingDeposition = await fetchDataDeposition(activeUrl)
+    const existingDeposition = await fetchDataDeposition(existingUrl)
 
     if (!draft && !existingDeposition.submitted) {
       throw new Error(
@@ -202,27 +201,38 @@ const submitForm = async (
     } else {
       // otherwise replace existing files with newly added file.
       depositionId = existingDeposition.id
-      if (existingDeposition.files.length > 0) {
-        await Promise.all([
-          existingDeposition.files.map((f) => deleteZenodoEntity(f.links.self)), // delete previous data deposition files
-        ])
-      }
     }
-    const formData = new FormData()
 
-    formData.set('name', dataFile.original_filename)
-    formData.set('file', dataFile.file)
-    formData.set('deposition', depositionId.toString())
+    if (update_type === 'version' && dataFile && !dataFile.persisted) {
+      const formData = new FormData()
+      // If working with an existing deposition draft...
+      if (!existingDeposition.submitted) {
+        // clean up the old files.
+        if (existingDeposition.files.length > 0) {
+          await Promise.all([
+            existingDeposition.files.map((f) =>
+              deleteZenodoEntity(f.links.self),
+            ),
+          ])
+        }
+      }
 
-    await fetchWithTokenClient(
-      `${process.env.NEXT_PUBLIC_FILE_UPLOADER_URL}/zenodo/upload-file?deposition_id=${depositionId}`,
-      {
-        method: 'POST',
-        body: formData,
-      },
-    )
+      formData.set('name', dataFile.original_filename)
+      formData.set('file', dataFile.file)
+      formData.set('deposition', depositionId.toString())
+
+      // Upload new file to deposition
+      await fetchWithTokenClient(
+        `${process.env.NEXT_PUBLIC_FILE_UPLOADER_URL}/zenodo/upload-file?deposition_id=${depositionId}`,
+        {
+          method: 'POST',
+          body: formData,
+        },
+      )
+    }
 
     if (newUrl) {
+      // Store pointer to new deposition under CDRXIV_DATA_DRAFT if newly created.
       await updatePreprint(preprint, {
         supplementary_files: [
           ...(published ? [published] : []),
@@ -230,9 +240,15 @@ const submitForm = async (
         ],
       })
     }
-  }
 
-  // TODO: update metadata on Zenodo deposition metadata if changed
+    await updateDataDeposition(newUrl ?? existingUrl, {
+      metadata: getZenodoMetadata({
+        ...preprint,
+        title,
+        abstract,
+      }),
+    })
+  }
 
   return createVersionQueue({
     preprint: preprint_pk,
