@@ -1,11 +1,6 @@
 import { PreprintFile, SupplementaryFile } from '../../types/preprint'
 import { Deposition, DepositionFile } from '../../types/zenodo'
 import { fetchWithTokenClient } from './fetch-with-token/client'
-import {
-  deleteZenodoEntity,
-  fetchDataDeposition,
-  createDataDeposition,
-} from '../../actions'
 import { FileInputValue } from '../../components'
 
 const wakeUpServer = async () => {
