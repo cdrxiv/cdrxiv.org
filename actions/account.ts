@@ -16,7 +16,7 @@ export async function registerAccount(
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         ...params,
-        repository: 1,
+        repository: process.env.NEXT_PUBLIC_JANEWAY_REPOSITORY,
       }),
     },
   )
@@ -94,7 +94,7 @@ export async function updateAccount(user: User, params: Partial<User>) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         ...params,
-        repository: 1,
+        repository: process.env.NEXT_PUBLIC_JANEWAY_REPOSITORY,
       }),
     },
   )
