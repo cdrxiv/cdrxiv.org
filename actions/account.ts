@@ -4,7 +4,7 @@ import { headers } from 'next/headers'
 import { User } from 'next-auth'
 import { db } from '@vercel/postgres'
 
-import { fetchWithToken } from '../app/api/utils'
+import { fetchWithToken } from '../app/utils/fetch-with-token/server'
 
 export async function registerAccount(
   params: Partial<User> & { password: string },

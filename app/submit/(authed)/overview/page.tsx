@@ -10,14 +10,25 @@ import { useForm } from '../utils'
 import { FormData, initializeForm, validateForm, submitForm } from './utils'
 import DataFileInput from './data-file-input'
 import { updatePreprint } from '../../../../actions'
+import { useLoading } from '../../../../components/layouts/paneled-page'
 
 const SubmissionOverview = () => {
   const { preprint, setPreprint } = usePreprint()
   const { files, setFiles } = usePreprintFiles()
+  const { setUploadProgress } = useLoading()
+
   const { data, setters, errors, onSubmit, submitError } = useForm<FormData>(
     () => initializeForm(preprint, files),
     validateForm,
-    submitForm.bind(null, preprint, setPreprint, files, setFiles),
+    (values: FormData) =>
+      submitForm({
+        preprint,
+        setPreprint,
+        files,
+        setFiles,
+        formData: values,
+        setUploadProgress,
+      }),
   )
   const [disableAgreement] = useState<boolean>(data.agreement)
 
@@ -64,7 +75,7 @@ const SubmissionOverview = () => {
         <Field
           label='Data file'
           id='dataFile'
-          description='Your data submission must be a single file of any format, including ZIP.'
+          description='Your data submission must be a single file of any format, including ZIP, up to 10 GB.'
           error={errors.dataFile ?? errors.externalFile}
         >
           <DataFileInput

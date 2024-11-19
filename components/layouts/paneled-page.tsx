@@ -24,6 +24,16 @@ const LoadingContext = createContext<
   | {
       isLoading: boolean
       setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+      uploadProgress: {
+        article?: number
+        data?: number
+      }
+      setUploadProgress: React.Dispatch<
+        React.SetStateAction<{
+          article?: number
+          data?: number
+        }>
+      >
     }
   | undefined
 >(undefined)
@@ -34,6 +44,34 @@ const useLoading = () => {
     throw new Error('useLoading must be used within a PaneledPage')
   }
   return context
+}
+
+interface ProgressBarProps {
+  progress: number
+  sx?: any
+}
+
+const ProgressBar: React.FC<ProgressBarProps> = ({ progress, sx }) => {
+  return (
+    <Box
+      sx={{
+        width: '100%',
+        height: '0.4em',
+        bg: 'muted',
+        overflow: 'hidden',
+        ...sx,
+      }}
+    >
+      <Box
+        sx={{
+          width: `${progress}%`,
+          height: '100%',
+          bg: 'blue',
+          transition: 'width 0.3s ease',
+        }}
+      />
+    </Box>
+  )
 }
 
 const PaneledPage: React.FC<{
@@ -47,6 +85,10 @@ const PaneledPage: React.FC<{
   const [isLoading, setIsLoading] = useState(false)
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false)
   const [isMetadataExpanded, setIsMetadataExpanded] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState<{
+    article?: number
+    data?: number
+  }>({})
   const pathRef = useRef<string | null>(null)
   const pathname = usePathname()
   const { scrollToTop } = useCardContext()
@@ -55,12 +97,20 @@ const PaneledPage: React.FC<{
     scrollToTop()
     if (pathRef.current !== pathname && isLoading) {
       setIsLoading(false)
+      setUploadProgress({})
     }
     pathRef.current = pathname
   }, [pathname, setIsLoading, isLoading, scrollToTop])
 
   return (
-    <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
+    <LoadingContext.Provider
+      value={{
+        isLoading,
+        setIsLoading,
+        uploadProgress,
+        setUploadProgress,
+      }}
+    >
       <Row>
         <Column
           start={1}
@@ -206,9 +256,43 @@ const PaneledPage: React.FC<{
                         justifyContent: 'center',
                         alignItems: 'center',
                         backgroundColor: 'primary',
+                        flexDirection: 'column',
+                        gap: 4,
                       }}
                     >
-                      <Loading />
+                      {uploadProgress.article === undefined &&
+                        uploadProgress.data === undefined && <Loading />}
+
+                      {uploadProgress.article !== undefined && (
+                        <Box sx={{ width: '80%', maxWidth: '400px', mb: 4 }}>
+                          {uploadProgress.article === 100 ? (
+                            <Box sx={{ width: '100%', mb: 2 }}>
+                              Article upload complete
+                            </Box>
+                          ) : (
+                            <Loading
+                              baseText='Uploading article'
+                              sx={{ width: '100%', mb: 2 }}
+                            />
+                          )}
+                          <ProgressBar progress={uploadProgress.article} />
+                        </Box>
+                      )}
+                      {uploadProgress.data !== undefined && (
+                        <Box sx={{ width: '80%', maxWidth: '400px' }}>
+                          {uploadProgress.data === 100 ? (
+                            <Box sx={{ width: '100%', mb: 2 }}>
+                              Data upload complete
+                            </Box>
+                          ) : (
+                            <Loading
+                              baseText='Uploading data'
+                              sx={{ width: '100%', mb: 2 }}
+                            />
+                          )}
+                          <ProgressBar progress={uploadProgress.data} />
+                        </Box>
+                      )}
                     </Flex>
                   )}
 

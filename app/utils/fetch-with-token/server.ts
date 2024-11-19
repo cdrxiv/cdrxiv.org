@@ -38,14 +38,3 @@ export const fetchWithToken = async (
     },
   })
 }
-
-export const getSubjects = async () => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/repository_subjects/`,
-    { next: { revalidate: 180 } },
-  )
-
-  if (res.status === 200) {
-    return res.json()
-  }
-}

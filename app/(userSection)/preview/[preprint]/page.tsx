@@ -3,7 +3,7 @@ import { headers } from 'next/headers'
 import { getServerSession } from 'next-auth'
 
 import PreprintViewer from '../../../preprint/[id]/preprint-viewer'
-import { fetchWithToken } from '../../../api/utils'
+import { fetchWithToken } from '../../../utils/fetch-with-token/server'
 import Forbidden from '../forbidden'
 import SharedLayout from '../../shared-layout'
 
