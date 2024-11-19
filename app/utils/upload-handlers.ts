@@ -3,31 +3,6 @@ import { Deposition, DepositionFile } from '../../types/zenodo'
 import { fetchWithTokenClient } from './fetch-with-token/client'
 import { FileInputValue } from '../../components'
 
-const wakeUpServer = async () => {
-  const healthUrl = `${process.env.NEXT_PUBLIC_FILE_UPLOADER_URL}/health`
-  const maxAttempts = 3
-  const delayMs = 500
-
-  for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    try {
-      const response = await fetch(healthUrl)
-      if (response.ok) return
-      await new Promise((resolve) => setTimeout(resolve, delayMs))
-    } catch (error) {
-      if (attempt === maxAttempts - 1) {
-        throw new Error(
-          'Unable to connect to the file upload service. Please try again in a few moments.',
-        )
-      }
-      await new Promise((resolve) => setTimeout(resolve, delayMs))
-    }
-  }
-
-  throw new Error(
-    'The file upload service is currently unavailable. Please try again in a few moments.',
-  )
-}
-
 export type UploadProgress = {
   article?: number
   data?: number
@@ -89,9 +64,6 @@ export const handleDataUpload = async (
   setUploadProgress?: SetUploadProgress,
 ): Promise<{ label: string; url: string }[] | null> => {
   if (!dataFile || dataFile.persisted) return null
-
-  // Wake up the server before attempting upload
-  await wakeUpServer()
 
   const formData = new FormData()
   formData.set('name', dataFile.original_filename)
