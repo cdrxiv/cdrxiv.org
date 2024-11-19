@@ -11,7 +11,7 @@ import {
   deleteZenodoEntity,
   fetchDataDeposition,
   createDataDeposition,
-} from '../../../../actions/'
+} from '../../../../actions'
 import { FileInputValue } from '../../../../components'
 import { LICENSE_MAPPING } from '../../constants'
 import {
