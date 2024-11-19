@@ -34,7 +34,7 @@ export async function updatePreprint(
         license: typeof license === 'number' ? license : license?.pk,
         ...rest,
         ...params,
-        repository: 1,
+        repository: process.env.NEXT_PUBLIC_JANEWAY_REPOSITORY,
       }),
     },
   )
