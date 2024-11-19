@@ -107,6 +107,16 @@ const PaneledPage: React.FC<{
     pathRef.current = pathname
   }, [pathname, setIsLoading, isLoading, scrollToTop])
 
+  useEffect(() => {
+    // cancel if unmounting
+    return () => {
+      if (abortController) {
+        abortController.abort()
+        setAbortController(undefined)
+      }
+    }
+  }, [abortController])
+
   const handleCancel = useCallback(() => {
     if (abortController) {
       abortController.abort()
