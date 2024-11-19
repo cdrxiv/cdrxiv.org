@@ -14,5 +14,5 @@ export const PREPRINT_BASE = {
   versions: [],
   supplementary_files: [],
   additional_field_answers: [],
-  repository: 1,
+  repository: process.env.NEXT_PUBLIC_JANEWAY_REPOSITORY,
 }
