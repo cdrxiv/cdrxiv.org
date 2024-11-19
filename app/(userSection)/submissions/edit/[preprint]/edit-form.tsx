@@ -35,7 +35,13 @@ import {
   fetchDataDeposition,
   updateDataDeposition,
 } from '../../../../../actions'
-import { fetchWithTokenClient } from '../../../../utils/fetch-with-token/client'
+import {
+  handleArticleUpload,
+  handleDataUpload,
+  initializeUploadProgress,
+  UploadProgress,
+} from '../../../../utils/upload-handlers'
+import { useLoading } from '../../../../../components/layouts/paneled-page'
 
 type Props = {
   preprint: ReviewPreprint | PublishedPreprint
@@ -120,7 +126,12 @@ const submitForm = async (
     dataFile,
     submissionType,
   }: FormData,
+  setUploadProgress: (
+    updater: (prev: UploadProgress) => UploadProgress,
+  ) => void,
 ) => {
+  initializeUploadProgress(articleFile, dataFile, setUploadProgress)
+
   let file = null
   if (
     submissionType !== 'Data' &&
@@ -128,19 +139,12 @@ const submitForm = async (
     articleFile &&
     !articleFile.persisted
   ) {
-    const formData = new FormData()
-    formData.set('file', articleFile.file)
-    formData.set('preprint', String(preprint?.pk))
-    formData.set('mime_type', articleFile.mime_type)
-    formData.set('original_filename', articleFile.original_filename)
-    const preprintFile = await fetchWithTokenClient<PreprintFile>(
-      `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/`,
-      {
-        method: 'POST',
-        body: formData,
-      },
+    const preprintFile: PreprintFile | null = await handleArticleUpload(
+      articleFile,
+      preprint_pk,
+      setUploadProgress,
     )
-    file = preprintFile.pk
+    file = preprintFile?.pk
   }
 
   if (submissionType !== 'Article') {
@@ -174,6 +178,7 @@ const submitForm = async (
         'Data has been published, but your preprint has not. Unable to update data.',
       )
     }
+
     let depositionId
     let newUrl
     // If the deposition has been published...
@@ -190,7 +195,6 @@ const submitForm = async (
     }
 
     if (update_type === 'version' && dataFile && !dataFile.persisted) {
-      const formData = new FormData()
       // If working with an existing deposition draft...
       if (!existingDeposition.submitted) {
         // clean up the old files.
@@ -203,18 +207,7 @@ const submitForm = async (
         }
       }
 
-      formData.set('name', dataFile.original_filename)
-      formData.set('file', dataFile.file)
-      formData.set('deposition', depositionId.toString())
-
-      // Upload new file to deposition
-      await fetchWithTokenClient(
-        `${process.env.NEXT_PUBLIC_FILE_UPLOADER_URL}/zenodo/upload-file?deposition_id=${depositionId}`,
-        {
-          method: 'POST',
-          body: formData,
-        },
-      )
+      await handleDataUpload(existingDeposition, dataFile, setUploadProgress)
     }
 
     if (newUrl) {
@@ -245,25 +238,132 @@ const submitForm = async (
     file,
   })
 }
-const EditForm: React.FC<Props> = ({ versions, preprint }) => {
+
+const EditFormContent: React.FC<Props> = ({ versions, preprint }) => {
   const router = useRouter()
+  const { setIsLoading, setUploadProgress } = useLoading()
   const validator = useMemo(() => validateForm.bind(null, preprint), [preprint])
   const { data, setters, errors, onSubmit, submitError } = useForm(
     () => initializeForm(preprint),
     validator,
-    submitForm.bind(null, preprint),
+    (values: FormData) => submitForm(preprint, values, setUploadProgress),
     { preprint: preprint.pk },
   )
+
   const handleSubmit = useCallback(async () => {
+    setIsLoading(true)
     const result = await onSubmit()
     if (result) {
       router.push('/submissions')
+      // Loading toggle off handled in paneled-page
+    } else {
+      setIsLoading(false)
     }
-  }, [onSubmit, router])
+  }, [onSubmit, router, setIsLoading])
+
   const collectArticleFile =
     data.submissionType !== 'Data' && data.update_type !== 'metadata_correction'
   const collectDataFile =
     data.submissionType !== 'Article' && data.update_type === 'version'
+
+  return (
+    <Form error={submitError}>
+      <Field
+        label='Type of revision'
+        id='update_type'
+        error={errors.update_type}
+        description={
+          <>
+            {UPDATE_TYPE_DESCRIPTIONS[data.update_type]}
+            <br />
+            <br />
+            If no option fits, consider starting a new submission or contact{' '}
+            <Link
+              href='mailto:support@cdrxiv.org'
+              sx={{ variant: 'text.mono' }}
+            >
+              support@cdrxiv.org
+            </Link>
+            .
+          </>
+        }
+      >
+        <Select
+          value={data.update_type}
+          onChange={(e) => setters.update_type(e.target.value as UpdateType)}
+          id='update_type'
+        >
+          {Object.keys(UPDATE_TYPE_LABELS).map((value) =>
+            value === 'correction' && data.submissionType === 'Data' ? null : ( // Do not collect text corrections for data-only submissions
+              <option key={value} value={value}>
+                {UPDATE_TYPE_LABELS[value as UpdateType]}
+              </option>
+            ),
+          )}
+        </Select>
+      </Field>
+      <Field label='Title' id='title' error={errors.title}>
+        <Input
+          value={data.title}
+          onChange={(e) => setters.title(e.target.value)}
+          id='title'
+        />
+      </Field>
+      <Field
+        label='Abstract'
+        id='abstract'
+        description='This should be the same as the article abstract or, for data-only submissions, a brief description of the dataset.'
+        error={errors.abstract}
+      >
+        <Textarea
+          value={data.abstract}
+          onChange={(e) => setters.abstract(e.target.value)}
+          id='abstract'
+        />
+      </Field>
+      <Field
+        label='DOI'
+        id='published_doi'
+        description="You can add a DOI linking to this item's published version using this field. Please provide the full DOI, e.g., https://doi.org/10.1017/CBO9781316161012."
+        error={errors.published_doi}
+      >
+        <Input
+          value={data.published_doi}
+          onChange={(e) => setters.published_doi(e.target.value)}
+          id='published_doi'
+        />
+      </Field>
+      {collectArticleFile && (
+        <Field
+          label='Article file'
+          id='articleFile'
+          description='Your article must be submitted as a PDF.'
+          error={errors.articleFile}
+        >
+          <FileInput
+            file={data.articleFile}
+            onChange={setters.articleFile}
+            accept='application/pdf'
+          />
+        </Field>
+      )}
+      {collectDataFile && (
+        <Field
+          label='Data file'
+          id='dataFile'
+          description='Your data submission must be a single file of any format, including ZIP, up to 10 GB.'
+          error={errors.dataFile}
+        >
+          <FileInput file={data.dataFile} onChange={setters.dataFile} />
+        </Field>
+      )}
+      <Button onClick={handleSubmit}>Submit</Button>
+    </Form>
+  )
+}
+
+// Wrapper so that loading context is available
+const EditForm: React.FC<Props> = ({ versions, preprint }) => {
   return (
     <SharedLayout
       title={preprint.title}
@@ -272,12 +372,7 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
           {preprint.date_published && (
             <Field label='Live version'>
               <Box as='ul' sx={{ variant: 'styles.ul' }}>
-                <Box
-                  as='li'
-                  sx={{
-                    variant: 'styles.li',
-                  }}
-                >
+                <Box as='li' sx={{ variant: 'styles.li' }}>
                   <Link
                     href={`/preprint/${preprint.pk}`}
                     sx={{ variant: 'text.mono' }}
@@ -295,99 +390,7 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
       }
       back
     >
-      <Form error={submitError}>
-        <Field
-          label='Type of revision'
-          id='update_type'
-          error={errors.update_type}
-          description={
-            <>
-              {UPDATE_TYPE_DESCRIPTIONS[data.update_type]}
-              <br />
-              <br />
-              If no option fits, consider starting a new submission or contact{' '}
-              <Link
-                href='mailto:support@cdrxiv.org'
-                sx={{ variant: 'text.mono' }}
-              >
-                support@cdrxiv.org
-              </Link>
-              .
-            </>
-          }
-        >
-          <Select
-            value={data.update_type}
-            onChange={(e) => setters.update_type(e.target.value as UpdateType)}
-            id='update_type'
-          >
-            {Object.keys(UPDATE_TYPE_LABELS).map((value) =>
-              value === 'correction' &&
-              data.submissionType === 'Data' ? null : ( // Do not collect text corrections for data-only submissions
-                <option key={value} value={value}>
-                  {UPDATE_TYPE_LABELS[value as UpdateType]}
-                </option>
-              ),
-            )}
-          </Select>
-        </Field>
-        <Field label='Title' id='title' error={errors.title}>
-          <Input
-            value={data.title}
-            onChange={(e) => setters.title(e.target.value)}
-            id='title'
-          />
-        </Field>
-        <Field
-          label='Abstract'
-          id='abstract'
-          description='This should be the same as the article abstract or, for data-only submissions, a brief description of the dataset.'
-          error={errors.abstract}
-        >
-          <Textarea
-            value={data.abstract}
-            onChange={(e) => setters.abstract(e.target.value)}
-            id='abstract'
-          />
-        </Field>
-        <Field
-          label='DOI'
-          id='published_doi'
-          description="You can add a DOI linking to this item's published version using this field. Please provide the full DOI, e.g., https://doi.org/10.1017/CBO9781316161012."
-          error={errors.published_doi}
-        >
-          <Input
-            value={data.published_doi}
-            onChange={(e) => setters.published_doi(e.target.value)}
-            id='published_doi'
-          />
-        </Field>
-        {collectArticleFile && (
-          <Field
-            label='Article file'
-            id='articleFile'
-            description='Your article must be submitted as a PDF.'
-            error={errors.articleFile}
-          >
-            <FileInput
-              file={data.articleFile}
-              onChange={setters.articleFile}
-              accept='application/pdf'
-            />
-          </Field>
-        )}
-        {collectDataFile && (
-          <Field
-            label='Data file'
-            id='dataFile'
-            description='Your data submission must be a single file of any format, including ZIP.'
-            error={errors.dataFile}
-          >
-            <FileInput file={data.dataFile} onChange={setters.dataFile} />
-          </Field>
-        )}
-        <Button onClick={handleSubmit}>Submit</Button>
-      </Form>
+      <EditFormContent versions={versions} preprint={preprint} />
     </SharedLayout>
   )
 }
