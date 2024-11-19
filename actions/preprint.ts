@@ -210,3 +210,19 @@ export async function fetchPublishedPreprints(url: string) {
   const result = res.json()
   return result
 }
+
+export async function fetchPreprintIdentifier(pk: number) {
+  const res = await fetchWithToken(
+    headers(),
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/identifiers/?preprint_id=${pk}`,
+  )
+
+  if (![200].includes(res.status)) {
+    throw new Error(
+      `Status ${res.status}: Unable to fetch preprint identifiers. ${res.statusText}`,
+    )
+  }
+
+  const result = res.json()
+  return result
+}
