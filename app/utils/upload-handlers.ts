@@ -15,24 +15,23 @@ type SetUploadProgress = (
 export const initializeUploadProgress = (
   articleFile: FileInputValue | null,
   dataFile: FileInputValue | null,
-  setUploadProgress: (
-    updater: (prev: UploadProgress) => UploadProgress,
-  ) => void,
+  setUploadProgress: SetUploadProgress,
 ) => {
   if (articleFile && !articleFile.persisted) {
-    setUploadProgress((prev) => ({ ...prev, article: 1 }))
+    setUploadProgress((prev) => ({ ...prev, article: 0 }))
   }
   if (dataFile && !dataFile.persisted) {
-    setUploadProgress((prev) => ({ ...prev, data: 1 }))
+    setUploadProgress((prev) => ({ ...prev, data: 0 }))
   }
 }
 
 export const handleArticleUpload = async (
   articleFile: FileInputValue | null,
   preprintId: number,
-  setUploadProgress?: SetUploadProgress,
-): Promise<PreprintFile | null> => {
-  if (!articleFile || articleFile.persisted) return null
+  setUploadProgress: SetUploadProgress,
+  abortSignal?: AbortSignal,
+) => {
+  if (!articleFile?.file) return null
 
   const formData = new FormData()
   formData.set('file', articleFile.file)
@@ -54,6 +53,7 @@ export const handleArticleUpload = async (
         maxProgress: 100,
       },
       type: 'Article',
+      abortSignal,
     },
   )
 }
@@ -61,9 +61,12 @@ export const handleArticleUpload = async (
 export const handleDataUpload = async (
   deposition: Deposition,
   dataFile: FileInputValue | null,
-  setUploadProgress?: SetUploadProgress,
-): Promise<{ label: string; url: string }[] | null> => {
-  if (!dataFile || dataFile.persisted) return null
+  setUploadProgress: (
+    updater: (prev: UploadProgress) => UploadProgress,
+  ) => void,
+  abortSignal?: AbortSignal,
+) => {
+  if (!dataFile?.file) return null
 
   const formData = new FormData()
   formData.set('name', dataFile.original_filename)
@@ -83,6 +86,7 @@ export const handleDataUpload = async (
         maxProgress: 95,
       },
       type: 'Data',
+      abortSignal,
     },
   )
 

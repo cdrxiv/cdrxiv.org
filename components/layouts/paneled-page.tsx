@@ -7,8 +7,10 @@ import React, {
   useEffect,
   useRef,
   ReactNode,
+  useCallback,
 } from 'react'
 import { Box, Divider, Flex } from 'theme-ui'
+import Link from '../link'
 import { usePathname } from 'next/navigation'
 
 import Row from '../row'
@@ -34,6 +36,8 @@ const LoadingContext = createContext<
           data?: number
         }>
       >
+      abortController?: AbortController
+      setAbortController?: (controller: AbortController | undefined) => void
     }
   | undefined
 >(undefined)
@@ -89,6 +93,7 @@ const PaneledPage: React.FC<{
     article?: number
     data?: number
   }>({})
+  const [abortController, setAbortController] = useState<AbortController>()
   const pathRef = useRef<string | null>(null)
   const pathname = usePathname()
   const { scrollToTop } = useCardContext()
@@ -102,6 +107,15 @@ const PaneledPage: React.FC<{
     pathRef.current = pathname
   }, [pathname, setIsLoading, isLoading, scrollToTop])
 
+  const handleCancel = useCallback(() => {
+    if (abortController) {
+      abortController.abort()
+      setAbortController(undefined)
+      setIsLoading(false)
+      setUploadProgress({})
+    }
+  }, [abortController])
+
   return (
     <LoadingContext.Provider
       value={{
@@ -109,6 +123,8 @@ const PaneledPage: React.FC<{
         setIsLoading,
         uploadProgress,
         setUploadProgress,
+        abortController,
+        setAbortController,
       }}
     >
       <Row>
@@ -292,6 +308,13 @@ const PaneledPage: React.FC<{
                           )}
                           <ProgressBar progress={uploadProgress.data} />
                         </Box>
+                      )}
+
+                      {(uploadProgress.article !== undefined ||
+                        uploadProgress.data !== undefined) && (
+                        <Link onClick={handleCancel} sx={{ mt: 4 }}>
+                          Cancel
+                        </Link>
                       )}
                     </Flex>
                   )}

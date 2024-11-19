@@ -16,6 +16,7 @@ export const fetchWithTokenClient = async <T>(
     onProgress?: ProgressCallback
     progressOptions?: ProgressOptions
     type?: 'Article' | 'Data'
+    abortSignal?: AbortSignal
   },
 ): Promise<T> => {
   const session = (await getSession()) as Session | null
@@ -112,5 +113,15 @@ export const fetchWithTokenClient = async <T>(
     })
 
     xhr.send(options?.body as FormData)
+
+    if (options?.abortSignal) {
+      options.abortSignal.addEventListener('abort', () => {
+        xhr.abort()
+        if (progressInterval) {
+          clearInterval(progressInterval)
+        }
+        reject(new Error('Upload cancelled'))
+      })
+    }
   })
 }

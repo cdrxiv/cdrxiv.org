@@ -129,124 +129,143 @@ const submitForm = async (
   setUploadProgress: (
     updater: (prev: UploadProgress) => UploadProgress,
   ) => void,
+  setAbortController?: (controller: AbortController | undefined) => void,
 ) => {
-  initializeUploadProgress(articleFile, dataFile, setUploadProgress)
-
-  let file = null
-  if (
-    submissionType !== 'Data' &&
-    update_type !== 'metadata_correction' &&
-    articleFile &&
-    !articleFile.persisted
-  ) {
-    const preprintFile: PreprintFile | null = await handleArticleUpload(
-      articleFile,
-      preprint_pk,
-      setUploadProgress,
-    )
-    file = preprintFile?.pk
+  const controller = setAbortController ? new AbortController() : undefined
+  if (controller && setAbortController) {
+    setAbortController(controller)
   }
 
-  if (submissionType !== 'Article') {
-    const [published, draft] = [
-      'CDRXIV_DATA_PUBLISHED',
-      'CDRXIV_DATA_DRAFT',
-    ].map((label) =>
-      preprint.supplementary_files.find((file) => file.label === label),
-    )
+  try {
+    initializeUploadProgress(articleFile, dataFile, setUploadProgress)
 
-    let existingUrl
-
-    if (draft) {
-      // Always work with latest CDRXIV_DATA_DRAFT, when present
-      existingUrl = draft.url
-    } else if (published) {
-      // Otherwise check depositions stored under CDRXIV_DATA_PUBLISHED
-      existingUrl = published.url
-    } else {
-      throw new Error('No existing data upload found.')
+    let file = null
+    if (
+      submissionType !== 'Data' &&
+      update_type !== 'metadata_correction' &&
+      articleFile &&
+      !articleFile.persisted
+    ) {
+      const preprintFile: PreprintFile | null = await handleArticleUpload(
+        articleFile,
+        preprint_pk,
+        setUploadProgress,
+        controller?.signal,
+      )
+      file = preprintFile?.pk
     }
 
-    const existingDeposition = await fetchDataDeposition(existingUrl)
-
-    if (!draft && !existingDeposition.submitted) {
-      throw new Error(
-        "Expected data to have been previously published, but it wasn't.",
+    if (submissionType !== 'Article') {
+      const [published, draft] = [
+        'CDRXIV_DATA_PUBLISHED',
+        'CDRXIV_DATA_DRAFT',
+      ].map((label) =>
+        preprint.supplementary_files.find((file) => file.label === label),
       )
-    } else if (draft && existingDeposition.submitted) {
-      throw new Error(
-        'Data has been published, but your preprint has not. Unable to update data.',
-      )
-    }
 
-    let depositionId
-    let newUrl
-    // If the deposition has been published...
-    if (existingDeposition.submitted) {
-      // create new version.
-      const newDeposition = await createDataDepositionVersion(
-        existingDeposition.links.newversion,
-      )
-      depositionId = newDeposition.id
-      newUrl = newDeposition.links.self
-    } else {
-      // otherwise replace existing files with newly added file.
-      depositionId = existingDeposition.id
-    }
+      let existingUrl
 
-    if (update_type === 'version' && dataFile && !dataFile.persisted) {
-      // If working with an existing deposition draft...
-      if (!existingDeposition.submitted) {
-        // clean up the old files.
-        if (existingDeposition.files.length > 0) {
-          await Promise.all([
-            existingDeposition.files.map((f) =>
-              deleteZenodoEntity(f.links.self),
-            ),
-          ])
-        }
+      if (draft) {
+        // Always work with latest CDRXIV_DATA_DRAFT, when present
+        existingUrl = draft.url
+      } else if (published) {
+        // Otherwise check depositions stored under CDRXIV_DATA_PUBLISHED
+        existingUrl = published.url
+      } else {
+        throw new Error('No existing data upload found.')
       }
 
-      await handleDataUpload(existingDeposition, dataFile, setUploadProgress)
-    }
+      const existingDeposition = await fetchDataDeposition(existingUrl)
 
-    if (newUrl) {
-      // Store pointer to new deposition under CDRXIV_DATA_DRAFT if newly created.
-      await updatePreprint(preprint, {
-        supplementary_files: [
-          ...(published ? [published] : []),
-          { label: 'CDRXIV_DATA_DRAFT', url: newUrl },
-        ],
+      if (!draft && !existingDeposition.submitted) {
+        throw new Error(
+          "Expected data to have been previously published, but it wasn't.",
+        )
+      } else if (draft && existingDeposition.submitted) {
+        throw new Error(
+          'Data has been published, but your preprint has not. Unable to update data.',
+        )
+      }
+
+      let depositionId
+      let newUrl
+      // If the deposition has been published...
+      if (existingDeposition.submitted) {
+        // create new version.
+        const newDeposition = await createDataDepositionVersion(
+          existingDeposition.links.newversion,
+        )
+        depositionId = newDeposition.id
+        newUrl = newDeposition.links.self
+      } else {
+        // otherwise replace existing files with newly added file.
+        depositionId = existingDeposition.id
+      }
+
+      if (update_type === 'version' && dataFile && !dataFile.persisted) {
+        // If working with an existing deposition draft...
+        if (!existingDeposition.submitted) {
+          // clean up the old files.
+          if (existingDeposition.files.length > 0) {
+            await Promise.all([
+              existingDeposition.files.map((f) =>
+                deleteZenodoEntity(f.links.self),
+              ),
+            ])
+          }
+        }
+
+        await handleDataUpload(
+          existingDeposition,
+          dataFile,
+          setUploadProgress,
+          controller?.signal,
+        )
+      }
+
+      if (newUrl) {
+        // Store pointer to new deposition under CDRXIV_DATA_DRAFT if newly created.
+        await updatePreprint(preprint, {
+          supplementary_files: [
+            ...(published ? [published] : []),
+            { label: 'CDRXIV_DATA_DRAFT', url: newUrl },
+          ],
+        })
+      }
+
+      await updateDataDeposition(newUrl ?? existingUrl, {
+        metadata: getZenodoMetadata({
+          ...preprint,
+          title,
+          abstract,
+        }),
       })
     }
 
-    await updateDataDeposition(newUrl ?? existingUrl, {
-      metadata: getZenodoMetadata({
-        ...preprint,
-        title,
-        abstract,
-      }),
+    return createVersionQueue({
+      preprint: preprint_pk,
+      update_type,
+      title,
+      abstract,
+      published_doi: published_doi || null,
+      file,
     })
+  } finally {
+    if (controller && setAbortController) {
+      setAbortController(undefined)
+    }
   }
-
-  return createVersionQueue({
-    preprint: preprint_pk,
-    update_type,
-    title,
-    abstract,
-    published_doi: published_doi || null,
-    file,
-  })
 }
 
 const EditFormContent: React.FC<Props> = ({ versions, preprint }) => {
   const router = useRouter()
-  const { setIsLoading, setUploadProgress } = useLoading()
+  const { setIsLoading, setUploadProgress, setAbortController } = useLoading()
   const validator = useMemo(() => validateForm.bind(null, preprint), [preprint])
   const { data, setters, errors, onSubmit, submitError } = useForm(
     () => initializeForm(preprint),
     validator,
-    (values: FormData) => submitForm(preprint, values, setUploadProgress),
+    (values: FormData) =>
+      submitForm(preprint, values, setUploadProgress, setAbortController),
     { preprint: preprint.pk },
   )
 

@@ -146,6 +146,7 @@ type SubmissionContext = {
   setFiles: (files: PreprintFile[]) => void
   formData: FormData
   setUploadProgress: (updater: (prev: UploadProgress) => UploadProgress) => void
+  abortSignal?: AbortSignal
 }
 
 const cleanupFiles = async (
@@ -183,6 +184,7 @@ export const submitForm = async ({
   setFiles,
   formData: { articleFile, dataFile, externalFile },
   setUploadProgress,
+  abortSignal,
 }: SubmissionContext) => {
   if (!preprint) {
     throw new Error('Tried to submit without active preprint')
@@ -213,9 +215,14 @@ export const submitForm = async ({
   )
 
   const [newPreprintFile, supplementaryFiles] = await Promise.all([
-    handleArticleUpload(articleFile, preprint.pk, setUploadProgress),
+    handleArticleUpload(
+      articleFile,
+      preprint.pk,
+      setUploadProgress,
+      abortSignal,
+    ),
     deposition
-      ? handleDataUpload(deposition, dataFile, setUploadProgress)
+      ? handleDataUpload(deposition, dataFile, setUploadProgress, abortSignal)
       : null,
   ])
 

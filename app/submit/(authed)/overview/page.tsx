@@ -15,20 +15,33 @@ import { useLoading } from '../../../../components/layouts/paneled-page'
 const SubmissionOverview = () => {
   const { preprint, setPreprint } = usePreprint()
   const { files, setFiles } = usePreprintFiles()
-  const { setUploadProgress } = useLoading()
+  const { setUploadProgress, setAbortController } = useLoading()
 
   const { data, setters, errors, onSubmit, submitError } = useForm<FormData>(
     () => initializeForm(preprint, files),
     validateForm,
-    (values: FormData) =>
-      submitForm({
-        preprint,
-        setPreprint,
-        files,
-        setFiles,
-        formData: values,
-        setUploadProgress,
-      }),
+    async (values: FormData) => {
+      const controller = setAbortController ? new AbortController() : undefined
+      if (controller && setAbortController) {
+        setAbortController(controller)
+      }
+
+      try {
+        await submitForm({
+          preprint,
+          setPreprint,
+          files,
+          setFiles,
+          formData: values,
+          setUploadProgress,
+          abortSignal: controller?.signal,
+        })
+      } finally {
+        if (controller && setAbortController) {
+          setAbortController(undefined)
+        }
+      }
+    },
   )
   const [disableAgreement] = useState<boolean>(data.agreement)
 
