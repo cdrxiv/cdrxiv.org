@@ -33,6 +33,9 @@ const SubmissionsView: React.FC<Props> = ({ published, review, rejected }) => {
           <PreprintsTable preprints={rejected} date='date_submitted' />
         </Box>
       )}
+      {[published, review, rejected].every((list) => list.length === 0) && (
+        <Box>No preprints have been submitted yet</Box>
+      )}
     </Flex>
   )
 }
