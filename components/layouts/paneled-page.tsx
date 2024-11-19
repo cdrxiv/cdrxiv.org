@@ -307,12 +307,10 @@ const PaneledPage: React.FC<{
           width={[6, 2, 2, 2]}
           sx={{
             display: ['none', 'inherit', 'inherit', 'inherit'],
-            height: '100%',
           }}
         >
           <Box
             sx={{
-              height: 'fit-content',
               position: 'sticky',
               top: HEADER_HEIGHT,
               maxHeight: HEADER_HEIGHT.map(
