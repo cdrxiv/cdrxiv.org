@@ -32,7 +32,7 @@ const SubmissionInformation = () => {
   return (
     <>
       <Form error={submitError}>
-        <Field label='Title' id='title' error={errors.title}>
+        <Field label='Title*' id='title' error={errors.title}>
           <Input
             value={data.title}
             onChange={(e) => setters.title(e.target.value)}
@@ -40,7 +40,7 @@ const SubmissionInformation = () => {
           />
         </Field>
         <Field
-          label='Abstract'
+          label='Abstract*'
           id='abstract'
           description='This should be the same as the article abstract or, for data-only submissions, a brief description of the dataset.'
           error={errors.abstract}
@@ -53,15 +53,17 @@ const SubmissionInformation = () => {
           />
         </Field>
         <Field
-          label='License'
+          label='License*'
           id='license'
           description={
             <>
-              Pick an appropriate license for your{' '}
-              {data.submission_type === 'Both' ? 'contents' : 'submission'}.
+              {data.submission_type === 'Both'
+                ? 'Pick appropriate licenses for your submission. '
+                : 'Pick an appropriate license for your submission. '}
               Learn more about licensing{' '}
               <Link
                 href='https://creativecommons.org/share-your-work/cclicenses/'
+                target='__blank'
                 sx={{ variant: 'text.mono' }}
               >
                 here
@@ -79,25 +81,13 @@ const SubmissionInformation = () => {
             submissionType={data.submission_type}
           />
         </Field>
-        <Field
-          label='DOI'
-          id='doi'
-          description="You can add a DOI linking to this item's published version using this field. Please provide the full DOI, e.g., https://doi.org/10.1017/CBO9781316161012."
-          error={errors.doi}
-        >
-          <Input
-            value={data.doi}
-            onChange={(e) => setters.doi(e.target.value)}
-            id='doi'
-          />
-        </Field>
-        <Field label='Subject' id='subject' error={errors.subject}>
+        <Field label='Topic*' id='subject' error={errors.subject}>
           <Subjects value={data.subject} onChange={setters.subject} />
         </Field>
         <Field
           label='Keywords'
           id='keywords'
-          description='Hit Enter to add a new keyword. Select a keyword to remove it.'
+          description='Hit enter to add a new keyword. Click on a keyword to remove it.'
           error={errors.keywords}
         >
           <KeywordInput
@@ -112,9 +102,9 @@ const SubmissionInformation = () => {
         </Field>
 
         <Field
-          label='Comments to the editor'
+          label='Comments to the CDRXIV staff'
           id='comments_editor'
-          description='For most submissions, this is left blank.'
+          description='For most submissions, this can be left blank.'
           error={errors.comments_editor}
         >
           <Textarea
@@ -125,7 +115,7 @@ const SubmissionInformation = () => {
         </Field>
 
         <Field
-          label='Conflict of interest statement'
+          label='Conflict of interest statement*'
           id='conflict_of_interest'
           description='If you and/or your authorship team have conflicts of interest to declare, please do so here. If not, check the no conflicts of interest box above.'
           error={errors.conflict_of_interest}

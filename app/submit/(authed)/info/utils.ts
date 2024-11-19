@@ -1,14 +1,13 @@
 import { createAdditionalField } from '../utils'
 import { Preprint } from '../../../../types/preprint'
 import { getAdditionalField } from '../../../../utils/data'
-import { updatePreprint } from '../../../../actions/preprint'
+import { updatePreprint } from '../../../../actions'
 
 export type FormData = {
   title: string
   abstract: string
   license: number
   data_license: string
-  doi: string
   subject: string[]
   keywords: string[]
   funding: string
@@ -30,7 +29,6 @@ export const initializeForm = (preprint: Preprint): FormData => {
       submissionType === 'Article'
         ? ''
         : (getAdditionalField(preprint, 'Data license') ?? ''),
-    doi: preprint.doi ?? '',
     subject: preprint.subject.map(({ name }) => name),
     keywords: preprint.keywords.map(({ word }) => word),
     funding:
@@ -47,8 +45,8 @@ export const validateForm = ({
   abstract,
   license,
   data_license,
-  doi,
   subject,
+  keywords,
   conflict_of_interest,
   submission_type,
 }: FormData) => {
@@ -73,12 +71,12 @@ export const validateForm = ({
     result.data_license = 'You must provide license for your data submission.'
   }
 
-  if (doi && !doi.startsWith('https://doi.org/')) {
-    result.doi = 'Provided DOI invalid.'
-  }
-
   if (subject.length === 0) {
     result.subject = 'Please select at least one subject.'
+  }
+
+  if (keywords.length > 10) {
+    result.keywords = 'Please provide no more than ten keywords.'
   }
 
   if (conflict_of_interest === '') {
@@ -96,7 +94,6 @@ export const submitForm = (
     title,
     abstract,
     license,
-    doi,
     subject,
     keywords,
     funding,
@@ -132,7 +129,6 @@ export const submitForm = (
     title,
     abstract,
     license,
-    doi: doi ? doi : null,
     subject: subject.map((name) => ({ name })),
     keywords: keywords.map((word) => ({ word })),
     additional_field_answers,

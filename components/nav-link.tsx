@@ -11,7 +11,7 @@ const NavLink: React.FC<NavLinkProps> = ({
   sx = {},
   ...props
 }) => {
-  const interactive = !disabled && !active
+  const interactive = !disabled
   const ml = 'ml' in sx ? sx.ml : 0
 
   return (
@@ -20,6 +20,8 @@ const NavLink: React.FC<NavLinkProps> = ({
       {...props}
       sx={{
         color: 'text',
+        variant: 'styles.h2',
+        lineHeight: 'body',
         ':visited': { color: 'text' },
         ':hover': interactive ? { color: 'blue' } : {},
         cursor: interactive ? 'pointer' : 'default',

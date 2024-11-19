@@ -3,14 +3,22 @@
 import { useSession } from 'next-auth/react'
 import { useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Box, Input } from 'theme-ui'
+import { Input } from 'theme-ui'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
 
-import { Button, Column, Field, Form, Link, Row } from '../../../components'
+import Agreement from './agreement'
+import {
+  Button,
+  Column,
+  Field,
+  Form,
+  Link,
+  PasswordInput,
+  Row,
+} from '../../../components'
 import { useForm } from '../../../hooks/use-form'
 import { useLoading } from '../../../components/layouts/paneled-page'
-import { verify } from '../../../actions/hcaptcha'
-import { registerAccount } from '../../../actions/account'
+import { registerAccount, verifyHCaptcha } from '../../../actions'
 
 type FormData = {
   email: string
@@ -22,6 +30,7 @@ type FormData = {
   password: string
   repeat_password: string
   verified: boolean
+  agreement: boolean
 }
 
 const initializeForm = (): FormData => {
@@ -35,6 +44,7 @@ const initializeForm = (): FormData => {
     password: '',
     repeat_password: '',
     verified: false,
+    agreement: false,
   }
 }
 
@@ -48,17 +58,26 @@ const validateForm = ({
   password,
   repeat_password,
   verified,
+  agreement,
 }: FormData) => {
   let result: Partial<{ [K in keyof FormData]: string }> = {}
 
   if (!email) {
     result.email = 'You must provide an email.'
+  } else if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+    result.email = 'Please provide a valid email.'
   }
+
   if (!first_name) {
     result.first_name = 'You must provide a first name.'
   }
   if (!last_name) {
     result.last_name = 'You must provide a last name.'
+  }
+
+  if (orcid && !orcid.match(/^\d{4}-\d{4}-\d{4}-\d{4}$/)) {
+    result.orcid =
+      'Please provide a valid ORCID identifier of the format 0000-0000-0000-0000.'
   }
 
   if (password.length < 12) {
@@ -79,6 +98,10 @@ const validateForm = ({
 
   if (!verified) {
     result.verified = 'You must complete the challenge.'
+  }
+  if (!agreement) {
+    result.agreement =
+      'You must agree and acknowledge in order to create an account.'
   }
 
   return result
@@ -113,7 +136,7 @@ const Page = () => {
   const { status } = useSession()
   const router = useRouter()
   const { setIsLoading } = useLoading()
-  const { errors, submitError, data, setters, onSubmit } = useForm(
+  const { errors, submitError, data, setters, blurs, onSubmit } = useForm(
     initializeForm,
     validateForm,
     submitForm.bind(null, setIsLoading),
@@ -134,7 +157,7 @@ const Page = () => {
 
   const handleVerify = useCallback(
     async (token: string) => {
-      const result = await verify(token)
+      const result = await verifyHCaptcha(token)
       if (result) {
         setters.verified(true)
       }
@@ -150,11 +173,33 @@ const Page = () => {
   }, [onSubmit, router])
 
   return (
-    <Form error={submitError}>
+    <Form
+      error={
+        submitError ? (
+          <>
+            {submitError}
+            {submitError.includes('already exists') ? (
+              <>
+                {' '}
+                Create a new account below or reset your password{' '}
+                <Link
+                  href='https://janeway.cdrxiv.org/reset/step/1/'
+                  sx={{ color: 'red' }}
+                >
+                  here
+                </Link>
+                .
+              </>
+            ) : null}
+          </>
+        ) : null
+      }
+    >
       <Field label='Email*' id='email' error={errors.email}>
         <Input
           value={data.email}
           onChange={(e) => setters.email(e.target.value)}
+          onBlur={blurs.email}
           id='email'
         />
       </Field>
@@ -164,6 +209,7 @@ const Page = () => {
             <Input
               value={data.first_name}
               onChange={(e) => setters.first_name(e.target.value)}
+              onBlur={blurs.first_name}
               id='first_name'
             />
           </Field>
@@ -177,6 +223,7 @@ const Page = () => {
             <Input
               value={data.middle_name}
               onChange={(e) => setters.middle_name(e.target.value)}
+              onBlur={blurs.middle_name}
               id='middle_name'
             />
           </Field>
@@ -186,6 +233,7 @@ const Page = () => {
             <Input
               value={data.last_name}
               onChange={(e) => setters.last_name(e.target.value)}
+              onBlur={blurs.last_name}
               id='last_name'
             />
           </Field>
@@ -197,6 +245,7 @@ const Page = () => {
             <Input
               value={data.orcid}
               onChange={(e) => setters.orcid(e.target.value)}
+              onBlur={blurs.orcid}
               id='orcid'
             />
           </Field>
@@ -211,6 +260,7 @@ const Page = () => {
             <Input
               value={data.institution}
               onChange={(e) => setters.institution(e.target.value)}
+              onBlur={blurs.institution}
               id='institution'
             />
           </Field>
@@ -219,10 +269,10 @@ const Page = () => {
       <Row columns={[6, 6, 8, 8]}>
         <Column start={1} width={[6, 3, 4, 4]}>
           <Field label='Password*' id='password' error={errors.password}>
-            <Input
+            <PasswordInput
               value={data.password}
-              type='password'
               onChange={(e) => setters.password(e.target.value)}
+              onBlur={blurs.password}
               id='password'
             />
           </Field>
@@ -233,15 +283,22 @@ const Page = () => {
             id='repeat_password'
             error={errors.repeat_password}
           >
-            <Input
+            <PasswordInput
               value={data.repeat_password}
-              type='password'
               onChange={(e) => setters.repeat_password(e.target.value)}
+              onBlur={blurs.repeat_password}
               id='repeat_password'
             />
           </Field>
         </Column>
       </Row>
+
+      <Field error={errors.agreement}>
+        <Agreement
+          checked={data.agreement}
+          onChange={(e) => setters.agreement(e.target.checked)}
+        />
+      </Field>
 
       <Field error={errors.verified}>
         <HCaptcha
@@ -250,10 +307,6 @@ const Page = () => {
         />
       </Field>
 
-      <Box>
-        By registering an account, you agree to our{' '}
-        <Link href='/TK'>Privacy Policy</Link>.
-      </Box>
       <Button onClick={handleSubmit}>Create account</Button>
     </Form>
   )

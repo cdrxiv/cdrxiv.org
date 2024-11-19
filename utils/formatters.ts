@@ -68,16 +68,22 @@ export const submissionTypes = (
 }
 
 export const decodeFilename = (filename: string) => {
-  return decodeURIComponent(
+  const decoded = decodeURIComponent(
     filename
       .split('')
       .map((char) => {
-        const code = char.charCodeAt(0)
-        if (code > 127) {
-          return '%' + code.toString(16).toUpperCase()
+        // For characters with code > 127, encode them using encodeURIComponent
+        if (char.charCodeAt(0) > 127) {
+          return encodeURIComponent(char)
         }
         return char
       })
       .join(''),
   )
+
+  if (decoded.length < 100) {
+    return decoded
+  } else {
+    return `${decoded.slice(0, 100)}...`
+  }
 }

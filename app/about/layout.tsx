@@ -3,7 +3,7 @@
 import PaneledPage from '../../components/layouts/paneled-page'
 import { NavSidebar } from '../../components'
 import { usePathname } from 'next/navigation'
-import { TagSelector, TagProvider } from './faq/tag-selector'
+import { TagProvider } from './faq/tag-selector'
 
 const PATHS = [
   { href: '/about', title: 'About', public: true },
@@ -13,12 +13,6 @@ const PATHS = [
     title: 'Scope',
     public: true,
   },
-  {
-    href: '/about/privacy',
-    title: 'Privacy policy',
-    public: true,
-  },
-  { href: '/about/team', title: 'Team', public: true },
 ]
 
 const About: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -29,7 +23,6 @@ const About: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <TagProvider>
       <PaneledPage
         sidebar={<NavSidebar paths={PATHS} />}
-        metadata={pathname.startsWith('/about/faq') && <TagSelector />}
         title={currentPath?.title}
       >
         {children}

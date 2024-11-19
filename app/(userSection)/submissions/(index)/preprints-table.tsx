@@ -4,8 +4,8 @@ import React from 'react'
 import NextLink from 'next/link'
 import { Box, Flex } from 'theme-ui'
 
-import { formatDate, submissionTypes } from '../../../../utils/formatters'
-import { Badge, Column, Row } from '../../../../components'
+import { formatDate } from '../../../../utils/formatters'
+import { Column, Link, Row } from '../../../../components'
 import { Preprint, Preprints } from '../../../../types/preprint'
 
 interface PreprintsTableProps {
@@ -53,87 +53,86 @@ const PreprintsTable: React.FC<PreprintsTableProps> = ({ preprints, date }) => {
         .sort((a: Preprint, b: Preprint) => getDateValue(b) - getDateValue(a))
         .map((preprint, i) => (
           <Box as='li' key={preprint.pk} sx={{ listStyle: 'none' }}>
-            <NextLink
-              href={`/submissions/edit/${preprint.pk}`}
-              style={{ textDecoration: 'none' }}
+            <Box
+              sx={{
+                borderTop: '1px solid',
+                borderBottom: i === preprints.length - 1 ? '1px solid' : 0,
+                borderColor: 'listBorderGrey',
+                py: 4,
+              }}
             >
-              <Box
-                sx={{
-                  color: 'text',
-                  borderTop: '1px solid',
-                  borderBottom: i === preprints.length - 1 ? '1px solid' : 0,
-                  borderColor: 'listBorderGrey',
-                  py: 4,
-                  ':hover': {
-                    cursor: 'pointer',
-                    bg: 'white',
-                    '#title': {
-                      color: 'blue',
-                    },
-                  },
-                }}
+              <Row
+                columns={[6, 6, 8, 8]}
+                sx={{ alignItems: 'center', flexWrap: 'wrap' }}
               >
-                <Row
-                  columns={[6, 6, 8, 8]}
-                  sx={{ alignItems: 'center', flexWrap: 'wrap' }}
-                >
-                  <Column start={[1, 1, 1, 1]} width={[6, 6, 4, 4]}>
+                <Column start={[1, 1, 1, 1]} width={[6, 6, 4, 4]}>
+                  <NextLink
+                    href={`/preprint/${preprint.pk}`}
+                    style={{
+                      textDecoration: 'none',
+                      color: 'inherit',
+                      pointerEvents: date === 'date_published' ? 'all' : 'none',
+                    }}
+                  >
                     <Box
                       id='title'
                       sx={{
                         variant: 'text.body',
-                        color: ['blue', 'blue', 'inherit', 'inherit'],
+                        color:
+                          date === 'date_published'
+                            ? ['blue', 'blue', 'inherit', 'inherit']
+                            : 'inherit',
                         mb: [4, 4, 0, 0],
+                        'a:hover &': {
+                          color: 'blue',
+                        },
                       }}
                     >
                       {preprint.title}
                     </Box>
-                  </Column>
-                  <Column start={[1, 1, 5, 5]} width={[6, 6, 4, 4]}>
-                    <Flex
+                  </NextLink>
+                </Column>
+                <Column start={[1, 1, 5, 5]} width={[6, 6, 4, 4]}>
+                  <Flex
+                    sx={{
+                      flexDirection: [
+                        'row-reverse',
+                        'row-reverse',
+                        'row',
+                        'row',
+                      ],
+                      justifyContent: 'space-between',
+                      alignItems: 'baseline',
+                    }}
+                  >
+                    <Box
                       sx={{
-                        flexDirection: [
-                          'row-reverse',
-                          'row-reverse',
-                          'row',
-                          'row',
-                        ],
-                        justifyContent: 'space-between',
-                        alignItems: 'baseline',
+                        variant: 'text.monoCaps',
+                        width: 'fit-content',
                       }}
                     >
-                      <Box
+                      {preprint[date]
+                        ? formatDate(new Date(preprint[date]), {
+                            month: 'short',
+                          })
+                        : null}
+                    </Box>
+                    <Flex sx={{ gap: 2, flexDirection: 'column' }}>
+                      <Link
+                        href={`/submissions/edit/${preprint.pk}`}
+                        forwardArrow
                         sx={{
-                          variant: 'text.monoCaps',
-                          width: 'fit-content',
+                          variant: 'text.mono',
+                          display: 'block',
                         }}
                       >
-                        {preprint[date]
-                          ? formatDate(new Date(preprint[date]))
-                          : null}
-                      </Box>
-                      <Flex sx={{ gap: 2, flexWrap: 'wrap' }}>
-                        {submissionTypes(preprint).map((badge) => (
-                          <Badge key={badge.label} color={badge.color}>
-                            {badge.label}
-                          </Badge>
-                        ))}
-                        {submissionTypes(preprint).length === 0 && (
-                          <Box
-                            sx={{
-                              variant: 'text.monoCaps',
-                              color: 'listBorderGrey',
-                            }}
-                          >
-                            Not labeled
-                          </Box>
-                        )}
-                      </Flex>
+                        Submit revision
+                      </Link>
                     </Flex>
-                  </Column>
-                </Row>
-              </Box>
-            </NextLink>
+                  </Flex>
+                </Column>
+              </Row>
+            </Box>
           </Box>
         ))}
     </Box>

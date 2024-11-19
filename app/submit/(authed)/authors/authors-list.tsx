@@ -6,7 +6,7 @@ import { Active, DndContext, Over } from '@dnd-kit/core'
 import { usePreprint } from '../../preprint-context'
 import { Row } from '../../../../components'
 import AuthorCard from './author-card'
-import { updatePreprint } from '../../../../actions/preprint'
+import { updatePreprint } from '../../../../actions'
 
 type Props = {
   removable?: boolean
@@ -48,9 +48,10 @@ const AuthorsList: React.FC<Props> = ({ removable = true }) => {
   return (
     <Row columns={[1, 1, 2, 2]} gap={[5, 6, 6, 8]}>
       <DndContext onDragEnd={handleDrag}>
-        {authors.map((a) => (
+        {authors.map((a, i) => (
           <AuthorCard
             key={a.email}
+            index={i}
             author={a}
             removable={removable}
             draggable={authors.length > 1}

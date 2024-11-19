@@ -87,13 +87,18 @@ const Team: React.FC = () => {
       <Box as='h2' sx={{ mb: 4 }}>
         Editorial board
       </Box>
-      <Row columns={[6, 6, 8, 8]}>
+      <Row columns={[6, 6, 8, 9]}>
         {editorialBoard.map(
           ({ name, role, image, affiliation, affiliationLink }, index) => (
             <Column
               key={name + index}
-              start={[index % 2 === 0 ? 1 : 4, index % 2 === 0 ? 1 : 5]}
-              width={[3, 3, 4, 4]}
+              start={[
+                index % 2 === 0 ? 1 : 4,
+                index % 2 === 0 ? 1 : 4,
+                index % 2 === 0 ? 1 : 5,
+                (index % 3) * 3 + 1,
+              ]}
+              width={[3, 3, 4, 3]}
               sx={{ mb: 6 }}
             >
               <Image

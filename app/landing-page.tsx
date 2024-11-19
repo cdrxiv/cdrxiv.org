@@ -59,7 +59,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
                 aria-selected={currentView === 'grid'}
                 sx={{
                   variant: 'text.body',
-                  fontSize: [2, 2, 2, 3],
                   textDecoration: currentView === 'grid' ? 'underline' : 'none',
                   textTransform: 'capitalize',
                 }}
@@ -74,7 +73,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
                 aria-selected={currentView === 'list'}
                 sx={{
                   variant: 'text.body',
-                  fontSize: [2, 2, 2, 3],
                   textDecoration: currentView === 'list' ? 'underline' : 'none',
                   textTransform: 'capitalize',
                 }}

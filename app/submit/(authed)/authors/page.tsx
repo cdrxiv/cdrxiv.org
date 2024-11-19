@@ -24,8 +24,8 @@ const Authors = () => {
                 author record.
               </li>
               <li>
-                You can search the database of existing authors to add them as
-                authors.
+                You can search the database of existing authors to add them to
+                the submission.
               </li>
               <li>
                 You can create new records for authors using the form below.
@@ -45,13 +45,14 @@ const Authors = () => {
           id='self'
           description={
             <>
-              Your account will be the owner of this submission, but is not an
-              author on record by default. Click the button above to add
-              yourself as an author.
+              Your account will own this submission, but it is not made an
+              author by default. Click the button above to add yourself as an
+              author.
               <br />
               <br />
-              To have the submission linked to a different account, have the
-              owner of that account complete this process from their account.
+              Owning this submission means you are responsible for keeping the
+              version up to date. If someone else should play that role, please
+              have them complete this submission process from their account.
             </>
           }
         >
@@ -61,7 +62,7 @@ const Authors = () => {
         <Field
           label='Search for an author'
           id='search'
-          description='You can search by email or ORCID identifier.'
+          description='You can search for existing authors by email or ORCID identifier.'
         >
           <AuthorSearch />
         </Field>

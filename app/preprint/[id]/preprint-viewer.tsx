@@ -7,16 +7,19 @@ import 'react-pdf/dist/Page/AnnotationLayer.css'
 import { Box, Flex } from 'theme-ui'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
 
-import PaneledPage from '../components/layouts/paneled-page'
-import StyledLink from '../components/link'
+import PaneledPage from '../../../components/layouts/paneled-page'
 import MetadataView from './preprint-metadata'
 import Outline from './preprint-outline'
-import { getAdditionalField } from '../utils/data'
+import DOIDisplay from './doi-display'
+import { getAdditionalField } from '../../../utils/data'
 
-import type { Preprint } from '../types/preprint'
-import Loading from '../components/loading'
-import useTracking from '../hooks/use-tracking'
-import { AuthorsList } from '../components'
+import type { Preprint, SupplementaryFile } from '../../../types/preprint'
+import Loading from '../../../components/loading'
+import useTracking from '../../../hooks/use-tracking'
+import { AuthorsList } from '../../../components'
+import { Deposition } from '../../../types/zenodo'
+import { fetchDataDeposition } from '../../../actions'
+import ErrorOrTrack from './error-or-track'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
@@ -38,6 +41,29 @@ const PreprintViewer = ({
 
   const submissionType = getAdditionalField(preprint, 'Submission type')
   const hasArticle = ['Article', 'Both'].includes(submissionType ?? '')
+  const hasData = ['Data', 'Both'].includes(submissionType ?? '')
+  const [deposition, setDeposition] = useState<Deposition>()
+  const dataUrl = preprint.supplementary_files.find(
+    (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_PUBLISHED',
+  )?.url
+  const [isDepositionLoading, setIsDepositionLoading] = useState<boolean>(
+    hasData && !!dataUrl,
+  )
+
+  useEffect(() => {
+    const fetchDeposition = async () => {
+      if (dataUrl) {
+        try {
+          const deposition = await fetchDataDeposition(dataUrl)
+          setDeposition(deposition)
+          setIsDepositionLoading(false)
+        } catch {
+          setIsDepositionLoading(false)
+        }
+      }
+    }
+    fetchDeposition()
+  }, [dataUrl])
 
   useEffect(() => {
     const updateWidth = () => {
@@ -90,17 +116,34 @@ const PreprintViewer = ({
           <Outline pdf={pdf} outline={pdfOutline} onItemClick={onItemClicked} />
         ) : null
       }
-      metadata={<MetadataView preprint={preprint} preview={preview} />}
+      metadata={
+        <MetadataView
+          preprint={preprint}
+          deposition={deposition}
+          isDepositionLoading={isDepositionLoading}
+          preview={preview}
+        />
+      }
     >
-      {preprint.doi && (
-        <StyledLink
-          href={preprint.doi}
-          forwardArrow
-          sx={{ variant: 'text.mono' }}
-        >
-          {preprint.doi}
-        </StyledLink>
-      )}
+      <Flex sx={{ flexDirection: 'column' }}>
+        {preprint.preprint_doi && (
+          <DOIDisplay label='DOI' doi={preprint.preprint_doi} />
+        )}
+        <ErrorOrTrack
+          hasError={!preprint.preprint_doi}
+          preview={preview}
+          pk={preprint.pk}
+          errorMessage={
+            'No `preprint_doi` found. Ensure that Crossref DOI has been minted before publishing.'
+          }
+        />
+        {preprint.doi && preprint.preprint_doi !== preprint.doi && (
+          <DOIDisplay label='Published DOI' doi={preprint.doi} />
+        )}
+        {(isDepositionLoading || deposition) && (
+          <DOIDisplay label='Dataset DOI' doi={deposition?.doi_url} />
+        )}
+      </Flex>
       <Box sx={{ variant: 'text.mono', mt: 3, mb: 7 }}>
         <AuthorsList authors={preprint.authors} orcidLinks />
       </Box>

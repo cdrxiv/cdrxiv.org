@@ -3,6 +3,8 @@
 import { headers, cookies } from 'next/headers'
 import { getToken } from 'next-auth/jwt'
 import { revalidatePath, revalidateTag } from 'next/cache'
+import { sql } from '@vercel/postgres'
+
 import {
   Author,
   AuthorParams,
@@ -23,7 +25,7 @@ export async function updatePreprint(
 
   const res = await fetchWithToken(
     headers(),
-    `https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/${pk}/`,
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/user_preprints/${pk}/`,
     {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -75,7 +77,7 @@ export async function createPreprint(): Promise<Preprint> {
 
   const res = await fetchWithToken(
     headers(),
-    'https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/',
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/user_preprints/`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -98,7 +100,7 @@ export async function createPreprint(): Promise<Preprint> {
 export async function createAuthor(author: AuthorParams): Promise<Author> {
   const res = await fetchWithToken(
     headers(),
-    'https://carbonplan.endurance.janeway.systems/carbonplan/api/account/register/',
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/account/register/`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -112,7 +114,12 @@ export async function createAuthor(author: AuthorParams): Promise<Author> {
     )
   }
 
-  const result = res.json()
+  const result = await res.json()
+
+  if (result.confirmation_code && result.pk) {
+    await sql`INSERT INTO confirmation_codes (account_id, confirmation_code) VALUES (${result.pk}, ${result.confirmation_code});`
+  }
+
   return result
 }
 
@@ -121,7 +128,7 @@ export async function searchAuthor(
 ): Promise<Pagination<Author>> {
   const res = await fetchWithToken(
     headers(),
-    `https://carbonplan.endurance.janeway.systems/carbonplan/api/submission_account_search/?search=${search}`,
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/submission_account_search/?search=${search}`,
   )
 
   if (res.status !== 200) {
@@ -139,7 +146,7 @@ export async function createPreprintFile(
 ): Promise<PreprintFile> {
   const res = await fetchWithToken(
     headers(),
-    `https://carbonplan.endurance.janeway.systems/carbonplan/api/preprint_files/`,
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/`,
     {
       method: 'POST',
       body: formData,
@@ -160,7 +167,7 @@ export async function createPreprintFile(
 export async function fetchPreprintFile(pk: number): Promise<PreprintFile> {
   const res = await fetchWithToken(
     headers(),
-    `https://carbonplan.endurance.janeway.systems/carbonplan/api/preprint_files/${pk}`,
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/${pk}`,
   )
 
   if (![200].includes(res.status)) {
@@ -176,7 +183,7 @@ export async function fetchPreprintFile(pk: number): Promise<PreprintFile> {
 export async function deletePreprintFile(pk: number): Promise<true> {
   const res = await fetchWithToken(
     headers(),
-    `https://carbonplan.endurance.janeway.systems/carbonplan/api/preprint_files/${pk}`,
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/${pk}`,
     {
       method: 'DELETE',
     },
@@ -195,7 +202,7 @@ export async function deletePreprintFile(pk: number): Promise<true> {
 export async function createVersionQueue(versionQueue: VersionQueueParams) {
   const res = await fetchWithToken(
     headers(),
-    'https://carbonplan.endurance.janeway.systems/carbonplan/api/version_queue/',
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/version_queue/`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -210,6 +217,18 @@ export async function createVersionQueue(versionQueue: VersionQueueParams) {
   }
 
   revalidatePath(`/submissions/edit/${versionQueue.preprint}`)
+
+  const result = res.json()
+  return result
+}
+
+export async function fetchPublishedPreprints(url: string) {
+  const res = await fetch(url)
+  if (![200].includes(res.status)) {
+    throw new Error(
+      `Status ${res.status}: Unable to fetch preprints. ${res.statusText}`,
+    )
+  }
 
   const result = res.json()
   return result

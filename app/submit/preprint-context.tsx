@@ -10,6 +10,7 @@ import React, {
 import { Preprint, PreprintFile, Preprints } from '../../types/preprint'
 import SelectPreprint from './select-preprint'
 import useTracking from '../../hooks/use-tracking'
+import PaneledPage from '../../components/layouts/paneled-page'
 
 const PreprintContext = createContext<{
   preprint: Preprint | null
@@ -57,6 +58,15 @@ export const PreprintProvider: React.FC<ProviderProps> = ({
     }
   }, [newlyCreated, track])
 
+  useEffect(() => {
+    if (!preprints[0]) {
+      return
+    }
+
+    // Update reference to new preprint if old preprint has been submitted
+    setValue((prev) => (prev?.pk === preprints[0].pk ? prev : preprints[0]))
+  }, [preprints[0]?.pk])
+
   return (
     <PreprintContext.Provider
       value={{ preprint: value, setPreprint: setValue, files, setFiles }}
@@ -64,7 +74,9 @@ export const PreprintProvider: React.FC<ProviderProps> = ({
       {value ? (
         children
       ) : (
-        <SelectPreprint preprints={preprints} setPreprint={setValue} />
+        <PaneledPage title='Submit'>
+          <SelectPreprint preprints={preprints} setPreprint={setValue} />
+        </PaneledPage>
       )}
     </PreprintContext.Provider>
   )

@@ -4,7 +4,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { createPortal } from 'react-dom'
 
-import StyledLink from './link'
+import Link from './link'
 import Search from './search'
 import Column from './column'
 import Row from './row'
@@ -33,7 +33,11 @@ const UserProfile = () => {
       as='svg'
       xmlns='http://www.w3.org/2000/svg'
       viewBox='0 0 448 512'
-      sx={{ height: '12px', ml: '-20px', flexShrink: 0 }}
+      sx={{
+        height: ['12px', '12px', '12px', '16px'],
+        ml: ['-20px', '-20px', '-20px', '-24px'],
+        flexShrink: 0,
+      }}
     >
       {/* Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc. */}
       <path
@@ -65,14 +69,18 @@ const AccountLink = ({
   }
 
   return (
-    <StyledLink
+    <Link
       href={path}
       sx={{
         width: 'fit-content',
+        variant: 'styles.h2',
         whiteSpace: 'nowrap',
         display: 'flex',
         alignItems: 'baseline',
         gap: 2,
+        '&:visited path': {
+          fill: 'purple',
+        },
         ...sx,
       }}
     >
@@ -81,7 +89,7 @@ const AccountLink = ({
         &nbsp;&nbsp;&nbsp;&nbsp;
       </Box>
       <UserProfile />
-    </StyledLink>
+    </Link>
   )
 }
 
@@ -100,9 +108,13 @@ const Header = () => {
       return name === 'Account' ? (
         <AccountLink key={name} name={name} path={path} />
       ) : (
-        <StyledLink key={name} href={path} sx={{ width: 'fit-content' }}>
+        <Link
+          key={name}
+          href={path}
+          sx={{ width: 'fit-content', variant: 'styles.h2' }}
+        >
           {name}
-        </StyledLink>
+        </Link>
       )
     })
   }
@@ -152,7 +164,9 @@ const Header = () => {
             ref={searchRef}
             placeholder='Search'
             onSubmit={() => {
-              router.push(`/search?query=${searchRef.current?.value ?? ''}`)
+              router.push(
+                `/search?query=${searchRef.current?.value?.replace(/"/g, '') ?? ''}`,
+              )
             }}
             arrows={true}
             inverted

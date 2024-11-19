@@ -1,7 +1,8 @@
 import React, { useCallback, useMemo } from 'react'
 import { PDFDocumentProxy } from 'pdfjs-dist'
 import { ThemeUIStyleObject } from 'theme-ui'
-import { NavSidebar } from '../components'
+
+import { NavSidebar } from '../../../components'
 
 type PDFOutline = Awaited<ReturnType<PDFDocumentProxy['getOutline']>>
 type OutlineItem = PDFOutline[number]
@@ -24,7 +25,7 @@ const levelStyles = {
   0: {},
   1: {
     ml: '20px',
-    fontSize: [1, 1, 1, 2],
+    fontSize: [1, 1, 2, 3],
     '&:hover::before': {
       content: '">"',
       position: 'absolute',

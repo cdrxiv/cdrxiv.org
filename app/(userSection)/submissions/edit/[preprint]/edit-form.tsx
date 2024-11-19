@@ -29,13 +29,11 @@ import {
   createPreprintFile,
   createVersionQueue,
   updatePreprint,
-} from '../../../../../actions/preprint'
-import {
   createDataDepositionFile,
   createDataDepositionVersion,
   deleteZenodoEntity,
   fetchDataDeposition,
-} from '../../../../../actions/zenodo'
+} from '../../../../../actions'
 
 type Props = {
   preprint: ReviewPreprint | PublishedPreprint
@@ -55,7 +53,7 @@ type FormData = {
 const initializeForm = (preprint: Props['preprint']): FormData => {
   return {
     preprint: preprint.pk,
-    update_type: 'metadata_correction' as UpdateType,
+    update_type: 'version' as UpdateType,
     title: preprint.title,
     abstract: preprint.abstract,
     published_doi: preprint.doi ?? '',
@@ -277,10 +275,24 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
     >
       <Form error={submitError}>
         <Field
-          label='Type'
+          label='Type of revision'
           id='update_type'
           error={errors.update_type}
-          description={UPDATE_TYPE_DESCRIPTIONS[data.update_type]}
+          description={
+            <>
+              {UPDATE_TYPE_DESCRIPTIONS[data.update_type]}
+              <br />
+              <br />
+              If no option fits, consider starting a new submission or contact{' '}
+              <Link
+                href='mailto:support@cdrxiv.org'
+                sx={{ variant: 'text.mono' }}
+              >
+                support@cdrxiv.org
+              </Link>
+              .
+            </>
+          }
         >
           <Select
             value={data.update_type}
@@ -307,7 +319,7 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
         <Field
           label='Abstract'
           id='abstract'
-          description='Some info about abstract formatting'
+          description='This should be the same as the article abstract or, for data-only submissions, a brief description of the dataset.'
           error={errors.abstract}
         >
           <Textarea
@@ -346,7 +358,7 @@ const EditForm: React.FC<Props> = ({ versions, preprint }) => {
           <Field
             label='Data file'
             id='dataFile'
-            description='Your submission can by represented by a single file of any format, including ZIP, up to [TK] MB.'
+            description='Your data submission must be a single file of any format, including ZIP.'
             error={errors.dataFile}
           >
             <FileInput file={data.dataFile} onChange={setters.dataFile} />

@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 
 import { Button } from '../../../../components'
 import { usePreprint } from '../../preprint-context'
-import { updatePreprint } from '../../../../actions/preprint'
+import { updatePreprint } from '../../../../actions'
 
 const AddSelf = () => {
   const { data: session } = useSession()
@@ -23,11 +23,11 @@ const AddSelf = () => {
   const isAdded = !!preprint.authors.find(({ pk }) => pk === session?.user?.id)
   return (
     <Button
-      sx={{ width: 'fit-content' }}
+      sx={{ width: 'fit-content', color: isAdded ? 'purple' : 'blue' }}
       onClick={handleClick}
       disabled={isAdded}
     >
-      {isAdded ? 'Added' : 'Add self as author'}
+      Add self as author
     </Button>
   )
 }

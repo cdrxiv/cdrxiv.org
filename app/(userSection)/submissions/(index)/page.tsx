@@ -9,15 +9,15 @@ const SubmissionOverview = async () => {
   const responses = await Promise.all([
     fetchWithToken(
       headers(),
-      'https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/?stage=preprint_published',
+      `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/user_preprints/?stage=preprint_published`,
     ),
     fetchWithToken(
       headers(),
-      'https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/?stage=preprint_review',
+      `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/user_preprints/?stage=preprint_review`,
     ),
     fetchWithToken(
       headers(),
-      'https://carbonplan.endurance.janeway.systems/carbonplan/api/user_preprints/?stage=preprint_rejected',
+      `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/user_preprints/?stage=preprint_rejected`,
     ),
   ])
 

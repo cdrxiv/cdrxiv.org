@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
 import { getServerSession } from 'next-auth'
 
-import PreprintViewer from '../../../preprint-viewer'
+import PreprintViewer from '../../../preprint/[id]/preprint-viewer'
 import { fetchWithToken } from '../../../api/utils'
 import Forbidden from '../forbidden'
 import SharedLayout from '../../shared-layout'
@@ -36,7 +36,7 @@ const PreprintPreview = async ({
 
   const response = await fetchWithToken(
     headers(),
-    `https://carbonplan.endurance.janeway.systems/carbonplan/api/preprints/${params.preprint}`,
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprints/${params.preprint}`,
   )
 
   let preprint

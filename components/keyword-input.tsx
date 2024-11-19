@@ -110,6 +110,7 @@ const KeywordInput: React.FC<Props> = ({
         onKeyDown={handleKeyDown}
         onChange={handleChange}
         value={inputValue}
+        placeholder=' ' // Hack to fix Safari baseline alignment issue for empty inputs
         sx={{
           border: 'none',
           boxShadow: 'none',

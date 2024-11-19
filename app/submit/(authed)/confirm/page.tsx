@@ -9,8 +9,7 @@ import NavButtons from '../../nav-buttons'
 import { PATHS } from '../../constants'
 import { usePreprint, usePreprintFiles } from '../../preprint-context'
 import { createAdditionalField, getFormattedDate } from '../utils'
-import { updateDataDeposition } from '../../../../actions/zenodo'
-import { updatePreprint } from '../../../../actions/preprint'
+import { updateDataDeposition, updatePreprint } from '../../../../actions'
 import {
   initializeForm as initializeInfo,
   validateForm as validateInfo,
@@ -153,7 +152,7 @@ const SubmissionConfirmation = () => {
           user: preprint.owner,
           submission_type: submissionType,
         })
-        router.push('/submit/success')
+        router.push(`/submit/success?type=${submissionType}`)
       })
       .catch((err) => {
         track('preprint_submitted_error', {

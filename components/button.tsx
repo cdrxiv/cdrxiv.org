@@ -35,7 +35,7 @@ const StyledButton = React.forwardRef<Ref, Props>(
           transform: 'translate(1px, 1px)',
         },
       },
-      pb: ['9px', '9px', '9px', '11px'],
+      pb: ['9px', '9px', '9px', '10px'],
       '&:disabled': {
         background: 'background',
         boxShadow:

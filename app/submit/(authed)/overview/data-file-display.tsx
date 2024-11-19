@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 
-import { fetchDataDeposition } from '../../../../actions/zenodo'
+import { fetchDataDeposition } from '../../../../actions'
 import { Deposition } from '../../../../types/zenodo'
 import FileDisplay from './file-display'
 import { FileInputValue, Loading } from '../../../../components'

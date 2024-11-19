@@ -8,12 +8,12 @@ const Janeway: Provider = {
   clientId: process.env.AUTH_CLIENT_ID,
   clientSecret: process.env.AUTH_CLIENT_SECRET,
   authorization: {
-    url: 'https://carbonplan.endurance.janeway.systems/carbonplan/o/authorize/',
+    url: `${process.env.NEXT_PUBLIC_JANEWAY_URL}/o/authorize/`,
     params: { scope: undefined },
   },
-  token: 'https://carbonplan.endurance.janeway.systems/carbonplan/o/token/',
+  token: `${process.env.NEXT_PUBLIC_JANEWAY_URL}/o/token/`,
   userinfo: {
-    url: 'https://carbonplan.endurance.janeway.systems/carbonplan/api/user_info/',
+    url: `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/user_info/`,
   },
   checks: ['pkce'],
   profile(response) {
@@ -66,7 +66,7 @@ export const authOptions: NextAuthOptions = {
 
         try {
           const response = await fetch(
-            'https://carbonplan.endurance.janeway.systems/carbonplan/o/token/',
+            `${process.env.NEXT_PUBLIC_JANEWAY_URL}/o/token/`,
             {
               headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
               body: new URLSearchParams({
