@@ -155,8 +155,10 @@ const cleanupFiles = async (
   files: PreprintFile[],
   articleFile: FormData['articleFile'],
   deposition: Deposition | null,
+  dataFile: FormData['dataFile'],
 ) => {
   const cleanupTasks: Promise<any>[] = []
+
   if (existingDataFile && submissionType === 'Article') {
     cleanupTasks.push(deleteZenodoEntity(existingDataFile.url))
   }
@@ -168,7 +170,7 @@ const cleanupFiles = async (
     files.forEach((file) => cleanupTasks.push(deletePreprintFile(file.pk)))
   }
 
-  if (deposition?.files?.length && deposition.files.length > 0) {
+  if (!dataFile?.persisted && deposition?.files?.length) {
     cleanupTasks.push(
       ...deposition.files.map((f) => deleteZenodoEntity(f.links.self)),
     )
@@ -212,6 +214,7 @@ export const submitForm = async ({
     files,
     articleFile,
     deposition,
+    dataFile,
   )
 
   const [newPreprintFile, supplementaryFiles] = await Promise.all([
