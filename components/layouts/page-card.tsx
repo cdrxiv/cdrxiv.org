@@ -146,22 +146,20 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
               </CardContext.Provider>
             </Box>
 
-            {isFullSiteEnabled() && (
-              <Flex sx={{ columnGap: 3, rowGap: 2, flexWrap: 'wrap', pb: 2 }}>
-                <Box sx={{ ...sx.footer, flexBasis: ['100%', 'inherit'] }}>
-                  Powered by Janeway
-                </Box>
-                <Link href='/terms-of-use' sx={sx.footer}>
-                  Terms of Use
-                </Link>
-                <Link href='/privacy-policy' sx={sx.footer}>
-                  Privacy Policy
-                </Link>
-                <Link href='/cookies-notice' sx={sx.footer}>
-                  Cookies Notice
-                </Link>
-              </Flex>
-            )}
+            <Flex sx={{ columnGap: 3, rowGap: 2, flexWrap: 'wrap', pb: 2 }}>
+              <Box sx={{ ...sx.footer, flexBasis: ['100%', 'inherit'] }}>
+                Powered by Janeway
+              </Box>
+              <Link href='/terms-of-use' sx={sx.footer}>
+                Terms of Use
+              </Link>
+              <Link href='/privacy-policy' sx={sx.footer}>
+                Privacy Policy
+              </Link>
+              <Link href='/cookies-notice' sx={sx.footer}>
+                Cookies Notice
+              </Link>
+            </Flex>
           </Flex>
         </Box>
       </Box>
