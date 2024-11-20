@@ -212,8 +212,7 @@ export async function fetchPublishedPreprints(url: string) {
 }
 
 export async function fetchPreprintIdentifier(pk: number) {
-  const res = await fetchWithToken(
-    headers(),
+  const res = await fetch(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/identifiers/?preprint_id=${pk}`,
   )
 
