@@ -92,5 +92,5 @@ export const handleDataUpload = async (
     throw new Error('Failed to upload data file')
   }
 
-  return [{ label: 'CDRXIV_DATA_DRAFT', url: deposition.links.self }]
+  return depositionFile
 }

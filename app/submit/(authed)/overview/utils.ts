@@ -153,26 +153,35 @@ const cleanupFiles = async (
   existingDataFile: SupplementaryFile | undefined,
   submissionType: string,
   files: PreprintFile[],
-  articleFile: FormData['articleFile'],
-  deposition: Deposition | null,
-  dataFile: FormData['dataFile'],
+  oldDeposition: Deposition | null,
+  uploadResults: [PreprintFile | null, Deposition | null],
 ) => {
+  const [newPreprintFile, newDeposition] = uploadResults
   const cleanupTasks: Promise<any>[] = []
 
+  // basic cleanup of old files when switching between article and data
   if (existingDataFile && submissionType === 'Article') {
     cleanupTasks.push(deleteZenodoEntity(existingDataFile.url))
   }
   if (files.length > 0 && submissionType === 'Data') {
     cleanupTasks.push(...files.map((file) => deletePreprintFile(file.pk)))
   }
-  // clear other article files if needed
-  if (files.length > 0 && articleFile && !articleFile?.persisted) {
-    files.forEach((file) => cleanupTasks.push(deletePreprintFile(file.pk)))
+
+  // Clean up old article files if we have a new one
+  if (newPreprintFile) {
+    cleanupTasks.push(
+      ...files
+        .filter((file) => file.pk !== newPreprintFile.pk)
+        .map((file) => deletePreprintFile(file.pk)),
+    )
   }
 
-  if (!dataFile?.persisted && deposition?.files?.length) {
+  // Clean up old Zenodo files if we have new files
+  if (newDeposition) {
     cleanupTasks.push(
-      ...deposition.files.map((f) => deleteZenodoEntity(f.links.self)),
+      ...(oldDeposition?.files ?? []).map((file) =>
+        deleteZenodoEntity(file.links.self),
+      ),
     )
   }
 
@@ -208,15 +217,6 @@ export const submitForm = async ({
     }
   }
 
-  await cleanupFiles(
-    existingDataFile,
-    submissionType,
-    files,
-    articleFile,
-    deposition,
-    dataFile,
-  )
-
   const results = await Promise.allSettled([
     handleArticleUpload(
       articleFile,
@@ -230,7 +230,7 @@ export const submitForm = async ({
   ])
 
   const failures: Array<{ type: string; error: Error; cancelled: boolean }> = []
-  const successes: (PreprintFile | SupplementaryFile[] | null)[] = []
+  const successes: (PreprintFile | Deposition | null)[] = []
 
   results.forEach((result, index) => {
     if (result.status === 'rejected') {
@@ -241,11 +241,20 @@ export const submitForm = async ({
         cancelled: result.reason?.message === 'Upload cancelled',
       })
     } else {
-      successes[index] = result.value
+      successes[index] = result.value as PreprintFile | Deposition | null
     }
   })
 
-  // If we have failures/cancellations, update preprint submission type and throw error
+  // Clean up files based on what succeeded
+  await cleanupFiles(
+    existingDataFile,
+    submissionType,
+    files,
+    deposition,
+    successes as [PreprintFile | null, Deposition | null],
+  )
+
+  // After cleanup, handle any failures
   if (failures.length > 0) {
     const remainingType =
       failures.length === 2
@@ -291,15 +300,19 @@ export const submitForm = async ({
     }
   }
 
-  const [newPreprintFile, supplementaryFiles] = successes as [
+  const [newPreprintFile, newDeposition] = successes as [
     PreprintFile | null,
-    SupplementaryFile[] | null,
+    Deposition | null,
   ]
 
   // Prepare final supplementary files
   const finalSupplementaryFiles = dataFile?.persisted
     ? preprint.supplementary_files
-    : (supplementaryFiles ?? (externalFile ? [externalFile] : []))
+    : newDeposition?.links.self
+      ? [{ label: 'CDRXIV_DATA_DRAFT', url: newDeposition.links.self }]
+      : externalFile
+        ? [externalFile]
+        : []
 
   const additionalFieldAnswers = [
     ...preprint.additional_field_answers.filter(
