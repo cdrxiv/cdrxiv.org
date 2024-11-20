@@ -52,7 +52,6 @@ export const handleArticleUpload = async (
         baseProgress: 100,
         maxProgress: 100,
       },
-      type: 'Article',
       abortSignal,
     },
   )
@@ -85,7 +84,6 @@ export const handleDataUpload = async (
         baseProgress: 50,
         maxProgress: 95,
       },
-      type: 'Data',
       abortSignal,
     },
   )

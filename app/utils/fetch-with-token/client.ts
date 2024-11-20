@@ -15,7 +15,6 @@ export const fetchWithTokenClient = async <T>(
   options?: RequestInit & {
     onProgress?: ProgressCallback
     progressOptions?: ProgressOptions
-    type?: 'Article' | 'Data'
     abortSignal?: AbortSignal
   },
 ): Promise<T> => {
@@ -82,7 +81,7 @@ export const fetchWithTokenClient = async <T>(
         } catch (error) {
           reject(
             new Error(
-              `${options?.type ? `${options.type} issue ; ` : ''}failed to parse response: ${error instanceof Error ? error.message : 'Unknown error'}`,
+              `Failed to parse response: ${error instanceof Error ? error.message : 'Unknown error'}`,
             ),
           )
         }
@@ -90,7 +89,7 @@ export const fetchWithTokenClient = async <T>(
         console.error(xhr.responseText)
         reject(
           new Error(
-            `${options?.type ? `${options.type} error: ` : ''}${JSON.parse(xhr.responseText).file?.[0] || xhr.responseText}`,
+            `${JSON.parse(xhr.responseText).file?.[0] || xhr.responseText}`,
           ),
         )
       }
@@ -102,7 +101,9 @@ export const fetchWithTokenClient = async <T>(
         clearInterval(progressInterval)
       }
       reject(
-        new Error(`${options?.type ? `${options.type} ` : ''}upload failed`),
+        new Error(
+          `${error instanceof Error ? error.message : 'Unknown error'}`,
+        ),
       )
     })
 
