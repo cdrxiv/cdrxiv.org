@@ -12,6 +12,7 @@ import {
   createAuthor as createAuthorBase,
   searchAuthor as searchAuthorBase,
   fetchPublishedPreprints as fetchPublishedPreprintsBase,
+  fetchPreprintIdentifier as fetchPreprintIdentifierBase,
 } from './preprint'
 import {
   fetchDataDeposition as fetchDataDepositionBase,
@@ -34,6 +35,9 @@ export const createAuthor = throwActionErrors(createAuthorBase)
 export const searchAuthor = throwActionErrors(searchAuthorBase)
 export const fetchPublishedPreprints = throwActionErrors(
   fetchPublishedPreprintsBase,
+)
+export const fetchPreprintIdentifier = throwActionErrors(
+  fetchPreprintIdentifierBase,
 )
 
 export const fetchDataDeposition = throwActionErrors(fetchDataDepositionBase)
