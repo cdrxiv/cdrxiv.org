@@ -217,7 +217,7 @@ export const submitForm = async ({
     dataFile,
   )
 
-  const [newPreprintFile, supplementaryFiles] = await Promise.all([
+  const results = await Promise.allSettled([
     handleArticleUpload(
       articleFile,
       preprint.pk,
@@ -226,8 +226,75 @@ export const submitForm = async ({
     ),
     deposition
       ? handleDataUpload(deposition, dataFile, setUploadProgress, abortSignal)
-      : null,
+      : Promise.resolve(null),
   ])
+
+  const failures: Array<{ type: string; error: Error; cancelled: boolean }> = []
+  const successes: (PreprintFile | SupplementaryFile[] | null)[] = []
+
+  results.forEach((result, index) => {
+    if (result.status === 'rejected') {
+      const uploadType = index === 0 ? 'Article' : 'Data'
+      failures.push({
+        type: uploadType,
+        error: result.reason,
+        cancelled: result.reason?.message === 'Upload cancelled',
+      })
+    } else {
+      successes[index] = result.value
+    }
+  })
+
+  // If we have failures/cancellations, update preprint submission type and throw error
+  if (failures.length > 0) {
+    const remainingType =
+      failures.length === 2
+        ? 'Article' // Both failed - default to Article
+        : failures[0].type === 'Article'
+          ? 'Data'
+          : 'Article'
+
+    const hasOtherFile =
+      failures.length === 1 &&
+      (failures[0].type === 'Article' ? !!dataFile : !!articleFile)
+
+    const additionalFieldAnswers = [
+      ...preprint.additional_field_answers.filter(
+        (field) => field.field?.name !== 'Submission type',
+      ),
+      createAdditionalField(
+        'Submission type',
+        hasOtherFile ? remainingType : 'Article', // Default to article
+      ),
+    ]
+
+    updatePreprint(preprint, {
+      additional_field_answers: additionalFieldAnswers,
+    })
+      .then(setPreprint)
+      .catch(console.error)
+
+    // Handle error display
+    const cancelledUploads = failures.filter((f) => f.cancelled)
+    if (cancelledUploads.length === 2) {
+      throw new Error('All uploads cancelled')
+    } else if (cancelledUploads.length === 1) {
+      throw new Error(`${cancelledUploads[0].type} upload cancelled`)
+    } else {
+      const errorMessage = failures
+        .map(
+          (f) =>
+            `${f.type} upload failed: ${f.error?.message || 'Unknown error'}`,
+        )
+        .join('; ')
+      throw new Error(errorMessage)
+    }
+  }
+
+  const [newPreprintFile, supplementaryFiles] = successes as [
+    PreprintFile | null,
+    SupplementaryFile[] | null,
+  ]
 
   // Prepare final supplementary files
   const finalSupplementaryFiles = dataFile?.persisted
