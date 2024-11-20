@@ -19,7 +19,6 @@ import Link from '../link'
 import MouseTrail from '../mouse-trail'
 import PageCorner from '../page-corner'
 import SparklyMouseTrail from '../sparkly-mouse-trail'
-import { isFullSiteEnabled } from '../../utils/flags'
 
 const margin = [2, 2, 3, 3]
 
