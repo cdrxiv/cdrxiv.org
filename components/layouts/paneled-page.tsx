@@ -320,13 +320,21 @@ const PaneledPage: React.FC<{
                         </Box>
                       )}
 
-                      {(uploadProgress.article !== undefined ||
-                        uploadProgress.data !== undefined) &&
-                        abortController && (
-                          <Link onClick={handleCancel} sx={{ mt: 4 }}>
-                            Cancel
-                          </Link>
-                        )}
+                      <Box sx={{ height: 40 }}>
+                        {((uploadProgress.article ?? 0) > 0 ||
+                          (uploadProgress.data ?? 0) > 0) &&
+                          abortController && (
+                            <Link
+                              sx={{
+                                variant: 'text.mono',
+                                textDecoration: 'none',
+                              }}
+                              onClick={handleCancel}
+                            >
+                              (X) Cancel
+                            </Link>
+                          )}
+                      </Box>
                     </Flex>
                   )}
 
