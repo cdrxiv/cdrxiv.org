@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Box, Flex, Input } from 'theme-ui'
 
-import { fetchDataDeposition } from '../../../../actions'
+import { deleteZenodoEntity, fetchDataDeposition } from '../../../../actions'
 import { SupplementaryFile } from '../../../../types/preprint'
 import { Deposition } from '../../../../types/zenodo'
 import {
@@ -37,8 +37,17 @@ const DataFileInput: React.FC<Props> = ({
     if (fileProp?.url) {
       fetchDataDeposition(fileProp?.url)
         .then((deposition) => {
-          setDeposition(deposition)
-          setLoading(false)
+          if (deposition.files.length === 0) {
+            // if we got into a state where the deposition is empty, delete it and reset the file input
+            onError().then(() => {
+              setFileProp(null)
+              setLoading(false)
+              deleteZenodoEntity(fileProp.url)
+            })
+          } else {
+            setDeposition(deposition)
+            setLoading(false)
+          }
         })
         .catch(() => {
           onError().then(() => {
