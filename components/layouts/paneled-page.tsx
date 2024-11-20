@@ -10,7 +10,6 @@ import React, {
   useCallback,
 } from 'react'
 import { Box, Divider, Flex } from 'theme-ui'
-import Link from '../link'
 import { usePathname } from 'next/navigation'
 
 import Row from '../row'
@@ -18,6 +17,7 @@ import Column from '../column'
 import Guide from '../guide'
 import Loading from '../loading'
 import Expander from '../expander'
+import Link from '../link'
 import { useCardContext } from './page-card'
 
 const HEADER_HEIGHT = [65, 65, 100, 100]
@@ -321,11 +321,12 @@ const PaneledPage: React.FC<{
                       )}
 
                       {(uploadProgress.article !== undefined ||
-                        uploadProgress.data !== undefined) && (
-                        <Link onClick={handleCancel} sx={{ mt: 4 }}>
-                          Cancel
-                        </Link>
-                      )}
+                        uploadProgress.data !== undefined) &&
+                        abortController && (
+                          <Link onClick={handleCancel} sx={{ mt: 4 }}>
+                            Cancel
+                          </Link>
+                        )}
                     </Flex>
                   )}
 
