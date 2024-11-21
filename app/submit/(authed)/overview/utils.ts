@@ -26,10 +26,13 @@ export type FormData = {
   articleFile: FileInputValue | null
   dataFile: FileInputValue | null
   externalFile: SupplementaryFile | null
+  deposition: Deposition | null
+  files: PreprintFile[]
 }
 export const initializeForm = (
   preprint: Preprint,
   files: PreprintFile[],
+  deposition: Deposition | null,
 ): FormData => {
   const articleFile = files.reduce(
     (last: PreprintFile | null, file: PreprintFile) =>
@@ -66,6 +69,8 @@ export const initializeForm = (
           file.label !== 'CDRXIV_DATA_DRAFT' &&
           file.label !== 'CDRXIV_DATA_PUBLISHED',
       ) ?? null,
+    deposition,
+    files,
   }
 }
 
@@ -74,6 +79,8 @@ export const validateForm = ({
   articleFile,
   dataFile,
   externalFile,
+  deposition,
+  files,
 }: FormData) => {
   let result: Partial<{ [K in keyof FormData]: string }> = {}
 
@@ -110,6 +117,20 @@ export const validateForm = ({
           'Please enter a valid URL, including the protocol (e.g., https://) and a domain name with a valid extension (e.g., .com, .org).'
       }
     }
+  }
+
+  if (
+    deposition &&
+    deposition.files.length > 1 &&
+    (!dataFile || dataFile.persisted)
+  ) {
+    result.deposition =
+      'There is an issue with you data upload, please clear the file and try again.'
+  }
+
+  if (files.length > 1) {
+    result.files =
+      'There is an issue with you article upload, please clear the file and try again.'
   }
 
   return result
@@ -159,6 +180,14 @@ const cleanupFiles = async (
   const [newPreprintFile, newDeposition] = uploadResults
   const cleanupTasks: Promise<any>[] = []
 
+  console.log({
+    existingDataFile,
+    submissionType,
+    files,
+    oldDeposition,
+    newDeposition,
+  })
+
   // basic cleanup of old files when switching between article and data
   if (existingDataFile && submissionType === 'Article') {
     cleanupTasks.push(deleteZenodoEntity(existingDataFile.url))
@@ -177,11 +206,9 @@ const cleanupFiles = async (
   }
 
   // Clean up old Zenodo files if we have new files
-  if (newDeposition) {
+  if (newDeposition && oldDeposition?.files) {
     cleanupTasks.push(
-      ...(oldDeposition?.files ?? []).map((file) =>
-        deleteZenodoEntity(file.links.self),
-      ),
+      ...oldDeposition.files.map((file) => deleteZenodoEntity(file.links.self)),
     )
   }
 

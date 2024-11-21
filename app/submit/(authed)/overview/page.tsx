@@ -1,7 +1,7 @@
 'use client'
 
 import { Label } from 'theme-ui'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { Checkbox, Field, FileInput, Form } from '../../../../components'
 import NavButtons from '../../nav-buttons'
@@ -9,40 +9,68 @@ import { usePreprint, usePreprintFiles } from '../../preprint-context'
 import { useForm } from '../utils'
 import { FormData, initializeForm, validateForm, submitForm } from './utils'
 import DataFileInput from './data-file-input'
-import { updatePreprint } from '../../../../actions'
+import { fetchDataDeposition, updatePreprint } from '../../../../actions'
 import { useLoading } from '../../../../components/layouts/paneled-page'
+import { Deposition } from '../../../../types/zenodo'
+import { SupplementaryFile } from '../../../../types/preprint'
 
 const SubmissionOverview = () => {
   const { preprint, setPreprint } = usePreprint()
   const { files, setFiles } = usePreprintFiles()
   const { setUploadProgress, setAbortController } = useLoading()
+  const [deposition, setDeposition] = useState<Deposition | null>(null)
 
-  const { data, setters, errors, onSubmit, submitError } = useForm<FormData>(
-    () => initializeForm(preprint, files),
-    validateForm,
-    async (values: FormData) => {
-      const controller = setAbortController ? new AbortController() : undefined
-      if (controller && setAbortController) {
-        setAbortController(controller)
-      }
+  useEffect(() => {
+    const dataUrl = preprint.supplementary_files.find(
+      (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
+    )?.url
 
-      try {
-        await submitForm({
-          preprint,
-          setPreprint,
-          files,
-          setFiles,
-          formData: values,
-          setUploadProgress,
-          abortSignal: controller?.signal,
-        })
-      } finally {
+    if (dataUrl) {
+      fetchDataDeposition(dataUrl).then(setDeposition)
+    } else {
+      setDeposition(null)
+    }
+  }, [preprint.supplementary_files])
+
+  const { data, setters, errors, onSubmit, submitError, setData } =
+    useForm<FormData>(
+      () => initializeForm(preprint, files, null),
+      validateForm,
+      async (values: FormData) => {
+        const controller = setAbortController
+          ? new AbortController()
+          : undefined
         if (controller && setAbortController) {
-          setAbortController(undefined)
+          setAbortController(controller)
         }
-      }
-    },
-  )
+
+        try {
+          await submitForm({
+            preprint,
+            setPreprint,
+            files,
+            setFiles,
+            formData: values,
+            setUploadProgress,
+            abortSignal: controller?.signal,
+          })
+        } finally {
+          if (controller && setAbortController) {
+            setAbortController(undefined)
+          }
+        }
+      },
+    )
+
+  useEffect(() => {
+    if (deposition) {
+      setData((current) => ({
+        ...current,
+        deposition,
+      }))
+    }
+  }, [deposition, setData])
+
   const [disableAgreement] = useState<boolean>(data.agreement)
 
   const handleDataFileError = useCallback(() => {
@@ -76,7 +104,7 @@ const SubmissionOverview = () => {
           label='Article file'
           id='articleFile'
           description='Your article must be submitted as a PDF.'
-          error={errors.articleFile}
+          error={errors.articleFile ?? errors.files}
         >
           <FileInput
             file={data.articleFile}
@@ -89,7 +117,7 @@ const SubmissionOverview = () => {
           label='Data file'
           id='dataFile'
           description='Your data submission must be a single file of any format, including ZIP, up to 10 GB.'
-          error={errors.dataFile ?? errors.externalFile}
+          error={errors.dataFile ?? errors.externalFile ?? errors.deposition}
         >
           <DataFileInput
             file={data.dataFile}

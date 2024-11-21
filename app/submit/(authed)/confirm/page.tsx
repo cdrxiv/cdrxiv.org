@@ -9,7 +9,11 @@ import NavButtons from '../../nav-buttons'
 import { PATHS } from '../../constants'
 import { usePreprint, usePreprintFiles } from '../../preprint-context'
 import { createAdditionalField, getFormattedDate } from '../utils'
-import { updateDataDeposition, updatePreprint } from '../../../../actions'
+import {
+  updateDataDeposition,
+  updatePreprint,
+  fetchDataDeposition,
+} from '../../../../actions'
 import {
   initializeForm as initializeInfo,
   validateForm as validateInfo,
@@ -25,6 +29,8 @@ import { getZenodoMetadata } from '../../../../utils/data'
 import { getSubmissionType } from '../overview/utils'
 import useTracking from '../../../../hooks/use-tracking'
 import { useLoading } from '../../../../components/layouts/paneled-page'
+import { SupplementaryFile } from '../../../../types/preprint'
+import { Deposition } from '../../../../types/zenodo'
 
 const SummaryCard = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -79,10 +85,23 @@ const SubmissionConfirmation = () => {
   const track = useTracking()
   const [submitError, setSubmitError] = useState<string | null>(null)
   const { setIsLoading } = useLoading()
+  const [deposition, setDeposition] = useState<Deposition | null>(null)
+
+  useEffect(() => {
+    const dataUrl = preprint.supplementary_files.find(
+      (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
+    )?.url
+
+    if (dataUrl) {
+      fetchDataDeposition(dataUrl).then((dep) => {
+        setDeposition(dep)
+      })
+    }
+  }, [preprint.supplementary_files])
 
   const { info, overview, authors } = useMemo(() => {
     const info = initializeInfo(preprint)
-    const overview = initializeOverview(preprint, files)
+    const overview = initializeOverview(preprint, files, deposition)
     const { agreement, ...overviewErrors } = validateOverview(overview)
 
     return {
@@ -96,7 +115,7 @@ const SubmissionConfirmation = () => {
             : null,
       },
     }
-  }, [preprint, files])
+  }, [preprint, files, deposition])
 
   useEffect(() => {
     overview.error &&
