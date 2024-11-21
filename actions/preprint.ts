@@ -14,7 +14,7 @@ import {
   PreprintFile,
   VersionQueueParams,
 } from '../types/preprint'
-import { fetchWithToken } from '../app/utils/fetch-with-token/server'
+import { fetchWithAlerting, fetchWithToken } from './server-utils'
 import { PREPRINT_BASE } from './constants'
 
 export async function updatePreprint(
@@ -23,8 +23,7 @@ export async function updatePreprint(
 ): Promise<Preprint> {
   const { pk, license, ...rest } = preprint
 
-  const res = await fetchWithToken(
-    headers(),
+  const updatedPreprint = await fetchWithToken(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/user_preprints/${pk}/`,
     {
       method: 'PUT',
@@ -38,25 +37,6 @@ export async function updatePreprint(
       }),
     },
   )
-
-  if (res.status !== 200) {
-    let keyErrors
-    try {
-      const data = await res.json()
-      keyErrors = Object.keys(data).map(
-        (key) => `${key} (${data[key].join(', ')})`,
-      )
-    } catch {
-      console.warn('Unable to extract error message from response')
-    }
-    throw new Error(
-      keyErrors
-        ? `Status ${res.status}: Unable to update preprint. Error updating field(s): ${keyErrors.join('; ')}.`
-        : `Status ${res.status}: Unable to update preprint ${pk}. ${res.statusText}`,
-    )
-  }
-
-  const updatedPreprint = res.json()
 
   revalidateTag('submit')
   return updatedPreprint
@@ -75,8 +55,7 @@ export async function createPreprint(): Promise<Preprint> {
     throw new Error('Tried to createPreprint() without authenticating')
   }
 
-  const res = await fetchWithToken(
-    headers(),
+  const preprint = await fetchWithToken(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/user_preprints/`,
     {
       method: 'POST',
@@ -85,21 +64,13 @@ export async function createPreprint(): Promise<Preprint> {
     },
   )
 
-  if (![200, 201].includes(res.status)) {
-    throw new Error(
-      `Status ${res.status}: Unable to create preprint. ${res.statusText}`,
-    )
-  }
-
-  const preprint = res.json()
   revalidateTag('submit')
 
   return preprint
 }
 
 export async function createAuthor(author: AuthorParams): Promise<Author> {
-  const res = await fetchWithToken(
-    headers(),
+  const result = await fetchWithToken(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/account/register/`,
     {
       method: 'POST',
@@ -107,14 +78,6 @@ export async function createAuthor(author: AuthorParams): Promise<Author> {
       body: JSON.stringify(author),
     },
   )
-
-  if (![200, 201].includes(res.status)) {
-    throw new Error(
-      `Status ${res.status}: Unable to create author. ${res.statusText}`,
-    )
-  }
-
-  const result = await res.json()
 
   if (result.confirmation_code && result.pk) {
     await sql`INSERT INTO confirmation_codes (account_id, confirmation_code) VALUES (${result.pk}, ${result.confirmation_code});`
@@ -126,59 +89,35 @@ export async function createAuthor(author: AuthorParams): Promise<Author> {
 export async function searchAuthor(
   search: string,
 ): Promise<Pagination<Author>> {
-  const res = await fetchWithToken(
-    headers(),
+  const result = await fetchWithToken(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/submission_account_search/?search=${search}`,
   )
 
-  if (res.status !== 200) {
-    throw new Error(
-      `Status ${res.status}: Unable to search author. ${res.statusText}`,
-    )
-  }
-
-  const result = res.json()
   return result
 }
 
 export async function fetchPreprintFile(pk: number): Promise<PreprintFile> {
-  const res = await fetchWithToken(
-    headers(),
+  const result = await fetchWithToken(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/${pk}`,
   )
 
-  if (![200].includes(res.status)) {
-    throw new Error(
-      `Status ${res.status}: Unable to fetch file. ${res.statusText}`,
-    )
-  }
-
-  const result = res.json()
   return result
 }
 
-export async function deletePreprintFile(pk: number): Promise<true> {
-  const res = await fetchWithToken(
-    headers(),
+export async function deletePreprintFile(pk: number) {
+  const result = await fetchWithToken(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/${pk}`,
     {
       method: 'DELETE',
     },
   )
 
-  if (res.status !== 204) {
-    throw new Error(
-      `Status ${res.status}: Unable to delete file. ${res.statusText}`,
-    )
-  }
-
   revalidateTag('submit')
-  return true
+  return result
 }
 
 export async function createVersionQueue(versionQueue: VersionQueueParams) {
-  const res = await fetchWithToken(
-    headers(),
+  const result = await fetchWithToken(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/version_queue/`,
     {
       method: 'POST',
@@ -187,41 +126,29 @@ export async function createVersionQueue(versionQueue: VersionQueueParams) {
     },
   )
 
-  if (![200, 201].includes(res.status)) {
-    throw new Error(
-      `Status ${res.status}: Unable to create revision. ${res.statusText}`,
-    )
-  }
-
   revalidatePath(`/submissions/edit/${versionQueue.preprint}`)
 
-  const result = res.json()
   return result
 }
 
 export async function fetchPublishedPreprints(url: string) {
-  const res = await fetch(url)
-  if (![200].includes(res.status)) {
-    throw new Error(
-      `Status ${res.status}: Unable to fetch preprints. ${res.statusText}`,
-    )
-  }
-
-  const result = res.json()
+  const result = await fetchWithAlerting(url)
   return result
 }
 
 export async function fetchPreprintIdentifier(pk: number) {
-  const res = await fetch(
+  const result = await fetchWithAlerting(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/identifiers/?preprint_id=${pk}`,
   )
 
-  if (![200].includes(res.status)) {
-    throw new Error(
-      `Status ${res.status}: Unable to fetch preprint identifiers. ${res.statusText}`,
-    )
-  }
+  return result
+}
 
-  const result = res.json()
+export const fetchRepositorySubjects = async () => {
+  const result = await fetchWithAlerting(
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/repository_subjects/`,
+    { next: { revalidate: 180 } },
+  )
+
   return result
 }
