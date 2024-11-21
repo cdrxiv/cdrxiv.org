@@ -181,13 +181,6 @@ const cleanupFiles = async (
   const [newPreprintFile, newDeposition] = uploadResults
   const cleanupTasks: Promise<any>[] = []
 
-  console.log({
-    existingDataFile,
-    submissionType,
-    files,
-    newDeposition,
-  })
-
   // basic cleanup of old files when switching between article and data
   if (existingDataFile && submissionType === 'Article') {
     cleanupTasks.push(deleteZenodoEntity(existingDataFile.url))
