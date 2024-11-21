@@ -4,6 +4,7 @@ import PreprintsView from './preprints-view'
 import StaticLandingPage from './static-landing-page'
 import { isFullSiteEnabled } from '../utils/flags'
 import LoadingWrapper from './loading-wrapper'
+import { fetchWithAlerting } from '../actions/server-utils'
 interface HomeProps {
   searchParams: { [key: string]: string | string[] | undefined }
 }
@@ -13,7 +14,7 @@ const Preprints = async ({ subject }: { subject: string | undefined }) => {
   if (subject) {
     url += `&subject=${subject}`
   }
-  const res = await fetch(url, { next: { revalidate: 180 } })
+  const res = await fetchWithAlerting(url, { next: { revalidate: 180 } })
   const preprints = await res.json()
   const results = preprints.results || []
   return (
