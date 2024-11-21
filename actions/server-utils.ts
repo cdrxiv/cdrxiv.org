@@ -3,6 +3,35 @@
 import { getToken } from 'next-auth/jwt'
 import { headers, cookies } from 'next/headers'
 
+export async function alertOnError(message?: string) {
+  const token = await getToken({
+    req: {
+      headers: headers(),
+      cookies: cookies(),
+    } as any,
+    secret: process.env.NEXTAUTH_SECRET,
+  })
+
+  await fetch(process.env.NEXT_PUBLIC_SLACK_WEBHOOK_URL as string, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      error: message ?? 'None provided',
+      user_id: token?.user?.id ?? 'null',
+      environment:
+        process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
+          ? 'production'
+          : 'staging',
+      domain:
+        process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
+          ? 'cdrxiv.org'
+          : 'staging.cdrxiv.org',
+    }),
+  })
+}
+
 export async function catchActionErrors<A extends any[], R>(
   serverAction: (...args: A) => Promise<R>,
   ...args: A
@@ -12,32 +41,7 @@ export async function catchActionErrors<A extends any[], R>(
     result = await serverAction(...args)
     return { result }
   } catch (e: any) {
-    const token = await getToken({
-      req: {
-        headers: headers(),
-        cookies: cookies(),
-      } as any,
-      secret: process.env.NEXTAUTH_SECRET,
-    })
-
-    await fetch(process.env.NEXT_PUBLIC_SLACK_WEBHOOK_URL as string, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        error: e.message ?? 'None provided',
-        user_id: token?.user?.id ?? 'null',
-        environment:
-          process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
-            ? 'production'
-            : 'staging',
-        domain:
-          process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
-            ? 'cdrxiv.org'
-            : 'staging.cdrxiv.org',
-      }),
-    })
+    await alertOnError(e.message)
 
     return {
       error: e.message ?? 'Error saving changes.',
