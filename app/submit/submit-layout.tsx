@@ -13,6 +13,7 @@ import {
   updatePreprint,
   deleteZenodoEntity,
   PREPRINT_BASE,
+  revalidateTagFromClient,
 } from '../../actions'
 import { isPreprintEmpty } from '../../utils/data'
 
@@ -46,6 +47,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         await Promise.all(filesCleanup)
       }
       await updatePreprint(preprint, PREPRINT_BASE)
+
+      revalidateTagFromClient('submit')
+
       router.push('/submit')
     }
   }, [router, preprint, files])

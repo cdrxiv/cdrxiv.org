@@ -21,6 +21,7 @@ import {
   updateDataDeposition as updateDataDepositionBase,
 } from './zenodo'
 import { verify as verifyBase } from './hcaptcha'
+import { revalidateTagFromClient as revalidateTagFromClientBase } from './revalidate'
 
 export const registerAccount = throwActionErrors(registerAccountBase)
 export const updateAccount = throwActionErrors(updateAccountBase)
@@ -45,5 +46,9 @@ export const deleteZenodoEntity = throwActionErrors(deleteZenodoEntityBase)
 export const updateDataDeposition = throwActionErrors(updateDataDepositionBase)
 
 export const verifyHCaptcha = throwActionErrors(verifyBase)
+
+export const revalidateTagFromClient = throwActionErrors(
+  revalidateTagFromClientBase,
+)
 
 export { PREPRINT_BASE } from './constants'
