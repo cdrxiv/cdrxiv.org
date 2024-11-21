@@ -126,10 +126,10 @@ export async function createAuthor(author: AuthorParams): Promise<Author> {
 export async function searchAuthor(
   search: string,
 ): Promise<Pagination<Author>> {
-  const res = await fetchWithToken(
-    headers(),
-    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/submission_account_search/?search=${search}`,
-  )
+  const params = new URLSearchParams({ search })
+  const url = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/submission_account_search/?${params}`
+
+  const res = await fetchWithToken(headers(), url)
 
   if (res.status !== 200) {
     throw new Error(
