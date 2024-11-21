@@ -22,6 +22,8 @@ import { useCardContext } from './page-card'
 
 const HEADER_HEIGHT = [65, 65, 100, 100]
 
+const CANCEL_DELAY = 10000
+
 const LoadingContext = createContext<
   | {
       isLoading: boolean
@@ -97,6 +99,7 @@ const PaneledPage: React.FC<{
   const pathRef = useRef<string | null>(null)
   const pathname = usePathname()
   const { scrollToTop } = useCardContext()
+  const [showCancel, setShowCancel] = useState(false)
 
   useEffect(() => {
     scrollToTop()
@@ -116,6 +119,18 @@ const PaneledPage: React.FC<{
       }
     }
   }, [abortController])
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout
+    if (isLoading) {
+      timeout = setTimeout(() => {
+        setShowCancel(true)
+      }, CANCEL_DELAY)
+    } else {
+      setShowCancel(false)
+    }
+    return () => clearTimeout(timeout)
+  }, [isLoading])
 
   const handleCancel = useCallback(() => {
     if (abortController) {
@@ -323,7 +338,8 @@ const PaneledPage: React.FC<{
                       <Box sx={{ height: 40 }}>
                         {((uploadProgress.article ?? 0) > 0 ||
                           (uploadProgress.data ?? 0) > 0) &&
-                          abortController && (
+                          abortController &&
+                          showCancel && (
                             <Link
                               sx={{
                                 variant: 'text.mono',
