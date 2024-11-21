@@ -5,7 +5,6 @@ import {
   activateAccount as activateAccountBase,
 } from './account'
 import {
-  createPreprintFile as createPreprintFileBase,
   createVersionQueue as createVersionQueueBase,
   updatePreprint as updatePreprintBase,
   fetchPreprintFile as fetchPreprintFileBase,
@@ -13,11 +12,11 @@ import {
   createAuthor as createAuthorBase,
   searchAuthor as searchAuthorBase,
   fetchPublishedPreprints as fetchPublishedPreprintsBase,
+  fetchPreprintIdentifier as fetchPreprintIdentifierBase,
 } from './preprint'
 import {
   fetchDataDeposition as fetchDataDepositionBase,
   createDataDeposition as createDataDepositionBase,
-  createDataDepositionFile as createDataDepositionFileBase,
   createDataDepositionVersion as createDataDepositionVersionBase,
   deleteZenodoEntity as deleteZenodoEntityBase,
   updateDataDeposition as updateDataDepositionBase,
@@ -28,7 +27,6 @@ export const registerAccount = throwActionErrors(registerAccountBase)
 export const updateAccount = throwActionErrors(updateAccountBase)
 export const activateAccount = throwActionErrors(activateAccountBase)
 
-export const createPreprintFile = throwActionErrors(createPreprintFileBase)
 export const createVersionQueue = throwActionErrors(createVersionQueueBase)
 export const updatePreprint = throwActionErrors(updatePreprintBase)
 export const fetchPreprintFile = throwActionErrors(fetchPreprintFileBase)
@@ -38,12 +36,12 @@ export const searchAuthor = throwActionErrors(searchAuthorBase)
 export const fetchPublishedPreprints = throwActionErrors(
   fetchPublishedPreprintsBase,
 )
+export const fetchPreprintIdentifier = throwActionErrors(
+  fetchPreprintIdentifierBase,
+)
 
 export const fetchDataDeposition = throwActionErrors(fetchDataDepositionBase)
 export const createDataDeposition = throwActionErrors(createDataDepositionBase)
-export const createDataDepositionFile = throwActionErrors(
-  createDataDepositionFileBase,
-)
 export const createDataDepositionVersion = throwActionErrors(
   createDataDepositionVersionBase,
 )

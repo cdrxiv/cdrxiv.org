@@ -102,37 +102,6 @@ export async function deleteZenodoEntity(url: string): Promise<true> {
   )
 }
 
-export async function createDataDepositionFile(
-  deposition: number,
-  formData: FormData,
-): Promise<DepositionFile> {
-  const res = await fetch(
-    process.env.NEXT_PUBLIC_ZENODO_URL +
-      `/api/deposit/depositions/${deposition}/files`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
-      },
-      body: formData,
-    },
-  )
-
-  if (!res.ok) {
-    throw new Error(
-      `Status ${res.status}: Unable to upload data file. ${res.statusText}.`,
-    )
-  }
-
-  const result = await res.json()
-
-  if (!result.id) {
-    throw new Error(result.message ?? 'Unable to create deposition file.')
-  }
-
-  return result
-}
-
 export async function createDataDepositionVersion(
   url: string,
 ): Promise<Deposition> {

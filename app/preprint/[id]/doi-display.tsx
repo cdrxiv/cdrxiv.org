@@ -16,7 +16,7 @@ const DOIDisplay = ({ label, doi }: Props) => {
   return (
     <Flex sx={{ gap: 2, alignItems: 'baseline' }}>
       <Box sx={{ variant: 'text.mono' }}>{label}:</Box>
-      <Link href={url} forwardArrow={!!doi} sx={{ variant: 'text.mono' }}>
+      <Link href={url} sx={{ variant: 'text.mono' }}>
         {doi ? url : <Loading sx={{ display: 'inline' }} />}
       </Link>
     </Flex>

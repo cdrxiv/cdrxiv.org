@@ -3,18 +3,23 @@ import {
   PreprintFile,
   SupplementaryFile,
 } from '../../../../types/preprint'
+
 import { createAdditionalField } from '../utils'
 import {
   deletePreprintFile,
   updatePreprint,
-  createPreprintFile,
   deleteZenodoEntity,
   fetchDataDeposition,
   createDataDeposition,
-  createDataDepositionFile,
 } from '../../../../actions'
 import { FileInputValue } from '../../../../components'
 import { LICENSE_MAPPING } from '../../constants'
+import {
+  handleArticleUpload,
+  handleDataUpload,
+  initializeUploadProgress,
+} from '../../../utils/upload-handlers'
+import { Deposition } from '../../../../types/zenodo'
 
 export type FormData = {
   agreement: boolean
@@ -129,75 +134,95 @@ export const getSubmissionType = ({
   return submissionType
 }
 
-export const submitForm = async (
-  preprint: Preprint,
-  setPreprint: (p: Preprint) => void,
+type UploadProgress = {
+  article?: number
+  data?: number
+}
+
+type SubmissionContext = {
+  preprint: Preprint
+  setPreprint: (p: Preprint) => void
+  files: PreprintFile[]
+  setFiles: (files: PreprintFile[]) => void
+  formData: FormData
+  setUploadProgress: (updater: (prev: UploadProgress) => UploadProgress) => void
+}
+
+const cleanupFiles = async (
+  existingDataFile: SupplementaryFile | undefined,
+  submissionType: string,
   files: PreprintFile[],
-  setFiles: (files: PreprintFile[]) => void,
-  { articleFile, dataFile, externalFile }: FormData,
+  articleFile: FormData['articleFile'],
+  deposition: Deposition | null,
 ) => {
+  const cleanupTasks: Promise<any>[] = []
+  if (existingDataFile && submissionType === 'Article') {
+    cleanupTasks.push(deleteZenodoEntity(existingDataFile.url))
+  }
+  if (files.length > 0 && submissionType === 'Data') {
+    cleanupTasks.push(...files.map((file) => deletePreprintFile(file.pk)))
+  }
+  // clear other article files if needed
+  if (files.length > 0 && articleFile && !articleFile?.persisted) {
+    files.forEach((file) => cleanupTasks.push(deletePreprintFile(file.pk)))
+  }
+
+  if (deposition?.files?.length && deposition.files.length > 0) {
+    cleanupTasks.push(
+      ...deposition.files.map((f) => deleteZenodoEntity(f.links.self)),
+    )
+  }
+
+  await Promise.all(cleanupTasks)
+}
+
+export const submitForm = async ({
+  preprint,
+  setPreprint,
+  files,
+  setFiles,
+  formData: { articleFile, dataFile, externalFile },
+  setUploadProgress,
+}: SubmissionContext) => {
   if (!preprint) {
     throw new Error('Tried to submit without active preprint')
   }
+
+  initializeUploadProgress(articleFile, dataFile, setUploadProgress)
 
   const existingDataFile = preprint.supplementary_files.find(
     (file) => file.label === 'CDRXIV_DATA_DRAFT',
   )
   const submissionType = getSubmissionType({ dataFile, articleFile })
 
-  let preprintFiles: PreprintFile[]
-  // Save article PDF if it hasn't already been persisted
-  if (articleFile && !articleFile.persisted) {
-    const formData = new FormData()
-
-    formData.set('file', articleFile.file)
-    formData.set('preprint', String(preprint?.pk))
-    formData.set('mime_type', articleFile.mime_type)
-    formData.set('original_filename', articleFile.original_filename)
-
-    const preprintFile = await createPreprintFile(formData)
-    preprintFiles = [preprintFile]
-  }
-
-  let cleanUpFiles: () => Promise<any> = async () => null
-
-  // If the data file has been cleared...
-  if (existingDataFile && submissionType === 'Article') {
-    cleanUpFiles = () => deleteZenodoEntity(existingDataFile.url) // delete the data deposition
-  }
-
-  // If the article PDF file has been cleared...
-  if (files.length > 0 && submissionType === 'Data') {
-    preprintFiles = []
-    cleanUpFiles = () =>
-      Promise.all(files.map((file) => deletePreprintFile(file.pk))) // delete previous preprint files
-  }
-
-  let supplementaryFiles
-  if (dataFile?.persisted) {
-    supplementaryFiles = preprint.supplementary_files
-  } else if (dataFile) {
-    // Save data file if it hasn't already been persisted
-    const formData = new FormData()
-    formData.set('name', dataFile.original_filename)
-    formData.set('file', dataFile.file)
-
-    const deposition = await (existingDataFile
-      ? fetchDataDeposition(existingDataFile.url)
-      : createDataDeposition())
-    if (deposition.files.length > 0) {
-      await Promise.all([
-        deposition.files.map((f) => deleteZenodoEntity(f.links.self)), // delete previous data deposition files
-      ])
+  let deposition: Deposition | null = null
+  if (submissionType !== 'Article') {
+    if (existingDataFile) {
+      deposition = await fetchDataDeposition(existingDataFile.url)
+    } else {
+      deposition = await createDataDeposition()
     }
-    await createDataDepositionFile(deposition.id, formData)
-
-    supplementaryFiles = [
-      { label: 'CDRXIV_DATA_DRAFT', url: deposition.links.self },
-    ]
-  } else {
-    supplementaryFiles = externalFile ? [externalFile] : []
   }
+
+  await cleanupFiles(
+    existingDataFile,
+    submissionType,
+    files,
+    articleFile,
+    deposition,
+  )
+
+  const [newPreprintFile, supplementaryFiles] = await Promise.all([
+    handleArticleUpload(articleFile, preprint.pk, setUploadProgress),
+    deposition
+      ? handleDataUpload(deposition, dataFile, setUploadProgress)
+      : null,
+  ])
+
+  // Prepare final supplementary files
+  const finalSupplementaryFiles = dataFile?.persisted
+    ? preprint.supplementary_files
+    : (supplementaryFiles ?? (externalFile ? [externalFile] : []))
 
   const additionalFieldAnswers = [
     ...preprint.additional_field_answers.filter(
@@ -222,11 +247,10 @@ export const submitForm = async (
 
   const params = {
     additional_field_answers: additionalFieldAnswers,
-    supplementary_files: supplementaryFiles,
+    supplementary_files: finalSupplementaryFiles,
   }
 
   return updatePreprint(preprint, params)
     .then((updated) => setPreprint(updated))
-    .then(cleanUpFiles)
-    .then(() => (preprintFiles ? setFiles(preprintFiles) : undefined))
+    .then(() => (newPreprintFile ? setFiles([newPreprintFile]) : undefined))
 }

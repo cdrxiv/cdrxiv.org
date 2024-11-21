@@ -14,7 +14,7 @@ import {
   PreprintFile,
   VersionQueueParams,
 } from '../types/preprint'
-import { fetchWithToken } from '../app/api/utils'
+import { fetchWithToken } from '../app/utils/fetch-with-token/server'
 import { PREPRINT_BASE } from './constants'
 
 export async function updatePreprint(
@@ -34,7 +34,7 @@ export async function updatePreprint(
         license: typeof license === 'number' ? license : license?.pk,
         ...rest,
         ...params,
-        repository: 1,
+        repository: process.env.NEXT_PUBLIC_JANEWAY_REPOSITORY,
       }),
     },
   )
@@ -141,29 +141,6 @@ export async function searchAuthor(
   return result
 }
 
-export async function createPreprintFile(
-  formData: FormData,
-): Promise<PreprintFile> {
-  const res = await fetchWithToken(
-    headers(),
-    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/`,
-    {
-      method: 'POST',
-      body: formData,
-    },
-  )
-
-  if (![200, 201].includes(res.status)) {
-    throw new Error(
-      `Status ${res.status}: Unable to create file. ${res.statusText}`,
-    )
-  }
-
-  const result = res.json()
-
-  revalidateTag('submit')
-  return result
-}
 export async function fetchPreprintFile(pk: number): Promise<PreprintFile> {
   const res = await fetchWithToken(
     headers(),
@@ -227,6 +204,21 @@ export async function fetchPublishedPreprints(url: string) {
   if (![200].includes(res.status)) {
     throw new Error(
       `Status ${res.status}: Unable to fetch preprints. ${res.statusText}`,
+    )
+  }
+
+  const result = res.json()
+  return result
+}
+
+export async function fetchPreprintIdentifier(pk: number) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/identifiers/?preprint_id=${pk}`,
+  )
+
+  if (![200].includes(res.status)) {
+    throw new Error(
+      `Status ${res.status}: Unable to fetch preprint identifiers. ${res.statusText}`,
     )
   }
 

@@ -4,7 +4,6 @@ import { getServerSession } from 'next-auth/next'
 import '../components/fonts.css'
 import PageCard from '../components/layouts/page-card'
 import { authOptions } from '../lib/auth'
-import { getSubjects } from './api/utils'
 import Providers from './providers'
 import { SubjectsProvider } from './subjects-context'
 
@@ -18,6 +17,17 @@ export const metadata: Metadata = {
         ? '/images/icon.png'
         : '/images/staging-icon.png',
   },
+}
+
+export const getSubjects = async () => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/repository_subjects/`,
+    { next: { revalidate: 180 } },
+  )
+
+  if (res.status === 200) {
+    return res.json()
+  }
 }
 
 export default async function RootLayout({

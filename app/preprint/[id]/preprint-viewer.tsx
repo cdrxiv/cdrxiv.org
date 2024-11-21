@@ -18,7 +18,7 @@ import Loading from '../../../components/loading'
 import useTracking from '../../../hooks/use-tracking'
 import { AuthorsList } from '../../../components'
 import { Deposition } from '../../../types/zenodo'
-import { fetchDataDeposition } from '../../../actions'
+import { fetchDataDeposition, fetchPreprintIdentifier } from '../../../actions'
 import ErrorOrTrack from './error-or-track'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
@@ -43,12 +43,30 @@ const PreprintViewer = ({
   const hasArticle = ['Article', 'Both'].includes(submissionType ?? '')
   const hasData = ['Data', 'Both'].includes(submissionType ?? '')
   const [deposition, setDeposition] = useState<Deposition>()
+  const [preprintDoi, setPreprintDoi] = useState<string>()
   const dataUrl = preprint.supplementary_files.find(
     (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_PUBLISHED',
   )?.url
   const [isDepositionLoading, setIsDepositionLoading] = useState<boolean>(
     hasData && !!dataUrl,
   )
+  const [isDoiLoading, setIsDoiLoading] = useState<boolean>(true)
+
+  useEffect(() => {
+    const fetchDoi = async () => {
+      try {
+        const identifiers = await fetchPreprintIdentifier(preprint.pk)
+        if (identifiers.results) {
+          setPreprintDoi(identifiers.results[0].identifier)
+        }
+        setIsDoiLoading(false)
+      } catch {
+        setIsDoiLoading(false)
+      }
+    }
+
+    fetchDoi()
+  }, [preprint.pk])
 
   useEffect(() => {
     const fetchDeposition = async () => {
@@ -126,15 +144,15 @@ const PreprintViewer = ({
       }
     >
       <Flex sx={{ flexDirection: 'column' }}>
-        {preprint.preprint_doi && (
-          <DOIDisplay label='DOI' doi={preprint.preprint_doi} />
+        {(isDoiLoading || preprintDoi) && (
+          <DOIDisplay label='DOI' doi={preprintDoi} />
         )}
         <ErrorOrTrack
-          hasError={!preprint.preprint_doi}
+          hasError={!isDoiLoading && !preprintDoi}
           preview={preview}
           pk={preprint.pk}
           errorMessage={
-            'No `preprint_doi` found. Ensure that Crossref DOI has been minted before publishing.'
+            'No preprint identifier found. Ensure that Crossref DOI has been minted before publishing.'
           }
         />
         {preprint.doi && preprint.preprint_doi !== preprint.doi && (
@@ -154,7 +172,7 @@ const PreprintViewer = ({
       {hasArticle && preprint.versions.length > 0 && (
         <div ref={containerRef} style={{ width: '100%' }}>
           <Document
-            file={`/api/pdf?url=${encodeURIComponent(preprint.versions[0].public_download_url)}`}
+            file={preprint.versions[0].public_download_url}
             onLoadSuccess={onDocumentLoadSuccess}
             loading={
               <Flex

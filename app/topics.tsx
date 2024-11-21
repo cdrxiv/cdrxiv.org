@@ -19,10 +19,13 @@ const Topics: React.FC = () => {
 
   const midPoint = Math.ceil(subjects.length / 2)
 
-  const totalCount = useMemo(
-    () => subjects.reduce((sum, subject) => sum + subject.preprints.length, 0),
-    [subjects],
-  )
+  const totalCount = useMemo(() => {
+    const allPreprints = subjects.reduce((preprints, subject) => {
+      subject.preprints.forEach((p) => preprints.add(p))
+      return preprints
+    }, new Set())
+    return allPreprints.size
+  }, [subjects])
 
   const handleFilterChange = (newFilter: string) => {
     const params = new URLSearchParams(searchParams)
