@@ -23,13 +23,13 @@ export async function alertOnError({
   status,
   statusText,
   method,
-  result,
+  apiError,
 }: {
   endpoint: string
   status: number
   statusText: string
   method: string
-  result?: string
+  apiError?: string
 }) {
   const token = await getToken({
     req: {
@@ -49,7 +49,7 @@ export async function alertOnError({
       status,
       statusText,
       method,
-      result,
+      api_error: apiError,
       user_id: token?.user?.id ?? 'null',
       environment:
         process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
@@ -71,7 +71,7 @@ export const fetchWithAlerting = async (
   const response = await fetch(url, options)
 
   if (!expectedStatuses.includes(response.status)) {
-    let result
+    let apiError
     let keyErrors
     try {
       const data = await response.json()
@@ -79,7 +79,7 @@ export const fetchWithAlerting = async (
         (key) => `${key} (${data[key].join(', ')})`,
       )
 
-      result = JSON.stringify(data)
+      apiError = JSON.stringify(data)
     } catch {
       console.warn('Unable to extract error message from response')
     }
@@ -89,7 +89,7 @@ export const fetchWithAlerting = async (
       status: response.status,
       statusText: response.statusText,
       method: options?.method ?? 'GET',
-      result,
+      apiError,
     })
   }
 

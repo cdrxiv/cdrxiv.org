@@ -95,7 +95,6 @@ export const uploadFile = async <T>(
           method: 'POST',
           status: xhr.status,
           statusText: xhr.statusText,
-          result: xhr.responseText,
         }).then(() => {
           reject(
             new Error(
