@@ -1,8 +1,7 @@
-import { headers } from 'next/headers'
 import React from 'react'
 import { redirect } from 'next/navigation'
 
-import { fetchWithToken } from '../utils/fetch-with-token/server'
+import { fetchWithToken } from '../../actions/server-utils'
 import { PreprintProvider } from './preprint-context'
 import { createPreprint } from '../../actions/preprint'
 import SubmitLayout from './submit-layout'
@@ -18,12 +17,10 @@ export const metadata = {
 const SubmissionOverview: React.FC<Props> = async ({ children }) => {
   const [preprintRes, filesRes] = await Promise.all([
     fetchWithToken(
-      headers(),
       `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/user_preprints/?stage=preprint_unsubmitted`,
       { next: { tags: ['submit'] } },
     ),
     fetchWithToken(
-      headers(),
       `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/`,
       { next: { tags: ['submit'] } },
     ),

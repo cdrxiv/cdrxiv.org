@@ -1,11 +1,10 @@
 import { redirect } from 'next/navigation'
-import { headers } from 'next/headers'
 import { getServerSession } from 'next-auth'
 
 import PreprintViewer from '../../../preprint/[id]/preprint-viewer'
-import { fetchWithToken } from '../../../utils/fetch-with-token/server'
 import Forbidden from '../forbidden'
 import SharedLayout from '../../shared-layout'
+import { fetchWithToken } from '../../../../actions/server-utils'
 
 // Polyfill for Promise.withResolvers
 if (typeof Promise.withResolvers !== 'function') {
@@ -35,7 +34,6 @@ const PreprintPreview = async ({
   }
 
   const response = await fetchWithToken(
-    headers(),
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprints/${params.preprint}`,
   )
 

@@ -1,9 +1,10 @@
 'use server'
 
-import { Deposition, DepositionFile } from '../types/zenodo'
+import { Deposition } from '../types/zenodo'
+import { fetchWithAlerting } from './server-utils'
 
 export async function createDataDeposition(): Promise<Deposition> {
-  const res = await fetch(
+  const result = await fetchWithAlerting(
     process.env.NEXT_PUBLIC_ZENODO_URL + '/api/deposit/depositions',
     {
       method: 'POST',
@@ -20,8 +21,7 @@ export async function createDataDeposition(): Promise<Deposition> {
     },
   )
 
-  const result = await res.json()
-  return result
+  return result.json()
 }
 
 export async function fetchDataDeposition(url: string): Promise<Deposition> {
@@ -31,20 +31,13 @@ export async function fetchDataDeposition(url: string): Promise<Deposition> {
   ) {
     throw new Error(`Invalid data URL: ${url}`)
   }
-  const res = await fetch(url, {
+  const result = await fetchWithAlerting(url, {
     headers: {
       Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
     },
   })
 
-  if (res.status !== 200) {
-    throw new Error(
-      `Status ${res.status}: Unable to fetch deposition. ${res.statusText}`,
-    )
-  }
-
-  const result = await res.json()
-  return result
+  return result.json()
 }
 
 export async function updateDataDeposition(
@@ -57,7 +50,7 @@ export async function updateDataDeposition(
   ) {
     throw new Error(`Invalid data URL: ${url}`)
   }
-  const res = await fetch(url, {
+  const result = await fetchWithAlerting(url, {
     method: 'PUT',
     headers: {
       Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
@@ -66,17 +59,10 @@ export async function updateDataDeposition(
     body: JSON.stringify(params),
   })
 
-  if (res.status !== 200) {
-    throw new Error(
-      `Status ${res.status}: Unable to update deposition. ${res.statusText}`,
-    )
-  }
-
-  const result = await res.json()
-  return result
+  return result.json()
 }
 
-export async function deleteZenodoEntity(url: string): Promise<true> {
+export async function deleteZenodoEntity(url: string): Promise<void> {
   if (
     process.env.NEXT_PUBLIC_ZENODO_URL &&
     !url.startsWith(process.env.NEXT_PUBLIC_ZENODO_URL)
@@ -84,21 +70,17 @@ export async function deleteZenodoEntity(url: string): Promise<true> {
     throw new Error(`Invalid data URL: ${url}`)
   }
 
-  const res = await fetch(url, {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+  await fetchWithAlerting(
+    url,
+    {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+      },
     },
-  })
-
-  if (res.status === 204 || res.status === 404) {
     // 204: Successful deletion
     // 404: Entity not found (consider it already deleted)
-    return true
-  }
-
-  throw new Error(
-    `Status ${res.status}: Unable to delete deposition. ${res.statusText}`,
+    [204, 404],
   )
 }
 
@@ -111,19 +93,12 @@ export async function createDataDepositionVersion(
   ) {
     throw new Error(`Invalid data URL: ${url}`)
   }
-  const res = await fetch(url, {
+  const result = await fetchWithAlerting(url, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
     },
   })
 
-  if (res.status !== 201) {
-    throw new Error(
-      `Status ${res.status}: Unable to create new version of deposition. ${res.statusText}`,
-    )
-  }
-
-  const result = await res.json()
-  return result
+  return result.json()
 }

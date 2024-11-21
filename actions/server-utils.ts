@@ -97,7 +97,7 @@ export const fetchWithAlerting = async (
     )
   }
 
-  return response.json()
+  return response
 }
 
 export const fetchWithToken = async (

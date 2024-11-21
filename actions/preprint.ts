@@ -23,7 +23,7 @@ export async function updatePreprint(
 ): Promise<Preprint> {
   const { pk, license, ...rest } = preprint
 
-  const updatedPreprint = await fetchWithToken(
+  const result = await fetchWithToken(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/user_preprints/${pk}/`,
     {
       method: 'PUT',
@@ -37,8 +37,10 @@ export async function updatePreprint(
       }),
     },
   )
+  const updatedPreprint = await result.json()
 
   revalidateTag('submit')
+
   return updatedPreprint
 }
 
@@ -55,7 +57,7 @@ export async function createPreprint(): Promise<Preprint> {
     throw new Error('Tried to createPreprint() without authenticating')
   }
 
-  const preprint = await fetchWithToken(
+  const result = await fetchWithToken(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/user_preprints/`,
     {
       method: 'POST',
@@ -63,6 +65,8 @@ export async function createPreprint(): Promise<Preprint> {
       body: JSON.stringify({ ...PREPRINT_BASE, owner: token.user.id }),
     },
   )
+
+  const preprint = await result.json()
 
   revalidateTag('submit')
 
@@ -79,11 +83,13 @@ export async function createAuthor(author: AuthorParams): Promise<Author> {
     },
   )
 
-  if (result.confirmation_code && result.pk) {
-    await sql`INSERT INTO confirmation_codes (account_id, confirmation_code) VALUES (${result.pk}, ${result.confirmation_code});`
+  const user = await result.json()
+
+  if (user.confirmation_code && user.pk) {
+    await sql`INSERT INTO confirmation_codes (account_id, confirmation_code) VALUES (${user.pk}, ${user.confirmation_code});`
   }
 
-  return result
+  return user
 }
 
 export async function searchAuthor(
@@ -93,7 +99,7 @@ export async function searchAuthor(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/submission_account_search/?search=${search}`,
   )
 
-  return result
+  return result.json()
 }
 
 export async function fetchPreprintFile(pk: number): Promise<PreprintFile> {
@@ -101,11 +107,11 @@ export async function fetchPreprintFile(pk: number): Promise<PreprintFile> {
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/${pk}`,
   )
 
-  return result
+  return result.json()
 }
 
 export async function deletePreprintFile(pk: number) {
-  const result = await fetchWithToken(
+  await fetchWithToken(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/${pk}`,
     {
       method: 'DELETE',
@@ -113,7 +119,6 @@ export async function deletePreprintFile(pk: number) {
   )
 
   revalidateTag('submit')
-  return result
 }
 
 export async function createVersionQueue(versionQueue: VersionQueueParams) {
@@ -128,7 +133,7 @@ export async function createVersionQueue(versionQueue: VersionQueueParams) {
 
   revalidatePath(`/submissions/edit/${versionQueue.preprint}`)
 
-  return result
+  return result.json()
 }
 
 export async function fetchPublishedPreprints(url: string) {
@@ -141,7 +146,7 @@ export async function fetchPreprintIdentifier(pk: number) {
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/identifiers/?preprint_id=${pk}`,
   )
 
-  return result
+  return result.json()
 }
 
 export const fetchRepositorySubjects = async () => {
@@ -150,5 +155,5 @@ export const fetchRepositorySubjects = async () => {
     { next: { revalidate: 180 } },
   )
 
-  return result
+  return result.json()
 }
