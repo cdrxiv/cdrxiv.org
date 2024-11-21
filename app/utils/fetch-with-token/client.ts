@@ -3,6 +3,8 @@
 import { getSession } from 'next-auth/react'
 import { Session } from 'next-auth'
 
+export const UPLOAD_CANCELLED_MESSAGE = 'Upload cancelled'
+
 type ProgressCallback = (progress: number) => void
 
 interface ProgressOptions {
@@ -121,7 +123,7 @@ export const fetchWithTokenClient = async <T>(
         if (progressInterval) {
           clearInterval(progressInterval)
         }
-        reject(new Error('Upload cancelled'))
+        reject(new Error(UPLOAD_CANCELLED_MESSAGE))
       })
     }
   })

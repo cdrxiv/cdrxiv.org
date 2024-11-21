@@ -20,6 +20,7 @@ import {
   initializeUploadProgress,
 } from '../../../utils/upload-handlers'
 import { Deposition } from '../../../../types/zenodo'
+import { UPLOAD_CANCELLED_MESSAGE } from '../../../utils/fetch-with-token/client'
 
 export type FormData = {
   agreement: boolean
@@ -279,7 +280,7 @@ export const submitForm = async ({
       failures.push({
         type: uploadType,
         error: result.reason,
-        cancelled: result.reason?.message === 'Upload cancelled',
+        cancelled: result.reason?.message === UPLOAD_CANCELLED_MESSAGE,
       })
     } else {
       successes[index] = result.value as PreprintFile | Deposition | null
