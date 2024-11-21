@@ -19,7 +19,6 @@ import Link from '../link'
 import MouseTrail from '../mouse-trail'
 import PageCorner from '../page-corner'
 import SparklyMouseTrail from '../sparkly-mouse-trail'
-import { isFullSiteEnabled } from '../../utils/flags'
 
 const margin = [2, 2, 3, 3]
 
@@ -135,9 +134,7 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
             <Box>
               <CardContext.Provider value={contextValue}>
                 <PageCorner onToggle={toggleTrail} isHomePage={isHomePage} />
-                {isFullSiteEnabled() && isTrailActive && isHomePage && (
-                  <MouseTrail />
-                )}
+                {isTrailActive && isHomePage && <MouseTrail />}
                 {isSuccessfulSubmissionPage && <SparklyMouseTrail />}
 
                 <Box sx={{ contain: 'layout' }}>
@@ -148,22 +145,20 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
               </CardContext.Provider>
             </Box>
 
-            {isFullSiteEnabled() && (
-              <Flex sx={{ columnGap: 3, rowGap: 2, flexWrap: 'wrap', pb: 2 }}>
-                <Box sx={{ ...sx.footer, flexBasis: ['100%', 'inherit'] }}>
-                  Powered by Janeway
-                </Box>
-                <Link href='/terms-of-use' sx={sx.footer}>
-                  Terms of Use
-                </Link>
-                <Link href='/privacy-policy' sx={sx.footer}>
-                  Privacy Policy
-                </Link>
-                <Link href='/cookies-notice' sx={sx.footer}>
-                  Cookies Notice
-                </Link>
-              </Flex>
-            )}
+            <Flex sx={{ columnGap: 3, rowGap: 2, flexWrap: 'wrap', pb: 2 }}>
+              <Box sx={{ ...sx.footer, flexBasis: ['100%', 'inherit'] }}>
+                Powered by Janeway
+              </Box>
+              <Link href='/terms-of-use' sx={sx.footer}>
+                Terms of Use
+              </Link>
+              <Link href='/privacy-policy' sx={sx.footer}>
+                Privacy Policy
+              </Link>
+              <Link href='/cookies-notice' sx={sx.footer}>
+                Cookies Notice
+              </Link>
+            </Flex>
           </Flex>
         </Box>
       </Box>
