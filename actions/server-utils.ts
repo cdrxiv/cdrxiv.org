@@ -91,10 +91,6 @@ export const fetchWithAlerting = async (
       method: options?.method ?? 'GET',
       result,
     })
-
-    throw new Error(
-      `Status ${response.status}: Unable to complete request.${keyErrors ? ` Error with field(s): ${keyErrors.join('; ')}` : ''}`,
-    )
   }
 
   return response

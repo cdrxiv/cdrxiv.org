@@ -20,6 +20,25 @@ export async function registerAccount(
     },
   )
 
+  if (res.status !== 201) {
+    let keyErrors
+    try {
+      const data = await res.json()
+      keyErrors = Object.keys(data).map((key) =>
+        data[key]
+          .map((err: string) => err[0].toUpperCase() + err.slice(1))
+          .join(' '),
+      )
+    } catch {
+      console.warn('Unable to extract error message from response')
+    }
+    throw new Error(
+      keyErrors
+        ? `Unable to register account. ${keyErrors.join(' ')}`
+        : `Unable to register account. ${res.statusText}`,
+    )
+  }
+
   const user = await res.json()
   if (user.pk) {
     const client = await db.connect()
@@ -54,6 +73,10 @@ export async function activateAccount(
     },
   )
 
+  if (res.status > 200) {
+    throw new Error(`Unable to activate account. ${res.statusText}`)
+  }
+
   const result = await res.json()
 
   if (result) {
@@ -75,5 +98,24 @@ export async function updateAccount(user: User, params: Partial<User>) {
     },
   )
 
-  return res.json()
+  if (res.status !== 200) {
+    let keyErrors
+    try {
+      const data = await res.json()
+      keyErrors = Object.keys(data).map(
+        (key) => `${key} (${data[key].join(', ')})`,
+      )
+    } catch {
+      console.warn('Unable to extract error message from response')
+    }
+    throw new Error(
+      keyErrors
+        ? `Unable to update account. Error updating field(s): ${keyErrors.join('; ')}.`
+        : `Unable to update account ${user.id}. ${res.statusText}`,
+    )
+  }
+
+  const updatedUser = res.json()
+
+  return updatedUser
 }
