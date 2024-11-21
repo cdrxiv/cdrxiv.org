@@ -174,8 +174,8 @@ const cleanupFiles = async (
   existingDataFile: SupplementaryFile | undefined,
   submissionType: string,
   files: PreprintFile[],
-  oldDeposition: Deposition | null,
   uploadResults: [PreprintFile | null, Deposition | null],
+  dataFile: FileInputValue | null,
 ) => {
   const [newPreprintFile, newDeposition] = uploadResults
   const cleanupTasks: Promise<any>[] = []
@@ -184,7 +184,6 @@ const cleanupFiles = async (
     existingDataFile,
     submissionType,
     files,
-    oldDeposition,
     newDeposition,
   })
 
@@ -205,10 +204,15 @@ const cleanupFiles = async (
     )
   }
 
-  // Clean up old Zenodo files if we have new files
-  if (newDeposition && oldDeposition?.files) {
+  // Clean up old Zenodo files if we have a new data file
+  if (newDeposition && newDeposition.files) {
+    const filesToDelete = newDeposition.files.filter((file) => {
+      // Keep the file if it matches the new dataFile's filename
+      return dataFile?.original_filename !== file.filename
+    })
+
     cleanupTasks.push(
-      ...oldDeposition.files.map((file) => deleteZenodoEntity(file.links.self)),
+      ...filesToDelete.map((file) => deleteZenodoEntity(file.links.self)),
     )
   }
 
@@ -241,6 +245,16 @@ export const submitForm = async ({
       deposition = await fetchDataDeposition(existingDataFile.url)
     } else {
       deposition = await createDataDeposition()
+    }
+  }
+
+  // Delete any existing file with same name in deposition to prevent duplicate collisions
+  if (deposition?.files && dataFile?.original_filename) {
+    const existingFile = deposition.files.find(
+      (file) => file.filename === dataFile.original_filename,
+    )
+    if (existingFile) {
+      await deleteZenodoEntity(existingFile.links.self)
     }
   }
 
@@ -277,8 +291,8 @@ export const submitForm = async ({
     existingDataFile,
     submissionType,
     files,
-    deposition,
     successes as [PreprintFile | null, Deposition | null],
+    dataFile,
   )
 
   // After cleanup, handle any failures

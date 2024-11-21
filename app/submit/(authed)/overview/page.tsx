@@ -27,8 +27,6 @@ const SubmissionOverview = () => {
 
     if (dataUrl) {
       fetchDataDeposition(dataUrl).then(setDeposition)
-    } else {
-      setDeposition(null)
     }
   }, [preprint.supplementary_files])
 
