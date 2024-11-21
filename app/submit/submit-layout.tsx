@@ -48,7 +48,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       }
       await updatePreprint(preprint, PREPRINT_BASE)
 
-      revalidateTagFromClient('submit')
+      await revalidateTagFromClient('submit')
 
       router.push('/submit')
     }
