@@ -194,7 +194,14 @@ export async function createVersionQueue(versionQueue: VersionQueueParams) {
 }
 
 export async function fetchPublishedPreprints(url: string) {
-  const result = await fetchWithAlerting(url)
+  const res = await fetchWithAlerting(url)
+  if (![200].includes(res.status)) {
+    throw new Error(
+      `Status ${res.status}: Unable to fetch preprints. ${res.statusText}`,
+    )
+  }
+
+  const result = res.json()
   return result
 }
 
