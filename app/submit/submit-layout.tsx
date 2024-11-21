@@ -13,7 +13,6 @@ import {
   updatePreprint,
   deleteZenodoEntity,
   PREPRINT_BASE,
-  revalidateTagFromClient,
 } from '../../actions'
 import { isPreprintEmpty } from '../../utils/data'
 
