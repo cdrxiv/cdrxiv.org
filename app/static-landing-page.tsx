@@ -18,7 +18,6 @@ const StaticLandingPage = () => {
           width={[6, 6, 6, 6]}
           sx={{ mb: [0, 0, 8, 8] }}
         >
-          <Box sx={{ variant: 'text.monoCaps', mb: 7 }}>About</Box>
           <Box sx={{ mb: 7 }}>
             CDRXIV is a new open-access platform for sharing preprints and data
             related to carbon dioxide removal (CDR).
