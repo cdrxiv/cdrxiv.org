@@ -20,19 +20,9 @@ const SubmissionOverview = () => {
   const { setUploadProgress, setAbortController } = useLoading()
   const [deposition, setDeposition] = useState<Deposition | null>(null)
 
-  useEffect(() => {
-    const dataUrl = preprint.supplementary_files.find(
-      (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
-    )?.url
-
-    if (dataUrl) {
-      fetchDataDeposition(dataUrl).then(setDeposition)
-    }
-  }, [preprint.supplementary_files])
-
   const { data, setters, errors, onSubmit, submitError, setData } =
     useForm<FormData>(
-      () => initializeForm(preprint, files, null),
+      () => initializeForm(preprint, files, deposition),
       validateForm,
       async (values: FormData) => {
         const controller = setAbortController
@@ -61,13 +51,27 @@ const SubmissionOverview = () => {
     )
 
   useEffect(() => {
-    if (deposition) {
-      setData((current) => ({
-        ...current,
-        deposition,
-      }))
+    const dataUrl = preprint.supplementary_files.find(
+      (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
+    )?.url
+
+    if (dataUrl) {
+      fetchDataDeposition(dataUrl)
+        .then((newDeposition) => {
+          setDeposition(newDeposition)
+          setData(
+            (current) => ({
+              ...current,
+              deposition: newDeposition,
+            }),
+            true,
+          )
+        })
+        .catch((error) => {
+          console.error(error)
+        })
     }
-  }, [deposition, setData])
+  }, [preprint.supplementary_files, setData])
 
   const [disableAgreement] = useState<boolean>(data.agreement)
 
