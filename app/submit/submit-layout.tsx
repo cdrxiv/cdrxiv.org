@@ -20,7 +20,7 @@ import { isPreprintEmpty } from '../../utils/data'
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname()
   const router = useRouter()
-  const { preprint } = usePreprint()
+  const { preprint, setPreprint } = usePreprint()
   const { files } = usePreprintFiles()
   const { onClick } = useLinkWithWarning()
 
@@ -46,9 +46,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       if (filesCleanup.length > 0) {
         await Promise.all(filesCleanup)
       }
-      await updatePreprint(preprint, PREPRINT_BASE)
 
-      await revalidateTagFromClient('submit')
+      const updatedPreprint = await updatePreprint(preprint, PREPRINT_BASE)
+      setPreprint(updatedPreprint)
 
       router.push('/submit')
     }
