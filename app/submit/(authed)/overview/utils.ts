@@ -9,7 +9,6 @@ import {
   deletePreprintFile,
   updatePreprint,
   deleteZenodoEntity,
-  fetchDataDeposition,
   createDataDeposition,
 } from '../../../../actions'
 import { FileInputValue } from '../../../../components'
@@ -27,15 +26,15 @@ export type FormData = {
   articleFile: FileInputValue | null
   dataFile: FileInputValue | null
   externalFile: SupplementaryFile | null
-  deposition: Deposition | null
-  files: PreprintFile[]
+  persistedDeposition: Deposition | null
+  persistedFiles: PreprintFile[]
 }
 export const initializeForm = (
   preprint: Preprint,
-  files: PreprintFile[],
-  deposition: Deposition | null,
+  persistedFiles: PreprintFile[],
+  persistedDeposition: Deposition | null,
 ): FormData => {
-  const articleFile = files.reduce(
+  const articleFile = persistedFiles.reduce(
     (last: PreprintFile | null, file: PreprintFile) =>
       !last || last.pk < file.pk ? file : last,
     null,
@@ -70,8 +69,8 @@ export const initializeForm = (
           file.label !== 'CDRXIV_DATA_DRAFT' &&
           file.label !== 'CDRXIV_DATA_PUBLISHED',
       ) ?? null,
-    deposition,
-    files,
+    persistedDeposition,
+    persistedFiles,
   }
 }
 
@@ -80,8 +79,8 @@ export const validateForm = ({
   articleFile,
   dataFile,
   externalFile,
-  deposition,
-  files,
+  persistedDeposition,
+  persistedFiles,
 }: FormData) => {
   let result: Partial<{ [K in keyof FormData]: string }> = {}
 
@@ -121,17 +120,17 @@ export const validateForm = ({
   }
 
   if (
-    deposition &&
-    deposition.files.length > 1 &&
-    (!dataFile || dataFile.persisted)
+    persistedDeposition &&
+    persistedDeposition.files.length !== 1 &&
+    dataFile?.persisted
   ) {
-    result.deposition =
-      'There is an issue with you data upload, please clear the file and try again.'
+    result.persistedDeposition =
+      'There is an issue with your data upload. Please clear the file and try again.'
   }
 
-  if (files.length > 1) {
-    result.files =
-      'There is an issue with you article upload, please clear the file and try again.'
+  if (persistedFiles.length > 1 && articleFile?.persisted) {
+    result.persistedFiles =
+      'There is an issue with your article upload. Please clear the file and try again.'
   }
 
   return result

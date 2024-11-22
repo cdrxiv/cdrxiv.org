@@ -1,9 +1,8 @@
 'use client'
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Box, Flex, Input } from 'theme-ui'
 
-import { deleteZenodoEntity, fetchDataDeposition } from '../../../../actions'
 import { SupplementaryFile } from '../../../../types/preprint'
 import { Deposition } from '../../../../types/zenodo'
 import {
@@ -15,54 +14,27 @@ import {
 
 type Props = {
   file?: FileInputValue | null
+  deposition: Deposition | null
   setFile: (file: FileInputValue | null) => void
   externalFile: SupplementaryFile | null
   setExternalFile: (file: SupplementaryFile | null) => void
-  onError: () => Promise<void>
+  loading: boolean
 }
 const DataFileInput: React.FC<Props> = ({
   file: fileProp,
+  deposition,
   setFile: setFileProp,
   externalFile,
   setExternalFile,
-  onError,
+  loading,
 }) => {
   const [mode, setMode] = useState<'upload' | 'link'>(
     externalFile ? 'link' : 'upload',
   )
-  const [deposition, setDeposition] = useState<Deposition | null>(null)
-  const [loading, setLoading] = useState<boolean>(fileProp ? true : false)
-
-  useEffect(() => {
-    if (fileProp?.url) {
-      fetchDataDeposition(fileProp?.url)
-        .then((deposition) => {
-          if (deposition.files.length === 0) {
-            // if we got into a state where the deposition is empty, delete it and reset the file input
-            onError().then(() => {
-              setFileProp(null)
-              setLoading(false)
-              deleteZenodoEntity(fileProp.url)
-            })
-          } else {
-            setDeposition(deposition)
-            setLoading(false)
-          }
-        })
-        .catch(() => {
-          onError().then(() => {
-            setFileProp(null)
-            setLoading(false)
-          })
-        })
-    } else {
-      setDeposition(null)
-    }
-  }, [fileProp?.url, setFileProp, onError])
 
   const fileDisplay = useMemo(
     () =>
-      deposition && deposition.files[0]
+      fileProp?.url && deposition?.files[0]
         ? {
             persisted: true as const,
             mime_type: null,

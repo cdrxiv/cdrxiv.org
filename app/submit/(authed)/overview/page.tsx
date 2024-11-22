@@ -1,7 +1,7 @@
 'use client'
 
 import { Label } from 'theme-ui'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 
 import { Checkbox, Field, FileInput, Form } from '../../../../components'
 import NavButtons from '../../nav-buttons'
@@ -18,7 +18,18 @@ const SubmissionOverview = () => {
   const { preprint, setPreprint } = usePreprint()
   const { files, setFiles } = usePreprintFiles()
   const { setUploadProgress, setAbortController } = useLoading()
+  const dataUrl = useMemo(
+    () =>
+      preprint?.supplementary_files?.find(
+        (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
+      )?.url,
+    [preprint?.supplementary_files],
+  )
+
   const [deposition, setDeposition] = useState<Deposition | null>(null)
+  const [depositionLoading, setDepositionLoading] = useState<boolean>(
+    dataUrl ? true : false,
+  )
 
   const { data, setters, errors, onSubmit, submitError, setData } =
     useForm<FormData>(
@@ -51,18 +62,14 @@ const SubmissionOverview = () => {
     )
 
   useEffect(() => {
-    const dataUrl = preprint.supplementary_files.find(
-      (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
-    )?.url
-
     if (dataUrl) {
       fetchDataDeposition(dataUrl)
-        .then((newDeposition) => {
-          setDeposition(newDeposition)
+        .then((deposition) => {
+          setDeposition(deposition)
           setData(
             (current) => ({
               ...current,
-              deposition: newDeposition,
+              persistedDeposition: deposition,
             }),
             true,
           )
@@ -70,16 +77,11 @@ const SubmissionOverview = () => {
         .catch((error) => {
           console.error(error)
         })
+        .finally(() => setDepositionLoading(false))
     }
-  }, [preprint.supplementary_files, setData])
+  }, [setData, dataUrl, setDepositionLoading])
 
   const [disableAgreement] = useState<boolean>(data.agreement)
-
-  const handleDataFileError = useCallback(() => {
-    return updatePreprint(preprint, { supplementary_files: [] }).then(
-      (updated) => setPreprint(updated),
-    )
-  }, [preprint, setPreprint])
 
   return (
     <>
@@ -106,7 +108,7 @@ const SubmissionOverview = () => {
           label='Article file'
           id='articleFile'
           description='Your article must be submitted as a PDF.'
-          error={errors.articleFile ?? errors.files}
+          error={errors.articleFile ?? errors.persistedFiles}
         >
           <FileInput
             file={data.articleFile}
@@ -119,14 +121,17 @@ const SubmissionOverview = () => {
           label='Data file'
           id='dataFile'
           description='Your data submission must be a single file of any format, including ZIP, up to 10 GB.'
-          error={errors.dataFile ?? errors.externalFile ?? errors.deposition}
+          error={
+            errors.dataFile ?? errors.externalFile ?? errors.persistedDeposition
+          }
         >
           <DataFileInput
             file={data.dataFile}
+            deposition={deposition}
             setFile={setters.dataFile}
             externalFile={data.externalFile}
             setExternalFile={setters.externalFile}
-            onError={handleDataFileError}
+            loading={depositionLoading}
           />
         </Field>
       </Form>
