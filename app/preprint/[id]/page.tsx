@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { ResolvingMetadata } from 'next'
 
 import PreprintViewer from './preprint-viewer'
+import { fetchWithAlerting } from '../../../actions/server-utils'
 
 // Polyfill for Promise.withResolvers
 if (typeof Promise.withResolvers !== 'function') {
@@ -21,8 +22,10 @@ if (typeof Promise.withResolvers !== 'function') {
 }
 
 const getPreprint = async (id: string) => {
-  const res = await fetch(
+  const res = await fetchWithAlerting(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/${id}`,
+    {},
+    [200, 404],
   )
   if (!res.ok) {
     if (res.status === 404) {

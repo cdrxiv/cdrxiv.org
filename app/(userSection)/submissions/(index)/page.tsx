@@ -1,22 +1,18 @@
-import { headers } from 'next/headers'
 import React from 'react'
 import { redirect } from 'next/navigation'
 
 import SubmissionsView from './submissions-view'
-import { fetchWithToken } from '../../../utils/fetch-with-token/server'
+import { fetchWithToken } from '../../../../actions/server-utils'
 
 const SubmissionOverview = async () => {
   const responses = await Promise.all([
     fetchWithToken(
-      headers(),
       `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/user_preprints/?stage=preprint_published`,
     ),
     fetchWithToken(
-      headers(),
       `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/user_preprints/?stage=preprint_review`,
     ),
     fetchWithToken(
-      headers(),
       `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/user_preprints/?stage=preprint_rejected`,
     ),
   ])

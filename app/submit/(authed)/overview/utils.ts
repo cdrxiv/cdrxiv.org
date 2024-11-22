@@ -18,7 +18,7 @@ import {
   handleArticleUpload,
   handleDataUpload,
   initializeUploadProgress,
-} from '../../../utils/upload-handlers'
+} from '../../../../utils/file-uploads'
 import { Deposition } from '../../../../types/zenodo'
 
 export type FormData = {

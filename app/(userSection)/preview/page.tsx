@@ -1,12 +1,11 @@
-import { headers } from 'next/headers'
 import React from 'react'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 
-import { fetchWithToken } from '../../utils/fetch-with-token/server'
 import SharedLayout from '../shared-layout'
 import PreprintsTable from './preprints-preview-table'
 import Forbidden from './forbidden'
+import { fetchWithToken } from '../../../actions/server-utils'
 
 const PreviewPage = async () => {
   const session = await getServerSession()
@@ -15,7 +14,6 @@ const PreviewPage = async () => {
   }
 
   const response = await fetchWithToken(
-    headers(),
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprints/?stage=preprint_review`,
   )
 

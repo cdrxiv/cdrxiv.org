@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 import ResultsWrapper from './results-wrapper'
 import PreprintsView from '../preprints-view'
 import LoadingWrapper from '../loading-wrapper'
+import { fetchWithAlerting } from '../../actions/server-utils'
 
 interface SearchProps {
   searchParams: { [key: string]: string | undefined }
@@ -17,7 +18,7 @@ const Search = async ({ searchParams }: SearchProps) => {
   const params = new URLSearchParams({ search: search ?? '', ...rest })
   const url = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/?${params.toString()}&limit=48`
 
-  const res = await fetch(url, { next: { revalidate: 180 } })
+  const res = await fetchWithAlerting(url, { next: { revalidate: 180 } })
   const preprints = await res.json()
   const results = preprints.results || []
 
