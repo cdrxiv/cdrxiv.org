@@ -14,7 +14,7 @@ import {
   PreprintFile,
   VersionQueueParams,
 } from '../types/preprint'
-import { fetchWithToken } from '../app/utils/fetch-with-token/server'
+import { fetchWithAlerting, fetchWithToken } from './server-utils'
 import { PREPRINT_BASE } from './constants'
 
 export async function updatePreprint(
@@ -24,7 +24,6 @@ export async function updatePreprint(
   const { pk, license, ...rest } = preprint
 
   const res = await fetchWithToken(
-    headers(),
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/user_preprints/${pk}/`,
     {
       method: 'PUT',
@@ -59,6 +58,7 @@ export async function updatePreprint(
   const updatedPreprint = res.json()
 
   revalidateTag('submit')
+
   return updatedPreprint
 }
 
@@ -76,7 +76,6 @@ export async function createPreprint(): Promise<Preprint> {
   }
 
   const res = await fetchWithToken(
-    headers(),
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/user_preprints/`,
     {
       method: 'POST',
@@ -99,7 +98,6 @@ export async function createPreprint(): Promise<Preprint> {
 
 export async function createAuthor(author: AuthorParams): Promise<Author> {
   const res = await fetchWithToken(
-    headers(),
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/account/register/`,
     {
       method: 'POST',
@@ -128,8 +126,7 @@ export async function searchAuthor(
 ): Promise<Pagination<Author>> {
   const params = new URLSearchParams({ search })
   const url = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/submission_account_search/?${params}`
-
-  const res = await fetchWithToken(headers(), url)
+  const res = await fetchWithToken(url)
 
   if (res.status !== 200) {
     throw new Error(
@@ -143,7 +140,6 @@ export async function searchAuthor(
 
 export async function fetchPreprintFile(pk: number): Promise<PreprintFile> {
   const res = await fetchWithToken(
-    headers(),
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/${pk}`,
   )
 
@@ -157,9 +153,8 @@ export async function fetchPreprintFile(pk: number): Promise<PreprintFile> {
   return result
 }
 
-export async function deletePreprintFile(pk: number): Promise<true> {
+export async function deletePreprintFile(pk: number) {
   const res = await fetchWithToken(
-    headers(),
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/${pk}`,
     {
       method: 'DELETE',
@@ -178,7 +173,6 @@ export async function deletePreprintFile(pk: number): Promise<true> {
 
 export async function createVersionQueue(versionQueue: VersionQueueParams) {
   const res = await fetchWithToken(
-    headers(),
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/version_queue/`,
     {
       method: 'POST',
@@ -195,12 +189,12 @@ export async function createVersionQueue(versionQueue: VersionQueueParams) {
 
   revalidatePath(`/submissions/edit/${versionQueue.preprint}`)
 
-  const result = res.json()
+  const result = await res.json()
   return result
 }
 
 export async function fetchPublishedPreprints(url: string) {
-  const res = await fetch(url)
+  const res = await fetchWithAlerting(url)
   if (![200].includes(res.status)) {
     throw new Error(
       `Status ${res.status}: Unable to fetch preprints. ${res.statusText}`,
@@ -212,16 +206,16 @@ export async function fetchPublishedPreprints(url: string) {
 }
 
 export async function fetchPreprintIdentifier(pk: number) {
-  const res = await fetch(
+  const res = await fetchWithAlerting(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/identifiers/?preprint_id=${pk}`,
   )
 
   if (![200].includes(res.status)) {
     throw new Error(
-      `Status ${res.status}: Unable to fetch preprint identifiers. ${res.statusText}`,
+      `Status ${res.status}: Unable to fetch preprints. ${res.statusText}`,
     )
   }
 
-  const result = res.json()
+  const result = await res.json()
   return result
 }

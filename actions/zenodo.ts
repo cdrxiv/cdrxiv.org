@@ -1,9 +1,10 @@
 'use server'
 
-import { Deposition, DepositionFile } from '../types/zenodo'
+import { Deposition } from '../types/zenodo'
+import { fetchWithAlerting } from './server-utils'
 
 export async function createDataDeposition(): Promise<Deposition> {
-  const res = await fetch(
+  const res = await fetchWithAlerting(
     process.env.NEXT_PUBLIC_ZENODO_URL + '/api/deposit/depositions',
     {
       method: 'POST',
@@ -31,7 +32,7 @@ export async function fetchDataDeposition(url: string): Promise<Deposition> {
   ) {
     throw new Error(`Invalid data URL: ${url}`)
   }
-  const res = await fetch(url, {
+  const res = await fetchWithAlerting(url, {
     headers: {
       Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
     },
@@ -57,7 +58,7 @@ export async function updateDataDeposition(
   ) {
     throw new Error(`Invalid data URL: ${url}`)
   }
-  const res = await fetch(url, {
+  const res = await fetchWithAlerting(url, {
     method: 'PUT',
     headers: {
       Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
@@ -84,16 +85,20 @@ export async function deleteZenodoEntity(url: string): Promise<true> {
     throw new Error(`Invalid data URL: ${url}`)
   }
 
-  const res = await fetch(url, {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+  const res = await fetchWithAlerting(
+    url,
+    {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+      },
     },
-  })
+    [204, 404],
+  )
 
+  // 204: Successful deletion
+  // 404: Entity not found (consider it already deleted)
   if (res.status === 204 || res.status === 404) {
-    // 204: Successful deletion
-    // 404: Entity not found (consider it already deleted)
     return true
   }
 
@@ -111,7 +116,7 @@ export async function createDataDepositionVersion(
   ) {
     throw new Error(`Invalid data URL: ${url}`)
   }
-  const res = await fetch(url, {
+  const res = await fetchWithAlerting(url, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,

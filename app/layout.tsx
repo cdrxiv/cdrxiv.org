@@ -6,6 +6,7 @@ import PageCard from '../components/layouts/page-card'
 import { authOptions } from '../lib/auth'
 import Providers from './providers'
 import { SubjectsProvider } from './subjects-context'
+import { fetchWithAlerting } from '../actions/server-utils'
 
 export const metadata: Metadata = {
   title: 'CDRXIV',
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
 }
 
 export const getSubjects = async () => {
-  const res = await fetch(
+  const res = await fetchWithAlerting(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/repository_subjects/`,
     { next: { revalidate: 180 } },
   )

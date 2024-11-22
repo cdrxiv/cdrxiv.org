@@ -1,5 +1,6 @@
 import { NextAuthOptions, User } from 'next-auth'
 import type { Provider } from 'next-auth/providers/index'
+import { fetchWithAlerting } from '../actions/server-utils'
 
 const Janeway: Provider = {
   id: 'janeway',
@@ -65,7 +66,7 @@ export const authOptions: NextAuthOptions = {
         if (!token.refreshToken) throw new Error('Missing refresh token')
 
         try {
-          const response = await fetch(
+          const response = await fetchWithAlerting(
             `${process.env.NEXT_PUBLIC_JANEWAY_URL}/o/token/`,
             {
               headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
