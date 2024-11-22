@@ -85,6 +85,8 @@ export const fetchWithAlerting = async (
       statusText: response.statusText,
       method: options?.method ?? 'GET',
       apiError,
+    }).catch((err) => {
+      console.error('Failed to send alert to Slack:', err)
     })
   }
 
