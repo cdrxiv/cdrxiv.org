@@ -109,7 +109,9 @@ export const fetchWithToken = async (
   })
 
   if (!token) {
-    throw new Error('Not authenticated')
+    return new Response('Not authenticated', {
+      status: 403,
+    })
   }
 
   const result = await fetchWithAlerting(
