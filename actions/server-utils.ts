@@ -31,6 +31,11 @@ export async function alertOnError({
   method: string
   apiError?: string
 }) {
+  // Do not alert in development
+  if (process.env.NODE_ENV === 'development') {
+    return
+  }
+
   const token = await getToken({
     req: {
       headers: headers(),
