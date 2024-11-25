@@ -295,21 +295,21 @@ export const submitForm = async ({
       if (cancelledUploads.length > 0) {
         throw new Error('Upload cancelled')
       } else {
-        const failedUploads = [articleResult, dataResult].filter(
-          (r) => r.status === 'rejected',
-        )
-        const failedType =
-          failedUploads.length === 2
-            ? 'Both'
-            : failedUploads[0].status === 'rejected'
-              ? 'Article'
-              : 'Data'
+        const failedUploads = [
+          { type: 'Article', result: articleResult },
+          { type: 'Data', result: dataResult },
+        ].filter(({ result }) => result.status === 'rejected') as {
+          type: string
+          result: PromiseRejectedResult
+        }[]
+
         const errorMessage = failedUploads
           .map(
-            (f) =>
-              `${failedType} upload${failedType === 'Both' ? 's' : ''} failed: ${f.reason?.message?.detail || 'Unknown error'}`,
+            ({ result, type }) =>
+              `${type} upload failed: ${result.reason?.message?.detail || 'Unknown error'}`,
           )
           .join('; ')
+        console.error('failed uploads: ', failedUploads)
         throw new Error(errorMessage)
       }
     }
