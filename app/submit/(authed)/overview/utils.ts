@@ -231,7 +231,7 @@ export const submitForm = async ({
   initializeUploadProgress(articleFile, dataFile, setUploadProgress)
 
   let newDeposition: Deposition | null = null
-  if (submissionType !== 'Article') {
+  if (submissionType !== 'Article' && dataFile && !dataFile.persisted) {
     newDeposition = await createDataDeposition()
   }
 
