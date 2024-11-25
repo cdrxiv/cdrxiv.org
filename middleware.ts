@@ -26,18 +26,15 @@ export const middleware = (
     return NextResponse.redirect(new URL('/', request.url))
   }
 
-  if (isFullSiteEnabled()) {
-    if (AUTHED_ROUTES.includes(request.nextUrl.pathname)) {
-      return withAuthMiddleware(request, event)
-    } else {
-      return NextResponse.next()
-    }
-  }
-
   if (
+    !isFullSiteEnabled() &&
     FULL_SITE_ROUTES.some((path) => request.nextUrl.pathname.startsWith(path))
   ) {
     return NextResponse.redirect(new URL('/', request.url))
+  }
+
+  if (AUTHED_ROUTES.includes(request.nextUrl.pathname)) {
+    return withAuthMiddleware(request, event)
   }
 
   return NextResponse.next()
