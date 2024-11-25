@@ -40,7 +40,7 @@ import {
   handleDataUpload,
   initializeUploadProgress,
   UploadProgress,
-} from '../../../../utils/upload-handlers'
+} from '../../../../../utils/file-uploads'
 import { useLoading } from '../../../../../components/layouts/paneled-page'
 
 type Props = {

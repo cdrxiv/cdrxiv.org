@@ -10,6 +10,9 @@ const AUTHED_ROUTES = [
   '/submit/authors',
   '/submit/confirm',
 ]
+
+const FULL_SITE_ROUTES = ['/search', '/preprint/']
+
 const withAuthMiddleware = withAuth({
   pages: {
     signIn: '/account',
@@ -19,17 +22,21 @@ export const middleware = (
   request: NextRequestWithAuth,
   event: NextFetchEvent,
 ) => {
+  if (request.nextUrl.pathname === '/home.html') {
+    return NextResponse.redirect(new URL('/', request.url))
+  }
+
   if (isFullSiteEnabled()) {
     if (AUTHED_ROUTES.includes(request.nextUrl.pathname)) {
       return withAuthMiddleware(request, event)
-    } else if (request.nextUrl.pathname === '/home.html') {
-      return NextResponse.redirect(new URL('/', request.url))
     } else {
       return NextResponse.next()
     }
   }
 
-  if (request.nextUrl.pathname !== '/') {
+  if (
+    FULL_SITE_ROUTES.some((path) => request.nextUrl.pathname.startsWith(path))
+  ) {
     return NextResponse.redirect(new URL('/', request.url))
   }
 

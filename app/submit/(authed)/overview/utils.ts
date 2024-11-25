@@ -17,9 +17,9 @@ import {
   handleArticleUpload,
   handleDataUpload,
   initializeUploadProgress,
-} from '../../../utils/upload-handlers'
+} from '../../../../utils/file-uploads'
 import { Deposition } from '../../../../types/zenodo'
-import { UPLOAD_CANCELLED_MESSAGE } from '../../../utils/fetch-with-token/client'
+import { UPLOAD_CANCELLED_MESSAGE } from '../../../../utils/file-uploads'
 
 export type FormData = {
   agreement: boolean

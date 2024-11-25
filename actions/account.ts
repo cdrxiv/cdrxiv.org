@@ -1,15 +1,14 @@
 'use server'
 
-import { headers } from 'next/headers'
 import { User } from 'next-auth'
 import { db } from '@vercel/postgres'
 
-import { fetchWithToken } from '../app/utils/fetch-with-token/server'
+import { fetchWithAlerting, fetchWithToken } from './server-utils'
 
 export async function registerAccount(
   params: Partial<User> & { password: string },
 ) {
-  const res = await fetch(
+  const res = await fetchWithAlerting(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/account/register/`,
     {
       method: 'POST',
@@ -20,6 +19,7 @@ export async function registerAccount(
       }),
     },
   )
+
   if (res.status !== 201) {
     let keyErrors
     try {
@@ -62,7 +62,7 @@ export async function activateAccount(
   if (recordAgreement) {
     await client.sql`INSERT INTO user_agreements (account_id) VALUES (${user});`
   }
-  const res = await fetch(
+  const res = await fetchWithAlerting(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/account/activate/${user}`,
     {
       method: 'PUT',
@@ -87,7 +87,6 @@ export async function activateAccount(
 
 export async function updateAccount(user: User, params: Partial<User>) {
   const res = await fetchWithToken(
-    headers(),
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/account/update/`,
     {
       method: 'PUT',
@@ -98,6 +97,7 @@ export async function updateAccount(user: User, params: Partial<User>) {
       }),
     },
   )
+
   if (res.status !== 200) {
     let keyErrors
     try {
