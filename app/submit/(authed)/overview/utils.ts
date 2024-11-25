@@ -175,7 +175,7 @@ const cleanupFiles = async (
   submissionType: string,
   files: PreprintFile[],
   uploadResults: [PreprintFile | null, Deposition | null],
-  dataFile: FileInputValue | null,
+  dataUploadFailed?: boolean,
 ) => {
   const [newPreprintFile, newDeposition] = uploadResults
   const cleanupTasks: Promise<any>[] = []
@@ -197,16 +197,14 @@ const cleanupFiles = async (
     )
   }
 
-  // Clean up old Zenodo files if we have a new data file
-  if (newDeposition && newDeposition.files) {
-    const filesToDelete = newDeposition.files.filter((file) => {
-      // Keep the file if it matches the new dataFile's filename
-      return dataFile?.original_filename !== file.filename
-    })
+  // Clean up failed new deposition
+  if (dataUploadFailed && newDeposition) {
+    cleanupTasks.push(deleteZenodoEntity(newDeposition.links.self))
+  }
 
-    cleanupTasks.push(
-      ...filesToDelete.map((file) => deleteZenodoEntity(file.links.self)),
-    )
+  // Clean up old data deposition on successful upload
+  if (!dataUploadFailed && newDeposition && existingDataFile) {
+    cleanupTasks.push(deleteZenodoEntity(existingDataFile.url))
   }
 
   await Promise.all(cleanupTasks)
@@ -225,156 +223,148 @@ export const submitForm = async ({
     throw new Error('Tried to submit without active preprint')
   }
 
-  initializeUploadProgress(articleFile, dataFile, setUploadProgress)
-
   const existingDataFile = preprint.supplementary_files.find(
     (file) => file.label === 'CDRXIV_DATA_DRAFT',
   )
   const submissionType = getSubmissionType({ dataFile, articleFile })
 
-  let deposition: Deposition | null = null
+  initializeUploadProgress(articleFile, dataFile, setUploadProgress)
+
+  let newDeposition: Deposition | null = null
   if (submissionType !== 'Article') {
-    if (existingDataFile) {
-      deposition = await fetchDataDeposition(existingDataFile.url)
-    } else {
-      deposition = await createDataDeposition()
-    }
+    newDeposition = await createDataDeposition()
   }
 
-  // Delete any existing file with same name in deposition to prevent duplicate collisions
-  if (deposition?.files && dataFile?.original_filename) {
-    const existingFile = deposition.files.find(
-      (file) => file.filename === dataFile.original_filename,
-    )
-    if (existingFile) {
-      await deleteZenodoEntity(existingFile.links.self)
-    }
-  }
-
-  const results = await Promise.allSettled([
+  const [articleResult, dataResult] = await Promise.allSettled([
     handleArticleUpload(
       articleFile,
       preprint.pk,
       setUploadProgress,
       abortSignal,
     ),
-    deposition
-      ? handleDataUpload(deposition, dataFile, setUploadProgress, abortSignal)
+    newDeposition
+      ? handleDataUpload(
+          newDeposition,
+          dataFile,
+          setUploadProgress,
+          abortSignal,
+        )
       : Promise.resolve(null),
   ])
 
-  const failures: Array<{ type: string; error: Error; cancelled: boolean }> = []
-  const successes: (PreprintFile | Deposition | null)[] = []
+  try {
+    // If failures, keep submission type in sync with remaining file
+    if (
+      articleResult.status === 'rejected' ||
+      dataResult.status === 'rejected'
+    ) {
+      const bothFailed =
+        articleResult.status === 'rejected' && dataResult.status === 'rejected'
+      let remainingType = bothFailed ? 'Article' : 'Data'
+      if (
+        articleResult.status === 'rejected' &&
+        dataResult.status === 'fulfilled'
+      ) {
+        remainingType = 'Data'
+      }
 
-  results.forEach((result, index) => {
-    if (result.status === 'rejected') {
-      const uploadType = index === 0 ? 'Article' : 'Data'
-      failures.push({
-        type: uploadType,
-        error: result.reason,
-        cancelled: result.reason?.message === UPLOAD_CANCELLED_MESSAGE,
+      const additionalFieldAnswers = [
+        ...preprint.additional_field_answers.filter(
+          (field) => field.field?.name !== 'Submission type',
+        ),
+        createAdditionalField('Submission type', remainingType),
+      ]
+
+      updatePreprint(preprint, {
+        additional_field_answers: additionalFieldAnswers,
       })
-    } else {
-      successes[index] = result.value as PreprintFile | Deposition | null
+        .then(setPreprint)
+        .catch(console.error)
     }
-  })
 
-  // Clean up files based on what succeeded
-  await cleanupFiles(
-    existingDataFile,
-    submissionType,
-    files,
-    successes as [PreprintFile | null, Deposition | null],
-    dataFile,
-  )
+    // Display errors
+    if (
+      articleResult.status === 'rejected' ||
+      dataResult.status === 'rejected'
+    ) {
+      const cancelledUploads = [articleResult, dataResult].filter(
+        (r) =>
+          r.status === 'rejected' &&
+          r.reason?.message === UPLOAD_CANCELLED_MESSAGE,
+      )
+      if (cancelledUploads.length > 0) {
+        throw new Error('Upload cancelled')
+      } else {
+        const failedUploads = [articleResult, dataResult].filter(
+          (r) => r.status === 'rejected',
+        )
+        const failedType =
+          failedUploads.length === 2
+            ? 'Both'
+            : failedUploads[0].status === 'rejected'
+              ? 'Article'
+              : 'Data'
+        const errorMessage = failedUploads
+          .map(
+            (f) =>
+              `${failedType} upload${failedType === 'Both' ? 's' : ''} failed: ${f.reason?.message?.detail || 'Unknown error'}`,
+          )
+          .join('; ')
+        throw new Error(errorMessage)
+      }
+    }
 
-  // After cleanup, handle any failures
-  if (failures.length > 0) {
-    const remainingType =
-      failures.length === 2
-        ? 'Article' // Both failed - default to Article
-        : failures[0].type === 'Article'
-          ? 'Data'
-          : 'Article'
-
-    const hasOtherFile =
-      failures.length === 1 &&
-      (failures[0].type === 'Article' ? !!dataFile : !!articleFile)
+    // Prepare final supplementary files
+    const finalSupplementaryFiles = dataFile?.persisted
+      ? preprint.supplementary_files
+      : dataResult.status === 'fulfilled' && dataResult.value
+        ? [{ label: 'CDRXIV_DATA_DRAFT', url: dataResult.value.links.self }]
+        : externalFile
+          ? [externalFile]
+          : []
 
     const additionalFieldAnswers = [
       ...preprint.additional_field_answers.filter(
-        (field) => field.field?.name !== 'Submission type',
+        (field) =>
+          field.field?.name !== 'Submission type' &&
+          !(
+            // Remove 'Data license' there is no data included
+            (
+              submissionType === 'Article' &&
+              field.field?.name === 'Data license'
+            )
+          ) &&
+          !(
+            // Remove 'Data license' for data-only submissions when it is out-of-sync with main license
+            (
+              submissionType === 'Data' &&
+              field.field?.name === 'Data license' &&
+              LICENSE_MAPPING[field.answer as 'cc-by-4.0' | 'cc-by-nc-4.0'] !==
+                preprint.license?.pk
+            )
+          ),
       ),
-      createAdditionalField(
-        'Submission type',
-        hasOtherFile ? remainingType : 'Article', // Default to article
-      ),
+      createAdditionalField('Submission type', submissionType),
     ]
 
-    updatePreprint(preprint, {
+    const updatedPreprint = await updatePreprint(preprint, {
       additional_field_answers: additionalFieldAnswers,
+      supplementary_files: finalSupplementaryFiles,
     })
-      .then(setPreprint)
-      .catch(console.error)
-
-    // Handle error display
-    const cancelledUploads = failures.filter((f) => f.cancelled)
-    if (cancelledUploads.length === 2) {
-      throw new Error('All uploads cancelled')
-    } else if (cancelledUploads.length === 1) {
-      throw new Error(`${cancelledUploads[0].type} upload cancelled`)
-    } else {
-      const errorMessage = failures
-        .map(
-          (f) =>
-            `${f.type} upload failed: ${f.error?.message || 'Unknown error'}`,
-        )
-        .join('; ')
-      throw new Error(errorMessage)
+    setPreprint(updatedPreprint)
+    if (articleResult.status === 'fulfilled' && articleResult.value) {
+      setFiles([articleResult.value])
     }
+  } finally {
+    await cleanupFiles(
+      existingDataFile,
+      submissionType,
+      files,
+      [
+        articleResult.status === 'fulfilled' ? articleResult.value : null,
+        newDeposition,
+      ],
+      dataResult && dataResult.status !== 'fulfilled',
+    ).catch(console.error)
   }
-
-  const [newPreprintFile, newDeposition] = successes as [
-    PreprintFile | null,
-    Deposition | null,
-  ]
-
-  // Prepare final supplementary files
-  const finalSupplementaryFiles = dataFile?.persisted
-    ? preprint.supplementary_files
-    : newDeposition?.links.self
-      ? [{ label: 'CDRXIV_DATA_DRAFT', url: newDeposition.links.self }]
-      : externalFile
-        ? [externalFile]
-        : []
-
-  const additionalFieldAnswers = [
-    ...preprint.additional_field_answers.filter(
-      (field) =>
-        field.field?.name !== 'Submission type' &&
-        !(
-          // Remove 'Data license' there is no data included
-          (submissionType === 'Article' && field.field?.name === 'Data license')
-        ) &&
-        !(
-          // Remove 'Data license' for data-only submissions when it is out-of-sync with main license
-          (
-            submissionType === 'Data' &&
-            field.field?.name === 'Data license' &&
-            LICENSE_MAPPING[field.answer as 'cc-by-4.0' | 'cc-by-nc-4.0'] !==
-              preprint.license?.pk
-          )
-        ),
-    ),
-    createAdditionalField('Submission type', submissionType),
-  ]
-
-  const params = {
-    additional_field_answers: additionalFieldAnswers,
-    supplementary_files: finalSupplementaryFiles,
-  }
-
-  return updatePreprint(preprint, params)
-    .then((updated) => setPreprint(updated))
-    .then(() => (newPreprintFile ? setFiles([newPreprintFile]) : undefined))
 }

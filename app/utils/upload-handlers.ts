@@ -1,5 +1,5 @@
-import { PreprintFile, SupplementaryFile } from '../../types/preprint'
-import { Deposition, DepositionFile } from '../../types/zenodo'
+import { PreprintFile } from '../../types/preprint'
+import { Deposition } from '../../types/zenodo'
 import { fetchWithTokenClient } from './fetch-with-token/client'
 import { FileInputValue } from '../../components'
 
@@ -71,7 +71,7 @@ export const handleDataUpload = async (
   formData.set('name', dataFile.original_filename)
   formData.set('file', dataFile.file)
 
-  const depositionFile = await fetchWithTokenClient<DepositionFile>(
+  const depositionFile = await fetchWithTokenClient<Deposition>(
     `${process.env.NEXT_PUBLIC_FILE_UPLOADER_URL}/zenodo/upload-file?deposition_id=${deposition.id}`,
     {
       method: 'POST',
