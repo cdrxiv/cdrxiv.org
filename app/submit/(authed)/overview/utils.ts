@@ -317,7 +317,7 @@ export const submitForm = async ({
     // Prepare final supplementary files
     const finalSupplementaryFiles = dataFile?.persisted
       ? preprint.supplementary_files
-      : dataResult.status === 'fulfilled' && dataResult.value
+      : dataResult.value
         ? [{ label: 'CDRXIV_DATA_DRAFT', url: dataResult.value.links.self }]
         : externalFile
           ? [externalFile]
