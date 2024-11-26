@@ -1,6 +1,5 @@
 import { NextAuthOptions, User } from 'next-auth'
 import type { Provider } from 'next-auth/providers/index'
-import { fetchWithAlerting } from '../actions/server-utils'
 
 const Janeway: Provider = {
   id: 'janeway',
@@ -58,47 +57,9 @@ export const authOptions: NextAuthOptions = {
           refreshToken: account.refresh_token,
           expiresAt: account.expires_at as number,
         }
-      } else if (Date.now() < (token.expiresAt as number) * 1000) {
-        // Subsequent logins, if the `access_token` is still valid, return the JWT
-        return token
       } else {
-        // Subsequent logins, if the `access_token` has expired, try to refresh it
-        if (!token.refreshToken) throw new Error('Missing refresh token')
-
-        try {
-          const response = await fetchWithAlerting(
-            `${process.env.NEXT_PUBLIC_JANEWAY_URL}/o/token/`,
-            {
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-              body: new URLSearchParams({
-                client_id: process.env.AUTH_CLIENT_ID as string,
-                client_secret: process.env.AUTH_CLIENT_SECRET as string,
-                grant_type: 'refresh_token',
-                refresh_token: token.refreshToken as string,
-              }),
-              method: 'POST',
-            },
-          )
-
-          const responseTokens = await response.json()
-
-          if (!response.ok) throw responseTokens
-
-          return {
-            // Keep the previous token properties
-            ...token,
-            accessToken: responseTokens.access_token,
-            expiresAt: Math.floor(
-              Date.now() / 1000 + (responseTokens.expires_in as number),
-            ),
-            // Fall back to old refresh token, but note that many providers may only allow using a refresh token once.
-            refreshToken: responseTokens.refresh_token ?? token.refresh_token,
-          }
-        } catch (error) {
-          console.error('Error refreshing access token', error)
-          // The error property can be used client-side to handle the refresh token error
-          return { ...token, error: 'RefreshAccessTokenError' as const }
-        }
+        // Subsequent logins, return the JWT
+        return token
       }
     },
     async session({ session, token }) {

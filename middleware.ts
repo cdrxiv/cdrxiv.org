@@ -1,6 +1,7 @@
-import { NextRequestWithAuth, withAuth } from 'next-auth/middleware'
+import { NextRequest, NextResponse } from 'next/server'
+
 import { isFullSiteEnabled } from './utils/flags'
-import { NextFetchEvent, NextResponse } from 'next/server'
+import { withAuthAndTokenRefresh } from './utils/auth'
 
 const AUTHED_ROUTES = [
   '/submissions',
@@ -13,31 +14,20 @@ const AUTHED_ROUTES = [
 
 const FULL_SITE_ROUTES = ['/search', '/preprint/']
 
-const withAuthMiddleware = withAuth({
-  pages: {
-    signIn: '/account',
-  },
-})
-export const middleware = (
-  request: NextRequestWithAuth,
-  event: NextFetchEvent,
-) => {
+export const middleware = async (request: NextRequest) => {
   if (request.nextUrl.pathname === '/home.html') {
     return NextResponse.redirect(new URL('/', request.url))
   }
 
-  if (isFullSiteEnabled()) {
-    if (AUTHED_ROUTES.includes(request.nextUrl.pathname)) {
-      return withAuthMiddleware(request, event)
-    } else {
-      return NextResponse.next()
-    }
-  }
-
   if (
+    !isFullSiteEnabled() &&
     FULL_SITE_ROUTES.some((path) => request.nextUrl.pathname.startsWith(path))
   ) {
     return NextResponse.redirect(new URL('/', request.url))
+  }
+
+  if (AUTHED_ROUTES.includes(request.nextUrl.pathname)) {
+    return withAuthAndTokenRefresh(request)
   }
 
   return NextResponse.next()
