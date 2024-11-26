@@ -162,6 +162,48 @@ type SubmissionContext = {
   abortSignal?: AbortSignal
 }
 
+const getUpdatedFields = (
+  preprint: Preprint,
+  submissionType: string,
+  dataFile: FormData['dataFile'],
+  dataResult: PromiseSettledResult<Deposition | null> | null,
+  externalFile: SupplementaryFile | null,
+) => {
+  const finalSupplementaryFiles = dataFile?.persisted
+    ? preprint.supplementary_files
+    : dataResult?.status === 'fulfilled' && dataResult.value
+      ? [{ label: 'CDRXIV_DATA_DRAFT', url: dataResult.value.links.self }]
+      : externalFile
+        ? [externalFile]
+        : []
+
+  const additionalFieldAnswers = [
+    ...preprint.additional_field_answers.filter(
+      (field) =>
+        field.field?.name !== 'Submission type' &&
+        !(
+          // Remove 'Data license' when there is no data included
+          (submissionType === 'Article' && field.field?.name === 'Data license')
+        ) &&
+        !(
+          // Remove 'Data license' for data-only submissions when it is out-of-sync with main license
+          (
+            submissionType === 'Data' &&
+            field.field?.name === 'Data license' &&
+            LICENSE_MAPPING[field.answer as 'cc-by-4.0' | 'cc-by-nc-4.0'] !==
+              preprint.license?.pk
+          )
+        ),
+    ),
+    createAdditionalField('Submission type', submissionType),
+  ]
+
+  return {
+    additional_field_answers: additionalFieldAnswers,
+    supplementary_files: finalSupplementaryFiles,
+  }
+}
+
 const cleanupFiles = async (
   existingDataFile: SupplementaryFile | undefined,
   submissionType: string,
@@ -171,15 +213,6 @@ const cleanupFiles = async (
 ) => {
   const [newPreprintFile, newDeposition] = uploadResults
   const cleanupTasks: Promise<any>[] = []
-
-  console.log('cleanupFiles', {
-    newPreprintFile,
-    newDeposition,
-    dataUploadFailed,
-    existingDataFile,
-    submissionType,
-    files,
-  })
 
   // basic cleanup of old files when switching between article and data
   if (existingDataFile && submissionType === 'Article') {
@@ -269,25 +302,19 @@ export const submitForm = async ({
         remainingType = 'Data'
       }
 
-      const additionalFieldAnswers = [
-        ...preprint.additional_field_answers.filter(
-          (field) => field.field?.name !== 'Submission type',
-        ),
-        createAdditionalField('Submission type', remainingType),
-      ]
+      const updates = getUpdatedFields(
+        preprint,
+        remainingType,
+        dataFile,
+        dataResult,
+        externalFile,
+      )
 
-      await updatePreprint(preprint, {
-        additional_field_answers: additionalFieldAnswers,
-      })
+      await updatePreprint(preprint, updates)
         .then(setPreprint)
         .catch(console.error)
-    }
 
-    // Display errors
-    if (
-      articleResult.status === 'rejected' ||
-      dataResult.status === 'rejected'
-    ) {
+      // Display errors
       const cancelledUploads = [articleResult, dataResult].filter(
         (r) =>
           r.status === 'rejected' &&
@@ -315,43 +342,15 @@ export const submitForm = async ({
       }
     }
 
-    // Prepare final supplementary files
-    const finalSupplementaryFiles = dataFile?.persisted
-      ? preprint.supplementary_files
-      : dataResult.value
-        ? [{ label: 'CDRXIV_DATA_DRAFT', url: dataResult.value.links.self }]
-        : externalFile
-          ? [externalFile]
-          : []
+    const updates = getUpdatedFields(
+      preprint,
+      submissionType,
+      dataFile,
+      dataResult,
+      externalFile,
+    )
 
-    const additionalFieldAnswers = [
-      ...preprint.additional_field_answers.filter(
-        (field) =>
-          field.field?.name !== 'Submission type' &&
-          !(
-            // Remove 'Data license' when there is no data included
-            (
-              submissionType === 'Article' &&
-              field.field?.name === 'Data license'
-            )
-          ) &&
-          !(
-            // Remove 'Data license' for data-only submissions when it is out-of-sync with main license
-            (
-              submissionType === 'Data' &&
-              field.field?.name === 'Data license' &&
-              LICENSE_MAPPING[field.answer as 'cc-by-4.0' | 'cc-by-nc-4.0'] !==
-                preprint.license?.pk
-            )
-          ),
-      ),
-      createAdditionalField('Submission type', submissionType),
-    ]
-
-    const updatedPreprint = await updatePreprint(preprint, {
-      additional_field_answers: additionalFieldAnswers,
-      supplementary_files: finalSupplementaryFiles,
-    })
+    const updatedPreprint = await updatePreprint(preprint, updates)
     setPreprint(updatedPreprint)
     if (articleResult.status === 'fulfilled' && articleResult.value) {
       setFiles([articleResult.value])
