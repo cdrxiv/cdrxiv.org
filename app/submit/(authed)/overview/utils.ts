@@ -328,7 +328,7 @@ export const submitForm = async ({
         (field) =>
           field.field?.name !== 'Submission type' &&
           !(
-            // Remove 'Data license' there is no data included
+            // Remove 'Data license' when there is no data included
             (
               submissionType === 'Article' &&
               field.field?.name === 'Data license'
