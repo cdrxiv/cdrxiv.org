@@ -198,7 +198,9 @@ const FAQContent: React.FC = () => {
     <>
       {filteredFAQs.map((faq, index) => (
         <Box key={index} sx={{ mb: [4, 4, 7, 7] }} id={faq.slug}>
-          <Box as='h3'>{faq.question}</Box>
+          <Box variant='text.monoCaps' sx={{ fontSize: [2, 2, 2, 3] }}>
+            {faq.question}
+          </Box>
           <ReactMarkdown>{faq.answer}</ReactMarkdown>
         </Box>
       ))}
