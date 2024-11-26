@@ -52,7 +52,6 @@ export const theme: Theme = {
       background: 'white',
       WebkitFontSmoothing: 'antialiased',
       MozOsxFontSmoothing: 'grayscale',
-      fontSynthesis: 'none',
     },
     h1: {
       variant: 'text.heading',
