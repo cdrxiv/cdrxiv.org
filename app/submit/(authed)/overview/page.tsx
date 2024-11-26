@@ -69,6 +69,16 @@ const SubmissionOverview = () => {
           setData(
             (current) => ({
               ...current,
+              dataFile:
+                deposition.files.length === 1 // or maybe we always initialize to first entry so that users have something to "clear"
+                  ? {
+                      persisted: true,
+                      mime_type: null,
+                      original_filename: deposition.files[0].filename,
+                      url: dataUrl,
+                      file: null,
+                    }
+                  : null,
               persistedDeposition: deposition,
             }),
             true,
