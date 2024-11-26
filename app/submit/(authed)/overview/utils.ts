@@ -54,15 +54,7 @@ export const initializeForm = (
           file: null,
         }
       : null,
-    dataFile: dataFile
-      ? {
-          persisted: true,
-          mime_type: null,
-          original_filename: dataFile.url,
-          url: dataFile.url,
-          file: null,
-        }
-      : null,
+    dataFile: null,
     externalFile:
       preprint.supplementary_files.find(
         (file) =>
@@ -179,6 +171,15 @@ const cleanupFiles = async (
 ) => {
   const [newPreprintFile, newDeposition] = uploadResults
   const cleanupTasks: Promise<any>[] = []
+
+  console.log('cleanupFiles', {
+    newPreprintFile,
+    newDeposition,
+    dataUploadFailed,
+    existingDataFile,
+    submissionType,
+    files,
+  })
 
   // basic cleanup of old files when switching between article and data
   if (existingDataFile && submissionType === 'Article') {

@@ -70,7 +70,7 @@ const SubmissionOverview = () => {
             (current) => ({
               ...current,
               dataFile:
-                deposition.files.length === 1 // or maybe we always initialize to first entry so that users have something to "clear"
+                deposition.files.length >= 1
                   ? {
                       persisted: true,
                       mime_type: null,
@@ -137,7 +137,6 @@ const SubmissionOverview = () => {
         >
           <DataFileInput
             file={data.dataFile}
-            deposition={deposition}
             setFile={setters.dataFile}
             externalFile={data.externalFile}
             setExternalFile={setters.externalFile}

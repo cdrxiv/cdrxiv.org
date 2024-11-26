@@ -1,10 +1,9 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { Box, Flex, Input } from 'theme-ui'
 
 import { SupplementaryFile } from '../../../../types/preprint'
-import { Deposition } from '../../../../types/zenodo'
 import {
   Link,
   FileInput,
@@ -14,7 +13,6 @@ import {
 
 type Props = {
   file?: FileInputValue | null
-  deposition: Deposition | null
   setFile: (file: FileInputValue | null) => void
   externalFile: SupplementaryFile | null
   setExternalFile: (file: SupplementaryFile | null) => void
@@ -22,7 +20,6 @@ type Props = {
 }
 const DataFileInput: React.FC<Props> = ({
   file: fileProp,
-  deposition,
   setFile: setFileProp,
   externalFile,
   setExternalFile,
@@ -32,27 +29,13 @@ const DataFileInput: React.FC<Props> = ({
     externalFile ? 'link' : 'upload',
   )
 
-  const fileDisplay = useMemo(
-    () =>
-      fileProp?.url && deposition?.files[0]
-        ? {
-            persisted: true as const,
-            mime_type: null,
-            original_filename: deposition.files[0].filename,
-            url: deposition.files[0].links.download,
-            file: null,
-          }
-        : fileProp,
-    [fileProp, deposition],
-  )
-
   if (loading) {
     return <Loading />
   } else if (mode === 'upload') {
     return (
       <>
         <FileInput
-          file={fileDisplay}
+          file={fileProp}
           onChange={setFileProp}
           description={
             <>
