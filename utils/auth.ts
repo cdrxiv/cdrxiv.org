@@ -57,6 +57,19 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
   return token
 }
 
+function redirectUrl(
+  request: NextRequest,
+  options: { signOut?: boolean } = {},
+) {
+  const result = new URL(SIGNIN_SUB_URL, request.url)
+  result.searchParams.set('callbackUrl', request.nextUrl.pathname)
+  if (options.signOut) {
+    result.searchParams.set('signOut', 'true')
+  }
+
+  return result
+}
+
 function updateCookie(
   sessionToken: string | null,
   request: NextRequest,
@@ -85,7 +98,7 @@ function updateCookie(
     })
   } else {
     request?.cookies?.delete(SESSION_COOKIE)
-    response = NextResponse.redirect(new URL(SIGNIN_SUB_URL, request?.url))
+    response = NextResponse.redirect(redirectUrl(request, { signOut: true }))
 
     return response
   }
@@ -98,7 +111,7 @@ export const withAuthAndTokenRefresh = async (
 ): Promise<NextResponse> => {
   const token = await getToken({ req: request })
   if (!token) {
-    return NextResponse.redirect(new URL(SIGNIN_SUB_URL, request.url))
+    return NextResponse.redirect(redirectUrl(request))
   }
 
   let response = NextResponse.next()
