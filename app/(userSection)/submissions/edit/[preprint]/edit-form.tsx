@@ -187,7 +187,7 @@ const submitForm = async (
         )
       }
 
-      let depositionId
+      let deposition
       let newUrl
       // If the deposition has been published...
       if (existingDeposition.submitted) {
@@ -195,32 +195,25 @@ const submitForm = async (
         const newDeposition = await createDataDepositionVersion(
           existingDeposition.links.newversion,
         )
-        depositionId = newDeposition.id
+        deposition = newDeposition
         newUrl = newDeposition.links.self
       } else {
         // otherwise replace existing files with newly added file.
-        depositionId = existingDeposition.id
+        deposition = existingDeposition
       }
 
       if (update_type === 'version' && dataFile && !dataFile.persisted) {
         // If working with an existing deposition draft...
-        if (!existingDeposition.submitted) {
+        if (!deposition.submitted) {
           // clean up the old files.
-          if (existingDeposition.files.length > 0) {
+          if (deposition.files.length > 0) {
             await Promise.all([
-              existingDeposition.files.map((f) =>
-                deleteZenodoEntity(f.links.self),
-              ),
+              deposition.files.map((f) => deleteZenodoEntity(f.links.self)),
             ])
           }
         }
 
-        await handleDataUpload(
-          existingDeposition,
-          dataFile,
-          setUploadProgress,
-          controller?.signal,
-        )
+        await handleDataUpload(deposition, dataFile, setUploadProgress)
       }
 
       if (newUrl) {
