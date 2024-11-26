@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import { isFullSiteEnabled } from './utils/flags'
-import { withTokenRefresh } from './utils/auth'
+import { withAuthAndTokenRefresh } from './utils/auth'
 
 const AUTHED_ROUTES = [
   '/submissions',
@@ -27,7 +27,7 @@ export const middleware = async (request: NextRequest) => {
   }
 
   if (AUTHED_ROUTES.includes(request.nextUrl.pathname)) {
-    return withTokenRefresh(request)
+    return withAuthAndTokenRefresh(request)
   }
 
   return NextResponse.next()

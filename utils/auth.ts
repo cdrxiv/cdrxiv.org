@@ -93,7 +93,7 @@ function updateCookie(
   return response
 }
 
-export const withTokenRefresh = async (
+export const withAuthAndTokenRefresh = async (
   request: NextRequest,
 ): Promise<NextResponse> => {
   const token = await getToken({ req: request })
