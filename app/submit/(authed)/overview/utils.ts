@@ -275,7 +275,7 @@ export const submitForm = async ({
         createAdditionalField('Submission type', remainingType),
       ]
 
-      updatePreprint(preprint, {
+      await updatePreprint(preprint, {
         additional_field_answers: additionalFieldAnswers,
       })
         .then(setPreprint)
