@@ -38,11 +38,11 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
       },
     )
 
-    const newTokens = await response?.json()
-
     if (!response?.ok) {
       return token
     }
+    
+    const newTokens = await response?.json()
 
     return {
       ...token,
