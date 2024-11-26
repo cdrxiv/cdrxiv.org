@@ -54,7 +54,16 @@ export const initializeForm = (
           file: null,
         }
       : null,
-    dataFile: null,
+    dataFile:
+      persistedDeposition?.files[0] && persistedDeposition.links.self
+        ? {
+            persisted: true,
+            mime_type: null,
+            original_filename: persistedDeposition.files[0].filename,
+            url: persistedDeposition.links.self,
+            file: null,
+          }
+        : null,
     externalFile:
       preprint.supplementary_files.find(
         (file) =>
