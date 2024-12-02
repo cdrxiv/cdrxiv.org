@@ -38,12 +38,21 @@ const levelStyles = {
 const PreprintOutline = ({ pdf, outline, onItemClick }: OutlineProps) => {
   const handleItemClick = useCallback(
     async (item: OutlineItem) => {
-      if (item.dest && Array.isArray(item.dest)) {
-        const destRef = item.dest[0]
-        if (destRef) {
-          const pageIndex = await pdf.getPageIndex(destRef)
-          const pageNumber = pageIndex + 1
-          onItemClick({ pageNumber, title: item.title })
+      if (item.dest) {
+        if (Array.isArray(item.dest)) {
+          const destRef = item.dest[0]
+          if (destRef) {
+            const pageIndex = await pdf.getPageIndex(destRef)
+            const pageNumber = pageIndex + 1
+            onItemClick({ pageNumber, title: item.title })
+          }
+        } else if (typeof item.dest === 'string') {
+          const destRef = await pdf.getDestination(item.dest)
+          if (destRef?.[0]) {
+            const pageIndex = await pdf.getPageIndex(destRef[0])
+            const pageNumber = pageIndex + 1
+            onItemClick({ pageNumber, title: item.title })
+          }
         }
       }
     },
