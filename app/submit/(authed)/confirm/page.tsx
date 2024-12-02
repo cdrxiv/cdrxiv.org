@@ -93,12 +93,15 @@ const SubmissionConfirmation = () => {
       )?.url,
     [preprint.supplementary_files],
   )
+  const [depositionLoading, setDepositionLoading] = useState<boolean>(!!dataUrl)
 
   useEffect(() => {
     if (dataUrl) {
-      fetchDataDeposition(dataUrl).then((dep) => {
-        setDeposition(dep)
-      })
+      fetchDataDeposition(dataUrl)
+        .then((dep) => {
+          setDeposition(dep)
+        })
+        .finally(() => setDepositionLoading(false))
     }
   }, [dataUrl])
 
@@ -212,8 +215,12 @@ const SubmissionConfirmation = () => {
                     name={overview.data.dataFile.original_filename}
                     href={overview.data.dataFile.url ?? '#'}
                   />
-                ) : (
+                ) : depositionLoading ? (
                   <Loading />
+                ) : (
+                  <Box sx={{ variant: 'text.mono' }}>
+                    Data deposition not found
+                  </Box>
                 )}
               </SummaryCard>
             )}
