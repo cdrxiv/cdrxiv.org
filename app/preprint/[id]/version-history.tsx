@@ -56,42 +56,26 @@ const VersionHistory: React.FC<{
     }
   }, [deposition])
 
-  const hasOlderVersions = hasArticle
-    ? preprint.versions.length > 1
-    : dataHistory && dataHistory.hits.hits.length > 1
+  const olderVersions = hasArticle
+    ? preprint.versions.slice(1).map((version) => ({
+        date: version.date_time,
+        href: version.public_download_url,
+        version: version.version,
+      }))
+    : dataHistory &&
+      dataHistory.hits.hits
+        .filter((version) => version.submitted)
+        .slice(1)
+        .map((version, index) => ({
+          date: version.modified,
+          href: getDataDownload(version),
+          version: dataHistory.hits.hits.length - index - 1,
+        }))
 
-  return hasOlderVersions ? (
+  return olderVersions && olderVersions.length > 0 ? (
     <Field label='Older Versions'>
-      <Box
-        as='ul'
-        sx={{
-          variant: 'styles.ul',
-        }}
-      >
-        {hasArticle ? (
-          <VersionsList
-            versions={preprint.versions.slice(1).map((version) => ({
-              date: version.date_time,
-              href: version.public_download_url,
-              version: version.version,
-            }))}
-          />
-        ) : (
-          <VersionsList
-            versions={
-              dataHistory
-                ? dataHistory.hits.hits
-                    .slice(1)
-                    .filter((version) => version.submitted)
-                    .map((version, index) => ({
-                      date: version.modified,
-                      href: getDataDownload(version),
-                      version: dataHistory.hits.hits.length - index - 1,
-                    }))
-                : []
-            }
-          />
-        )}
+      <Box as='ul' sx={{ variant: 'styles.ul' }}>
+        <VersionsList versions={olderVersions} />
       </Box>
 
       <ErrorOrTrack
@@ -106,6 +90,14 @@ const VersionHistory: React.FC<{
         errorMessage={
           'New version of data has been published, but has not been moved to CDRXIV_DATA_PUBLISHED.'
         }
+      />
+
+      <ErrorOrTrack
+        mt={2}
+        hasError={olderVersions.length !== preprint.versions.length - 1}
+        preview={preview}
+        pk={preprint.pk}
+        errorMessage={`This data submission has ${olderVersions.length + 1} published versions in Zenodo, but ${preprint.versions.length} versions have been published in Janeway. Visit the Janeway dashboard to ensure that the preprint has a version for each data update.`}
       />
     </Field>
   ) : null
