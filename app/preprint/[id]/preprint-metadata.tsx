@@ -15,6 +15,7 @@ import type {
 import type { Deposition } from '../../../types/zenodo'
 import ErrorOrTrack from './error-or-track'
 import VersionHistory from './version-history'
+import { formatDate } from '../../../utils/formatters'
 
 const getDataDownload = (deposition: Deposition) => {
   return `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].filename}?download=1`
@@ -254,6 +255,36 @@ const PreprintMetadata: React.FC<{
           <Box sx={{ variant: 'text.body', fontSize: 2 }}>
             {conflictOfInterest}
           </Box>
+        </Field>
+      )}
+
+      {preprint.date_published && (
+        <Field label={preprint.versions.length === 1 ? 'Published' : 'Dates'}>
+          <Flex
+            sx={{
+              columnGap: 2,
+              rowGap: 0,
+              variant: 'text.mono',
+              flexWrap: 'wrap',
+            }}
+          >
+            <Box>{formatDate(new Date(preprint.date_published))}</Box>
+            {preprint.versions.length > 1 ? '(Published)' : null}
+          </Flex>
+
+          {preprint.versions.length > 1 && (
+            <Flex
+              sx={{
+                columnGap: 2,
+                rowGap: 0,
+                variant: 'text.mono',
+                flexWrap: 'wrap',
+              }}
+            >
+              <Box>{formatDate(new Date(preprint.versions[0].date_time))}</Box>
+              (Updated)
+            </Flex>
+          )}
         </Field>
       )}
     </Flex>
