@@ -51,7 +51,6 @@ const VersionHistory: React.FC<{
   useEffect(() => {
     if (deposition) {
       fetchDepositionHistory(deposition).then((history) => {
-        console.log(history)
         setDataHistory(history)
       })
     }
@@ -81,16 +80,33 @@ const VersionHistory: React.FC<{
           <VersionsList
             versions={
               dataHistory
-                ? dataHistory.hits.hits.slice(1).map((version, index) => ({
-                    date: version.modified,
-                    href: getDataDownload(version),
-                    version: dataHistory.hits.hits.length - index - 1,
-                  }))
+                ? dataHistory.hits.hits
+                    .slice(1)
+                    .filter((version) => version.submitted)
+                    .map((version, index) => ({
+                      date: version.modified,
+                      href: getDataDownload(version),
+                      version: dataHistory.hits.hits.length - index - 1,
+                    }))
                 : []
             }
           />
         )}
       </Box>
+
+      <ErrorOrTrack
+        mt={2}
+        hasError={
+          !!dataHistory &&
+          dataHistory.hits.hits[0].submitted &&
+          dataHistory.hits.hits[0].id !== deposition?.id
+        }
+        preview={preview}
+        pk={preprint.pk}
+        errorMessage={
+          'New version of data has been published, but has not been moved to CDRXIV_DATA_PUBLISHED.'
+        }
+      />
     </Field>
   ) : null
 }

@@ -154,7 +154,11 @@ const PreprintMetadata: React.FC<{
           </Box>
         )}
 
-        <VersionHistory preprint={preprint} deposition={deposition} />
+        <VersionHistory
+          preprint={preprint}
+          deposition={deposition}
+          preview={preview}
+        />
       </Flex>
 
       {externalData && (
