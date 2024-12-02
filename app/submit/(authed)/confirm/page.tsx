@@ -4,7 +4,7 @@ import { Box, Flex } from 'theme-ui'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import { Button, Field, Form, Link, Row } from '../../../../components'
+import { Button, Field, Form, Link, Loading, Row } from '../../../../components'
 import NavButtons from '../../nav-buttons'
 import { PATHS } from '../../constants'
 import { usePreprint, usePreprintFiles } from '../../preprint-context'
@@ -23,7 +23,6 @@ import {
   validateForm as validateOverview,
 } from '../overview'
 import AuthorsList from '../authors/authors-list'
-import DataFileDisplay from '../overview/data-file-display'
 import FileDisplay from '../overview/file-display'
 import { getZenodoMetadata } from '../../../../utils/data'
 import { getSubmissionType } from '../overview/utils'
@@ -79,7 +78,7 @@ const SectionWrapper = ({
 }
 
 const SubmissionConfirmation = () => {
-  const { preprint, setPreprint } = usePreprint()
+  const { preprint } = usePreprint()
   const { files } = usePreprintFiles()
   const router = useRouter()
   const track = useTracking()
@@ -87,17 +86,21 @@ const SubmissionConfirmation = () => {
   const { setIsLoading } = useLoading()
   const [deposition, setDeposition] = useState<Deposition | null>(null)
 
-  useEffect(() => {
-    const dataUrl = preprint.supplementary_files.find(
-      (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
-    )?.url
+  const dataUrl = useMemo(
+    () =>
+      preprint?.supplementary_files?.find(
+        (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
+      )?.url,
+    [preprint.supplementary_files],
+  )
 
+  useEffect(() => {
     if (dataUrl) {
       fetchDataDeposition(dataUrl).then((dep) => {
         setDeposition(dep)
       })
     }
-  }, [preprint.supplementary_files])
+  }, [dataUrl])
 
   const { info, overview, authors } = useMemo(() => {
     const info = initializeInfo(preprint)
@@ -139,12 +142,6 @@ const SubmissionConfirmation = () => {
     dataFile: overview.data.dataFile,
     articleFile: overview.data.articleFile,
   })
-
-  const handleDataFileError = useCallback(() => {
-    return updatePreprint(preprint, { supplementary_files: [] }).then(
-      (updated) => setPreprint(updated),
-    )
-  }, [preprint, setPreprint])
 
   const handleSubmit = useCallback(() => {
     setIsLoading(true)
@@ -207,14 +204,17 @@ const SubmissionConfirmation = () => {
                 />
               </SummaryCard>
             )}
-            {overview.data.dataFile && (
+            {dataUrl && (
               <SummaryCard>
                 <Box sx={{ variant: 'text.body' }}>Data</Box>
-
-                <DataFileDisplay
-                  file={overview.data.dataFile}
-                  onError={handleDataFileError}
-                />
+                {overview.data.dataFile ? (
+                  <FileDisplay
+                    name={overview.data.dataFile.original_filename}
+                    href={overview.data.dataFile.url ?? '#'}
+                  />
+                ) : (
+                  <Loading />
+                )}
               </SummaryCard>
             )}
             {overview.data.externalFile && (
