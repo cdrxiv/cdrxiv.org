@@ -1,11 +1,9 @@
 'use client'
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { Box, Flex, Input } from 'theme-ui'
 
-import { fetchDataDeposition } from '../../../../actions'
 import { SupplementaryFile } from '../../../../types/preprint'
-import { Deposition } from '../../../../types/zenodo'
 import {
   Link,
   FileInput,
@@ -18,51 +16,17 @@ type Props = {
   setFile: (file: FileInputValue | null) => void
   externalFile: SupplementaryFile | null
   setExternalFile: (file: SupplementaryFile | null) => void
-  onError: () => Promise<void>
+  loading: boolean
 }
 const DataFileInput: React.FC<Props> = ({
   file: fileProp,
   setFile: setFileProp,
   externalFile,
   setExternalFile,
-  onError,
+  loading,
 }) => {
   const [mode, setMode] = useState<'upload' | 'link'>(
     externalFile ? 'link' : 'upload',
-  )
-  const [deposition, setDeposition] = useState<Deposition | null>(null)
-  const [loading, setLoading] = useState<boolean>(fileProp ? true : false)
-
-  useEffect(() => {
-    if (fileProp?.url) {
-      fetchDataDeposition(fileProp?.url)
-        .then((deposition) => {
-          setDeposition(deposition)
-          setLoading(false)
-        })
-        .catch(() => {
-          onError().then(() => {
-            setFileProp(null)
-            setLoading(false)
-          })
-        })
-    } else {
-      setDeposition(null)
-    }
-  }, [fileProp?.url, setFileProp, onError])
-
-  const fileDisplay = useMemo(
-    () =>
-      deposition && deposition.files[0]
-        ? {
-            persisted: true as const,
-            mime_type: null,
-            original_filename: deposition.files[0].filename,
-            url: deposition.files[0].links.download,
-            file: null,
-          }
-        : fileProp,
-    [fileProp, deposition],
   )
 
   if (loading) {
@@ -71,7 +35,7 @@ const DataFileInput: React.FC<Props> = ({
     return (
       <>
         <FileInput
-          file={fileDisplay}
+          file={fileProp}
           onChange={setFileProp}
           description={
             <>

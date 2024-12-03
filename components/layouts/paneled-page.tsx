@@ -7,6 +7,7 @@ import React, {
   useEffect,
   useRef,
   ReactNode,
+  useCallback,
 } from 'react'
 import { Box, Divider, Flex } from 'theme-ui'
 import { usePathname } from 'next/navigation'
@@ -16,9 +17,12 @@ import Column from '../column'
 import Guide from '../guide'
 import Loading from '../loading'
 import Expander from '../expander'
+import Link from '../link'
 import { useCardContext } from './page-card'
 
 const HEADER_HEIGHT = [65, 65, 100, 100]
+
+const CANCEL_DELAY = 10000
 
 const LoadingContext = createContext<
   | {
@@ -34,6 +38,8 @@ const LoadingContext = createContext<
           data?: number
         }>
       >
+      abortController?: AbortController
+      setAbortController?: (controller: AbortController | undefined) => void
     }
   | undefined
 >(undefined)
@@ -89,9 +95,11 @@ const PaneledPage: React.FC<{
     article?: number
     data?: number
   }>({})
+  const [abortController, setAbortController] = useState<AbortController>()
   const pathRef = useRef<string | null>(null)
   const pathname = usePathname()
   const { scrollToTop } = useCardContext()
+  const [showCancel, setShowCancel] = useState(false)
 
   useEffect(() => {
     scrollToTop()
@@ -102,6 +110,37 @@ const PaneledPage: React.FC<{
     pathRef.current = pathname
   }, [pathname, setIsLoading, isLoading, scrollToTop])
 
+  useEffect(() => {
+    // cancel if unmounting
+    return () => {
+      if (abortController) {
+        abortController.abort()
+        setAbortController(undefined)
+      }
+    }
+  }, [abortController])
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout
+    if (isLoading) {
+      timeout = setTimeout(() => {
+        setShowCancel(true)
+      }, CANCEL_DELAY)
+    } else {
+      setShowCancel(false)
+    }
+    return () => clearTimeout(timeout)
+  }, [isLoading])
+
+  const handleCancel = useCallback(() => {
+    if (abortController) {
+      abortController.abort()
+      setAbortController(undefined)
+      setIsLoading(false)
+      setUploadProgress({})
+    }
+  }, [abortController])
+
   return (
     <LoadingContext.Provider
       value={{
@@ -109,6 +148,8 @@ const PaneledPage: React.FC<{
         setIsLoading,
         uploadProgress,
         setUploadProgress,
+        abortController,
+        setAbortController,
       }}
     >
       <Row>
@@ -293,6 +334,23 @@ const PaneledPage: React.FC<{
                           <ProgressBar progress={uploadProgress.data} />
                         </Box>
                       )}
+
+                      <Box sx={{ height: 40 }}>
+                        {((uploadProgress.article ?? 0) > 0 ||
+                          (uploadProgress.data ?? 0) > 0) &&
+                          abortController &&
+                          showCancel && (
+                            <Link
+                              sx={{
+                                variant: 'text.mono',
+                                textDecoration: 'none',
+                              }}
+                              onClick={handleCancel}
+                            >
+                              (X) Cancel
+                            </Link>
+                          )}
+                      </Box>
                     </Flex>
                   )}
 

@@ -1,10 +1,11 @@
 import { getSession } from 'next-auth/react'
 import { Session } from 'next-auth'
-
+import { Deposition } from '../types/zenodo'
 import { PreprintFile } from '../types/preprint'
-import { Deposition, DepositionFile } from '../types/zenodo'
-import { FileInputValue } from '../components'
+import { FileInputValue } from '../components/file-input'
 import { alertOnError } from '../actions/server-utils'
+
+export const UPLOAD_CANCELLED_MESSAGE = 'Upload cancelled'
 
 type ProgressCallback = (progress: number) => void
 
@@ -18,7 +19,7 @@ export const uploadFile = async <T>(
   options?: RequestInit & {
     onProgress?: ProgressCallback
     progressOptions?: ProgressOptions
-    type?: 'Article' | 'Data'
+    abortSignal?: AbortSignal
   },
 ): Promise<T> => {
   const session = (await getSession()) as Session | null
@@ -84,35 +85,49 @@ export const uploadFile = async <T>(
         } catch (error) {
           reject(
             new Error(
-              `${options?.type ? `${options.type} issue ; ` : ''}failed to parse response: ${error instanceof Error ? error.message : 'Unknown error'}`,
+              `Failed to parse response: ${error instanceof Error ? error.message : 'Unknown error'}`,
             ),
           )
         }
       } else {
-        console.error(xhr.responseText)
+        console.error('Upload failed:', xhr.responseText)
+
+        let errorMessage: string
+        try {
+          const errorResponse = JSON.parse(xhr.responseText)
+          errorMessage =
+            errorResponse.detail || // looks like both janeway and our api return this
+            'Unknown error occurred'
+        } catch (e) {
+          errorMessage = xhr.responseText || 'Unknown error occurred'
+        }
+
         alertOnError({
           endpoint: url,
           method: 'POST',
           status: xhr.status,
           statusText: xhr.statusText,
+          apiError: errorMessage,
         }).then(() => {
-          reject(
-            new Error(
-              `${options?.type ? `${options.type} error: ` : ''}${JSON.parse(xhr.responseText).file?.[0] || xhr.responseText}`,
-            ),
-          )
+          reject(new Error(errorMessage))
         })
       }
     })
 
-    xhr.addEventListener('error', (error) => {
-      console.error(error)
+    xhr.addEventListener('error', (event) => {
+      console.error('XHR error:', event)
       if (progressInterval) {
         clearInterval(progressInterval)
       }
-      reject(
-        new Error(`${options?.type ? `${options.type} ` : ''}upload failed`),
-      )
+      const errorMessage = 'Network error occurred while uploading file'
+      alertOnError({
+        endpoint: url,
+        method: 'POST',
+        status: 0,
+        statusText: errorMessage,
+      }).then(() => {
+        reject(new Error(errorMessage))
+      })
     })
 
     xhr.open('POST', url, true)
@@ -122,32 +137,17 @@ export const uploadFile = async <T>(
     })
 
     xhr.send(options?.body as FormData)
-  })
-}
 
-const wakeUpServer = async () => {
-  const healthUrl = `${process.env.NEXT_PUBLIC_FILE_UPLOADER_URL}/health`
-  const maxAttempts = 3
-  const delayMs = 500
-
-  for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    try {
-      const response = await fetch(healthUrl)
-      if (response.ok) return
-      await new Promise((resolve) => setTimeout(resolve, delayMs))
-    } catch (error) {
-      if (attempt === maxAttempts - 1) {
-        throw new Error(
-          'Unable to connect to the file upload service. Please try again in a few moments.',
-        )
-      }
-      await new Promise((resolve) => setTimeout(resolve, delayMs))
+    if (options?.abortSignal) {
+      options.abortSignal.addEventListener('abort', () => {
+        xhr.abort()
+        if (progressInterval) {
+          clearInterval(progressInterval)
+        }
+        reject(new Error(UPLOAD_CANCELLED_MESSAGE))
+      })
     }
-  }
-
-  throw new Error(
-    'The file upload service is currently unavailable. Please try again in a few moments.',
-  )
+  })
 }
 
 export type UploadProgress = {
@@ -162,24 +162,23 @@ type SetUploadProgress = (
 export const initializeUploadProgress = (
   articleFile: FileInputValue | null,
   dataFile: FileInputValue | null,
-  setUploadProgress: (
-    updater: (prev: UploadProgress) => UploadProgress,
-  ) => void,
+  setUploadProgress: SetUploadProgress,
 ) => {
   if (articleFile && !articleFile.persisted) {
-    setUploadProgress((prev) => ({ ...prev, article: 1 }))
+    setUploadProgress((prev) => ({ ...prev, article: 0 }))
   }
   if (dataFile && !dataFile.persisted) {
-    setUploadProgress((prev) => ({ ...prev, data: 1 }))
+    setUploadProgress((prev) => ({ ...prev, data: 0 }))
   }
 }
 
 export const handleArticleUpload = async (
   articleFile: FileInputValue | null,
   preprintId: number,
-  setUploadProgress?: SetUploadProgress,
-): Promise<PreprintFile | null> => {
-  if (!articleFile || articleFile.persisted) return null
+  setUploadProgress: SetUploadProgress,
+  abortSignal?: AbortSignal,
+) => {
+  if (!articleFile?.file) return null
 
   const formData = new FormData()
   formData.set('file', articleFile.file)
@@ -200,7 +199,7 @@ export const handleArticleUpload = async (
         baseProgress: 100,
         maxProgress: 100,
       },
-      type: 'Article',
+      abortSignal,
     },
   )
 }
@@ -208,18 +207,18 @@ export const handleArticleUpload = async (
 export const handleDataUpload = async (
   deposition: Deposition,
   dataFile: FileInputValue | null,
-  setUploadProgress?: SetUploadProgress,
-): Promise<{ label: string; url: string }[] | null> => {
-  if (!dataFile || dataFile.persisted) return null
-
-  // Wake up the server before attempting upload
-  await wakeUpServer()
+  setUploadProgress: (
+    updater: (prev: UploadProgress) => UploadProgress,
+  ) => void,
+  abortSignal?: AbortSignal,
+) => {
+  if (!dataFile?.file) return null
 
   const formData = new FormData()
   formData.set('name', dataFile.original_filename)
   formData.set('file', dataFile.file)
 
-  const depositionFile = await uploadFile<DepositionFile>(
+  const depositionFile = await uploadFile<Deposition>(
     `${process.env.NEXT_PUBLIC_FILE_UPLOADER_URL}/zenodo/upload-file?deposition_id=${deposition.id}`,
     {
       method: 'POST',
@@ -232,7 +231,7 @@ export const handleDataUpload = async (
         baseProgress: 50,
         maxProgress: 95,
       },
-      type: 'Data',
+      abortSignal,
     },
   )
 
@@ -240,5 +239,5 @@ export const handleDataUpload = async (
     throw new Error('Failed to upload data file')
   }
 
-  return [{ label: 'CDRXIV_DATA_DRAFT', url: deposition.links.self }]
+  return depositionFile
 }
