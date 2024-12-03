@@ -3,6 +3,7 @@ import { Session } from 'next-auth'
 import { Deposition } from '../types/zenodo'
 import { PreprintFile } from '../types/preprint'
 import { FileInputValue } from '../components/file-input'
+import { alertOnError } from '../actions/server-utils'
 
 export const UPLOAD_CANCELLED_MESSAGE = 'Upload cancelled'
 
@@ -89,25 +90,44 @@ export const uploadFile = async <T>(
           )
         }
       } else {
-        console.error(xhr.responseText)
-        reject(
-          new Error(
-            `${JSON.parse(xhr.responseText).file?.[0] || xhr.responseText}`,
-          ),
-        )
+        console.error('Upload failed:', xhr.responseText)
+
+        let errorMessage: string
+        try {
+          const errorResponse = JSON.parse(xhr.responseText)
+          errorMessage =
+            errorResponse.detail || // looks like both janeway and our api return this
+            'Unknown error occurred'
+        } catch (e) {
+          errorMessage = xhr.responseText || 'Unknown error occurred'
+        }
+
+        alertOnError({
+          endpoint: url,
+          method: 'POST',
+          status: xhr.status,
+          statusText: xhr.statusText,
+          apiError: errorMessage,
+        }).then(() => {
+          reject(new Error(errorMessage))
+        })
       }
     })
 
-    xhr.addEventListener('error', (error) => {
-      console.error(error)
+    xhr.addEventListener('error', (event) => {
+      console.error('XHR error:', event)
       if (progressInterval) {
         clearInterval(progressInterval)
       }
-      reject(
-        new Error(
-          `${error instanceof Error ? error.message : 'Unknown error'}`,
-        ),
-      )
+      const errorMessage = 'Network error occurred while uploading file'
+      alertOnError({
+        endpoint: url,
+        method: 'POST',
+        status: 0,
+        statusText: errorMessage,
+      }).then(() => {
+        reject(new Error(errorMessage))
+      })
     })
 
     xhr.open('POST', url, true)
