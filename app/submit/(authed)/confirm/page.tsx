@@ -101,9 +101,16 @@ const SubmissionConfirmation = () => {
         .then((dep) => {
           setDeposition(dep)
         })
+        .catch((e) => {
+          console.error(e)
+          track('confirm_page_data_deposition_error', {
+            preprint: preprint.pk,
+            error: e.message,
+          })
+        })
         .finally(() => setDepositionLoading(false))
     }
-  }, [dataUrl])
+  }, [dataUrl, preprint.pk, track])
 
   const { info, overview, authors } = useMemo(() => {
     const info = initializeInfo(preprint)

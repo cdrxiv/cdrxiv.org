@@ -28,6 +28,7 @@ export type FormData = {
   externalFile: SupplementaryFile | null
   persistedDeposition: Deposition | null
   persistedFiles: PreprintFile[]
+  dataUrl: string | null
 }
 export const initializeForm = (
   preprint: Preprint,
@@ -72,6 +73,10 @@ export const initializeForm = (
       ) ?? null,
     persistedDeposition,
     persistedFiles,
+    dataUrl:
+      preprint.supplementary_files.find(
+        (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
+      )?.url ?? null,
   }
 }
 
@@ -82,6 +87,7 @@ export const validateForm = ({
   externalFile,
   persistedDeposition,
   persistedFiles,
+  dataUrl,
 }: FormData) => {
   let result: Partial<{ [K in keyof FormData]: string }> = {}
 
@@ -89,7 +95,7 @@ export const validateForm = ({
     result.agreement = 'You must accept the user agreement to continue.'
   }
 
-  if (!articleFile && !dataFile) {
+  if (!articleFile && !dataFile && !dataUrl) {
     result.articleFile = 'You must upload at least one content type.'
     if (!externalFile) {
       result.dataFile = 'You must upload at least one content type.'
