@@ -4,7 +4,7 @@ export const PATHS = [
   { title: 'Authors', href: '/submit/authors', public: false },
   { title: 'Confirmation', href: '/submit/confirm', public: false },
   {
-    title: 'Submission successful',
+    title: 'Submission Successful',
     href: '/submit/success',
     public: false,
     hidden: true,
