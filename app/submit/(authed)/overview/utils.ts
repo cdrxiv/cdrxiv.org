@@ -28,7 +28,6 @@ export type FormData = {
   externalFile: SupplementaryFile | null
   persistedDeposition: Deposition | null
   persistedFiles: PreprintFile[]
-  dataUrl: string | null
 }
 export const initializeForm = (
   preprint: Preprint,
@@ -73,10 +72,6 @@ export const initializeForm = (
       ) ?? null,
     persistedDeposition,
     persistedFiles,
-    dataUrl:
-      preprint.supplementary_files.find(
-        (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
-      )?.url ?? null,
   }
 }
 
@@ -87,7 +82,6 @@ export const validateForm = ({
   externalFile,
   persistedDeposition,
   persistedFiles,
-  dataUrl,
 }: FormData) => {
   let result: Partial<{ [K in keyof FormData]: string }> = {}
 
@@ -95,7 +89,7 @@ export const validateForm = ({
     result.agreement = 'You must accept the user agreement to continue.'
   }
 
-  if (!articleFile && !dataFile && !dataUrl) {
+  if (!articleFile && !dataFile) {
     result.articleFile = 'You must upload at least one content type.'
     if (!externalFile) {
       result.dataFile = 'You must upload at least one content type.'
@@ -184,6 +178,7 @@ const getUpdatedFields = (
   dataResult: PromiseSettledResult<Deposition | null> | null,
   externalFile: SupplementaryFile | null,
 ) => {
+  console.log({ dataFile, dataResult, externalFile })
   const finalSupplementaryFiles = dataFile?.persisted
     ? preprint.supplementary_files
     : dataResult?.status === 'fulfilled' && dataResult.value
@@ -226,6 +221,13 @@ const cleanupFiles = async (
   uploadResults: [PreprintFile | null, Deposition | null],
   dataUploadFailed?: boolean,
 ) => {
+  console.log({
+    existingDataFile,
+    submissionType,
+    files,
+    uploadResults,
+    dataUploadFailed,
+  })
   const [newPreprintFile, newDeposition] = uploadResults
   const cleanupTasks: Promise<any>[] = []
 
@@ -324,6 +326,7 @@ export const submitForm = async ({
         dataResult,
         externalFile,
       )
+      console.log(updates)
 
       await updatePreprint(preprint, updates)
         .then(setPreprint)
@@ -364,6 +367,7 @@ export const submitForm = async ({
       dataResult,
       externalFile,
     )
+    console.log('main', updates)
 
     const updatedPreprint = await updatePreprint(preprint, updates)
     setPreprint(updatedPreprint)

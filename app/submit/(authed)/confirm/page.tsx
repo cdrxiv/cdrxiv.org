@@ -203,7 +203,10 @@ const SubmissionConfirmation = () => {
   return (
     <div>
       <Form error={submitError}>
-        <SectionWrapper index={0} error={overview.error}>
+        <SectionWrapper
+          index={0}
+          error={depositionLoading ? null : overview.error}
+        >
           <Row columns={[1, 2, 2, 2]} gap={[5, 6, 6, 8]}>
             {overview.data.articleFile && (
               <SummaryCard>
