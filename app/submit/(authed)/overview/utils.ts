@@ -178,7 +178,6 @@ const getUpdatedFields = (
   dataResult: PromiseSettledResult<Deposition | null> | null,
   externalFile: SupplementaryFile | null,
 ) => {
-  console.log({ dataFile, dataResult, externalFile })
   const finalSupplementaryFiles = dataFile?.persisted
     ? preprint.supplementary_files
     : dataResult?.status === 'fulfilled' && dataResult.value
@@ -221,13 +220,6 @@ const cleanupFiles = async (
   uploadResults: [PreprintFile | null, Deposition | null],
   dataUploadFailed?: boolean,
 ) => {
-  console.log({
-    existingDataFile,
-    submissionType,
-    files,
-    uploadResults,
-    dataUploadFailed,
-  })
   const [newPreprintFile, newDeposition] = uploadResults
   const cleanupTasks: Promise<any>[] = []
 
@@ -326,7 +318,6 @@ export const submitForm = async ({
         dataResult,
         externalFile,
       )
-      console.log(updates)
 
       await updatePreprint(preprint, updates)
         .then(setPreprint)
@@ -367,7 +358,6 @@ export const submitForm = async ({
       dataResult,
       externalFile,
     )
-    console.log('main', updates)
 
     const updatedPreprint = await updatePreprint(preprint, updates)
     setPreprint(updatedPreprint)
