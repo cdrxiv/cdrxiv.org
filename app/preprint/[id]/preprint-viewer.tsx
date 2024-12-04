@@ -142,6 +142,13 @@ const PreprintViewer = ({
           preview={preview}
         />
       }
+      leftCorner={
+        getAdditionalField(preprint, 'Withdrawal status') === 'Approved' && (
+          <Box sx={{ color: 'red', variant: 'text.monoCaps' }}>
+            This submission has been withdrawn
+          </Box>
+        )
+      }
     >
       <Flex sx={{ flexDirection: 'column' }}>
         {(isDoiLoading || preprintDoi) && (
