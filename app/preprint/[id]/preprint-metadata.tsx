@@ -260,20 +260,9 @@ const PreprintMetadata: React.FC<{
 
       {preprint.date_published && (
         <Field label={preprint.versions.length === 1 ? 'Published' : 'Dates'}>
-          <Flex
-            sx={{
-              columnGap: 2,
-              rowGap: 0,
-              variant: 'text.mono',
-              flexWrap: 'wrap',
-            }}
-          >
-            <Box>{formatDate(new Date(preprint.date_published))}</Box>
-            {preprint.versions.length > 1 ? '(Published)' : null}
-          </Flex>
-
-          {preprint.versions.length > 1 && (
+          {preprint.versions.map((version) => (
             <Flex
+              key={version.version}
               sx={{
                 columnGap: 2,
                 rowGap: 0,
@@ -281,10 +270,13 @@ const PreprintMetadata: React.FC<{
                 flexWrap: 'wrap',
               }}
             >
-              <Box>{formatDate(new Date(preprint.versions[0].date_time))}</Box>
-              (Updated)
+              <Box>{formatDate(new Date(version.date_time))}</Box>
+              {preprint.versions.length > 1 &&
+                ((version.title || preprint.title).startsWith('WITHDRAWN')
+                  ? '(Withdrawn)'
+                  : `(v${version.version})`)}
             </Flex>
-          )}
+          ))}
         </Field>
       )}
     </Flex>
