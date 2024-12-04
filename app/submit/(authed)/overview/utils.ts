@@ -9,7 +9,6 @@ import {
   deletePreprintFile,
   updatePreprint,
   deleteZenodoEntity,
-  fetchDataDeposition,
   createDataDeposition,
 } from '../../../../actions'
 import { FileInputValue } from '../../../../components'
@@ -20,18 +19,22 @@ import {
   initializeUploadProgress,
 } from '../../../../utils/file-uploads'
 import { Deposition } from '../../../../types/zenodo'
+import { UPLOAD_CANCELLED_MESSAGE } from '../../../../utils/file-uploads'
 
 export type FormData = {
   agreement: boolean
   articleFile: FileInputValue | null
   dataFile: FileInputValue | null
   externalFile: SupplementaryFile | null
+  persistedDeposition: Deposition | null
+  persistedFiles: PreprintFile[]
 }
 export const initializeForm = (
   preprint: Preprint,
-  files: PreprintFile[],
+  persistedFiles: PreprintFile[],
+  persistedDeposition: Deposition | null,
 ): FormData => {
-  const articleFile = files.reduce(
+  const articleFile = persistedFiles.reduce(
     (last: PreprintFile | null, file: PreprintFile) =>
       !last || last.pk < file.pk ? file : last,
     null,
@@ -51,21 +54,24 @@ export const initializeForm = (
           file: null,
         }
       : null,
-    dataFile: dataFile
-      ? {
-          persisted: true,
-          mime_type: null,
-          original_filename: dataFile.url,
-          url: dataFile.url,
-          file: null,
-        }
-      : null,
+    dataFile:
+      persistedDeposition?.files[0] && persistedDeposition.links.self
+        ? {
+            persisted: true,
+            mime_type: null,
+            original_filename: persistedDeposition.files[0].filename,
+            url: persistedDeposition.links.self,
+            file: null,
+          }
+        : null,
     externalFile:
       preprint.supplementary_files.find(
         (file) =>
           file.label !== 'CDRXIV_DATA_DRAFT' &&
           file.label !== 'CDRXIV_DATA_PUBLISHED',
       ) ?? null,
+    persistedDeposition,
+    persistedFiles,
   }
 }
 
@@ -74,6 +80,8 @@ export const validateForm = ({
   articleFile,
   dataFile,
   externalFile,
+  persistedDeposition,
+  persistedFiles,
 }: FormData) => {
   let result: Partial<{ [K in keyof FormData]: string }> = {}
 
@@ -112,6 +120,20 @@ export const validateForm = ({
     }
   }
 
+  if (
+    persistedDeposition &&
+    persistedDeposition.files.length !== 1 &&
+    dataFile?.persisted
+  ) {
+    result.persistedDeposition =
+      'There is an issue with your data upload. Please clear the file and try again.'
+  }
+
+  if (persistedFiles.length > 1 && articleFile?.persisted) {
+    result.persistedFiles =
+      'There is an issue with your article upload. Please clear the file and try again.'
+  }
+
   return result
 }
 
@@ -146,90 +168,30 @@ type SubmissionContext = {
   setFiles: (files: PreprintFile[]) => void
   formData: FormData
   setUploadProgress: (updater: (prev: UploadProgress) => UploadProgress) => void
+  abortSignal?: AbortSignal
 }
 
-const cleanupFiles = async (
-  existingDataFile: SupplementaryFile | undefined,
+const getUpdatedFields = (
+  preprint: Preprint,
   submissionType: string,
-  files: PreprintFile[],
-  articleFile: FormData['articleFile'],
-  deposition: Deposition | null,
+  dataFile: FormData['dataFile'],
+  dataResult: PromiseSettledResult<Deposition | null> | null,
+  externalFile: SupplementaryFile | null,
 ) => {
-  const cleanupTasks: Promise<any>[] = []
-  if (existingDataFile && submissionType === 'Article') {
-    cleanupTasks.push(deleteZenodoEntity(existingDataFile.url))
-  }
-  if (files.length > 0 && submissionType === 'Data') {
-    cleanupTasks.push(...files.map((file) => deletePreprintFile(file.pk)))
-  }
-  // clear other article files if needed
-  if (files.length > 0 && articleFile && !articleFile?.persisted) {
-    files.forEach((file) => cleanupTasks.push(deletePreprintFile(file.pk)))
-  }
-
-  if (deposition?.files?.length && deposition.files.length > 0) {
-    cleanupTasks.push(
-      ...deposition.files.map((f) => deleteZenodoEntity(f.links.self)),
-    )
-  }
-
-  await Promise.all(cleanupTasks)
-}
-
-export const submitForm = async ({
-  preprint,
-  setPreprint,
-  files,
-  setFiles,
-  formData: { articleFile, dataFile, externalFile },
-  setUploadProgress,
-}: SubmissionContext) => {
-  if (!preprint) {
-    throw new Error('Tried to submit without active preprint')
-  }
-
-  initializeUploadProgress(articleFile, dataFile, setUploadProgress)
-
-  const existingDataFile = preprint.supplementary_files.find(
-    (file) => file.label === 'CDRXIV_DATA_DRAFT',
-  )
-  const submissionType = getSubmissionType({ dataFile, articleFile })
-
-  let deposition: Deposition | null = null
-  if (submissionType !== 'Article') {
-    if (existingDataFile) {
-      deposition = await fetchDataDeposition(existingDataFile.url)
-    } else {
-      deposition = await createDataDeposition()
-    }
-  }
-
-  await cleanupFiles(
-    existingDataFile,
-    submissionType,
-    files,
-    articleFile,
-    deposition,
-  )
-
-  const [newPreprintFile, supplementaryFiles] = await Promise.all([
-    handleArticleUpload(articleFile, preprint.pk, setUploadProgress),
-    deposition
-      ? handleDataUpload(deposition, dataFile, setUploadProgress)
-      : null,
-  ])
-
-  // Prepare final supplementary files
   const finalSupplementaryFiles = dataFile?.persisted
     ? preprint.supplementary_files
-    : (supplementaryFiles ?? (externalFile ? [externalFile] : []))
+    : dataResult?.status === 'fulfilled' && dataResult.value
+      ? [{ label: 'CDRXIV_DATA_DRAFT', url: dataResult.value.links.self }]
+      : externalFile
+        ? [externalFile]
+        : []
 
   const additionalFieldAnswers = [
     ...preprint.additional_field_answers.filter(
       (field) =>
         field.field?.name !== 'Submission type' &&
         !(
-          // Remove 'Data license' there is no data included
+          // Remove 'Data license' when there is no data included
           (submissionType === 'Article' && field.field?.name === 'Data license')
         ) &&
         !(
@@ -245,12 +207,173 @@ export const submitForm = async ({
     createAdditionalField('Submission type', submissionType),
   ]
 
-  const params = {
+  return {
     additional_field_answers: additionalFieldAnswers,
     supplementary_files: finalSupplementaryFiles,
   }
+}
 
-  return updatePreprint(preprint, params)
-    .then((updated) => setPreprint(updated))
-    .then(() => (newPreprintFile ? setFiles([newPreprintFile]) : undefined))
+const cleanupFiles = async (
+  existingDataFile: SupplementaryFile | undefined,
+  submissionType: string,
+  files: PreprintFile[],
+  uploadResults: [PreprintFile | null, Deposition | null],
+  dataUploadFailed?: boolean,
+) => {
+  const [newPreprintFile, newDeposition] = uploadResults
+  const cleanupTasks: Promise<any>[] = []
+
+  // basic cleanup of old files when switching between article and data
+  if (existingDataFile && submissionType === 'Article') {
+    cleanupTasks.push(deleteZenodoEntity(existingDataFile.url))
+  }
+  if (files.length > 0 && submissionType === 'Data') {
+    cleanupTasks.push(...files.map((file) => deletePreprintFile(file.pk)))
+  }
+
+  // Clean up old article files if we have a new one
+  if (newPreprintFile) {
+    cleanupTasks.push(
+      ...files
+        .filter((file) => file.pk !== newPreprintFile.pk)
+        .map((file) => deletePreprintFile(file.pk)),
+    )
+  }
+
+  // Clean up failed new deposition
+  if (dataUploadFailed && newDeposition) {
+    cleanupTasks.push(deleteZenodoEntity(newDeposition.links.self))
+  }
+
+  // Clean up old data deposition on successful upload
+  if (!dataUploadFailed && newDeposition && existingDataFile) {
+    cleanupTasks.push(deleteZenodoEntity(existingDataFile.url))
+  }
+
+  await Promise.all(cleanupTasks)
+}
+
+export const submitForm = async ({
+  preprint,
+  setPreprint,
+  files,
+  setFiles,
+  formData: { articleFile, dataFile, externalFile },
+  setUploadProgress,
+  abortSignal,
+}: SubmissionContext) => {
+  if (!preprint) {
+    throw new Error('Tried to submit without active preprint')
+  }
+
+  const existingDataFile = preprint.supplementary_files.find(
+    (file) => file.label === 'CDRXIV_DATA_DRAFT',
+  )
+  const submissionType = getSubmissionType({ dataFile, articleFile })
+
+  initializeUploadProgress(articleFile, dataFile, setUploadProgress)
+
+  let newDeposition: Deposition | null = null
+  if (submissionType !== 'Article' && dataFile && !dataFile.persisted) {
+    newDeposition = await createDataDeposition()
+  }
+
+  const [articleResult, dataResult] = await Promise.allSettled([
+    handleArticleUpload(
+      articleFile,
+      preprint.pk,
+      setUploadProgress,
+      abortSignal,
+    ),
+    newDeposition
+      ? handleDataUpload(
+          newDeposition,
+          dataFile,
+          setUploadProgress,
+          abortSignal,
+        )
+      : Promise.resolve(null),
+  ])
+
+  try {
+    // If failures, keep submission type in sync with remaining file
+    if (
+      articleResult.status === 'rejected' ||
+      dataResult.status === 'rejected'
+    ) {
+      const bothFailed =
+        articleResult.status === 'rejected' && dataResult.status === 'rejected'
+      let remainingType = bothFailed ? 'Article' : 'Data'
+      if (
+        articleResult.status === 'rejected' &&
+        dataResult.status === 'fulfilled'
+      ) {
+        remainingType = 'Data'
+      }
+
+      const updates = getUpdatedFields(
+        preprint,
+        remainingType,
+        dataFile,
+        dataResult,
+        externalFile,
+      )
+
+      await updatePreprint(preprint, updates)
+        .then(setPreprint)
+        .catch(console.error)
+
+      // Display errors
+      const cancelledUploads = [articleResult, dataResult].filter(
+        (r) =>
+          r.status === 'rejected' &&
+          r.reason?.message === UPLOAD_CANCELLED_MESSAGE,
+      )
+      if (cancelledUploads.length > 0) {
+        throw new Error('Upload cancelled')
+      } else {
+        const failedUploads = [
+          { type: 'Article', result: articleResult },
+          { type: 'Data', result: dataResult },
+        ].filter(({ result }) => result.status === 'rejected') as {
+          type: string
+          result: PromiseRejectedResult
+        }[]
+
+        const errorMessage = failedUploads
+          .map(
+            ({ result, type }) =>
+              `${type} upload failed: ${result.reason?.message?.detail || 'Unknown error'}`,
+          )
+          .join('; ')
+        console.error('failed uploads: ', failedUploads)
+        throw new Error(errorMessage)
+      }
+    }
+
+    const updates = getUpdatedFields(
+      preprint,
+      submissionType,
+      dataFile,
+      dataResult,
+      externalFile,
+    )
+
+    const updatedPreprint = await updatePreprint(preprint, updates)
+    setPreprint(updatedPreprint)
+    if (articleResult.status === 'fulfilled' && articleResult.value) {
+      setFiles([articleResult.value])
+    }
+  } finally {
+    await cleanupFiles(
+      existingDataFile,
+      submissionType,
+      files,
+      [
+        articleResult.status === 'fulfilled' ? articleResult.value : null,
+        newDeposition,
+      ],
+      dataResult && dataResult.status !== 'fulfilled',
+    ).catch(console.error)
+  }
 }

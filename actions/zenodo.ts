@@ -1,6 +1,6 @@
 'use server'
 
-import { Deposition } from '../types/zenodo'
+import { Deposition, VersionHistory } from '../types/zenodo'
 import { fetchWithAlerting } from './server-utils'
 
 export async function createDataDeposition(): Promise<Deposition> {
@@ -126,6 +126,33 @@ export async function createDataDepositionVersion(
   if (res.status !== 201) {
     throw new Error(
       `Status ${res.status}: Unable to create new version of deposition. ${res.statusText}`,
+    )
+  }
+
+  const result = await res.json()
+  return result
+}
+
+export async function fetchDepositionHistory(
+  deposition: Deposition,
+): Promise<VersionHistory> {
+  const url = `${deposition.links.record}/versions`
+
+  if (
+    process.env.NEXT_PUBLIC_ZENODO_URL &&
+    !url.startsWith(process.env.NEXT_PUBLIC_ZENODO_URL)
+  ) {
+    throw new Error(`Invalid data URL: ${url}`)
+  }
+  const res = await fetchWithAlerting(url, {
+    headers: {
+      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+    },
+  })
+
+  if (res.status !== 200) {
+    throw new Error(
+      `Status ${res.status}: Unable to fetch deposition version history. ${res.statusText}`,
     )
   }
 

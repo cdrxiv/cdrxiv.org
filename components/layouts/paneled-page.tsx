@@ -7,8 +7,9 @@ import React, {
   useEffect,
   useRef,
   ReactNode,
+  useCallback,
 } from 'react'
-import { Box, Divider, Flex } from 'theme-ui'
+import { Box, Divider, Flex, ThemeUIStyleObject } from 'theme-ui'
 import { usePathname } from 'next/navigation'
 
 import Row from '../row'
@@ -16,9 +17,14 @@ import Column from '../column'
 import Guide from '../guide'
 import Loading from '../loading'
 import Expander from '../expander'
+import Link from '../link'
 import { useCardContext } from './page-card'
 
 const HEADER_HEIGHT = [65, 65, 100, 100]
+const FOOTER_HEIGHT = [50, 26, 26, 29]
+const PAGE_CARD_MARGIN = [8, 8, 12, 12]
+
+const CANCEL_DELAY = 10000
 
 const LoadingContext = createContext<
   | {
@@ -34,6 +40,8 @@ const LoadingContext = createContext<
           data?: number
         }>
       >
+      abortController?: AbortController
+      setAbortController?: (controller: AbortController | undefined) => void
     }
   | undefined
 >(undefined)
@@ -74,6 +82,21 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ progress, sx }) => {
   )
 }
 
+const sx: { sticky: ThemeUIStyleObject } = {
+  sticky: {
+    height: 'fit-content',
+    maxHeight: HEADER_HEIGHT.map(
+      (height, i) =>
+        `calc(100vh - ${height}px - ${FOOTER_HEIGHT[i]}px - ${PAGE_CARD_MARGIN[i] * 2}px)`,
+    ),
+    position: 'sticky',
+    top: HEADER_HEIGHT,
+    bottom: FOOTER_HEIGHT,
+    overflowY: 'auto',
+    pt: 5,
+  },
+}
+
 const PaneledPage: React.FC<{
   children: ReactNode
   metadata?: ReactNode
@@ -89,9 +112,11 @@ const PaneledPage: React.FC<{
     article?: number
     data?: number
   }>({})
+  const [abortController, setAbortController] = useState<AbortController>()
   const pathRef = useRef<string | null>(null)
   const pathname = usePathname()
   const { scrollToTop } = useCardContext()
+  const [showCancel, setShowCancel] = useState(false)
 
   useEffect(() => {
     scrollToTop()
@@ -102,6 +127,37 @@ const PaneledPage: React.FC<{
     pathRef.current = pathname
   }, [pathname, setIsLoading, isLoading, scrollToTop])
 
+  useEffect(() => {
+    // cancel if unmounting
+    return () => {
+      if (abortController) {
+        abortController.abort()
+        setAbortController(undefined)
+      }
+    }
+  }, [abortController])
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout
+    if (isLoading) {
+      timeout = setTimeout(() => {
+        setShowCancel(true)
+      }, CANCEL_DELAY)
+    } else {
+      setShowCancel(false)
+    }
+    return () => clearTimeout(timeout)
+  }, [isLoading])
+
+  const handleCancel = useCallback(() => {
+    if (abortController) {
+      abortController.abort()
+      setAbortController(undefined)
+      setIsLoading(false)
+      setUploadProgress({})
+    }
+  }, [abortController])
+
   return (
     <LoadingContext.Provider
       value={{
@@ -109,6 +165,8 @@ const PaneledPage: React.FC<{
         setIsLoading,
         uploadProgress,
         setUploadProgress,
+        abortController,
+        setAbortController,
       }}
     >
       <Row>
@@ -124,18 +182,11 @@ const PaneledPage: React.FC<{
             as='nav'
             aria-label='Section navigation'
             sx={{
-              height: 'fit-content',
-              maxHeight: HEADER_HEIGHT.map(
-                (height) => `calc(100vh - ${height}px)`,
-              ),
-              position: 'sticky',
-              top: HEADER_HEIGHT,
-              overflowY: 'auto',
+              ...sx.sticky,
               pl: 3,
               ml: -3,
               mr: [0, 0, -6, -8], // push scrollbar to edge
               pr: [0, 0, 6, 8],
-              pt: 5,
             }}
           >
             {sidebar}
@@ -293,6 +344,23 @@ const PaneledPage: React.FC<{
                           <ProgressBar progress={uploadProgress.data} />
                         </Box>
                       )}
+
+                      <Box sx={{ height: 40 }}>
+                        {((uploadProgress.article ?? 0) > 0 ||
+                          (uploadProgress.data ?? 0) > 0) &&
+                          abortController &&
+                          showCancel && (
+                            <Link
+                              sx={{
+                                variant: 'text.mono',
+                                textDecoration: 'none',
+                              }}
+                              onClick={handleCancel}
+                            >
+                              (X) Cancel
+                            </Link>
+                          )}
+                      </Box>
                     </Flex>
                   )}
 
@@ -311,15 +379,9 @@ const PaneledPage: React.FC<{
         >
           <Box
             sx={{
-              position: 'sticky',
-              top: HEADER_HEIGHT,
-              maxHeight: HEADER_HEIGHT.map(
-                (height) => `calc(100vh - ${height}px)`,
-              ),
-              overflowY: 'auto',
+              ...sx.sticky,
               mr: [0, 0, -8, -10], // push scrollbar to edge
               pr: [0, 0, 8, 10],
-              pt: 5,
             }}
           >
             {metadata}

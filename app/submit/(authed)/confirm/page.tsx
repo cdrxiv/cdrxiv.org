@@ -4,12 +4,16 @@ import { Box, Flex } from 'theme-ui'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import { Button, Field, Form, Link, Row } from '../../../../components'
+import { Button, Field, Form, Link, Loading, Row } from '../../../../components'
 import NavButtons from '../../nav-buttons'
 import { PATHS } from '../../constants'
 import { usePreprint, usePreprintFiles } from '../../preprint-context'
 import { createAdditionalField, getFormattedDate } from '../utils'
-import { updateDataDeposition, updatePreprint } from '../../../../actions'
+import {
+  updateDataDeposition,
+  updatePreprint,
+  fetchDataDeposition,
+} from '../../../../actions'
 import {
   initializeForm as initializeInfo,
   validateForm as validateInfo,
@@ -19,12 +23,13 @@ import {
   validateForm as validateOverview,
 } from '../overview'
 import AuthorsList from '../authors/authors-list'
-import DataFileDisplay from '../overview/data-file-display'
 import FileDisplay from '../overview/file-display'
 import { getZenodoMetadata } from '../../../../utils/data'
 import { getSubmissionType } from '../overview/utils'
 import useTracking from '../../../../hooks/use-tracking'
 import { useLoading } from '../../../../components/layouts/paneled-page'
+import { SupplementaryFile } from '../../../../types/preprint'
+import { Deposition } from '../../../../types/zenodo'
 
 const SummaryCard = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -73,16 +78,43 @@ const SectionWrapper = ({
 }
 
 const SubmissionConfirmation = () => {
-  const { preprint, setPreprint } = usePreprint()
+  const { preprint } = usePreprint()
   const { files } = usePreprintFiles()
   const router = useRouter()
   const track = useTracking()
   const [submitError, setSubmitError] = useState<string | null>(null)
   const { setIsLoading } = useLoading()
+  const [deposition, setDeposition] = useState<Deposition | null>(null)
+
+  const dataUrl = useMemo(
+    () =>
+      preprint?.supplementary_files?.find(
+        (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_DRAFT',
+      )?.url,
+    [preprint.supplementary_files],
+  )
+  const [depositionLoading, setDepositionLoading] = useState<boolean>(!!dataUrl)
+
+  useEffect(() => {
+    if (dataUrl) {
+      fetchDataDeposition(dataUrl)
+        .then((dep) => {
+          setDeposition(dep)
+        })
+        .catch((e) => {
+          console.error(e)
+          track('confirm_page_data_deposition_error', {
+            preprint: preprint.pk,
+            error: e.message,
+          })
+        })
+        .finally(() => setDepositionLoading(false))
+    }
+  }, [dataUrl, preprint.pk, track])
 
   const { info, overview, authors } = useMemo(() => {
     const info = initializeInfo(preprint)
-    const overview = initializeOverview(preprint, files)
+    const overview = initializeOverview(preprint, files, deposition)
     const { agreement, ...overviewErrors } = validateOverview(overview)
 
     return {
@@ -96,7 +128,7 @@ const SubmissionConfirmation = () => {
             : null,
       },
     }
-  }, [preprint, files])
+  }, [preprint, files, deposition])
 
   useEffect(() => {
     overview.error &&
@@ -120,12 +152,6 @@ const SubmissionConfirmation = () => {
     dataFile: overview.data.dataFile,
     articleFile: overview.data.articleFile,
   })
-
-  const handleDataFileError = useCallback(() => {
-    return updatePreprint(preprint, { supplementary_files: [] }).then(
-      (updated) => setPreprint(updated),
-    )
-  }, [preprint, setPreprint])
 
   const handleSubmit = useCallback(() => {
     setIsLoading(true)
@@ -177,7 +203,10 @@ const SubmissionConfirmation = () => {
   return (
     <div>
       <Form error={submitError}>
-        <SectionWrapper index={0} error={overview.error}>
+        <SectionWrapper
+          index={0}
+          error={depositionLoading ? null : overview.error}
+        >
           <Row columns={[1, 2, 2, 2]} gap={[5, 6, 6, 8]}>
             {overview.data.articleFile && (
               <SummaryCard>
@@ -188,14 +217,21 @@ const SubmissionConfirmation = () => {
                 />
               </SummaryCard>
             )}
-            {overview.data.dataFile && (
+            {dataUrl && (
               <SummaryCard>
                 <Box sx={{ variant: 'text.body' }}>Data</Box>
-
-                <DataFileDisplay
-                  file={overview.data.dataFile}
-                  onError={handleDataFileError}
-                />
+                {overview.data.dataFile ? (
+                  <FileDisplay
+                    name={overview.data.dataFile.original_filename}
+                    href={overview.data.dataFile.url ?? '#'}
+                  />
+                ) : depositionLoading ? (
+                  <Loading />
+                ) : (
+                  <Box sx={{ variant: 'text.mono' }}>
+                    Data deposition not found
+                  </Box>
+                )}
               </SummaryCard>
             )}
             {overview.data.externalFile && (
