@@ -58,12 +58,12 @@ const AuthorsList: React.FC<Props> = ({ authors, abbreviate, orcidLinks }) => {
       {authorList(authors, { array: true }).map((display, i) => (
         <Flex as='span' key={display} sx={{ gap: 1, alignItems: 'flex-start' }}>
           <Box as='span' sx={{ mt: '-1px' }}>
-            {i > 0 && (
+            {display}
+            {i < authors.length - 1 && (
               <Box as='span' sx={{ mr: '0.25em' }}>
                 ,
               </Box>
             )}
-            {display}
           </Box>
           {authors[i].orcid && <OrcidLink id={authors[i].orcid} />}
         </Flex>
