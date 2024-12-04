@@ -26,7 +26,7 @@ export default function NotFound() {
   const pathname = usePathname()
   return (
     <>
-      <title>Not found - CDRXIV</title>
+      <title>Not Found - CDRXIV</title>
       <Flex
         variant='text.mono'
         sx={{
