@@ -1,7 +1,6 @@
 import React from 'react'
 import { Box, Flex } from 'theme-ui'
 
-import { formatDate } from '../../../utils/formatters'
 import {
   getAdditionalField,
   getFunders,
@@ -15,6 +14,8 @@ import type {
 } from '../../../types/preprint'
 import type { Deposition } from '../../../types/zenodo'
 import ErrorOrTrack from './error-or-track'
+import VersionHistory from './version-history'
+import { formatDate } from '../../../utils/formatters'
 
 const getDataDownload = (deposition: Deposition) => {
   return `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].filename}?download=1`
@@ -154,32 +155,11 @@ const PreprintMetadata: React.FC<{
           </Box>
         )}
 
-        {preprint.versions.length > 1 && (
-          <Field label='Older Versions'>
-            <Box
-              as='ul'
-              sx={{
-                variant: 'styles.ul',
-              }}
-            >
-              {preprint.versions.slice(1).map((version) => (
-                <Box
-                  as='li'
-                  key={version.version}
-                  sx={{ variant: 'styles.li' }}
-                >
-                  <Link
-                    href={version.public_download_url}
-                    sx={{ variant: 'text.mono' }}
-                  >
-                    {formatDate(new Date(version.date_time))}, v
-                    {version.version}
-                  </Link>
-                </Box>
-              ))}
-            </Box>
-          </Field>
-        )}
+        <VersionHistory
+          preprint={preprint}
+          deposition={deposition}
+          preview={preview}
+        />
       </Flex>
 
       {externalData && (
@@ -275,6 +255,36 @@ const PreprintMetadata: React.FC<{
           <Box sx={{ variant: 'text.body', fontSize: 2 }}>
             {conflictOfInterest}
           </Box>
+        </Field>
+      )}
+
+      {preprint.date_published && (
+        <Field label={preprint.versions.length === 1 ? 'Published' : 'Dates'}>
+          <Flex
+            sx={{
+              columnGap: 2,
+              rowGap: 0,
+              variant: 'text.mono',
+              flexWrap: 'wrap',
+            }}
+          >
+            <Box>{formatDate(new Date(preprint.date_published))}</Box>
+            {preprint.versions.length > 1 ? '(Published)' : null}
+          </Flex>
+
+          {preprint.versions.length > 1 && (
+            <Flex
+              sx={{
+                columnGap: 2,
+                rowGap: 0,
+                variant: 'text.mono',
+                flexWrap: 'wrap',
+              }}
+            >
+              <Box>{formatDate(new Date(preprint.versions[0].date_time))}</Box>
+              (Updated)
+            </Flex>
+          )}
         </Field>
       )}
     </Flex>

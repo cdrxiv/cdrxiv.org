@@ -17,6 +17,7 @@ export type Subject = {
 
 export type Deposition = {
   created: string
+  modified: string
   id: number
   doi?: string
   doi_url?: string
@@ -36,6 +37,7 @@ export type Deposition = {
   links: {
     self: string
     newversion: string
+    record: string
   }
   submitted: boolean
 }
@@ -46,4 +48,22 @@ export type DepositionFile = {
   filesize: number
   checksum: string
   links: { self: string; download: string }
+}
+
+type Modify<T, R> = Omit<T, keyof R> & R
+
+type DepositionVersionFile = Modify<
+  DepositionFile,
+  { filename: undefined; key: string }
+>
+export type DepositionVersion = Modify<
+  Deposition,
+  { files: DepositionVersionFile[] }
+>
+
+export type VersionHistory = {
+  hits: {
+    hits: DepositionVersion[]
+    total: number
+  }
 }
