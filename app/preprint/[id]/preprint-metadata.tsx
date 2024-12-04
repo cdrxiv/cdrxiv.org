@@ -66,7 +66,7 @@ const PreprintMetadata: React.FC<{
         errorMessage={`No versions found. Versions must be created in the Janeway dashboard.`}
       />
 
-      <Field label='Pathways'>
+      <Field label='Topics'>
         {preprint.subject.map(({ name }) => (
           <Link
             key={name}
