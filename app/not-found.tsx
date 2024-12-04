@@ -2,23 +2,22 @@
 
 import { Box, Flex } from 'theme-ui'
 import { usePathname } from 'next/navigation'
-import PaneledPage from '../components/layouts/paneled-page'
 
 const logo = `
-.
-... 
-.....
-....... 
-......... 
-........... 
-............. 
-............... 
-................
-..................
-....................
-......................
-........................
-..........................
+4
+404
+40404
+4040404
+404040404
+40404040404
+4040404040404
+404040404040404
+4040404040404040
+404040404040404040
+40404040404040404040
+4040404040404040404040
+404040404040404040404040
+40404040404040404040404040
 `
 
 const delayFactor = 0.0015
@@ -26,20 +25,24 @@ const delayFactor = 0.0015
 export default function NotFound() {
   const pathname = usePathname()
   return (
-    <PaneledPage>
+    <>
+      <title>Not found - CDRXIV</title>
       <Flex
+        variant='text.mono'
         sx={{
           justifyContent: 'center',
           alignItems: 'center',
           mb: 150,
           flexDirection: 'column',
+          display: 'flex',
+          height: '70vh',
         }}
       >
         <Box
           sx={{
             whiteSpace: 'pre',
-            lineHeight: '0.5',
-            fontSize: [5, 5, 6, 6],
+            lineHeight: 1,
+            fontSize: [2, 2, 3, 3],
             display: 'flex',
             flexDirection: 'column',
             '@keyframes fadeOut': {
@@ -74,8 +77,8 @@ export default function NotFound() {
           <Box
             sx={{
               variant: 'text.monoCaps',
-              fontSize: [4, 4, 5, 5],
-              mt: 5,
+              fontSize: 4,
+              mt: 2,
               opacity: 0.3,
               textAlign: 'center',
               animation: 'fadeIn 0.01s  forwards',
@@ -92,6 +95,6 @@ export default function NotFound() {
           </Box>
         </Box>
       </Flex>
-    </PaneledPage>
+    </>
   )
 }
