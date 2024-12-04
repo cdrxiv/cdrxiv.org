@@ -65,7 +65,7 @@ const AuthorsList: React.FC<Props> = ({ authors, abbreviate, orcidLinks }) => {
           </Flex>
 
           {i < authors.length - 1 && (
-            <Box as='span' sx={{ mr: '0.25em' }}>
+            <Box as='span' sx={{ mr: '0.5em' }}>
               ,
             </Box>
           )}
