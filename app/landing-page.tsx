@@ -27,8 +27,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
 
   return (
     <>
-      <Row columns={12} sx={{ mb: [4, 4, 8, 8] }}>
-        <Column start={1} width={[10, 10, 3, 3]}>
+      <Row columns={[6, 8, 12, 12]} sx={{ mb: [4, 4, 8, 8] }}>
+        <Column start={1} width={[6, 8, 3, 3]}>
           <Box
             as='h1'
             sx={{ variant: 'styles.h1', mt: [2, 2, 0, 0], mb: [6, 6, 4, 4] }}
@@ -41,7 +41,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
 
         <Topics />
 
-        <Column start={[7, 7, 1, 1]} width={6}>
+        <Column start={[4, 5, 1, 1]} width={[3, 4, 6, 6]}>
           <Flex
             sx={{
               gap: [1, 1, 6, 6],

@@ -77,7 +77,7 @@ const Topics: React.FC = () => {
     <>
       <Column
         start={[1, 1, 5, 5]}
-        width={[6, 6, 8, 8]}
+        width={[3, 4, 8, 8]}
         sx={{ mb: [0, 0, 8, 8] }}
       >
         <Row columns={8}>
