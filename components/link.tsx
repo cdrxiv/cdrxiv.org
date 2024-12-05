@@ -22,11 +22,11 @@ const sx = {
   },
   hover: {
     ':hover': {
-      textDecorationThickness: ['2px', '2px', '2px', '3px'],
+      textDecorationThickness: '0.15em',
     },
   },
   selected: {
-    textDecorationThickness: ['2px', '2px', '2px', '3px'],
+    textDecorationThickness: '0.15em',
   },
 }
 
