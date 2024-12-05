@@ -115,12 +115,8 @@ const ARTICLE_LICENSE_DISPLAY: Record<string, { name: string; url: string }> = {
   6: { name: 'All Rights Reserved', url: '' },
 }
 
-export const getArticleLicense = (preprint: Preprint) => {
-  if (!preprint.license) {
-    return null
-  }
-
-  const lookup = String(preprint.license.pk)
+export const getArticleLicense = (licensePk?: number) => {
+  const lookup = String(licensePk)
 
   if (!ARTICLE_LICENSE_DISPLAY[lookup]) {
     return null

@@ -49,7 +49,7 @@ const PreprintMetadata: React.FC<{
   )
   const dataLicense = getAdditionalField(preprint, 'Data license')
   const dataLicenseInfo = getZenodoLicense(preprint)
-  const articleLicenseInfo = getArticleLicense(preprint)
+  const articleLicenseInfo = getArticleLicense(preprint.license?.pk)
   const hasConflictOfInterest =
     conflictOfInterest && conflictOfInterest !== 'None'
 

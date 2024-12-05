@@ -1,4 +1,5 @@
 import { Column, Row, Select } from '../../../../components'
+import { getArticleLicense } from '../../../../utils/data'
 import { LICENSE_MAPPING } from '../../constants'
 
 type Props = {
@@ -62,9 +63,9 @@ const ArticleLicense = ({
     id='license'
   >
     <option value={'0'}>Select one</option>
-    <option value={'1'}>CC BY 4.0</option>
-    <option value={'4'}>CC BY-NC 4.0</option>
-    <option value={'6'}>All Rights Reserved</option>
+    <option value={'1'}>{getArticleLicense(1)?.name}</option>
+    <option value={'4'}>{getArticleLicense(4)?.name}</option>
+    <option value={'6'}>{getArticleLicense(6)?.name}</option>
   </Select>
 )
 
