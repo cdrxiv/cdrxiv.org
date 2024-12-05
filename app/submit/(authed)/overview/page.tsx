@@ -117,7 +117,7 @@ const SubmissionOverview = () => {
         <Field
           label='Article file'
           id='articleFile'
-          description='Your article must be submitted as a PDF.'
+          description='Your article must be submitted as a PDF. Any supplementary text should be appended to the article.'
           error={errors.articleFile ?? errors.persistedFiles}
         >
           <FileInput
@@ -130,7 +130,7 @@ const SubmissionOverview = () => {
         <Field
           label='Data file'
           id='dataFile'
-          description='Your data submission must be a single file of any format, including ZIP, up to 10 GB.'
+          description='Your data submission must be a single file of any format, including ZIP, up to 10 GB.  If you are not submitting an article to accompany this data, please include any supplementary text files here.'
           error={
             errors.dataFile ?? errors.externalFile ?? errors.persistedDeposition
           }
