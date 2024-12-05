@@ -3,6 +3,7 @@ import { Box, Flex } from 'theme-ui'
 
 import {
   getAdditionalField,
+  getArticleLicense,
   getFunders,
   getZenodoLicense,
 } from '../../../utils/data'
@@ -48,6 +49,7 @@ const PreprintMetadata: React.FC<{
   )
   const dataLicense = getAdditionalField(preprint, 'Data license')
   const dataLicenseInfo = getZenodoLicense(preprint)
+  const articleLicenseInfo = getArticleLicense(preprint)
   const hasConflictOfInterest =
     conflictOfInterest && conflictOfInterest !== 'None'
 
@@ -195,17 +197,25 @@ const PreprintMetadata: React.FC<{
 
       <Field label='License'>
         <Flex sx={{ gap: 2, variant: 'text.mono' }}>
-          <Link href={preprint.license?.url} sx={{ variant: 'text.mono' }}>
-            {preprint.license?.short_name}
-          </Link>
+          {articleLicenseInfo?.url ? (
+            <Link href={articleLicenseInfo.url} sx={{ variant: 'text.mono' }}>
+              {articleLicenseInfo.name}
+            </Link>
+          ) : (
+            articleLicenseInfo?.name
+          )}
           {submissionType === 'Both' ? '(Article)' : null}
         </Flex>
         <ErrorOrTrack
           mt={2}
-          hasError={!preprint.license}
+          hasError={!articleLicenseInfo}
           preview={preview}
           pk={preprint.pk}
-          errorMessage={'No license provided.'}
+          errorMessage={
+            preprint.license
+              ? `No license information found for pk=${preprint.license.pk}.`
+              : 'No license provided.'
+          }
         />
         {submissionType === 'Both' && (
           <>
