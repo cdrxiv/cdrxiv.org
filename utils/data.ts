@@ -83,7 +83,7 @@ export const getZenodoMetadata = (
   }
 }
 
-const LICENSE_DISPLAY = {
+const DATA_LICENSE_DISPLAY = {
   'cc-by-nc-4.0': {
     url: 'https://creativecommons.org/licenses/by-nc/4.0/',
     name: 'CC BY-NC 4.0',
@@ -101,7 +101,31 @@ export const getZenodoLicense = (preprint: Preprint) => {
     return null
   }
 
-  return LICENSE_DISPLAY[dataLicense as 'cc-by-4.0' | 'cc-by-nc-4.0']
+  return DATA_LICENSE_DISPLAY[dataLicense as 'cc-by-4.0' | 'cc-by-nc-4.0']
+}
+
+// Instead of relying on Janeway's license URLs, we override them here. This is because
+// some of the license URLs have gone stale (e.g., https://creativecommons.org/licenses/authors).
+const ARTICLE_LICENSE_DISPLAY: Record<string, { name: string; url: string }> = {
+  1: { url: 'https://creativecommons.org/licenses/by/4.0/', name: 'CC BY 4.0' },
+  4: {
+    url: 'https://creativecommons.org/licenses/by-nc/4.0/',
+    name: 'CC BY-NC 4.0',
+  },
+  6: { name: 'All Rights Reserved', url: '' },
+}
+
+export const getArticleLicense = (licensePk?: number) => {
+  const lookup = String(licensePk)
+
+  if (!ARTICLE_LICENSE_DISPLAY[lookup]) {
+    return null
+  }
+
+  return {
+    url: ARTICLE_LICENSE_DISPLAY[lookup].url,
+    name: ARTICLE_LICENSE_DISPLAY[lookup].name,
+  }
 }
 
 const { repository, ...CHECKABLE_FIELDS } = PREPRINT_BASE
