@@ -10,7 +10,7 @@ const PATHS = [
   { href: '/submissions', title: 'Submissions', public: false },
   {
     href: '/preview',
-    title: 'Preprint preview',
+    title: 'Preprint Preview',
     public: false,
     adminOnly: true,
   },

@@ -40,7 +40,7 @@ const PreprintPreview = async ({
   let preprint
   if (response.status !== 200) {
     return (
-      <SharedLayout title='Preprint preview'>
+      <SharedLayout title='Preprint Preview'>
         <Forbidden status={response.status} statusText={response.statusText} />
       </SharedLayout>
     )

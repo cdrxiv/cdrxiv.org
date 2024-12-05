@@ -22,7 +22,7 @@ const SubmissionsView: React.FC<Props> = ({ published, review, rejected }) => {
 
       {review.length > 0 && (
         <Box>
-          <Box sx={{ fontSize: [3, 3, 4, 4] }}>Screening in progress</Box>
+          <Box sx={{ fontSize: [3, 3, 4, 4] }}>Screening in Progress</Box>
           <PreprintsTable preprints={review} date='date_submitted' />
         </Box>
       )}

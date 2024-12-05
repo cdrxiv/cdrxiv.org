@@ -21,6 +21,15 @@ export const getAdditionalField = (
   return additionalField.answer
 }
 
+export const createAdditionalField = (fieldName: string, value: string) => {
+  return {
+    answer: value,
+    field: {
+      name: fieldName,
+    },
+  }
+}
+
 export const getFunders = (preprint: Preprint | null): Funder[] | null => {
   try {
     const rawData = getAdditionalField(preprint, 'Funder(s) and award numbers')

@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 
 import EditForm from './edit-form'
 import { fetchWithToken } from '../../../../../actions/server-utils'
@@ -17,6 +17,10 @@ const Page = async ({ params }: { params: { preprint: string } }) => {
     ),
   ])
   if (versionsRes.status !== 200 || preprintRes.status !== 200) {
+    if (preprintRes.status === 404) {
+      notFound()
+    }
+
     redirect(
       `/account?signOut=true&callbackUrl=/submissions/edit/${params.preprint}`,
     )
