@@ -2,15 +2,6 @@ import { useNavigation } from '../navigation-context'
 import { useForm as useFormBase, Errors } from '../../../hooks/use-form'
 import { usePreprint } from '../preprint-context'
 
-export const createAdditionalField = (fieldName: string, value: string) => {
-  return {
-    answer: value,
-    field: {
-      name: fieldName,
-    },
-  }
-}
-
 export function useForm<T>(
   initialize: () => T,
   validate: (values: T) => Errors<T>,

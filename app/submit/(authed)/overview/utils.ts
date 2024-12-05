@@ -4,7 +4,7 @@ import {
   SupplementaryFile,
 } from '../../../../types/preprint'
 
-import { createAdditionalField } from '../utils'
+import { createAdditionalField } from '../../../../utils/data'
 import {
   deletePreprintFile,
   updatePreprint,

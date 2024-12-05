@@ -19,7 +19,7 @@ const PreviewPage = async () => {
 
   if (response.status !== 200) {
     return (
-      <SharedLayout title='Preprints under review'>
+      <SharedLayout title='Preprints Under Review'>
         <Forbidden status={response.status} statusText={response.statusText} />
       </SharedLayout>
     )
@@ -28,7 +28,7 @@ const PreviewPage = async () => {
   const results = await response.json()
 
   return (
-    <SharedLayout title='Preprints under review'>
+    <SharedLayout title='Preprints Under Review'>
       <PreprintsTable preprints={results.results} />
     </SharedLayout>
   )

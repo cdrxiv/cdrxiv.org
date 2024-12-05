@@ -8,7 +8,7 @@ import { Button, Field, Form, Link, Loading, Row } from '../../../../components'
 import NavButtons from '../../nav-buttons'
 import { PATHS } from '../../constants'
 import { usePreprint, usePreprintFiles } from '../../preprint-context'
-import { createAdditionalField, getFormattedDate } from '../utils'
+import { getFormattedDate } from '../utils'
 import {
   updateDataDeposition,
   updatePreprint,
@@ -24,7 +24,10 @@ import {
 } from '../overview'
 import AuthorsList from '../authors/authors-list'
 import FileDisplay from '../overview/file-display'
-import { getZenodoMetadata } from '../../../../utils/data'
+import {
+  createAdditionalField,
+  getZenodoMetadata,
+} from '../../../../utils/data'
 import { getSubmissionType } from '../overview/utils'
 import useTracking from '../../../../hooks/use-tracking'
 import { useLoading } from '../../../../components/layouts/paneled-page'
