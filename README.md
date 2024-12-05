@@ -1,7 +1,7 @@
 <p align="left" >
 <a href='https://cdrxiv.org'>
 <picture>
-  <img alt="CDRXIV logo" height="48" src="https://cdrxiv.org/images/icon.png">
+  <img alt="CDRXIV logo" height="48" src="https://cdrxiv.org/images/logo.png">
 </picture>
 </a>
 </p>
