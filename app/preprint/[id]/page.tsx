@@ -24,7 +24,7 @@ if (typeof Promise.withResolvers !== 'function') {
 const getPreprint = async (id: string) => {
   const res = await fetchWithAlerting(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/${id}`,
-    {},
+    { next: { revalidate: 180 } },
     [200, 404],
   )
   if (!res.ok) {
