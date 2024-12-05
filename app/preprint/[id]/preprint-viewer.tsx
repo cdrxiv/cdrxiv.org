@@ -39,6 +39,8 @@ const PreprintViewer = ({
   const pageRefs = useRef<(HTMLDivElement | null)[]>([])
   const track = useTracking()
 
+  const hidePdfOutline =
+    getAdditionalField(preprint, 'PDF outline') === 'Disabled'
   const submissionType = getAdditionalField(preprint, 'Submission type')
   const hasArticle = ['Article', 'Both'].includes(submissionType ?? '')
   const hasData = ['Data', 'Both'].includes(submissionType ?? '')
@@ -111,10 +113,10 @@ const PreprintViewer = ({
   }
 
   useEffect(() => {
-    if (pdf) {
+    if (pdf && !hidePdfOutline) {
       pdf.getOutline().then(setPdfOutline).catch(console.error)
     }
-  }, [pdf])
+  }, [hidePdfOutline, pdf])
 
   const onItemClicked = useCallback(
     ({ pageNumber }: { pageNumber: number }) => {
