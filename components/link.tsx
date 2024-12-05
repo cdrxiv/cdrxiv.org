@@ -7,6 +7,8 @@ export interface Props extends LinkProps {
   forwardArrow?: boolean
   backArrow?: boolean
   disabled?: boolean
+  selected?: boolean
+  hoverEffect?: boolean
 }
 
 const sx = {
@@ -18,6 +20,14 @@ const sx = {
   button: {
     ':visited': { color: 'blue' },
   },
+  hover: {
+    ':hover': {
+      textDecorationThickness: '2px',
+    },
+  },
+  selected: {
+    textDecorationThickness: '2px',
+  },
 }
 
 const StyledLink: React.FC<Props> = ({
@@ -28,6 +38,8 @@ const StyledLink: React.FC<Props> = ({
   forwardArrow = false,
   sx: sxProp,
   disabled = false,
+  selected = false,
+  hoverEffect = false,
   ...props
 }) => {
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -58,6 +70,8 @@ const StyledLink: React.FC<Props> = ({
       sx={{
         ...(disabled ? sx.disabled : {}),
         ...(!href ? sx.button : {}),
+        ...(hoverEffect ? sx.hover : {}),
+        ...(selected ? sx.selected : {}),
         ...sxProp,
       }}
       {...props}
