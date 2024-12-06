@@ -262,33 +262,44 @@ const PreprintMetadata: React.FC<{
 
       {hasConflictOfInterest && (
         <Field label='Conflict of interest'>
-          <Box sx={{ variant: 'text.body', fontSize: 2 }}>
+          <Box sx={{ variant: 'text.body', fontSize: [1, 1, 1, 2] }}>
             {conflictOfInterest}
           </Box>
         </Field>
       )}
 
-      {preprint.date_published && (
-        <Field label={preprint.versions.length === 1 ? 'Published' : 'Dates'}>
-          {preprint.versions.map((version) => (
+      {preprint.date_published &&
+        (preprint.versions.length === 1 ? (
+          <Field label='Published'>
             <Flex
-              key={version.version}
               sx={{
-                columnGap: 2,
-                rowGap: 0,
                 variant: 'text.mono',
                 flexWrap: 'wrap',
               }}
             >
-              <Box>{formatDate(new Date(version.date_time))}</Box>
-              {preprint.versions.length > 1 &&
-                ((version.title || preprint.title).startsWith('WITHDRAWN')
-                  ? '(Withdrawn)'
-                  : `(v${version.version})`)}
+              {formatDate(new Date(preprint.date_published))}
             </Flex>
-          ))}
-        </Field>
-      )}
+          </Field>
+        ) : (
+          <Field label='Dates'>
+            {preprint.versions.map((version) => (
+              <Flex
+                key={version.version}
+                sx={{
+                  columnGap: 2,
+                  rowGap: 0,
+                  variant: 'text.mono',
+                  flexWrap: 'wrap',
+                }}
+              >
+                <Box>{formatDate(new Date(version.date_time))}</Box>
+                {(version.title || preprint.title).startsWith('WITHDRAWN')
+                  ? '(Withdrawn)'
+                  : `(v${version.version})`}
+              </Flex>
+            ))}
+          </Field>
+        ))}
     </Flex>
   )
 }
