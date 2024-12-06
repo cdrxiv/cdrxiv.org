@@ -273,8 +273,6 @@ const PreprintMetadata: React.FC<{
           <Field label='Published'>
             <Flex
               sx={{
-                columnGap: 2,
-                rowGap: 0,
                 variant: 'text.mono',
                 flexWrap: 'wrap',
               }}
