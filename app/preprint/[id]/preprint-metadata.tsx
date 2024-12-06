@@ -280,7 +280,7 @@ const PreprintMetadata: React.FC<{
               {formatDate(new Date(preprint.date_published))}
             </Flex>
           </Field>
-        ) : (
+        ) : preprint.versions.length > 1 ? (
           <Field label='Dates'>
             {preprint.versions.map((version) => (
               <Flex
@@ -299,7 +299,7 @@ const PreprintMetadata: React.FC<{
               </Flex>
             ))}
           </Field>
-        ))}
+        ) : null)}
     </Flex>
   )
 }
