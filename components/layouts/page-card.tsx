@@ -145,7 +145,9 @@ const PageCard = ({ children }: { children: React.ReactNode }) => {
               </CardContext.Provider>
             </Box>
 
-            <Flex sx={{ columnGap: 3, rowGap: 2, flexWrap: 'wrap', pb: 2 }}>
+            <Flex
+              sx={{ columnGap: 3, rowGap: 2, flexWrap: 'wrap', pb: '14px' }}
+            >
               <Box sx={{ ...sx.footer, flexBasis: ['100%', 'inherit'] }}>
                 Powered by Janeway
               </Box>
