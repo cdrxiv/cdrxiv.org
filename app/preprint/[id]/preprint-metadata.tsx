@@ -262,7 +262,7 @@ const PreprintMetadata: React.FC<{
 
       {hasConflictOfInterest && (
         <Field label='Conflict of interest'>
-          <Box sx={{ variant: 'text.body', fontSize: 2 }}>
+          <Box sx={{ variant: 'text.body', fontSize: [1, 1, 1, 2] }}>
             {conflictOfInterest}
           </Box>
         </Field>
