@@ -18,12 +18,12 @@ const SVGBox: React.FC<SVGBoxProps> = (props) => <Box as='svg' {...props} />
 
 const PATHS: { name: string; path: string; matchingPaths?: string[] }[] = [
   { name: 'Home', path: '/' },
-  { name: 'About', path: '/about' },
-  { name: 'Submit', path: '/submit/overview' },
+  { name: 'About', path: '/about', matchingPaths: ['/about'] },
+  { name: 'Submit', path: '/submit/overview', matchingPaths: ['/submit'] },
   {
     name: 'Account',
     path: '/account',
-    matchingPaths: ['/account', '/submissions', '/preview'],
+    matchingPaths: ['/account', '/submissions', '/preview', '/register'],
   },
 ]
 
@@ -52,10 +52,12 @@ const AccountLink = ({
   sx,
   name,
   path,
+  selected,
 }: {
   sx?: ThemeUIStyleObject
   name: string
   path: string
+  selected: boolean
 }) => {
   const { data: session, status } = useSession()
   const authenticated = status === 'authenticated' && !!session
@@ -71,6 +73,8 @@ const AccountLink = ({
   return (
     <Link
       href={path}
+      selected={selected}
+      hoverEffect={true}
       sx={{
         width: 'fit-content',
         variant: 'styles.h2',
@@ -108,13 +112,22 @@ const Header = () => {
   const router = useRouter()
 
   const renderLinks = () => {
-    return PATHS.map(({ name, path }) => {
+    return PATHS.map(({ name, path, matchingPaths }) => {
+      const isSelected =
+        pathname === path ||
+        (matchingPaths?.some(
+          (p) => pathname === p || pathname.startsWith(p + '/'),
+        ) ??
+          false)
+
       return name === 'Account' ? (
-        <AccountLink key={name} name={name} path={path} />
+        <AccountLink key={name} name={name} path={path} selected={isSelected} />
       ) : (
         <Link
           key={name}
           href={path}
+          selected={isSelected}
+          hoverEffect={true}
           sx={{ width: 'fit-content', variant: 'styles.h2' }}
         >
           {name}
