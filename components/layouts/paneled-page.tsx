@@ -380,8 +380,8 @@ const PaneledPage: React.FC<{
           <Box
             sx={{
               ...sx.sticky,
-              mr: [0, 0, -8, -10], // push scrollbar to edge
-              pr: [0, 0, 8, 10],
+              mr: [0, -8, -8, -10], // push scrollbar to edge
+              pr: [0, 8, 8, 10],
             }}
           >
             {metadata}
