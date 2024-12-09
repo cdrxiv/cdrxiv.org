@@ -209,8 +209,8 @@ const PaneledPage: React.FC<{
                     display: ['inherit', 'inherit', 'none', 'none'],
                     position: 'sticky',
                     top: HEADER_HEIGHT,
-                    backgroundColor: 'white',
-                    px: [5, 6, 0, 0],
+                    backgroundColor: 'primary',
+                    px: [5, 6, 0, 0], // Ensure that metadata renders on top of any full-width content
                     mx: [-5, -6, 0, 0],
                     pt: 4,
                     pb: isSidebarExpanded || isMetadataExpanded ? 2 : 0,
