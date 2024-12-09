@@ -2,6 +2,7 @@
 
 import { Box, Flex } from 'theme-ui'
 import { useEffect } from 'react'
+import { useSession } from 'next-auth/react'
 
 import { Button } from '../components'
 import useTracking from '../hooks/use-tracking'
@@ -14,9 +15,11 @@ export default function Error({
   reset: () => void
 }) {
   const track = useTracking()
+  const { data: session } = useSession()
+
   useEffect(() => {
-    track('client_error', { error: error.message })
-  }, [error.message])
+    track('client_error', { error: error.message, user: session?.user?.id })
+  }, [error.message, session?.user?.id])
   return (
     <>
       <title>Error - CDRXIV</title>
