@@ -21,7 +21,7 @@ import Link from '../link'
 import { useCardContext } from './page-card'
 
 const HEADER_HEIGHT = [65, 65, 100, 100]
-const FOOTER_HEIGHT = [50, 26, 26, 29]
+const FOOTER_HEIGHT = [55, 32, 32, 34]
 const PAGE_CARD_MARGIN = [8, 8, 12, 12]
 
 const CANCEL_DELAY = 10000
