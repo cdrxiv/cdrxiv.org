@@ -86,12 +86,11 @@ const sx: { sticky: ThemeUIStyleObject; expanded: ThemeUIStyleObject } = {
   sticky: {
     height: 'fit-content',
     maxHeight: HEADER_HEIGHT.map(
-      (height, i) =>
-        `calc(100vh - ${height}px - ${FOOTER_HEIGHT[i]}px - ${PAGE_CARD_MARGIN[i] * 2}px)`,
+      (height, i) => `calc(100vh - ${height}px - ${PAGE_CARD_MARGIN[i] * 2}px)`,
     ),
     position: 'sticky',
     top: HEADER_HEIGHT,
-    bottom: FOOTER_HEIGHT,
+    pb: FOOTER_HEIGHT,
     overflowY: 'auto',
     pt: 5,
   },
