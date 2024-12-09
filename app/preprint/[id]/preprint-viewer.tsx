@@ -5,7 +5,7 @@ import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/Page/TextLayer.css'
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import { Box, Flex } from 'theme-ui'
-import type { PDFDocumentProxy } from 'pdfjs-dist'
+import type { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist'
 
 import PaneledPage from '../../../components/layouts/paneled-page'
 import MetadataView from './preprint-metadata'
@@ -38,6 +38,9 @@ const PreprintViewer = ({
   const containerRef = useRef<HTMLDivElement>(null)
   const pageRefs = useRef<(HTMLDivElement | null)[]>([])
   const track = useTracking()
+
+  const [visiblePages, setVisiblePages] = useState<Set<number>>(new Set())
+  const [pageHeight, setPageHeight] = useState<number>(600)
 
   const hidePdfOutline =
     getAdditionalField(preprint, 'PDF outline') === 'Disabled'
@@ -128,6 +131,56 @@ const PreprintViewer = ({
     [],
   )
 
+  useEffect(() => {
+    if (!pdf || pageRefs.current.length === 0) return
+
+    const buffer = 2
+    const intersectingPages = new Set<number>()
+
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        const pageIndex = Number(
+          (entry.target as HTMLElement).dataset.pageIndex,
+        )
+        const pageNumber = pageIndex + 1
+        if (entry.isIntersecting) {
+          intersectingPages.add(pageNumber)
+        }
+      }
+
+      const minPage = Math.min(...Array.from(intersectingPages))
+      const maxPage = Math.max(...Array.from(intersectingPages))
+
+      const startPage = Math.max(minPage - buffer, 1)
+      const endPage = Math.min(maxPage + buffer, pdf.numPages)
+
+      const newVisiblePages = new Set<number>()
+      for (let p = startPage; p <= endPage; p++) {
+        newVisiblePages.add(p)
+      }
+
+      if (Array.from(newVisiblePages).some((p) => !visiblePages.has(p))) {
+        console.log('newVisiblePages', newVisiblePages)
+        setVisiblePages(newVisiblePages)
+      }
+    })
+
+    pageRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref)
+    })
+
+    return () => observer.disconnect()
+  }, [pdf, visiblePages, pageRefs, setVisiblePages])
+
+  const setHeightFromFirstPage = useCallback(
+    (page: PDFPageProxy) => {
+      const scale = containerWidth / page.view[2]
+      const viewport = page.getViewport({ scale })
+      setPageHeight(viewport.height)
+    },
+    [containerWidth],
+  )
+
   return (
     <PaneledPage
       title={preprint.title ?? ''}
@@ -196,29 +249,55 @@ const PreprintViewer = ({
             }
           >
             {containerWidth > 0 &&
-              Array.from(new Array(pdf?.numPages ?? 0), (_, index) => (
-                <div
-                  key={`page_${index + 1}`}
-                  ref={(el: HTMLDivElement | null) => {
-                    if (el) pageRefs.current[index] = el
-                  }}
-                >
-                  <Box
-                    sx={{
-                      height: ['1px', '1px', 5, 8],
-                      background: ['text', 'text', 'background', 'background'],
-                      px: [5, 0, 6, 8],
-                      mx: [-5, 0, -6, -8],
+              Array.from(new Array(pdf?.numPages ?? 0), (_, index) => {
+                const pageNumber = index + 1
+                return (
+                  <div
+                    key={`page_container_${pageNumber}`}
+                    data-page-index={index}
+                    ref={(el: HTMLDivElement | null) => {
+                      if (el) pageRefs.current[index] = el
                     }}
-                  />
-                  <Page
-                    key={`page_${index + 1}`}
-                    pageNumber={index + 1}
-                    width={containerWidth}
-                    loading={''}
-                  />
-                </div>
-              ))}
+                  >
+                    <Box
+                      sx={{
+                        height: ['1px', '1px', 5, 8],
+                        background: [
+                          'text',
+                          'text',
+                          'background',
+                          'background',
+                        ],
+                        px: [5, 0, 6, 8],
+                        mx: [-5, 0, -6, -8],
+                      }}
+                    />
+                    {visiblePages.has(pageNumber) ? (
+                      <Page
+                        key={`page_${pageNumber}`}
+                        pageNumber={pageNumber}
+                        width={containerWidth}
+                        loading={
+                          <Flex
+                            sx={{
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              height: `${pageHeight}px`,
+                            }}
+                          >
+                            <Loading />
+                          </Flex>
+                        }
+                        onRenderSuccess={
+                          pageNumber === 1 ? setHeightFromFirstPage : undefined
+                        }
+                      />
+                    ) : (
+                      <Box sx={{ height: `${pageHeight}px` }} />
+                    )}
+                  </div>
+                )
+              })}
           </Document>
         </div>
       )}
