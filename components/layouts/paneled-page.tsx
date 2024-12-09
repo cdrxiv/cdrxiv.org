@@ -82,7 +82,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ progress, sx }) => {
   )
 }
 
-const sx: { sticky: ThemeUIStyleObject } = {
+const sx: { sticky: ThemeUIStyleObject; expanded: ThemeUIStyleObject } = {
   sticky: {
     height: 'fit-content',
     maxHeight: HEADER_HEIGHT.map(
@@ -94,6 +94,17 @@ const sx: { sticky: ThemeUIStyleObject } = {
     bottom: FOOTER_HEIGHT,
     overflowY: 'auto',
     pt: 5,
+  },
+  expanded: {
+    display: ['inherit', 'none', 'none', 'none'],
+    height: 'fit-content',
+    maxHeight: HEADER_HEIGHT.map(
+      (height, i) =>
+        `calc(100vh - ${height}px - 60px - ${PAGE_CARD_MARGIN[i] * 2}px)`,
+    ),
+    overflowY: 'auto',
+    mr: [-5, -6, 0, 0], // push scrollbar to edge
+    pr: [5, 6, 0, 0],
   },
 }
 
@@ -247,17 +258,9 @@ const PaneledPage: React.FC<{
                     )}
                   </Flex>
 
-                  {isSidebarExpanded && (
-                    <Box sx={{ position: 'relative', mt: 4, pl: 3, ml: -3 }}>
-                      {sidebar}
-                    </Box>
-                  )}
+                  {isSidebarExpanded && <Box sx={sx.expanded}>{sidebar}</Box>}
 
-                  {isMetadataExpanded && (
-                    <Box sx={{ display: ['inherit', 'none', 'none', 'none'] }}>
-                      {metadata}
-                    </Box>
-                  )}
+                  {isMetadataExpanded && <Box sx={sx.expanded}>{metadata}</Box>}
 
                   {(isSidebarExpanded || isMetadataExpanded) && (
                     <Divider sx={{ mt: 6 }} />
