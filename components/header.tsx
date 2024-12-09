@@ -148,6 +148,8 @@ const Header = () => {
         position: 'sticky',
         top: 0,
         mt: [-24, -24, -27, -27],
+        px: [5, 6, 0, 0], // Ensure that header renders on top of any full-width content
+        mx: [-5, -6, 0, 0],
         bg: cardBackground,
         zIndex: 2,
       }}

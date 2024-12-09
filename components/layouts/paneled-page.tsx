@@ -21,7 +21,7 @@ import Link from '../link'
 import { useCardContext } from './page-card'
 
 const HEADER_HEIGHT = [65, 65, 100, 100]
-const FOOTER_HEIGHT = [50, 26, 26, 29]
+const FOOTER_HEIGHT = [55, 32, 32, 34]
 const PAGE_CARD_MARGIN = [8, 8, 12, 12]
 
 const CANCEL_DELAY = 10000
@@ -82,18 +82,28 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ progress, sx }) => {
   )
 }
 
-const sx: { sticky: ThemeUIStyleObject } = {
+const sx: { sticky: ThemeUIStyleObject; expanded: ThemeUIStyleObject } = {
   sticky: {
     height: 'fit-content',
     maxHeight: HEADER_HEIGHT.map(
-      (height, i) =>
-        `calc(100vh - ${height}px - ${FOOTER_HEIGHT[i]}px - ${PAGE_CARD_MARGIN[i] * 2}px)`,
+      (height, i) => `calc(100vh - ${height}px - ${PAGE_CARD_MARGIN[i] * 2}px)`,
     ),
     position: 'sticky',
     top: HEADER_HEIGHT,
-    bottom: FOOTER_HEIGHT,
+    pb: FOOTER_HEIGHT,
     overflowY: 'auto',
     pt: 5,
+  },
+  expanded: {
+    display: ['inherit', 'none', 'none', 'none'],
+    height: 'fit-content',
+    maxHeight: HEADER_HEIGHT.map(
+      (height, i) =>
+        `calc(100vh - ${height}px - 60px - ${PAGE_CARD_MARGIN[i] * 2}px)`,
+    ),
+    overflowY: 'auto',
+    mr: [-5, -6, 0, 0], // push scrollbar to edge
+    pr: [5, 6, 0, 0],
   },
 }
 
@@ -209,8 +219,8 @@ const PaneledPage: React.FC<{
                     display: ['inherit', 'inherit', 'none', 'none'],
                     position: 'sticky',
                     top: HEADER_HEIGHT,
-                    backgroundColor: 'white',
-                    px: [5, 6, 0, 0],
+                    backgroundColor: 'primary',
+                    px: [5, 6, 0, 0], // Ensure that metadata renders on top of any full-width content
                     mx: [-5, -6, 0, 0],
                     pt: 4,
                     pb: isSidebarExpanded || isMetadataExpanded ? 2 : 0,
@@ -247,17 +257,9 @@ const PaneledPage: React.FC<{
                     )}
                   </Flex>
 
-                  {isSidebarExpanded && (
-                    <Box sx={{ position: 'relative', mt: 4, pl: 3, ml: -3 }}>
-                      {sidebar}
-                    </Box>
-                  )}
+                  {isSidebarExpanded && <Box sx={sx.expanded}>{sidebar}</Box>}
 
-                  {isMetadataExpanded && (
-                    <Box sx={{ display: ['inherit', 'none', 'none', 'none'] }}>
-                      {metadata}
-                    </Box>
-                  )}
+                  {isMetadataExpanded && <Box sx={sx.expanded}>{metadata}</Box>}
 
                   {(isSidebarExpanded || isMetadataExpanded) && (
                     <Divider sx={{ mt: 6 }} />
@@ -380,8 +382,8 @@ const PaneledPage: React.FC<{
           <Box
             sx={{
               ...sx.sticky,
-              mr: [0, 0, -8, -10], // push scrollbar to edge
-              pr: [0, 0, 8, 10],
+              mr: [0, -8, -8, -10], // push scrollbar to edge
+              pr: [0, 8, 8, 10],
             }}
           >
             {metadata}

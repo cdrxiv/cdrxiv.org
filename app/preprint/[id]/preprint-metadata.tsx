@@ -12,6 +12,7 @@ import type {
   Preprint,
   Funder,
   SupplementaryFile,
+  Version,
 } from '../../../types/preprint'
 import type { Deposition } from '../../../types/zenodo'
 import ErrorOrTrack from './error-or-track'
@@ -20,6 +21,16 @@ import { formatDate } from '../../../utils/formatters'
 
 const getDataDownload = (deposition: Deposition) => {
   return `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].filename}?download=1`
+}
+
+const getVersionLabel = (version: Version, preprint: Preprint) => {
+  if ((version.title || preprint.title)?.startsWith('WITHDRAWN')) {
+    return 'Withdrawn'
+  } else if (version.version === 1) {
+    return 'Published'
+  } else {
+    return `v${version.version}`
+  }
 }
 
 const PreprintMetadata: React.FC<{
@@ -262,44 +273,37 @@ const PreprintMetadata: React.FC<{
 
       {hasConflictOfInterest && (
         <Field label='Conflict of interest'>
-          <Box sx={{ variant: 'text.body', fontSize: [1, 1, 1, 2] }}>
-            {conflictOfInterest}
-          </Box>
+          <Box sx={{ variant: 'text.mono' }}>{conflictOfInterest}</Box>
         </Field>
       )}
 
-      {preprint.date_published &&
-        (preprint.versions.length === 1 ? (
-          <Field label='Published'>
+      {preprint.date_published && (
+        <Field label={preprint.versions.length === 1 ? 'Published' : 'Dates'}>
+          {preprint.versions.map((version) => (
             <Flex
+              key={version.version}
               sx={{
+                columnGap: 2,
+                rowGap: 0,
                 variant: 'text.mono',
                 flexWrap: 'wrap',
               }}
             >
-              {formatDate(new Date(preprint.date_published))}
+              <Box>
+                {formatDate(
+                  new Date(
+                    version.version === 1
+                      ? preprint.date_published
+                      : version.date_time,
+                  ),
+                )}
+              </Box>
+              {preprint.versions.length > 1 &&
+                `(${getVersionLabel(version, preprint)})`}
             </Flex>
-          </Field>
-        ) : preprint.versions.length > 1 ? (
-          <Field label='Dates'>
-            {preprint.versions.map((version) => (
-              <Flex
-                key={version.version}
-                sx={{
-                  columnGap: 2,
-                  rowGap: 0,
-                  variant: 'text.mono',
-                  flexWrap: 'wrap',
-                }}
-              >
-                <Box>{formatDate(new Date(version.date_time))}</Box>
-                {(version.title || preprint.title).startsWith('WITHDRAWN')
-                  ? '(Withdrawn)'
-                  : `(v${version.version})`}
-              </Flex>
-            ))}
-          </Field>
-        ) : null)}
+          ))}
+        </Field>
+      )}
     </Flex>
   )
 }
