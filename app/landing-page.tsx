@@ -76,28 +76,22 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
               <Link
                 role='option'
                 aria-selected={currentView === 'grid'}
-                sx={{
-                  variant: 'text.body',
-                  textDecoration: currentView === 'grid' ? 'underline' : 'none',
-                  textTransform: 'capitalize',
-                }}
                 onClick={() => {
                   handleViewChange('grid')
                 }}
+                selected={currentView === 'grid'}
+                hoverEffect={true}
               >
                 Grid
               </Link>
               <Link
                 role='option'
                 aria-selected={currentView === 'list'}
-                sx={{
-                  variant: 'text.body',
-                  textDecoration: currentView === 'list' ? 'underline' : 'none',
-                  textTransform: 'capitalize',
-                }}
                 onClick={() => {
                   handleViewChange('list')
                 }}
+                selected={currentView === 'list'}
+                hoverEffect={true}
               >
                 List
               </Link>
