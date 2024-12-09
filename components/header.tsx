@@ -23,7 +23,7 @@ const PATHS: { name: string; path: string; matchingPaths?: string[] }[] = [
   {
     name: 'Account',
     path: '/account',
-    matchingPaths: ['/account', '/submissions', '/preview'],
+    matchingPaths: ['/account', '/submissions', '/preview', '/register'],
   },
 ]
 
