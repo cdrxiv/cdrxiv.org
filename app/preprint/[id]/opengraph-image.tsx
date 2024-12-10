@@ -1,0 +1,258 @@
+import { ImageResponse } from 'next/og'
+import { theme } from '../../../theme/theme'
+import BorderFrame from '../../../components/og-image/border-frame'
+import LogoSVG from '../../../components/og-image/logo'
+import { Author, Preprint } from '../../../types/preprint'
+
+export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
+
+export const size = {
+  width: 1200,
+  height: 630,
+}
+
+export const contentType = 'image/png'
+
+const getPreprint = async (id: string): Promise<Preprint> => {
+  const preprints = await fetch(
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/${id}`,
+  )
+  const data = await preprints.json()
+  return data
+}
+
+const getFonts = async () => {
+  const [quadrant, quadrantItalic, gtPressura] = await Promise.all([
+    fetch('https://fonts.carbonplan.org/quadrant/QuadrantText-Regular.otf', {
+      next: { revalidate: false },
+    }).then((res) => res.arrayBuffer()),
+    fetch(
+      'https://fonts.carbonplan.org/quadrant/QuadrantText-RegularItalic.otf',
+      {
+        next: { revalidate: false },
+      },
+    ).then((res) => res.arrayBuffer()),
+    fetch(
+      'https://fonts.carbonplan.org/gt_pressura_mono/GT-Pressura-Mono-Regular.otf',
+      {
+        next: { revalidate: false },
+      },
+    ).then((res) => res.arrayBuffer()),
+  ])
+
+  return [
+    {
+      name: 'Quadrant',
+      data: quadrant,
+    },
+    {
+      name: 'Quadrant Italic',
+      data: quadrantItalic,
+    },
+    {
+      name: 'GT Pressura',
+      data: gtPressura,
+    },
+  ]
+}
+
+const MONTHS = [
+  'JAN',
+  'FEB',
+  'MAR',
+  'APR',
+  'MAY',
+  'JUN',
+  'JUL',
+  'AUG',
+  'SEP',
+  'OCT',
+  'NOV',
+  'DEC',
+]
+
+const Badge = ({
+  children,
+  color,
+}: {
+  children: React.ReactNode
+  color: string
+}) => {
+  return (
+    <div
+      style={{
+        padding: '0px 10px 6px 10px',
+        backgroundColor: color,
+        lineHeight: 1.2,
+        textTransform: 'uppercase',
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+const formatAuthors = (authors: Author[]): string => {
+  if (!authors?.length) return ''
+  const fullAuthorString = authors
+    .map((author) =>
+      [author?.first_name || '', author?.last_name || '']
+        .filter((name) => name.length > 0)
+        .join(' '),
+    )
+    .join(', ')
+  if (fullAuthorString.length < 30) {
+    return fullAuthorString
+  }
+  const firstAuthor = authors[0]
+  return `${firstAuthor?.last_name || ''} et al.`
+}
+
+const getSubmissionType = (
+  preprint: Preprint | null,
+  fieldName: string,
+): string | null => {
+  if (!preprint) {
+    return null
+  }
+  const additionalField = preprint.additional_field_answers.find(
+    (field) => field.field?.name === fieldName,
+  )
+  if (!additionalField) {
+    return null
+  }
+  return additionalField.answer
+}
+export const submissionTypes = (
+  preprint: Preprint,
+): { label: string; color: string }[] => {
+  const type = getSubmissionType(preprint, 'Submission type')
+
+  return [
+    { label: 'Article', color: 'pink' },
+    { label: 'Data', color: 'green' },
+  ].filter((badge) =>
+    [badge.label, 'Both'].find((el) => type?.match(new RegExp(el, 'i'))),
+  )
+}
+
+const formatPublishedDate = (dateString: string | null): string => {
+  if (!dateString) return ''
+  const [year, month, day] = dateString.split('-').map((num) => parseInt(num))
+  return `${MONTHS[month - 1]} ${day}, ${year}`
+}
+
+export default async function Image({ params }: { params: { id: string } }) {
+  const [fonts, preprint] = await Promise.all([
+    getFonts(),
+    getPreprint(params.id),
+  ])
+  const submissionType = submissionTypes(preprint)
+
+  return new ImageResponse(
+    (
+      <BorderFrame>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            position: 'absolute',
+            top: '80px',
+            bottom: '0',
+            width: '750px',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <div
+              style={{
+                display: '-webkit-box',
+                WebkitLineClamp: 4,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                fontSize: '65px',
+                fontFamily: 'Quadrant',
+              }}
+            >
+              {preprint.title}
+            </div>
+            <div
+              style={{
+                fontSize: '44px',
+                fontFamily: 'GT Pressura',
+                marginTop: '5px',
+              }}
+            >
+              {formatAuthors(preprint.authors)}
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              position: 'absolute',
+              bottom: '50px',
+              width: '100%',
+              gap: '30px',
+            }}
+          >
+            <div
+              style={{
+                fontSize: '44px',
+                fontFamily: 'GT Pressura',
+                letterSpacing: '0.03em',
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div style={{ display: 'flex', gap: '20px' }}>
+                {submissionType.map((type) => (
+                  <Badge
+                    key={type.label}
+                    color={theme?.colors?.[type.color] as string}
+                  >
+                    {type.label}
+                  </Badge>
+                ))}
+              </div>
+              <div>{formatPublishedDate(preprint.date_published)}</div>
+            </div>
+
+            <div
+              style={{
+                fontSize: '44px',
+                fontFamily: 'Quadrant Italic',
+                color: theme?.colors?.blue as string,
+                marginBottom: '2px',
+              }}
+            >
+              {`www.cdrxiv.org/preprint/${params.id}`}
+            </div>
+          </div>
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            position: 'absolute',
+            bottom: '50px',
+            left: '50px',
+          }}
+        >
+          <LogoSVG size={145} />
+        </div>
+      </BorderFrame>
+    ),
+    {
+      ...size,
+      fonts,
+    },
+  )
+}
