@@ -89,7 +89,7 @@ export default async function Image() {
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                fontSize: '36px',
+                fontSize: '44px',
                 fontFamily: 'Quadrant Italic',
                 color: theme?.colors?.blue as string,
                 marginBottom: '-8px',
