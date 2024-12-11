@@ -4,6 +4,7 @@ import BorderFrame from '../../../components/og-image/border-frame'
 import LogoSVG from '../../../components/og-image/logo'
 import { Author, Preprint } from '../../../types/preprint'
 
+export const runtime = 'nodejs'
 export const revalidate = 604800 // 1 week
 export const contentType = 'image/png'
 export const alt = 'CDRXIV - Preprints and Data for Carbon Dioxide Removal'
