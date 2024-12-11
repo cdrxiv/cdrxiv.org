@@ -168,7 +168,7 @@ export default async function Image({ params }: { params: { id: string } }) {
                 WebkitBoxOrient: 'vertical',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
-                fontSize: '65px',
+                fontSize: '60px',
                 fontFamily: 'Quadrant',
               }}
             >
@@ -176,7 +176,7 @@ export default async function Image({ params }: { params: { id: string } }) {
             </div>
             <div
               style={{
-                fontSize: '44px',
+                fontSize: '40px',
                 fontFamily: 'GT Pressura',
                 marginTop: '5px',
               }}
