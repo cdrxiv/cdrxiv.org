@@ -6,8 +6,22 @@ import { Author, Preprint } from '../../../types/preprint'
 
 export const runtime = 'nodejs'
 export const revalidate = 604800 // 1 week
-export const contentType = 'image/png'
-export const alt = 'CDRXIV - Preprints and Data for Carbon Dioxide Removal'
+
+export const generateImageMetadata = async ({
+  params,
+}: {
+  params: { id: string }
+}) => {
+  const preprint = await getPreprint(params.id)
+  return [
+    {
+      id: 1, // preview at /opengraph-image/1
+      type: 'image/png',
+      size,
+      alt: `${preprint.title} by ${formatAuthors(preprint.authors)} - ${formatPublishedDate(preprint.date_published)} | CDRXIV`,
+    },
+  ]
+}
 
 export const size = {
   width: 1200,
