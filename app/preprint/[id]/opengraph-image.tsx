@@ -22,20 +22,14 @@ const getPreprint = async (id: string): Promise<Preprint> => {
 }
 
 const getFonts = async () => {
-  const [quadrant, quadrantItalic, gtPressura] = await Promise.all([
+  const [quadrant, gtPressura] = await Promise.all([
     fetch('https://fonts.carbonplan.org/quadrant/QuadrantText-Regular.otf', {
-      next: { revalidate: false },
+      cache: 'force-cache',
     }).then((res) => res.arrayBuffer()),
-    fetch(
-      'https://fonts.carbonplan.org/quadrant/QuadrantText-RegularItalic.otf',
-      {
-        next: { revalidate: false },
-      },
-    ).then((res) => res.arrayBuffer()),
     fetch(
       'https://fonts.carbonplan.org/gt_pressura_mono/GT-Pressura-Mono-Regular.otf',
       {
-        next: { revalidate: false },
+        cache: 'force-cache',
       },
     ).then((res) => res.arrayBuffer()),
   ])
@@ -44,10 +38,6 @@ const getFonts = async () => {
     {
       name: 'Quadrant',
       data: quadrant,
-    },
-    {
-      name: 'Quadrant Italic',
-      data: quadrantItalic,
     },
     {
       name: 'GT Pressura',
@@ -158,9 +148,10 @@ export default async function Image({ params }: { params: { id: string } }) {
             flexDirection: 'column',
             justifyContent: 'space-between',
             position: 'absolute',
-            top: '80px',
-            bottom: '0',
-            width: '750px',
+            top: '100px',
+            bottom: '50px',
+            right: '50px',
+            left: '275px',
           }}
         >
           <div
@@ -195,46 +186,24 @@ export default async function Image({ params }: { params: { id: string } }) {
 
           <div
             style={{
+              fontSize: '44px',
+              fontFamily: 'GT Pressura',
+              letterSpacing: '0.03em',
               display: 'flex',
-              flexDirection: 'column',
-              position: 'absolute',
-              bottom: '50px',
-              width: '100%',
-              gap: '30px',
+              justifyContent: 'space-between',
             }}
           >
-            <div
-              style={{
-                fontSize: '44px',
-                fontFamily: 'GT Pressura',
-                letterSpacing: '0.03em',
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}
-            >
-              <div style={{ display: 'flex', gap: '20px' }}>
-                {submissionType.map((type) => (
-                  <Badge
-                    key={type.label}
-                    color={theme?.colors?.[type.color] as string}
-                  >
-                    {type.label}
-                  </Badge>
-                ))}
-              </div>
-              <div>{formatPublishedDate(preprint.date_published)}</div>
+            <div style={{ display: 'flex', gap: '20px' }}>
+              {submissionType.map((type) => (
+                <Badge
+                  key={type.label}
+                  color={theme?.colors?.[type.color] as string}
+                >
+                  {type.label}
+                </Badge>
+              ))}
             </div>
-
-            <div
-              style={{
-                fontSize: '44px',
-                fontFamily: 'Quadrant Italic',
-                color: theme?.colors?.blue as string,
-                marginBottom: '2px',
-              }}
-            >
-              {`www.cdrxiv.org/preprint/${params.id}`}
-            </div>
+            <div>{formatPublishedDate(preprint.date_published)}</div>
           </div>
         </div>
         <div
@@ -245,7 +214,7 @@ export default async function Image({ params }: { params: { id: string } }) {
             left: '50px',
           }}
         >
-          <LogoSVG size={145} />
+          <LogoSVG size={175} />
         </div>
       </BorderFrame>
     ),
