@@ -25,12 +25,12 @@ const getPreprint = async (id: string): Promise<Preprint> => {
 const getFonts = async () => {
   const [quadrant, gtPressura] = await Promise.all([
     fetch('https://fonts.carbonplan.org/quadrant/QuadrantText-Regular.otf', {
-      cache: 'force-cache',
+      next: { revalidate: false },
     }).then((res) => res.arrayBuffer()),
     fetch(
       'https://fonts.carbonplan.org/gt_pressura_mono/GT-Pressura-Mono-Regular.otf',
       {
-        cache: 'force-cache',
+        next: { revalidate: false },
       },
     ).then((res) => res.arrayBuffer()),
   ])
