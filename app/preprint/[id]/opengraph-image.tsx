@@ -92,7 +92,7 @@ const formatAuthors = (authors: Author[]): string => {
         .join(' '),
     )
     .join(', ')
-  if (fullAuthorString.length < 30) {
+  if (fullAuthorString.length < 40) {
     return fullAuthorString
   }
   const firstAuthor = authors[0]
@@ -149,16 +149,17 @@ export default async function Image({ params }: { params: { id: string } }) {
             flexDirection: 'column',
             justifyContent: 'space-between',
             position: 'absolute',
-            top: '100px',
+            top: '50px',
             bottom: '50px',
-            right: '100px',
-            left: '275px',
+            right: '75px',
+            left: '75px',
           }}
         >
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
+              gap: '20px',
             }}
           >
             <div
@@ -178,44 +179,50 @@ export default async function Image({ params }: { params: { id: string } }) {
               style={{
                 fontSize: '40px',
                 fontFamily: 'GT Pressura',
-                marginTop: '5px',
+                display: '-webkit-box',
+                WebkitLineClamp: 1, // fallback for character limit
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
               }}
             >
               {formatAuthors(preprint.authors)}
             </div>
           </div>
-
-          <div
-            style={{
-              fontSize: '44px',
-              fontFamily: 'GT Pressura',
-              letterSpacing: '0.03em',
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <div style={{ display: 'flex', gap: '20px' }}>
-              {submissionType.map((type) => (
-                <Badge
-                  key={type.label}
-                  color={theme?.colors?.[type.color] as string}
-                >
-                  {type.label}
-                </Badge>
-              ))}
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <LogoSVG size={175} />
+            <div
+              style={{
+                fontSize: '44px',
+                fontFamily: 'GT Pressura',
+                letterSpacing: '0.03em',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-end',
+                gap: '17px',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                {formatPublishedDate(preprint.date_published)}
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '20px',
+                  justifyContent: 'flex-end',
+                }}
+              >
+                {submissionType.map((type) => (
+                  <Badge
+                    key={type.label}
+                    color={theme?.colors?.[type.color] as string}
+                  >
+                    {type.label}
+                  </Badge>
+                ))}
+              </div>
             </div>
-            <div>{formatPublishedDate(preprint.date_published)}</div>
           </div>
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            position: 'absolute',
-            bottom: '50px',
-            left: '50px',
-          }}
-        >
-          <LogoSVG size={175} />
         </div>
       </BorderFrame>
     ),
