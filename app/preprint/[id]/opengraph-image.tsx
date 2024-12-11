@@ -4,15 +4,14 @@ import BorderFrame from '../../../components/og-image/border-frame'
 import LogoSVG from '../../../components/og-image/logo'
 import { Author, Preprint } from '../../../types/preprint'
 
-export const runtime = 'edge'
-export const dynamic = 'force-dynamic'
+export const revalidate = 604800 // 1 week
+export const contentType = 'image/png'
+export const alt = 'CDRXIV - Preprints and Data for Carbon Dioxide Removal'
 
 export const size = {
   width: 1200,
   height: 630,
 }
-
-export const contentType = 'image/png'
 
 const getPreprint = async (id: string): Promise<Preprint> => {
   const preprints = await fetch(
