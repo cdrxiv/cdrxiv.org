@@ -151,7 +151,7 @@ export default async function Image({ params }: { params: { id: string } }) {
             position: 'absolute',
             top: '100px',
             bottom: '50px',
-            right: '50px',
+            right: '100px',
             left: '275px',
           }}
         >
