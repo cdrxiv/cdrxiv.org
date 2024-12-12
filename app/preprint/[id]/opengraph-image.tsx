@@ -4,8 +4,12 @@ import BorderFrame from '../../../components/og-image/border-frame'
 import LogoSVG from '../../../components/og-image/logo'
 import { Author, Preprint } from '../../../types/preprint'
 
-export const runtime = 'nodejs'
+export const runtime = 'nodejs' // required for revalidation parameter
 export const revalidate = 604800 // 1 week
+export const size = {
+  width: 1200,
+  height: 630,
+}
 
 export const generateImageMetadata = async ({
   params,
@@ -16,16 +20,15 @@ export const generateImageMetadata = async ({
   return [
     {
       id: 1, // preview at /opengraph-image/1
-      type: 'image/png',
+      contentType: 'image/png',
       size,
-      alt: `${preprint.title} by ${formatAuthors(preprint.authors)} - ${formatPublishedDate(preprint.date_published)} | CDRXIV`,
+      alt: `${preprint.title} by ${formatAuthors(preprint.authors)}${
+        preprint.date_published
+          ? ` - ${formatDate(new Date(preprint.date_published))}`
+          : ''
+      } | CDRXIV`,
     },
   ]
-}
-
-export const size = {
-  width: 1200,
-  height: 630,
 }
 
 const getPreprint = async (id: string): Promise<Preprint> => {
@@ -60,21 +63,6 @@ const getFonts = async () => {
     },
   ]
 }
-
-const MONTHS = [
-  'JAN',
-  'FEB',
-  'MAR',
-  'APR',
-  'MAY',
-  'JUN',
-  'JUL',
-  'AUG',
-  'SEP',
-  'OCT',
-  'NOV',
-  'DEC',
-]
 
 const Badge = ({
   children,
@@ -113,25 +101,15 @@ const formatAuthors = (authors: Author[]): string => {
   return `${firstAuthor?.last_name || ''} et al.`
 }
 
-const getSubmissionType = (
-  preprint: Preprint | null,
-  fieldName: string,
-): string | null => {
-  if (!preprint) {
-    return null
-  }
-  const additionalField = preprint.additional_field_answers.find(
-    (field) => field.field?.name === fieldName,
-  )
-  if (!additionalField) {
-    return null
-  }
-  return additionalField.answer
-}
 export const submissionTypes = (
-  preprint: Preprint,
+  preprint: Preprint | null,
 ): { label: string; color: string }[] => {
-  const type = getSubmissionType(preprint, 'Submission type')
+  if (!preprint) return []
+
+  const additionalField = preprint.additional_field_answers.find(
+    (field) => field.field?.name === 'Submission type',
+  )
+  const type = additionalField?.answer
 
   return [
     { label: 'Article', color: 'pink' },
@@ -141,10 +119,16 @@ export const submissionTypes = (
   )
 }
 
-const formatPublishedDate = (dateString: string | null): string => {
-  if (!dateString) return ''
-  const [year, month, day] = dateString.split('-').map((num) => parseInt(num))
-  return `${MONTHS[month - 1]} ${day}, ${year}`
+export const formatDate = (
+  date: Date,
+  dateOptions?: Intl.DateTimeFormatOptions,
+): string => {
+  const options: Intl.DateTimeFormatOptions = {
+    year: dateOptions?.year ?? 'numeric',
+    month: dateOptions?.month ?? 'long',
+    day: dateOptions?.day ?? 'numeric',
+  }
+  return date.toLocaleDateString('en-US', options)
 }
 
 export default async function Image({ params }: { params: { id: string } }) {
@@ -152,7 +136,6 @@ export default async function Image({ params }: { params: { id: string } }) {
     getFonts(),
     getPreprint(params.id),
   ])
-  const submissionType = submissionTypes(preprint)
 
   return new ImageResponse(
     (
@@ -229,16 +212,16 @@ export default async function Image({ params }: { params: { id: string } }) {
                 fontSize: '44px',
                 fontFamily: 'GT Pressura',
                 letterSpacing: '0.03em',
+                textTransform: 'uppercase',
               }}
             >
               <div
                 style={{
                   display: 'flex',
                   gap: '20px',
-                  justifyContent: 'flex-end',
                 }}
               >
-                {submissionType.map((type) => (
+                {submissionTypes(preprint).map((type) => (
                   <Badge
                     key={type.label}
                     color={theme?.colors?.[type.color] as string}
@@ -247,7 +230,13 @@ export default async function Image({ params }: { params: { id: string } }) {
                   </Badge>
                 ))}
               </div>
-              <div>{formatPublishedDate(preprint.date_published)}</div>
+              <div>
+                {preprint.date_published
+                  ? formatDate(new Date(preprint.date_published), {
+                      month: 'short',
+                    })
+                  : ''}
+              </div>
             </div>
           </div>
         </div>
