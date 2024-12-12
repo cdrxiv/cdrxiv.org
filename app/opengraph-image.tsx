@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og'
 import { theme } from '../theme/theme'
 import BorderFrame from '../components/og-image/border-frame'
-import LogoSVG from '../components/og-image/logo'
+import Lockup from '../components/og-image/lockup'
 
 export const runtime = 'nodejs'
 export const revalidate = 604800 // 1 week
@@ -22,10 +22,7 @@ const getPreprintCount = async () => {
 }
 
 const getFonts = async () => {
-  const [quadrant, quadrantItalic, gtPressura] = await Promise.all([
-    fetch('https://fonts.carbonplan.org/quadrant/QuadrantText-Regular.otf', {
-      next: { revalidate: false },
-    }).then((res) => res.arrayBuffer()),
+  const [quadrantItalic, gtPressura] = await Promise.all([
     fetch(
       'https://fonts.carbonplan.org/quadrant/QuadrantText-RegularItalic.otf',
       {
@@ -41,10 +38,6 @@ const getFonts = async () => {
   ])
 
   return [
-    {
-      name: 'Quadrant',
-      data: quadrant,
-    },
     {
       name: 'Quadrant Italic',
       data: quadrantItalic,
@@ -68,60 +61,44 @@ export default async function Image() {
         <div
           style={{
             display: 'flex',
-            gap: '40px',
+            flexDirection: 'column',
+            width: '100%',
+            height: '100%',
+            justifyContent: 'center',
+            gap: '75px',
+            paddingLeft: '50px',
+            paddingRight: '50px',
           }}
         >
-          {/* Left column */}
           <div
             style={{
               display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              height: '100%',
-              gap: '75px',
+              justifyContent: 'center',
             }}
           >
-            <div style={{ display: 'flex', marginTop: '-2px' }}>
-              <LogoSVG size={245} />
-            </div>
+            <Lockup width={1100} />
+          </div>
 
+          <div
+            style={{
+              display: 'flex',
+              gap: '50px',
+            }}
+          >
             <div
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                fontSize: '44px',
+                justifyContent: 'flex-end',
+                fontSize: '40px',
                 fontFamily: 'Quadrant Italic',
                 color: theme?.colors?.blue as string,
-                marginBottom: '-8px',
+                marginTop: '5px',
               }}
             >
               <div>Visit us on the</div>
               <div>world wide web!</div>
             </div>
-          </div>
-
-          {/* Right column */}
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              height: '100%',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                fontSize: '88px',
-                fontFamily: 'Quadrant',
-              }}
-            >
-              <div>Preprints and</div>
-              <div>Data for Carbon</div>
-              <div>Dioxide Removal</div>
-            </div>
-
             <div
               style={{
                 display: 'flex',
@@ -143,7 +120,7 @@ export default async function Image() {
                       backgroundColor: theme?.colors?.background as string,
                       borderTop: `3px solid ${theme?.colors?.text}`,
                       borderLeft: `3px solid ${theme?.colors?.text}`,
-                      fontSize: '55px',
+                      fontSize: '65px',
                       fontFamily: 'GT Pressura',
                     }}
                   >
@@ -152,7 +129,7 @@ export default async function Image() {
                 ))}
               <div
                 style={{
-                  fontSize: '44px',
+                  fontSize: '40px',
                   lineHeight: 1,
                   fontFamily: 'GT Pressura',
                   textTransform: 'uppercase',
