@@ -165,7 +165,7 @@ export default async function Image() {
                   marginTop: '-5px',
                 }}
               >
-                Preprints Submitted
+                Preprints Available
               </div>
             </div>
           </div>
