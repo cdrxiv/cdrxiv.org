@@ -4,6 +4,7 @@ import BorderFrame from '../../../components/og-image/border-frame'
 import LogoSVG from '../../../components/og-image/logo'
 import Badge from '../../../components/og-image/badge'
 import { Author, Preprint } from '../../../types/preprint'
+import { formatDate, submissionTypes } from '../../../utils/formatters'
 
 export const runtime = 'nodejs' // required for revalidation parameter
 export const revalidate = 604800 // 1 week
@@ -79,36 +80,6 @@ const formatAuthors = (authors: Author[]): string => {
   }
   const firstAuthor = authors[0]
   return `${firstAuthor?.last_name || ''} et al.`
-}
-
-export const submissionTypes = (
-  preprint: Preprint | null,
-): { label: string; color: string }[] => {
-  if (!preprint) return []
-
-  const additionalField = preprint.additional_field_answers.find(
-    (field) => field.field?.name === 'Submission type',
-  )
-  const type = additionalField?.answer
-
-  return [
-    { label: 'Article', color: 'pink' },
-    { label: 'Data', color: 'green' },
-  ].filter((badge) =>
-    [badge.label, 'Both'].find((el) => type?.match(new RegExp(el, 'i'))),
-  )
-}
-
-export const formatDate = (
-  date: Date,
-  dateOptions?: Intl.DateTimeFormatOptions,
-): string => {
-  const options: Intl.DateTimeFormatOptions = {
-    year: dateOptions?.year ?? 'numeric',
-    month: dateOptions?.month ?? 'long',
-    day: dateOptions?.day ?? 'numeric',
-  }
-  return date.toLocaleDateString('en-US', options)
 }
 
 export default async function Image({ params }: { params: { id: string } }) {
