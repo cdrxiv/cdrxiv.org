@@ -36,6 +36,9 @@ export const generateImageMetadata = async ({
 const getPreprint = async (id: string): Promise<Preprint> => {
   const preprints = await fetch(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/${id}`,
+    {
+      next: { revalidate: 10 },
+    },
   )
   const data = await preprints.json()
   return data
