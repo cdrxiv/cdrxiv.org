@@ -73,16 +73,14 @@ const formatAuthors = (authors: Author[]): string => {
   if (!authors?.length) return ''
   const fullAuthorString = authors
     .map((author) =>
-      [author?.first_name || '', author?.last_name || '']
-        .filter((name) => name.length > 0)
-        .join(' '),
+      `${author?.first_name || ''} ${author?.last_name || ''}`.trim(),
     )
     .join(', ')
   if (fullAuthorString.length < 35) {
     return fullAuthorString
   }
   const firstAuthor = authors[0]
-  return `${firstAuthor?.last_name || ''} et al.`
+  return firstAuthor?.last_name ? `${firstAuthor.last_name} et al.` : ''
 }
 
 export default async function Image({ params }: { params: { id: string } }) {
