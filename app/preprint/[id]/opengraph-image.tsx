@@ -6,7 +6,7 @@ import Badge from '../../../components/og-image/badge'
 import { Author, Preprint } from '../../../types/preprint'
 import { formatDate, submissionTypes } from '../../../utils/formatters'
 
-export const runtime = 'nodejs' // required for revalidation parameter
+export const runtime = 'edge'
 // export const revalidate = 10 // 1 day
 
 export const dynamic = 'force-dynamic'
