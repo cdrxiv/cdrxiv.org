@@ -6,8 +6,8 @@ import Badge from '../../../components/og-image/badge'
 import { Author, Preprint } from '../../../types/preprint'
 import { formatDate, submissionTypes } from '../../../utils/formatters'
 
-export const runtime = 'nodejs' // required for revalidation parameter
-export const revalidate = 604800 // 1 week
+export const runtime = 'edge'
+
 export const size = {
   width: 1200,
   height: 630,
@@ -36,6 +36,9 @@ export const generateImageMetadata = async ({
 const getPreprint = async (id: string): Promise<Preprint> => {
   const preprints = await fetch(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/${id}`,
+    {
+      next: { revalidate: 86400 },
+    },
   )
   const data = await preprints.json()
   return data
