@@ -15,7 +15,7 @@ export const size = {
 
 const getPreprintCount = async () => {
   const preprints = await fetch(
-    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints`,
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/?limit=1`,
   )
   const data = await preprints.json()
   return data.count
