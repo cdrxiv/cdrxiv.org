@@ -2,6 +2,7 @@ import { ImageResponse } from 'next/og'
 import { theme } from '../../../theme/theme'
 import BorderFrame from '../../../components/og-image/border-frame'
 import LogoSVG from '../../../components/og-image/logo'
+import Badge from '../../../components/og-image/badge'
 import { Author, Preprint } from '../../../types/preprint'
 
 export const runtime = 'nodejs' // required for revalidation parameter
@@ -62,27 +63,6 @@ const getFonts = async () => {
       data: gtPressura,
     },
   ]
-}
-
-const Badge = ({
-  children,
-  color,
-}: {
-  children: React.ReactNode
-  color: string
-}) => {
-  return (
-    <div
-      style={{
-        padding: '0px 10px 6px 10px',
-        backgroundColor: color,
-        lineHeight: 1.2,
-        textTransform: 'uppercase',
-      }}
-    >
-      {children}
-    </div>
-  )
 }
 
 const formatAuthors = (authors: Author[]): string => {
