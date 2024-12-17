@@ -198,7 +198,7 @@ export default async function Image({ params }: { params: { id: string } }) {
       ...size,
       fonts,
       headers: {
-        'Cache-Control': 'public, max-age=86400',
+        'Cache-Control': 'public, max-age=10',
       },
     },
   )
