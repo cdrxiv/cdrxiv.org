@@ -155,7 +155,7 @@ export default async function Image() {
       ...size,
       fonts,
       headers: {
-        'Cache-Control': 'public, max-age=10',
+        'Cache-Control': 'public, max-age=86400',
       },
     },
   )
