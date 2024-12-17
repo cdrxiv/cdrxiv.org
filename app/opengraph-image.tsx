@@ -28,13 +28,13 @@ const getFonts = async () => {
     fetch(
       'https://fonts.carbonplan.org/quadrant/QuadrantText-RegularItalic.otf',
       {
-        next: { revalidate: false },
+        cache: 'force-cache',
       },
     ).then((res) => res.arrayBuffer()),
     fetch(
       'https://fonts.carbonplan.org/gt_pressura_mono/GT-Pressura-Mono-Regular.otf',
       {
-        next: { revalidate: false },
+        cache: 'force-cache',
       },
     ).then((res) => res.arrayBuffer()),
   ])
