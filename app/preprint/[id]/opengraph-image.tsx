@@ -9,6 +9,8 @@ import { formatDate, submissionTypes } from '../../../utils/formatters'
 export const runtime = 'edge'
 // export const revalidate = 10 // 1 day
 
+const cache = 'no-store'
+
 export const dynamic = 'force-dynamic'
 
 export const size = {
@@ -40,7 +42,7 @@ const getPreprint = async (id: string): Promise<Preprint> => {
   const preprints = await fetch(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/${id}`,
     {
-      next: { revalidate: 10 },
+      cache: 'no-store',
     },
   )
   const data = await preprints.json()
