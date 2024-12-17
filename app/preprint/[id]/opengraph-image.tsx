@@ -7,7 +7,6 @@ import { Author, Preprint } from '../../../types/preprint'
 import { formatDate, submissionTypes } from '../../../utils/formatters'
 
 export const runtime = 'edge'
-// export const revalidate = 10 // 1 day
 
 export const size = {
   width: 1200,
@@ -38,7 +37,7 @@ const getPreprint = async (id: string): Promise<Preprint> => {
   const preprints = await fetch(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/${id}`,
     {
-      cache: 'no-store',
+      next: { revalidate: 86400 },
     },
   )
   const data = await preprints.json()
@@ -199,7 +198,7 @@ export default async function Image({ params }: { params: { id: string } }) {
       ...size,
       fonts,
       headers: {
-        'Cache-Control': 'public, max-age=10',
+        'Cache-Control': 'public, max-age=86400',
       },
     },
   )

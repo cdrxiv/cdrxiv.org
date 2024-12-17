@@ -3,8 +3,7 @@ import { theme } from '../theme/theme'
 import BorderFrame from '../components/og-image/border-frame'
 import Lockup from '../components/og-image/lockup'
 
-export const runtime = 'nodejs' // required for revalidation parameter
-export const revalidate = 86400 // 1 day
+export const runtime = 'edge'
 export const contentType = 'image/png'
 export const alt = 'CDRXIV - Preprints and Data for Carbon Dioxide Removal'
 
@@ -16,6 +15,9 @@ export const size = {
 const getPreprintCount = async () => {
   const preprints = await fetch(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/?limit=1`,
+    {
+      next: { revalidate: 86400 },
+    },
   )
   const data = await preprints.json()
   return data.count
@@ -152,6 +154,9 @@ export default async function Image() {
     {
       ...size,
       fonts,
+      headers: {
+        'Cache-Control': 'public, max-age=86400',
+      },
     },
   )
 }
