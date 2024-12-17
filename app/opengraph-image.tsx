@@ -16,7 +16,7 @@ const getPreprintCount = async () => {
   const preprints = await fetch(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/?limit=1`,
     {
-      next: { revalidate: 86400 },
+      cache: 'no-store',
     },
   )
   const data = await preprints.json()
