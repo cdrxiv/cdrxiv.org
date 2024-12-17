@@ -6,12 +6,8 @@ import Badge from '../../../components/og-image/badge'
 import { Author, Preprint } from '../../../types/preprint'
 import { formatDate, submissionTypes } from '../../../utils/formatters'
 
-export const runtime = 'nodejs'
+export const runtime = 'edge'
 // export const revalidate = 10 // 1 day
-
-export const fetchCache = 'force-no-store'
-
-export const dynamic = 'force-dynamic'
 
 export const size = {
   width: 1200,
@@ -202,6 +198,9 @@ export default async function Image({ params }: { params: { id: string } }) {
     {
       ...size,
       fonts,
+      headers: {
+        'Cache-Control': 'no-store',
+      },
     },
   )
 }
