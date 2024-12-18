@@ -4,7 +4,11 @@ import BorderFrame from '../../../components/og-image/border-frame'
 import LogoSVG from '../../../components/og-image/logo'
 import Badge from '../../../components/og-image/badge'
 import { Author, Preprint } from '../../../types/preprint'
-import { formatDate, submissionTypes } from '../../../utils/formatters'
+import {
+  formatDate,
+  authorList,
+  submissionTypes,
+} from '../../../utils/formatters'
 
 export const runtime = 'edge'
 
@@ -71,16 +75,11 @@ const getFonts = async () => {
 
 const formatAuthors = (authors: Author[]): string => {
   if (!authors?.length) return ''
-  const fullAuthorString = authors
-    .map((author) =>
-      `${author?.first_name || ''} ${author?.last_name || ''}`.trim(),
-    )
-    .join(', ')
+  const fullAuthorString = authorList(authors)
   if (fullAuthorString.length < 35) {
     return fullAuthorString
   }
-  const firstAuthor = authors[0]
-  return firstAuthor?.last_name ? `${firstAuthor.last_name} et al.` : ''
+  return authorList(authors, { abbreviate: true })
 }
 
 export default async function Image({ params }: { params: { id: string } }) {
