@@ -10,31 +10,12 @@ import {
   submissionTypes,
 } from '../../../utils/formatters'
 
-export const runtime = 'edge'
+export const contentType = 'image/png'
+export const alt = 'CDRXIV submission social card'
 
 export const size = {
   width: 1200,
   height: 630,
-}
-
-export const generateImageMetadata = async ({
-  params,
-}: {
-  params: { id: string }
-}) => {
-  const preprint = await getPreprint(params.id)
-  return [
-    {
-      id: 1, // preview at /opengraph-image/1
-      contentType: 'image/png',
-      size,
-      alt: `${preprint.title} by ${formatAuthors(preprint.authors)}${
-        preprint.date_published
-          ? ` - ${formatDate(new Date(preprint.date_published))}`
-          : ''
-      } | CDRXIV`,
-    },
-  ]
 }
 
 const getPreprint = async (id: string): Promise<Preprint> => {
