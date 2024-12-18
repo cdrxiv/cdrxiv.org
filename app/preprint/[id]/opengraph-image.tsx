@@ -10,6 +10,7 @@ import {
   submissionTypes,
 } from '../../../utils/formatters'
 
+export const runtime = 'edge'
 export const contentType = 'image/png'
 export const alt = 'CDRXIV submission social card'
 
