@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { isFullSiteEnabled } from './utils/flags'
 import { withAuthAndTokenRefresh } from './utils/auth'
 
 const AUTHED_ROUTES = [
@@ -12,17 +11,8 @@ const AUTHED_ROUTES = [
   '/submit/confirm',
 ]
 
-const FULL_SITE_ROUTES = ['/search', '/preprint/']
-
 export const middleware = async (request: NextRequest) => {
   if (request.nextUrl.pathname === '/home.html') {
-    return NextResponse.redirect(new URL('/', request.url))
-  }
-
-  if (
-    !isFullSiteEnabled() &&
-    FULL_SITE_ROUTES.some((path) => request.nextUrl.pathname.startsWith(path))
-  ) {
     return NextResponse.redirect(new URL('/', request.url))
   }
 

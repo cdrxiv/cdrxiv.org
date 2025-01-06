@@ -1,8 +1,6 @@
 import { Suspense } from 'react'
 import LandingPage from './landing-page'
 import PreprintsView from './preprints-view'
-import StaticLandingPage from './static-landing-page'
-import { isFullSiteEnabled } from '../utils/flags'
 import LoadingWrapper from './loading-wrapper'
 import { fetchWithAlerting } from '../actions/server-utils'
 interface HomeProps {
@@ -24,14 +22,12 @@ const Preprints = async ({ subject }: { subject: string | undefined }) => {
 
 const Home = async ({ searchParams }: HomeProps) => {
   const subject = searchParams.subject as string | undefined
-  return isFullSiteEnabled() ? (
+  return (
     <LandingPage>
       <Suspense fallback={<LoadingWrapper />}>
         <Preprints subject={subject} />
       </Suspense>
     </LandingPage>
-  ) : (
-    <StaticLandingPage />
   )
 }
 

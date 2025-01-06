@@ -11,7 +11,6 @@ import Row from './row'
 import StyledButton from './button'
 import Menu from './menu'
 import useBackgroundColors from '../hooks/use-background-colors'
-import { isFullSiteEnabled } from '../utils/flags'
 
 type SVGBoxProps = BoxProps & SVGProps<SVGSVGElement>
 const SVGBox: React.FC<SVGBoxProps> = (props) => <Box as='svg' {...props} />
@@ -177,7 +176,7 @@ const Header = () => {
           start={1}
           width={3}
           sx={{
-            display: isFullSiteEnabled() ? 'inherit' : 'none',
+            display: 'inherit',
           }}
         >
           <Search
@@ -194,7 +193,7 @@ const Header = () => {
           />
         </Column>
         <Column
-          start={isFullSiteEnabled() ? [4, 4, 5, 5] : 1}
+          start={[4, 4, 5, 5]}
           width={[5, 5, 6, 6]}
           sx={{
             display: ['none', 'inherit', 'inherit', 'inherit'],
@@ -210,7 +209,7 @@ const Header = () => {
           </Flex>
         </Column>
         <Column
-          start={isFullSiteEnabled() ? 4 : 1}
+          start={4}
           width={2}
           sx={{
             display: ['inherit', 'none', 'none', 'none'],
@@ -230,11 +229,7 @@ const Header = () => {
             createPortal(
               <Menu
                 setMenuOpen={setMenuOpen}
-                sx={
-                  isFullSiteEnabled()
-                    ? { top: menuPosition.top, right: menuPosition.right }
-                    : { top: menuPosition.top, left: menuPosition.left }
-                }
+                sx={{ top: menuPosition.top, right: menuPosition.right }}
                 aria-label='Mobile navigation menu'
               >
                 {renderLinks()}
