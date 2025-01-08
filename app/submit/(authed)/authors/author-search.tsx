@@ -18,7 +18,7 @@ const isEmail = (value: string) => {
 const validateAuthorSearch = (value: string) => {
   if (isEmail(value)) {
     return 'email'
-  } else if (isValidOrcid(value)) {
+  } else if (isValidOrcid(value, true)) {
     return 'orcid'
   } else {
     return 'invalid'
