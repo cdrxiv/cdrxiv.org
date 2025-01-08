@@ -8,6 +8,7 @@ import { Button, Column, Field, Form, Row } from '../../../components'
 import { useForm } from '../../../hooks/use-form'
 import { updateAccount } from '../../../actions'
 import { useLoading } from '../../../components/layouts/paneled-page'
+import { isValidOrcid } from '../../../utils/data'
 
 type FormData = {
   email: string
@@ -51,7 +52,7 @@ const validateForm = ({
     result.last_name = 'You must provide a last name.'
   }
 
-  if (orcid && !orcid.match(/^\d{4}-\d{4}-\d{4}-\d{4}$/)) {
+  if (orcid && !isValidOrcid(orcid)) {
     result.orcid =
       'Please provide a valid ORCID identifier of the format 0000-0000-0000-0000.'
   }

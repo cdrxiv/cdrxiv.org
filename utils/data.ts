@@ -156,3 +156,8 @@ export const isPreprintEmpty = (preprint: Preprint) => {
     return false
   })
 }
+
+export const isValidOrcid = (orcid: string) => {
+  const orcidRegex = /^\d{4}-\d{4}-\d{4}-\d{3}(\d|X)$/i
+  return orcidRegex.test(orcid)
+}
