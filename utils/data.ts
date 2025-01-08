@@ -156,3 +156,11 @@ export const isPreprintEmpty = (preprint: Preprint) => {
     return false
   })
 }
+
+export const isValidOrcid = (orcid: string, allowLowercase?: boolean) => {
+  const orcidRegex = new RegExp(
+    '^\\d{4}-\\d{4}-\\d{4}-\\d{3}(\\d|X)$',
+    allowLowercase ? 'i' : undefined,
+  )
+  return orcidRegex.test(orcid)
+}

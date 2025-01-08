@@ -19,6 +19,7 @@ import {
 import { useForm } from '../../../hooks/use-form'
 import { useLoading } from '../../../components/layouts/paneled-page'
 import { registerAccount, verifyHCaptcha } from '../../../actions'
+import { isValidOrcid } from '../../../utils/data'
 
 type FormData = {
   email: string
@@ -75,7 +76,7 @@ const validateForm = ({
     result.last_name = 'You must provide a last name.'
   }
 
-  if (orcid && !orcid.match(/^\d{4}-\d{4}-\d{4}-\d{4}$/)) {
+  if (orcid && !isValidOrcid(orcid)) {
     result.orcid =
       'Please provide a valid ORCID identifier of the format 0000-0000-0000-0000.'
   }
