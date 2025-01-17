@@ -2,6 +2,7 @@ import { ImageResponse } from 'next/og'
 import { theme } from '../theme/theme'
 import BorderFrame from '../components/og-image/border-frame'
 import Lockup from '../components/og-image/lockup'
+import { getFonts } from '../utils/og-fonts'
 
 export const runtime = 'edge'
 export const contentType = 'image/png'
@@ -11,6 +12,17 @@ export const size = {
   width: 1200,
   height: 630,
 }
+
+const fontConfig = [
+  {
+    url: 'https://fonts.carbonplan.org/quadrant/QuadrantText-RegularItalic.woff',
+    name: 'Quadrant Italic',
+  },
+  {
+    url: 'https://fonts.carbonplan.org/gt_pressura_mono/GT-Pressura-Mono-Regular.woff',
+    name: 'GT Pressura',
+  },
+]
 
 const getPreprintCount = async () => {
   const preprints = await fetch(
@@ -23,37 +35,9 @@ const getPreprintCount = async () => {
   return data.count
 }
 
-const getFonts = async () => {
-  const [quadrantItalic, gtPressura] = await Promise.all([
-    fetch(
-      'https://fonts.carbonplan.org/quadrant/QuadrantText-RegularItalic.otf',
-      {
-        cache: 'force-cache',
-      },
-    ).then((res) => res.arrayBuffer()),
-    fetch(
-      'https://fonts.carbonplan.org/gt_pressura_mono/GT-Pressura-Mono-Regular.otf',
-      {
-        cache: 'force-cache',
-      },
-    ).then((res) => res.arrayBuffer()),
-  ])
-
-  return [
-    {
-      name: 'Quadrant Italic',
-      data: quadrantItalic,
-    },
-    {
-      name: 'GT Pressura',
-      data: gtPressura,
-    },
-  ]
-}
-
 export default async function Image() {
   const [fonts, preprintCount] = await Promise.all([
-    getFonts(),
+    getFonts(fontConfig),
     getPreprintCount(),
   ])
 
