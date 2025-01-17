@@ -22,11 +22,11 @@ export const size = {
 
 const fontConfig = [
   {
-    url: 'https://fonts.carbonplan.org/quadrant/QuadrantText-Regular.otf',
+    url: 'https://fonts.carbonplan.org/quadrant/QuadrantText-Regular.woff',
     name: 'Quadrant',
   },
   {
-    url: 'https://fonts.carbonplan.org/gt_pressura_mono/GT-Pressura-Mono-Regular.otf',
+    url: 'https://fonts.carbonplan.org/gt_pressura_mono/GT-Pressura-Mono-Regular.woff',
     name: 'GT Pressura',
   },
 ]
