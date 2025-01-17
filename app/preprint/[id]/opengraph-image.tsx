@@ -9,6 +9,7 @@ import {
   authorList,
   submissionTypes,
 } from '../../../utils/formatters'
+import { getFonts } from '../../../utils/og-fonts'
 
 export const runtime = 'edge'
 export const contentType = 'image/png'
@@ -19,6 +20,17 @@ export const size = {
   height: 630,
 }
 
+const fontConfig = [
+  {
+    url: 'https://fonts.carbonplan.org/quadrant/QuadrantText-Regular.woff',
+    name: 'Quadrant',
+  },
+  {
+    url: 'https://fonts.carbonplan.org/gt_pressura_mono/GT-Pressura-Mono-Regular.woff',
+    name: 'GT Pressura',
+  },
+]
+
 const getPreprint = async (id: string): Promise<Preprint> => {
   const preprints = await fetch(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/${id}`,
@@ -28,31 +40,6 @@ const getPreprint = async (id: string): Promise<Preprint> => {
   )
   const data = await preprints.json()
   return data
-}
-
-const getFonts = async () => {
-  const [quadrant, gtPressura] = await Promise.all([
-    fetch('https://fonts.carbonplan.org/quadrant/QuadrantText-Regular.otf', {
-      cache: 'force-cache',
-    }).then((res) => res.arrayBuffer()),
-    fetch(
-      'https://fonts.carbonplan.org/gt_pressura_mono/GT-Pressura-Mono-Regular.otf',
-      {
-        cache: 'force-cache',
-      },
-    ).then((res) => res.arrayBuffer()),
-  ])
-
-  return [
-    {
-      name: 'Quadrant',
-      data: quadrant,
-    },
-    {
-      name: 'GT Pressura',
-      data: gtPressura,
-    },
-  ]
 }
 
 const formatAuthors = (authors: Author[]): string => {
@@ -66,7 +53,7 @@ const formatAuthors = (authors: Author[]): string => {
 
 export default async function Image({ params }: { params: { id: string } }) {
   const [fonts, preprint] = await Promise.all([
-    getFonts(),
+    getFonts(fontConfig),
     getPreprint(params.id),
   ])
 
