@@ -177,7 +177,9 @@ const PreprintViewer = ({
       <Box sx={{ variant: 'text.monoCaps', fontSize: [3, 3, 3, 4], mb: 4 }}>
         Abstract
       </Box>
-      <Box sx={{ variant: 'text.body', mb: 9 }}>{preprint.abstract}</Box>
+      <Box as='pre' sx={{ variant: 'text.body', mb: 9 }}>
+        {preprint.abstract}
+      </Box>
       {hasArticle && preprint.versions.length > 0 && (
         <div ref={containerRef} style={{ width: '100%' }}>
           <Document
