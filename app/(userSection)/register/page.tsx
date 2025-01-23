@@ -294,7 +294,7 @@ const Page = () => {
         </Column>
       </Row>
 
-      <Field error={errors.agreement}>
+      <Field label='Registration agreement*' error={errors.agreement}>
         <Agreement
           checked={data.agreement}
           onChange={(e) => setters.agreement(e.target.checked)}
