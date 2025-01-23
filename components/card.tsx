@@ -171,13 +171,18 @@ const Card: React.FC<CardProps> = ({
                 id={`card-title-${title}`}
                 sx={{
                   variant: 'styles.h3',
-                  mb: [3, 3, 3, 4],
                   pr: [36, 36, 48, 48],
                   color,
                   display: '-webkit-box',
                   WebkitLineClamp: 4,
                   WebkitBoxOrient: 'vertical',
                   overflow: 'hidden',
+                  pb: '0.14em',
+                  mb: (theme) =>
+                    [3, 3, 3, 4].map(
+                      (space) =>
+                        `calc(${theme.space ? theme.space[space] : 0}px - 0.14em)`,
+                    ),
                 }}
               >
                 {title}
