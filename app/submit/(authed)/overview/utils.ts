@@ -343,7 +343,7 @@ export const submitForm = async ({
         const errorMessage = failedUploads
           .map(
             ({ result, type }) =>
-              `${type} upload failed: ${result.reason?.message?.detail || 'Unknown error'}`,
+              `${type} upload failed: ${result.reason?.message || 'Unknown error'}`,
           )
           .join('; ')
         console.error('failed uploads: ', failedUploads)
