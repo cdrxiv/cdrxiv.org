@@ -95,9 +95,17 @@ export const uploadFile = async <T>(
         let errorMessage: string
         try {
           const errorResponse = JSON.parse(xhr.responseText)
-          errorMessage =
-            errorResponse.detail || // looks like both janeway and our api return this
-            'Unknown error occurred'
+          if (errorResponse && Object.keys(errorResponse).length > 0) {
+            errorMessage = Object.keys(errorResponse)
+              .map((key) =>
+                Array.isArray(errorResponse[key])
+                  ? errorResponse[key].join(', ')
+                  : errorResponse[key],
+              )
+              .join('; ')
+          } else {
+            errorMessage = 'Unknown error occurred'
+          }
         } catch (e) {
           errorMessage = xhr.responseText || 'Unknown error occurred'
         }
