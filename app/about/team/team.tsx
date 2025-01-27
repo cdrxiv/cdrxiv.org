@@ -140,7 +140,7 @@ const Team: React.FC = () => {
       />
 
       <Box as='h2' sx={{ mt: 4 }}>
-        Affiliate expert screeners
+        Expert screeners
       </Box>
       <Row columns={[6, 6, 8, 8]}>
         <Column start={[1]} width={[6, 3, 3, 3]}>
