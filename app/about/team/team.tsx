@@ -133,13 +133,15 @@ const PersonInfo: React.FC<{
 const Team: React.FC = () => {
   return (
     <Box>
-      <Box as='h2'>Content curation lead</Box>
+      <Box as='h2' sx={{ mb: 2 }}>
+        Content curation lead
+      </Box>
       <PersonInfo
         name={contentTeam[0].name}
         affiliation={contentTeam[0].affiliation}
       />
 
-      <Box as='h2' sx={{ mt: 4 }}>
+      <Box as='h2' sx={{ mt: 4, mb: 2 }}>
         Expert screeners
       </Box>
       <Row columns={[6, 6, 8, 8]}>
@@ -162,7 +164,7 @@ const Team: React.FC = () => {
             ))}
         </Column>
       </Row>
-      <Box as='h2' sx={{ mt: 4 }}>
+      <Box as='h2' sx={{ mt: 4, mb: 2 }}>
         Advisory board
       </Box>
       <Row columns={[6, 6, 8, 8]}>
@@ -176,7 +178,7 @@ const Team: React.FC = () => {
               index % 2 === 0 ? 1 : 5,
             ]}
             width={[5, 2, 3, 3]}
-            sx={{ mb: 6 }}
+            sx={{ mb: 2 }}
           >
             <Image
               src={image}
