@@ -122,8 +122,8 @@ const PersonInfo: React.FC<{
   sx?: any
 }> = ({ name, role, affiliation, sx = {} }) => (
   <Box sx={{ mb: 2, ...sx }}>
-    <Box>{name}</Box>
-    <Box sx={{ variant: 'text.mono' }}>
+    <Box sx={{ fontSize: [1, 1, 1, 2] }}>{name}</Box>
+    <Box variant='text.mono'>
       {role ? `${role}, ` : ''}
       {affiliation}
     </Box>
@@ -134,6 +134,9 @@ const Team: React.FC = () => {
   return (
     <Box>
       <Box as='h2' sx={{ mb: 2 }}>
+        Content Team
+      </Box>
+      <Box as='h3' sx={{ mb: 2 }}>
         Curation Lead
       </Box>
       <PersonInfo
@@ -141,8 +144,8 @@ const Team: React.FC = () => {
         affiliation={contentTeam[0].affiliation}
       />
 
-      <Box as='h2' sx={{ mt: 4, mb: 2 }}>
-        Affiliate Expert Screeners
+      <Box as='h3' sx={{ mt: 4, mb: 2 }}>
+        Expert Screeners
       </Box>
       <Row columns={[6, 6, 8, 8]}>
         <Column start={[1]} width={[6, 3, 3, 3]}>
