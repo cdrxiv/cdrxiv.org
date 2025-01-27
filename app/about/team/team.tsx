@@ -134,11 +134,36 @@ const Team: React.FC = () => {
   return (
     <Box>
       <Box as='h2' sx={{ mb: 2 }}>
+        Advisory Board
+      </Box>
+      <Row columns={[6, 6, 9, 9]}>
+        {editorialBoard.map(({ name, role, image, affiliation }, index) => (
+          <Column
+            key={name + index}
+            start={[
+              index % 2 === 0 ? 1 : 4,
+              index % 3 === 0 ? 1 : index % 3 === 1 ? 3 : 5,
+              index % 3 === 0 ? 1 : index % 3 === 1 ? 4 : 7,
+              index % 3 === 0 ? 1 : index % 3 === 1 ? 4 : 7,
+            ]}
+            width={[3, 2, 3, 3]}
+            sx={{ mb: 4 }}
+          >
+            <Image
+              src={image}
+              alt={name}
+              style={{ width: '100%', height: 'auto' }}
+            />
+            <PersonInfo name={name} role={role} affiliation={affiliation} />
+          </Column>
+        ))}
+      </Row>
+      <Box as='h2' sx={{ mb: 2 }}>
         Content Team
       </Box>
       <Box
         variant='text.monoCaps'
-        sx={{ fontSize: [2, 2, 2, 3], mb: 1, mt: 4 }}
+        sx={{ fontSize: [2, 2, 2, 3], mb: 1, mt: 2 }}
       >
         Curation Lead
       </Box>
@@ -172,31 +197,6 @@ const Team: React.FC = () => {
               <PersonInfo key={name} name={name} affiliation={affiliation} />
             ))}
         </Column>
-      </Row>
-      <Box as='h2' sx={{ mt: 4, mb: 2 }}>
-        Advisory Board
-      </Box>
-      <Row columns={[6, 6, 9, 9]}>
-        {editorialBoard.map(({ name, role, image, affiliation }, index) => (
-          <Column
-            key={name + index}
-            start={[
-              index % 2 === 0 ? 1 : 4,
-              index % 3 === 0 ? 1 : index % 3 === 1 ? 3 : 5,
-              index % 3 === 0 ? 1 : index % 3 === 1 ? 4 : 7,
-              index % 3 === 0 ? 1 : index % 3 === 1 ? 4 : 7,
-            ]}
-            width={[3, 2, 3, 3]}
-            sx={{ mb: 4 }}
-          >
-            <Image
-              src={image}
-              alt={name}
-              style={{ width: '100%', height: 'auto' }}
-            />
-            <PersonInfo name={name} role={role} affiliation={affiliation} />
-          </Column>
-        ))}
       </Row>
     </Box>
   )
