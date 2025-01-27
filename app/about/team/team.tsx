@@ -179,7 +179,7 @@ const Team: React.FC = () => {
         Expert Screeners
       </Box>
       <Row columns={[6, 6, 8, 8]}>
-        <Column start={[1]} width={[6, 3, 3, 3]}>
+        <Column start={[1]} width={[6, 3, 4, 4]}>
           {affiliates
             .slice(0, Math.ceil(affiliates.length / 2))
             .map(({ name, affiliation }, index) => (
@@ -190,7 +190,7 @@ const Team: React.FC = () => {
               />
             ))}
         </Column>
-        <Column start={[1, 4, 5, 5]} width={[6, 3, 3, 3]}>
+        <Column start={[1, 4, 5, 5]} width={[6, 3, 4, 4]}>
           {affiliates
             .slice(Math.ceil(affiliates.length / 2))
             .map(({ name, affiliation }) => (
