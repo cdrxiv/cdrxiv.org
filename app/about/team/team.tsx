@@ -2,7 +2,7 @@
 
 import { Box } from 'theme-ui'
 import Image, { StaticImageData } from 'next/image'
-import { Link, Row, Column } from '../../../components'
+import { Row, Column } from '../../../components'
 
 import tk from './images/tk.jpg'
 import jp from './images/jp.png'
@@ -28,16 +28,21 @@ type ContentTeam = {
   affiliation: string
 }
 
-const contentTeam: ContentTeam[] = [
+const sortByLastName = <T extends { name: string }>(arr: T[]) =>
+  arr.sort((a, b) =>
+    a.name.split(' ').pop()!.localeCompare(b.name.split(' ').pop()!),
+  )
+
+const contentTeam: ContentTeam[] = sortByLastName([
   {
     name: 'Tyler Kukla',
     role: 'Content Curation Lead',
     image: tk,
     affiliation: 'CarbonPlan',
   },
-]
+])
 
-const editorialBoard: AdvisoryBoard[] = [
+const editorialBoard: AdvisoryBoard[] = sortByLastName([
   {
     name: 'Jennifer Pett-Ridge',
     role: 'Senior Staff Scientist',
@@ -69,9 +74,9 @@ const editorialBoard: AdvisoryBoard[] = [
     image: tk,
     affiliation: 'BioRXIV',
   },
-]
+])
 
-const affiliates: Affiliate[] = [
+const affiliates: Affiliate[] = sortByLastName([
   {
     name: 'Katherine Almquist',
     affiliation: 'Northwestern University',
@@ -108,25 +113,69 @@ const affiliates: Affiliate[] = [
     name: 'Trent Thomas',
     affiliation: 'University of Washington',
   },
-]
+])
+
+const PersonInfo: React.FC<{
+  name: string
+  role?: string
+  affiliation: string
+  sx?: any
+}> = ({ name, role, affiliation, sx = {} }) => (
+  <Box sx={{ mb: 2, ...sx }}>
+    <Box>{name}</Box>
+    <Box sx={{ variant: 'text.mono' }}>
+      {role ? `${role}, ` : ''}
+      {affiliation}
+    </Box>
+  </Box>
+)
 
 const Team: React.FC = () => {
   return (
     <Box>
-      <Box as='h2' sx={{ mb: 4 }}>
+      <Box as='h2'>Content curation lead</Box>
+      <PersonInfo
+        name={contentTeam[0].name}
+        affiliation={contentTeam[0].affiliation}
+      />
+
+      <Box as='h2' sx={{ mt: 4 }}>
+        Affiliate expert screeners
+      </Box>
+      <Row columns={[6, 6, 8, 8]}>
+        <Column start={[1]} width={[6, 3, 3, 3]}>
+          {affiliates
+            .slice(0, Math.ceil(affiliates.length / 2))
+            .map(({ name, affiliation }, index) => (
+              <PersonInfo
+                key={name + index}
+                name={name}
+                affiliation={affiliation}
+              />
+            ))}
+        </Column>
+        <Column start={[1, 4, 5, 5]} width={[6, 3, 3, 3]}>
+          {affiliates
+            .slice(Math.ceil(affiliates.length / 2))
+            .map(({ name, affiliation }) => (
+              <PersonInfo key={name} name={name} affiliation={affiliation} />
+            ))}
+        </Column>
+      </Row>
+      <Box as='h2' sx={{ mt: 4 }}>
         Advisory board
       </Box>
-      <Row columns={[6, 6, 6, 9]}>
+      <Row columns={[6, 6, 8, 8]}>
         {editorialBoard.map(({ name, role, image, affiliation }, index) => (
           <Column
             key={name + index}
             start={[
+              1,
               index % 2 === 0 ? 1 : 4,
-              index % 2 === 0 ? 1 : 4,
-              index % 2 === 0 ? 1 : 4,
-              (index % 3) * 3 + 1,
+              index % 2 === 0 ? 1 : 5,
+              index % 2 === 0 ? 1 : 5,
             ]}
-            width={[3, 3, 3, 3]}
+            width={[5, 2, 3, 3]}
             sx={{ mb: 6 }}
           >
             <Image
@@ -134,35 +183,10 @@ const Team: React.FC = () => {
               alt={name}
               style={{ width: '100%', height: 'auto' }}
             />
-            <Box sx={{ fontSize: [2, 2, 3, 3] }}>{name}</Box>
-            <Box variant='text.mono'>
-              {role}, {affiliation}
-            </Box>
+            <PersonInfo name={name} role={role} affiliation={affiliation} />
           </Column>
         ))}
       </Row>
-
-      <Box as='h2' sx={{ mb: 2, mt: -4 }}>
-        Content team
-      </Box>
-      {contentTeam.map(({ name, role, image, affiliation }, index) => (
-        <Box key={name + index} sx={{ mb: 1 }}>
-          <Box>{name}</Box>
-          <Box sx={{ variant: 'text.mono' }}>
-            {role}, {affiliation}
-          </Box>
-        </Box>
-      ))}
-
-      <Box as='h2' sx={{ mb: 2, mt: 4 }}>
-        Affiliate expert screeners
-      </Box>
-      {affiliates.map(({ name, affiliation }, index) => (
-        <Box key={name + index} sx={{ mb: 1 }}>
-          <Box>{name}</Box>
-          <Box sx={{ variant: 'text.mono' }}>{affiliation}</Box>
-        </Box>
-      ))}
     </Box>
   )
 }
