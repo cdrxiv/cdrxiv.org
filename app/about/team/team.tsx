@@ -134,7 +134,7 @@ const Team: React.FC = () => {
   return (
     <Box>
       <Box as='h2' sx={{ mb: 2 }}>
-        Content curation lead
+        Curation Lead
       </Box>
       <PersonInfo
         name={contentTeam[0].name}
@@ -142,7 +142,7 @@ const Team: React.FC = () => {
       />
 
       <Box as='h2' sx={{ mt: 4, mb: 2 }}>
-        Expert screeners
+        Affiliate Expert Screeners
       </Box>
       <Row columns={[6, 6, 8, 8]}>
         <Column start={[1]} width={[6, 3, 3, 3]}>
@@ -165,20 +165,20 @@ const Team: React.FC = () => {
         </Column>
       </Row>
       <Box as='h2' sx={{ mt: 4, mb: 2 }}>
-        Advisory board
+        Advisory Board
       </Box>
-      <Row columns={[6, 6, 8, 8]}>
+      <Row columns={[6, 6, 9, 9]}>
         {editorialBoard.map(({ name, role, image, affiliation }, index) => (
           <Column
             key={name + index}
             start={[
-              1,
               index % 2 === 0 ? 1 : 4,
-              index % 2 === 0 ? 1 : 5,
-              index % 2 === 0 ? 1 : 5,
+              index % 3 === 0 ? 1 : index % 3 === 1 ? 3 : 5,
+              index % 3 === 0 ? 1 : index % 3 === 1 ? 4 : 7,
+              index % 3 === 0 ? 1 : index % 3 === 1 ? 4 : 7,
             ]}
-            width={[5, 2, 3, 3]}
-            sx={{ mb: 2 }}
+            width={[3, 2, 3, 3]}
+            sx={{ mb: 4 }}
           >
             <Image
               src={image}
