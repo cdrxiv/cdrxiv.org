@@ -109,7 +109,7 @@ const PersonInfo: React.FC<{
 }> = ({ name, role, affiliation, sx = {} }) => (
   <Box sx={{ mb: 2, ...sx }}>
     <Box>{name}</Box>
-    <Box variant='text.mono'>
+    <Box variant='text.mono' sx={{ mt: -1 }}>
       {role ? `${role}, ` : ''}
       {affiliation}
     </Box>
@@ -119,62 +119,58 @@ const PersonInfo: React.FC<{
 const Team: React.FC = () => {
   return (
     <Box>
-      <Box as='h2' sx={{ mb: 2 }}>
+      <Box as='h2' sx={{ mb: 4, mt: 7 }}>
         Advisory Board
       </Box>
       <Row columns={[6, 6, 8, 8]}>
         <Column start={[1]} width={[6, 3, 4, 4]}>
-          {editorialBoard.map(({ name, role, affiliation }, index) => (
+          {editorialBoard.map(({ name, role, affiliation }) => (
             <PersonInfo
-              key={name + index}
+              key={name}
               name={name}
               role={role}
               affiliation={affiliation}
-              sx={{ mb: 3 }}
             />
           ))}
         </Column>
       </Row>
-      <Box as='h2' sx={{ mb: 2 }}>
-        Content Team
-      </Box>
-      <Box
-        variant='text.monoCaps'
-        sx={{ fontSize: [2, 2, 2, 3], mb: 1, mt: 2 }}
-      >
-        Curation Lead
-      </Box>
-      <PersonInfo
-        name={contentTeam[0].name}
-        affiliation={contentTeam[0].affiliation}
-      />
 
-      <Box
-        variant='text.monoCaps'
-        sx={{ fontSize: [2, 2, 2, 3], mb: 1, mt: 4 }}
-      >
-        Expert Screeners
+      <Box sx={{ mt: 7 }}>
+        <Box as='h2' sx={{ mb: 4 }}>
+          Content Team
+        </Box>
+        <Box sx={{ mb: 6 }}>
+          <Box variant='text.monoCaps' sx={{ fontSize: [2, 2, 2, 3], mb: 3 }}>
+            Curation Lead
+          </Box>
+          <Box>
+            <PersonInfo
+              name={contentTeam[0].name}
+              affiliation={contentTeam[0].affiliation}
+            />
+          </Box>
+        </Box>
+
+        <Box variant='text.monoCaps' sx={{ fontSize: [2, 2, 2, 3], mb: 3 }}>
+          Expert Screeners
+        </Box>
+        <Row columns={[6, 6, 8, 8]}>
+          <Column start={[1]} width={[6, 3, 4, 4]}>
+            {affiliates
+              .slice(0, Math.ceil(affiliates.length / 2))
+              .map(({ name, affiliation }) => (
+                <PersonInfo key={name} name={name} affiliation={affiliation} />
+              ))}
+          </Column>
+          <Column start={[1, 4, 5, 5]} width={[6, 3, 4, 4]}>
+            {affiliates
+              .slice(Math.ceil(affiliates.length / 2))
+              .map(({ name, affiliation }) => (
+                <PersonInfo key={name} name={name} affiliation={affiliation} />
+              ))}
+          </Column>
+        </Row>
       </Box>
-      <Row columns={[6, 6, 8, 8]}>
-        <Column start={[1]} width={[6, 3, 4, 4]}>
-          {affiliates
-            .slice(0, Math.ceil(affiliates.length / 2))
-            .map(({ name, affiliation }, index) => (
-              <PersonInfo
-                key={name + index}
-                name={name}
-                affiliation={affiliation}
-              />
-            ))}
-        </Column>
-        <Column start={[1, 4, 5, 5]} width={[6, 3, 4, 4]}>
-          {affiliates
-            .slice(Math.ceil(affiliates.length / 2))
-            .map(({ name, affiliation }) => (
-              <PersonInfo key={name} name={name} affiliation={affiliation} />
-            ))}
-        </Column>
-      </Row>
     </Box>
   )
 }
