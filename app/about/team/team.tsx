@@ -1,13 +1,7 @@
 'use client'
 
 import { Box } from 'theme-ui'
-import Image, { StaticImageData } from 'next/image'
 import { Row, Column } from '../../../components'
-
-import tk from './images/tk.jpg'
-import jp from './images/jp.png'
-import fc from './images/fc.png'
-import ga from './images/ga.png'
 
 type Affiliate = {
   name: string
@@ -17,14 +11,12 @@ type Affiliate = {
 type AdvisoryBoard = {
   name: string
   role: string
-  image: StaticImageData
   affiliation: string
 }
 
 type ContentTeam = {
   name: string
   role: string
-  image: StaticImageData
   affiliation: string
 }
 
@@ -37,7 +29,6 @@ const contentTeam: ContentTeam[] = sortByLastName([
   {
     name: 'Tyler Kukla',
     role: 'Content Curation Lead',
-    image: tk,
     affiliation: 'CarbonPlan',
   },
 ])
@@ -46,32 +37,27 @@ const editorialBoard: AdvisoryBoard[] = sortByLastName([
   {
     name: 'Jennifer Pett-Ridge',
     role: 'Senior Staff Scientist',
-    image: jp,
     affiliation: 'Lawrence Livermore National Laboratory',
   },
   {
     name: 'Simon Nicholson',
     role: 'Co-Director',
-    image: tk,
     affiliation:
       'Institute for Responsible Carbon Removal, American University',
   },
   {
     name: 'Freya Chay',
     role: 'Carbon Removal Program Lead',
-    image: fc,
     affiliation: 'CarbonPlan',
   },
   {
     name: 'Grace Andrews',
     role: 'Founder & Executive Director',
-    image: ga,
     affiliation: 'Hourglass Climate',
   },
   {
     name: 'Sam Hindle',
     role: 'tk',
-    image: tk,
     affiliation: 'BioRXIV',
   },
 ])
@@ -136,27 +122,18 @@ const Team: React.FC = () => {
       <Box as='h2' sx={{ mb: 2 }}>
         Advisory Board
       </Box>
-      <Row columns={[6, 6, 9, 9]}>
-        {editorialBoard.map(({ name, role, image, affiliation }, index) => (
-          <Column
-            key={name + index}
-            start={[
-              index % 2 === 0 ? 1 : 4,
-              index % 3 === 0 ? 1 : index % 3 === 1 ? 3 : 5,
-              index % 3 === 0 ? 1 : index % 3 === 1 ? 4 : 7,
-              index % 3 === 0 ? 1 : index % 3 === 1 ? 4 : 7,
-            ]}
-            width={[3, 2, 3, 3]}
-            sx={{ mb: 4 }}
-          >
-            <Image
-              src={image}
-              alt={name}
-              style={{ width: '100%', height: 'auto' }}
+      <Row columns={[6, 6, 8, 8]}>
+        <Column start={[1]} width={[6, 3, 4, 4]}>
+          {editorialBoard.map(({ name, role, affiliation }, index) => (
+            <PersonInfo
+              key={name + index}
+              name={name}
+              role={role}
+              affiliation={affiliation}
+              sx={{ mb: 3 }}
             />
-            <PersonInfo name={name} role={role} affiliation={affiliation} />
-          </Column>
-        ))}
+          ))}
+        </Column>
       </Row>
       <Box as='h2' sx={{ mb: 2 }}>
         Content Team
