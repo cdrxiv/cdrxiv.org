@@ -2,6 +2,7 @@
 
 import { Box } from 'theme-ui'
 import { Row, Column } from '../../../components'
+import { ThemeUIStyleObject } from 'theme-ui'
 
 type Affiliate = {
   name: string
