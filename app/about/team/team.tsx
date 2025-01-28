@@ -105,7 +105,7 @@ const PersonInfo: React.FC<{
   name: string
   role?: string
   affiliation: string
-  sx?: any
+  sx?: ThemeUIStyleObject
 }> = ({ name, role, affiliation, sx = {} }) => (
   <Box sx={{ mb: 3, ...sx }}>
     <Box>{name}</Box>
