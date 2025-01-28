@@ -141,7 +141,7 @@ const Team: React.FC = () => {
           Content Team
         </Box>
         <Box sx={{ mb: 6 }}>
-          <Box variant='text.monoCaps' sx={{ fontSize: [2, 2, 2, 3], mb: 3 }}>
+          <Box variant='text.monoCaps' sx={{ fontSize: [2, 2, 2, 3], mb: 4 }}>
             Curation Lead
           </Box>
           <Box>
@@ -152,7 +152,7 @@ const Team: React.FC = () => {
           </Box>
         </Box>
 
-        <Box variant='text.monoCaps' sx={{ fontSize: [2, 2, 2, 3], mb: 3 }}>
+        <Box variant='text.monoCaps' sx={{ fontSize: [2, 2, 2, 3], mb: 4 }}>
           Expert Screeners
         </Box>
         <Row columns={[6, 6, 8, 8]}>
