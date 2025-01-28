@@ -107,9 +107,9 @@ const PersonInfo: React.FC<{
   affiliation: string
   sx?: any
 }> = ({ name, role, affiliation, sx = {} }) => (
-  <Box sx={{ mb: 2, ...sx }}>
+  <Box sx={{ mb: 3, ...sx }}>
     <Box>{name}</Box>
-    <Box variant='text.mono' sx={{ mt: -1 }}>
+    <Box variant='text.mono'>
       {role ? `${role}, ` : ''}
       {affiliation}
     </Box>
@@ -123,13 +123,14 @@ const Team: React.FC = () => {
         Advisory Board
       </Box>
       <Row columns={[6, 6, 8, 8]}>
-        <Column start={[1]} width={[6, 3, 4, 4]}>
-          {editorialBoard.map(({ name, role, affiliation }) => (
+        <Column start={[1]} width={[6, 6, 8, 8]}>
+          {editorialBoard.map(({ name, role, affiliation }, i) => (
             <PersonInfo
               key={name}
               name={name}
               role={role}
               affiliation={affiliation}
+              sx={i === editorialBoard.length - 1 ? { mb: 0 } : undefined}
             />
           ))}
         </Column>
