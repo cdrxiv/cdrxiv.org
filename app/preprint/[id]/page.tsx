@@ -3,6 +3,7 @@ import { ResolvingMetadata } from 'next'
 
 import PreprintViewer from './preprint-viewer'
 import { fetchWithAlerting } from '../../../actions/server-utils'
+import { Preprint } from '../../../types/preprint'
 
 // Polyfill for Promise.withResolvers
 if (typeof Promise.withResolvers !== 'function') {
@@ -21,7 +22,7 @@ if (typeof Promise.withResolvers !== 'function') {
   }
 }
 
-const getPreprint = async (id: string) => {
+const getPreprint = async (id: string): Promise<Preprint | null> => {
   const res = await fetchWithAlerting(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/${id}`,
     { next: { revalidate: 180 } },
@@ -44,12 +45,26 @@ export const generateMetadata = async (
 ) => {
   try {
     const preprint = await getPreprint(params.id)
-    return preprint
-      ? {
-          title: `${preprint.title} – CDRXIV`,
-          description: preprint.abstract,
-        }
-      : parent
+    if (preprint && preprint.date_published) {
+      const date = new Date(preprint.date_published)
+      return {
+        title: `${preprint.title} – CDRXIV`,
+        description: preprint.abstract,
+        other: {
+          citation_title: preprint.title,
+          citation_author: preprint.authors.map((a) =>
+            [a.first_name, a.middle_name, a.last_name]
+              .filter(Boolean)
+              .join(' ')
+              .trim(),
+          ),
+          citation_publication_date: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`,
+          citation_pdf_url: preprint.versions[0].public_download_url,
+        },
+      }
+    } else {
+      return parent
+    }
   } catch {
     return parent
   }
