@@ -36,6 +36,7 @@ export const generateMetadata = async (
         title: `${preprint.title} – CDRXIV`,
         description: preprint.abstract,
         other: {
+          citation_journal_title: 'CDRXIV',
           citation_title: preprint.title,
           citation_author: preprint.authors.map((a) =>
             [a.first_name, a.middle_name, a.last_name]
