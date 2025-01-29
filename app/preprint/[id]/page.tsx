@@ -4,6 +4,8 @@ import { ResolvingMetadata } from 'next'
 import PreprintViewer from './preprint-viewer'
 import { fetchWithAlerting } from '../../../actions/server-utils'
 
+import 'core-js/actual/promise/with-resolvers' // polyfill for react-pdf
+
 const getPreprint = async (id: string) => {
   const res = await fetchWithAlerting(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/${id}`,
