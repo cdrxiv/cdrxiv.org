@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import 'core-js/actual/promise/with-resolvers' // polyfill for react-pdf
 import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/Page/TextLayer.css'
 import 'react-pdf/dist/Page/AnnotationLayer.css'
@@ -22,7 +21,7 @@ import { Deposition } from '../../../types/zenodo'
 import { fetchDataDeposition, fetchPreprintIdentifier } from '../../../actions'
 import ErrorOrTrack from './error-or-track'
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.mjs`
 
 const PreprintViewer = ({
   preprint,
