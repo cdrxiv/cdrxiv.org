@@ -6,8 +6,6 @@ import Forbidden from '../forbidden'
 import SharedLayout from '../../shared-layout'
 import { fetchWithToken } from '../../../../actions/server-utils'
 
-import 'core-js/actual/promise/with-resolvers' // polyfill for react-pdf
-
 const PreprintPreview = async ({
   params,
 }: {

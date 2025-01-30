@@ -4,7 +4,6 @@ import { ResolvingMetadata } from 'next'
 import PreprintViewer from './preprint-viewer'
 import { fetchWithAlerting } from '../../../actions/server-utils'
 
-import 'core-js/actual/promise/with-resolvers' // polyfill for react-pdf
 import { Preprint } from '../../../types/preprint'
 
 const getPreprint = async (id: string): Promise<Preprint | null> => {
