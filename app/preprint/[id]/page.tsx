@@ -3,6 +3,7 @@ import { ResolvingMetadata } from 'next'
 
 import PreprintViewer from './preprint-viewer'
 import { fetchWithAlerting } from '../../../actions/server-utils'
+import { Preprint } from '../../../types/preprint'
 
 import { Preprint } from '../../../types/preprint'
 
