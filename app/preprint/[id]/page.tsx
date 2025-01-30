@@ -5,8 +5,6 @@ import PreprintViewer from './preprint-viewer'
 import { fetchWithAlerting } from '../../../actions/server-utils'
 import { Preprint } from '../../../types/preprint'
 
-import { Preprint } from '../../../types/preprint'
-
 const getPreprint = async (id: string): Promise<Preprint | null> => {
   const res = await fetchWithAlerting(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/${id}`,
