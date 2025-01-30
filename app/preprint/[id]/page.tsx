@@ -5,23 +5,6 @@ import PreprintViewer from './preprint-viewer'
 import { fetchWithAlerting } from '../../../actions/server-utils'
 import { Preprint } from '../../../types/preprint'
 
-// Polyfill for Promise.withResolvers
-if (typeof Promise.withResolvers !== 'function') {
-  Promise.withResolvers = function <T>(): {
-    promise: Promise<T>
-    resolve: (value: T | PromiseLike<T>) => void
-    reject: (reason?: any) => void
-  } {
-    let resolve!: (value: T | PromiseLike<T>) => void
-    let reject!: (reason?: any) => void
-    const promise = new Promise<T>((res, rej) => {
-      resolve = res
-      reject = rej
-    })
-    return { promise, resolve, reject }
-  }
-}
-
 const getPreprint = async (id: string): Promise<Preprint | null> => {
   const res = await fetchWithAlerting(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/${id}`,
