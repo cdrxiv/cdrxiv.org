@@ -177,11 +177,11 @@ const Card: React.FC<CardProps> = ({
                   WebkitLineClamp: 4,
                   WebkitBoxOrient: 'vertical',
                   overflow: 'hidden',
-                  pb: '0.14em',
+                  pb: '0.05em',
                   mb: (theme) =>
                     [3, 3, 3, 4].map(
                       (space) =>
-                        `calc(${theme.space ? theme.space[space] : 0}px - 0.14em)`,
+                        `calc(${theme.space ? theme.space[space] : 0}px - 0.05em)`,
                     ),
                 }}
               >
