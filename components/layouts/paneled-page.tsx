@@ -95,7 +95,7 @@ const sx: { sticky: ThemeUIStyleObject; expanded: ThemeUIStyleObject } = {
     pt: 5,
   },
   expanded: {
-    display: ['inherit', 'none', 'none', 'none'],
+    display: ['inherit', 'inherit', 'none', 'none'],
     height: 'fit-content',
     maxHeight: HEADER_HEIGHT.map(
       (height, i) =>
@@ -259,7 +259,17 @@ const PaneledPage: React.FC<{
 
                   {isSidebarExpanded && <Box sx={sx.expanded}>{sidebar}</Box>}
 
-                  {isMetadataExpanded && <Box sx={sx.expanded}>{metadata}</Box>}
+                  {isMetadataExpanded && (
+                    <Box
+                      sx={{
+                        ...sx.expanded,
+                        // Never show metadata on tablet
+                        display: ['inherit', 'none', 'none', 'none'],
+                      }}
+                    >
+                      {metadata}
+                    </Box>
+                  )}
 
                   {(isSidebarExpanded || isMetadataExpanded) && (
                     <Divider sx={{ mt: 6 }} />
