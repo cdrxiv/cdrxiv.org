@@ -95,7 +95,7 @@ const sx: { sticky: ThemeUIStyleObject; expanded: ThemeUIStyleObject } = {
     pt: 5,
   },
   expanded: {
-    display: ['inherit', 'none', 'none', 'none'],
+    display: ['inherit', 'inherit', 'none', 'none'],
     height: 'fit-content',
     maxHeight: HEADER_HEIGHT.map(
       (height, i) =>
