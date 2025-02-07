@@ -13,6 +13,7 @@ const PATHS = [
     title: 'Scope',
     public: true,
   },
+  { href: '/about/team', title: 'Team', public: true },
 ]
 
 const About: React.FC<{ children: React.ReactNode }> = ({ children }) => {
