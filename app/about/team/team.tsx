@@ -34,7 +34,7 @@ const contentTeam: ContentTeam[] = sortByLastName([
   },
 ])
 
-const editorialBoard: AdvisoryBoard[] = sortByLastName([
+const advisoryBoard: AdvisoryBoard[] = sortByLastName([
   {
     name: 'Jennifer Pett-Ridge',
     role: 'Senior Staff Scientist',
@@ -58,8 +58,8 @@ const editorialBoard: AdvisoryBoard[] = sortByLastName([
   },
   {
     name: 'Sam Hindle',
-    role: 'tk',
-    affiliation: 'BioRXIV',
+    role: 'Content Manager',
+    affiliation: 'bioRxiv and medRxiv',
   },
 ])
 
@@ -125,13 +125,13 @@ const Team: React.FC = () => {
       </Box>
       <Row columns={[6, 6, 8, 8]}>
         <Column start={[1]} width={[6, 6, 8, 8]}>
-          {editorialBoard.map(({ name, role, affiliation }, i) => (
+          {advisoryBoard.map(({ name, role, affiliation }, i) => (
             <PersonInfo
               key={name}
               name={name}
               role={role}
               affiliation={affiliation}
-              sx={i === editorialBoard.length - 1 ? { mb: 0 } : undefined}
+              sx={i === advisoryBoard.length - 1 ? { mb: 0 } : undefined}
             />
           ))}
         </Column>
