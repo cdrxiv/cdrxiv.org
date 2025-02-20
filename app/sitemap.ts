@@ -41,7 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   const apiUrl = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/`
-  const res = await fetchWithAlerting(apiUrl, { next: { revalidate: 180 } })
+  const res = await fetchWithAlerting(apiUrl)
   const data = await res.json()
   const preprints: Preprints = data?.results ?? []
   const preprintSitemap: MetadataRoute.Sitemap = preprints.map(
