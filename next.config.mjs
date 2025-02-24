@@ -7,12 +7,8 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        rewrites: [
-          {
-            source: '/repository/object/:slug*',
-            destination: `${process.env.NEXT_PUBLIC_JANEWAY_URL}/repository/object/:slug*`,
-          },
-        ],
+        source: '/repository/object/:slug*',
+        destination: `${process.env.NEXT_PUBLIC_JANEWAY_URL}/repository/object/:slug*`,
       },
     ]
   },
