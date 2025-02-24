@@ -8,36 +8,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://cdrxiv.org'
 
   const staticRoutes = [
-    {
-      url: `${baseUrl}/`,
-      changeFrequency: 'weekly' as const,
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/about`,
-      changeFrequency: 'monthly' as const,
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/about/team`,
-      changeFrequency: 'monthly' as const,
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/about/faq`,
-      changeFrequency: 'monthly' as const,
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/about/scope`,
-      changeFrequency: 'monthly' as const,
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/account`,
-      changeFrequency: 'monthly' as const,
-      priority: 0.5,
-    },
+    { url: `${baseUrl}/` },
+    { url: `${baseUrl}/about` },
+    { url: `${baseUrl}/about/team` },
+    { url: `${baseUrl}/about/faq` },
+    { url: `${baseUrl}/about/scope` },
+    { url: `${baseUrl}/account` },
   ]
 
   const apiUrl = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/`
@@ -49,8 +25,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       return {
         url: `${baseUrl}/preprint/${preprint.pk}`,
         lastModified: new Date(preprint.versions[0].date_time),
-        changeFrequency: 'yearly' as const,
-        priority: 0.9,
       }
     },
   )
