@@ -124,7 +124,7 @@ const PreprintsView = (props: Props) => {
             width: 'fit-content',
           }}
         >
-          <Link href={'/'}>View latest preprints</Link>
+          <Link href={createPageUrl(1)}>View latest preprints</Link>
         </Box>
       )}
 
