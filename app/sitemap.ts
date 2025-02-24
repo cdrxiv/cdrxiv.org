@@ -13,7 +13,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/about/team` },
     { url: `${baseUrl}/about/faq` },
     { url: `${baseUrl}/about/scope` },
+    { url: `${baseUrl}/about/screening` },
     { url: `${baseUrl}/account` },
+    { url: `${baseUrl}/register` },
+    { url: `${baseUrl}/cookies-notice` },
+    { url: `${baseUrl}/privacy-policy` },
+    { url: `${baseUrl}/terms-of-use` },
   ]
 
   const apiUrl = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/`
