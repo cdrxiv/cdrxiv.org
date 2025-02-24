@@ -48,7 +48,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     (preprint: any) => {
       return {
         url: `${baseUrl}/preprint/${preprint.pk}`,
-        lastModified: new Date(preprint.date_published),
+        lastModified: new Date(preprint.versions[0].date_time),
         changeFrequency: 'yearly' as const,
         priority: 0.9,
       }
