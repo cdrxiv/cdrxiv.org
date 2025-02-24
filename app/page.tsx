@@ -1,5 +1,4 @@
 import { Suspense } from 'react'
-import { notFound } from 'next/navigation'
 import LandingPage from './landing-page'
 import PreprintsView from './preprints-view'
 import LoadingWrapper from './loading-wrapper'
@@ -22,9 +21,6 @@ const Home = async ({ searchParams }: HomeProps) => {
   const res = await fetchWithAlerting(url, { next: { revalidate: 180 } })
   const preprints = await res.json()
   const results = preprints.results || []
-  if (page > 1 && results.length === 0) {
-    notFound()
-  }
   return (
     <LandingPage>
       <Suspense fallback={<LoadingWrapper />}>
