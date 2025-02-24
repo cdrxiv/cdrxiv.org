@@ -13,10 +13,21 @@ export const metadata = {
   title: 'Search – CDRXIV',
 }
 
+const preprintsPerPage = 48
+
 const Search = async ({ searchParams }: SearchProps) => {
   const { query: search, view, ...rest } = searchParams // map query -> search and omit view from params passed to Janeway
-  const params = new URLSearchParams({ search: search ?? '', ...rest })
-  const url = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/?${params.toString()}&limit=48`
+  const page = searchParams.page ? parseInt(searchParams.page) : 1
+  const offset = (page - 1) * preprintsPerPage
+
+  const params = new URLSearchParams({
+    search: search ?? '',
+    ...rest,
+    limit: preprintsPerPage.toString(),
+    offset: offset.toString(),
+  })
+
+  const url = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/?${params.toString()}`
 
   const res = await fetchWithAlerting(url, { next: { revalidate: 180 } })
   const preprints = await res.json()
@@ -27,7 +38,9 @@ const Search = async ({ searchParams }: SearchProps) => {
       <ResultsWrapper count={preprints.count} search={search ?? ''}>
         <PreprintsView
           preprints={results}
-          nextPage={preprints.next as string}
+          nextPage={preprints.next}
+          totalCount={preprints.count}
+          preprintsPerPage={preprintsPerPage}
         />
       </ResultsWrapper>
     </Suspense>
