@@ -144,7 +144,7 @@ const PreprintsView = (props: Props) => {
         <Box ref={sentinelRef} sx={{ height: '1px' }} /> // Invisible sentinel
       )}
 
-      {(nextPage || currentPage) && (
+      {(nextPage || currentPageNum > 1) && (
         <noscript>
           <Box sx={{ margin: 'auto', mt: 5, textAlign: 'center' }}>
             <Flex sx={{ justifyContent: 'center', gap: 2 }}>
