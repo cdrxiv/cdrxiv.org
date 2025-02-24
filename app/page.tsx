@@ -8,7 +8,7 @@ interface HomeProps {
   searchParams: { [key: string]: string | undefined }
 }
 
-export const preprintsPerPage = 48
+const preprintsPerPage = 48
 
 const Home = async ({ searchParams }: HomeProps) => {
   const subject = searchParams.subject
@@ -28,6 +28,7 @@ const Home = async ({ searchParams }: HomeProps) => {
           preprints={results}
           nextPage={preprints.next}
           totalCount={preprints.count}
+          preprintsPerPage={preprintsPerPage}
         />
       </Suspense>
     </LandingPage>

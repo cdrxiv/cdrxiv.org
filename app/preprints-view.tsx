@@ -9,13 +9,13 @@ import type { PublishedPreprint } from '../types/preprint'
 import { Loading, Link } from '../components'
 import List from './list'
 import Grid from './grid'
-import { preprintsPerPage } from './page'
 
 type ViewType = 'grid' | 'list'
 type Props = {
   preprints: PublishedPreprint[]
   nextPage?: string
   totalCount?: number
+  preprintsPerPage?: number
 }
 
 const PreprintsView = (props: Props) => {
@@ -79,8 +79,8 @@ const PreprintsView = (props: Props) => {
   }, [handleObserver])
 
   const generatePaginationLinks = () => {
-    if (!props.totalCount) return []
-    const totalPages = Math.ceil(props.totalCount / preprintsPerPage)
+    if (!props.totalCount || !props.preprintsPerPage) return []
+    const totalPages = Math.ceil(props.totalCount / props.preprintsPerPage)
     let pages = []
 
     if (totalPages < 8) {
