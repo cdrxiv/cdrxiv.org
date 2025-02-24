@@ -17,10 +17,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   const apiUrl = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/`
-  const res = await fetchWithAlerting(apiUrl)
-  const data = await res.json()
-  const preprints: Preprints = data?.results ?? []
-  const preprintSitemap: MetadataRoute.Sitemap = preprints.map(
+  let nextUrl: string | null = apiUrl
+  let allPreprints: Preprints = []
+
+  while (nextUrl) {
+    const res = await fetchWithAlerting(nextUrl)
+    const data = await res.json()
+    allPreprints = [...allPreprints, ...(data?.results ?? [])]
+    nextUrl = data?.next ?? null
+  }
+
+  const preprintSitemap: MetadataRoute.Sitemap = allPreprints.map(
     (preprint: any) => {
       return {
         url: `${baseUrl}/preprint/${preprint.pk}`,
