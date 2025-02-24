@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation'
 
 import { fetchPublishedPreprints } from '../actions'
 import type { PublishedPreprint } from '../types/preprint'
-import { Loading } from '../components'
+import { Loading, Link } from '../components'
 import List from './list'
 import Grid from './grid'
 
@@ -18,11 +18,12 @@ type Props = {
 
 const PreprintsView = (props: Props) => {
   const sentinelRef = useRef<HTMLDivElement>()
+  const searchParams = useSearchParams()
+  const currentPage = searchParams.get('page')
+  const currentPageNum = currentPage ? parseInt(currentPage) : 1
   const [nextPage, setNextPage] = useState(props.nextPage)
   const [preprints, setPreprints] = useState(props.preprints)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const searchParams = useSearchParams()
-
   const [currentView, setCurrentView] = useState<ViewType>(
     () => (searchParams.get('view') as ViewType) || 'grid',
   )
@@ -77,6 +78,18 @@ const PreprintsView = (props: Props) => {
 
   return (
     <>
+      {currentPage && currentPageNum > 1 && (
+        <Box
+          sx={{
+            margin: 'auto',
+            mb: 5,
+            width: 'fit-content',
+          }}
+        >
+          <Link href={'/'}>View latest preprints</Link>
+        </Box>
+      )}
+
       {currentView === 'list' ? (
         <List preprints={preprints} />
       ) : (
@@ -91,6 +104,37 @@ const PreprintsView = (props: Props) => {
 
       {nextPage && (
         <Box ref={sentinelRef} sx={{ height: '1px' }} /> // Invisible sentinel
+      )}
+
+      {(nextPage || currentPage) && (
+        <noscript>
+          <Box
+            sx={{
+              margin: 'auto',
+              mt: 5,
+              width: 'fit-content',
+            }}
+          >
+            <Flex sx={{ gap: 2 }}>
+              {currentPage && currentPage !== '1' && (
+                <Link
+                  href={`?${new URLSearchParams({ page: (currentPageNum - 1).toString() })}`}
+                  rel='prev'
+                >
+                  Previous
+                </Link>
+              )}
+              {nextPage && (
+                <Link
+                  href={`?${new URLSearchParams({ page: (currentPageNum + 1).toString() })}`}
+                  rel='next'
+                >
+                  Next
+                </Link>
+              )}
+            </Flex>
+          </Box>
+        </noscript>
       )}
     </>
   )

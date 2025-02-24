@@ -1,31 +1,34 @@
 import { Suspense } from 'react'
+import { notFound } from 'next/navigation'
 import LandingPage from './landing-page'
 import PreprintsView from './preprints-view'
 import LoadingWrapper from './loading-wrapper'
 import { fetchWithAlerting } from '../actions/server-utils'
+
 interface HomeProps {
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: { [key: string]: string | undefined }
 }
 
-const Preprints = async ({ subject }: { subject: string | undefined }) => {
-  let url = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/?limit=48`
+const preprintsPerPage = 48
+
+const Home = async ({ searchParams }: HomeProps) => {
+  const subject = searchParams.subject
+  const page = searchParams.page ? parseInt(searchParams.page) : 1
+  const offset = (page - 1) * preprintsPerPage
+  let url = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/?limit=${preprintsPerPage}&offset=${offset}`
   if (subject) {
     url += `&subject=${subject}`
   }
   const res = await fetchWithAlerting(url, { next: { revalidate: 180 } })
   const preprints = await res.json()
   const results = preprints.results || []
-  return (
-    <PreprintsView preprints={results} nextPage={preprints.next as string} />
-  )
-}
-
-const Home = async ({ searchParams }: HomeProps) => {
-  const subject = searchParams.subject as string | undefined
+  if (page > 1 && results.length === 0) {
+    notFound()
+  }
   return (
     <LandingPage>
       <Suspense fallback={<LoadingWrapper />}>
-        <Preprints subject={subject} />
+        <PreprintsView preprints={results} nextPage={preprints.next} />
       </Suspense>
     </LandingPage>
   )
