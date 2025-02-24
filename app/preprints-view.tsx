@@ -116,7 +116,7 @@ const PreprintsView = (props: Props) => {
             }}
           >
             <Flex sx={{ gap: 2 }}>
-              {currentPage && currentPage !== '1' && (
+              {currentPage && currentPageNum > 1 && (
                 <Link
                   href={`?${new URLSearchParams({ page: (currentPageNum - 1).toString() })}`}
                   rel='prev'
