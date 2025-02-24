@@ -1,0 +1,8 @@
+User-Agent: *
+Allow: /
+Disallow: /submit
+Disallow: /account
+Disallow: /submissions
+Disallow: /preview
+Disallow: /api
+Sitemap: https://cdrxiv.org/sitemap.xml
