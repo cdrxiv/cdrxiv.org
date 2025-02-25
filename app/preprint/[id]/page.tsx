@@ -4,6 +4,7 @@ import { ResolvingMetadata } from 'next'
 import PreprintViewer from './preprint-viewer'
 import { fetchWithAlerting } from '../../../actions/server-utils'
 import { Preprint } from '../../../types/preprint'
+import { getAdditionalField } from '../../../utils/data'
 
 const getPreprint = async (id: string): Promise<Preprint | null> => {
   const res = await fetchWithAlerting(
@@ -43,7 +44,10 @@ export const generateMetadata = async (
               .trim(),
           ),
           citation_publication_date: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`,
-          citation_pdf_url: preprint.versions[0].public_download_url,
+          citation_pdf_url:
+            getAdditionalField(preprint, 'Submission type') === 'Data'
+              ? null
+              : preprint.versions[0].public_download_url,
         },
       }
     } else {
