@@ -7,6 +7,7 @@ import { useSearchParams } from 'next/navigation'
 import { fetchPublishedPreprints } from '../actions'
 import type { PublishedPreprint } from '../types/preprint'
 import { Loading, Link } from '../components'
+import Pagination from './pagination'
 import List from './list'
 import Grid from './grid'
 
@@ -78,42 +79,6 @@ const PreprintsView = (props: Props) => {
     }
   }, [handleObserver])
 
-  const generatePaginationLinks = () => {
-    if (!props.totalCount || !props.preprintsPerPage) return []
-    const totalPages = Math.ceil(props.totalCount / props.preprintsPerPage)
-    let pages = []
-
-    if (totalPages < 8) {
-      pages = Array(totalPages)
-        .fill(null)
-        .map((d, i) => i + 1)
-    } else if (currentPageNum <= 4) {
-      pages = [1, 2, 3, 4, 5, 6, '...', totalPages]
-    } else if (totalPages - currentPageNum <= 4) {
-      pages = [
-        1,
-        '...',
-        ...Array(6)
-          .fill(null)
-          .map((d, i) => totalPages - 5 + i),
-      ]
-    } else {
-      pages = [
-        1,
-        '...',
-        ...Array(5)
-          .fill(null)
-          .map((d, i) => currentPageNum - 2 + i),
-        '...',
-        totalPages,
-      ]
-    }
-    return pages
-  }
-
-  const createPageUrl = (page: number) =>
-    `?${new URLSearchParams({ ...Object.fromEntries(searchParams), page: page.toString() })}`
-
   return (
     <>
       {currentPage && currentPageNum > 1 && (
@@ -124,7 +89,9 @@ const PreprintsView = (props: Props) => {
             width: 'fit-content',
           }}
         >
-          <Link href={createPageUrl(1)}>View latest preprints</Link>
+          <Link href={`/?page=1&view=${currentView}`}>
+            View latest preprints
+          </Link>
         </Box>
       )}
 
@@ -146,25 +113,12 @@ const PreprintsView = (props: Props) => {
 
       {(nextPage || currentPageNum > 1) && (
         <noscript>
-          <Flex sx={{ justifyContent: 'center', gap: 2, mt: 5 }}>
-            {currentPageNum > 1 && (
-              <Link href={createPageUrl(currentPageNum - 1)}>Previous</Link>
-            )}
-            {generatePaginationLinks().map((page, i) =>
-              page === '...' || page === currentPageNum ? (
-                <Box as='span' sx={{ mt: '1px' }} key={i}>
-                  {page}
-                </Box>
-              ) : (
-                <Link key={i} href={createPageUrl(page as number)}>
-                  {page}
-                </Link>
-              ),
-            )}
-            {nextPage && (
-              <Link href={createPageUrl(currentPageNum + 1)}>Next</Link>
-            )}
-          </Flex>
+          <Pagination
+            totalCount={props.totalCount}
+            itemsPerPage={props.preprintsPerPage}
+            currentPage={currentPageNum}
+            hasNextPage={!!nextPage}
+          />
         </noscript>
       )}
     </>
