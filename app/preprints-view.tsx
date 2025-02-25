@@ -146,27 +146,25 @@ const PreprintsView = (props: Props) => {
 
       {(nextPage || currentPageNum > 1) && (
         <noscript>
-          <Box sx={{ margin: 'auto', mt: 5, textAlign: 'center' }}>
-            <Flex sx={{ justifyContent: 'center', gap: 2 }}>
-              {currentPageNum > 1 && (
-                <Link href={createPageUrl(currentPageNum - 1)}>Previous</Link>
-              )}
-              {generatePaginationLinks().map((page, i) =>
-                page === '...' || page === currentPageNum ? (
-                  <Box as='span' sx={{ mt: '1px' }} key={i}>
-                    {page}
-                  </Box>
-                ) : (
-                  <Link key={i} href={createPageUrl(page as number)}>
-                    {page}
-                  </Link>
-                ),
-              )}
-              {nextPage && (
-                <Link href={createPageUrl(currentPageNum + 1)}>Next</Link>
-              )}
-            </Flex>
-          </Box>
+          <Flex sx={{ justifyContent: 'center', gap: 2, mt: 5 }}>
+            {currentPageNum > 1 && (
+              <Link href={createPageUrl(currentPageNum - 1)}>Previous</Link>
+            )}
+            {generatePaginationLinks().map((page, i) =>
+              page === '...' || page === currentPageNum ? (
+                <Box as='span' sx={{ mt: '1px' }} key={i}>
+                  {page}
+                </Box>
+              ) : (
+                <Link key={i} href={createPageUrl(page as number)}>
+                  {page}
+                </Link>
+              ),
+            )}
+            {nextPage && (
+              <Link href={createPageUrl(currentPageNum + 1)}>Next</Link>
+            )}
+          </Flex>
         </noscript>
       )}
     </>
