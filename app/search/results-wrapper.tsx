@@ -1,10 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { Box, Flex } from 'theme-ui'
-import { Column, Row, ViewSelector, ViewType } from '../../components'
-
+import { Column, Row } from '../../components'
+import ViewSelector from '../view-selector'
 interface ResultsWrapperProps {
   count: number
   search: string
@@ -16,18 +14,6 @@ const ResultsWrapper: React.FC<ResultsWrapperProps> = ({
   search,
   children,
 }) => {
-  const searchParams = useSearchParams()
-  const [currentView, setCurrentView] = useState<ViewType>(
-    () => (searchParams.get('view') as ViewType) || 'grid',
-  )
-
-  const handleViewChange = (view: ViewType) => {
-    setCurrentView(view)
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('view', view)
-    window.history.replaceState(null, '', `?${params.toString()}`)
-  }
-
   return (
     <>
       <Row columns={[6, 8, 12, 12]} sx={{ mt: 4, mb: [4, 4, 8, 8] }}>
@@ -45,10 +31,7 @@ const ResultsWrapper: React.FC<ResultsWrapperProps> = ({
             }}
           >
             <Box sx={{ variant: 'text.monoCaps' }}>Results ({count} total)</Box>
-            <ViewSelector
-              currentView={currentView}
-              onViewChange={handleViewChange}
-            />
+            <ViewSelector />
           </Flex>
         </Column>
       </Row>

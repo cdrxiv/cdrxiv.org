@@ -1,40 +1,15 @@
 'use client'
 
-import React, { useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { Box, Divider, Flex } from 'theme-ui'
-import { Column, Row, Link, ViewSelector, ViewType } from '../components'
+import { Column, Row, Link } from '../components'
 import Topics from './topics'
+import ViewSelector from './view-selector'
 
 interface LandingPageProps {
   children?: React.ReactNode
 }
 
 const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
-  const searchParams = useSearchParams()
-  const [currentView, setCurrentView] = useState<ViewType>(
-    () => (searchParams.get('view') as ViewType) || 'grid',
-  )
-
-  const handleViewChange = (view: ViewType) => {
-    setCurrentView(view)
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('view', view)
-    window.history.replaceState(null, '', `?${params.toString()}`)
-  }
-
-  const currentSubject = searchParams.get('subject') || 'All'
-  const searchParamsObject: Record<string, string> = {}
-  searchParams.forEach((value, key) => {
-    searchParamsObject[key] = value
-  })
-
-  const createViewUrl = (view: ViewType) => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('view', view)
-    return `/?${params.toString()}`
-  }
-
   return (
     <>
       <Row columns={[6, 8, 12, 12]} sx={{ mb: [4, 4, 8, 8] }}>
@@ -68,10 +43,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
           />
         </Column>
 
-        <Topics
-          currentSubject={currentSubject}
-          searchParams={searchParamsObject}
-        />
+        <Topics />
 
         <Column start={[4, 5, 1, 1]} width={[3, 4, 6, 6]}>
           <Flex
@@ -85,10 +57,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
             <Box as='h2' sx={{ variant: 'text.monoCaps' }}>
               Recent preprints
             </Box>
-            <ViewSelector
-              currentView={currentView}
-              onViewChange={handleViewChange}
-            />
+            <ViewSelector />
           </Flex>
         </Column>
       </Row>

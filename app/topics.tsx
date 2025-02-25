@@ -1,22 +1,18 @@
 import React, { useMemo, useRef, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Box, Flex } from 'theme-ui'
 import { Button, Column, Link, Menu, Row, Select } from '../components'
 import { useSubjects } from './subjects-context'
 import type { Subjects } from '../types/subject'
 
-interface TopicsProps {
-  currentSubject?: string
-  searchParams?: { [key: string]: string | string[] | undefined }
-}
-
-const Topics: React.FC<TopicsProps> = ({
-  currentSubject = 'All',
-  searchParams = {},
-}) => {
+const Topics = () => {
+  const searchParams = useSearchParams()
   const subjects: Subjects = useSubjects()
   const topicsBoxRef = useRef<HTMLElement | null>(null)
   const [subjectsMenuOpen, setSubjectsMenuOpen] = useState(false)
   const [menuPosition, setMenuPosition] = useState({ top: 0 })
+
+  const currentSubject = searchParams.get('subject') || 'All'
 
   const midPoint = Math.ceil(subjects.length / 2)
 
@@ -29,7 +25,7 @@ const Topics: React.FC<TopicsProps> = ({
   }, [subjects])
 
   const createTopicUrl = (topic: string) => {
-    const params = new URLSearchParams(searchParams as Record<string, string>)
+    const params = new URLSearchParams(Object.fromEntries(searchParams))
     if (topic === 'All') {
       params.delete('subject')
     } else {

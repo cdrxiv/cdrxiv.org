@@ -1,19 +1,12 @@
 import { Flex } from 'theme-ui'
-import Link from './link'
+import Link from '../components/link'
 import { useSearchParams } from 'next/navigation'
 
 export type ViewType = 'grid' | 'list'
 
-interface ViewSelectorProps {
-  currentView: ViewType
-  onViewChange?: (view: ViewType) => void
-}
-
-const ViewSelector: React.FC<ViewSelectorProps> = ({
-  currentView,
-  onViewChange,
-}) => {
+const ViewSelector = () => {
   const searchParams = useSearchParams()
+  const currentView = (searchParams.get('view') as ViewType) || 'grid'
 
   const createViewUrl = (view: ViewType) => {
     const params = new URLSearchParams(searchParams?.toString() || '')
@@ -25,10 +18,10 @@ const ViewSelector: React.FC<ViewSelectorProps> = ({
     view: ViewType,
     e: React.MouseEvent<HTMLAnchorElement>,
   ) => {
-    if (onViewChange) {
-      e.preventDefault()
-      onViewChange(view)
-    }
+    e.preventDefault()
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('view', view)
+    window.history.replaceState(null, '', `?${params.toString()}`)
   }
 
   return (

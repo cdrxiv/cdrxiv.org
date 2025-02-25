@@ -27,16 +27,7 @@ const PreprintsView = (props: Props) => {
   const [nextPage, setNextPage] = useState(props.nextPage)
   const [preprints, setPreprints] = useState(props.preprints)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [currentView, setCurrentView] = useState<ViewType>(
-    () => (searchParams.get('view') as ViewType) || 'grid',
-  )
-
-  useEffect(() => {
-    const view = searchParams.get('view') as ViewType
-    if (view === 'grid' || view === 'list') {
-      setCurrentView(view)
-    }
-  }, [searchParams])
+  const currentView = (searchParams.get('view') as ViewType) || 'grid'
 
   useEffect(() => {
     setPreprints(props.preprints)
