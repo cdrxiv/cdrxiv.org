@@ -187,6 +187,8 @@ const Header = () => {
                 `/search?query=${searchRef.current?.value?.replace(/"/g, '') ?? ''}`,
               )
             }}
+            formAction='/search'
+            inputName='query'
             arrows={true}
             inverted
             aria-label='Preprint search'

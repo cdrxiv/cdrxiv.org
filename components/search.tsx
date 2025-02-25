@@ -9,6 +9,8 @@ interface SearchProps extends Omit<InputProps, 'onSubmit'> {
   sx?: ThemeUIStyleObject
   inverted?: boolean
   disabled?: boolean
+  formAction?: string
+  inputName?: string
 }
 
 const Search = forwardRef<HTMLInputElement, SearchProps>(
@@ -21,6 +23,8 @@ const Search = forwardRef<HTMLInputElement, SearchProps>(
       arrows = true,
       sx = {},
       disabled = false,
+      formAction,
+      inputName,
       ...props
     },
     ref,
@@ -35,9 +39,10 @@ const Search = forwardRef<HTMLInputElement, SearchProps>(
 
     return (
       <Box sx={{ position: 'relative', width: '100%' }}>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} action={formAction}>
           <Input
             ref={ref}
+            name={inputName}
             placeholder={placeholder ?? ''}
             onChange={onChange}
             disabled={disabled}
