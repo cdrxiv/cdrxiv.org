@@ -3,13 +3,7 @@ import { Box, BoxProps, Flex, ThemeUIStyleObject } from 'theme-ui'
 import { usePathname, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { createPortal } from 'react-dom'
-
-import Link from './link'
-import Search from './search'
-import Column from './column'
-import Row from './row'
-import StyledButton from './button'
-import Menu from './menu'
+import { Link, Search, Column, Row, Button as StyledButton, Menu } from '.'
 import useBackgroundColors from '../hooks/use-background-colors'
 
 type SVGBoxProps = BoxProps & SVGProps<SVGSVGElement>
@@ -217,16 +211,18 @@ const Header = () => {
             display: ['inherit', 'none', 'none', 'none'],
           }}
         >
-          <StyledButton
-            ref={menuButtonRef}
-            onClick={handleMenuToggle}
-            sx={{ width: 'fit-content' }}
-            aria-expanded={menuOpen}
-            aria-haspopup='true'
-            aria-controls='mobile-menu'
-          >
-            Menu
-          </StyledButton>
+          <Box sx={{ '@media (scripting: none)': { display: 'none' } }}>
+            <StyledButton
+              ref={menuButtonRef}
+              onClick={handleMenuToggle}
+              sx={{ width: 'fit-content' }}
+              aria-expanded={menuOpen}
+              aria-haspopup='true'
+              aria-controls='mobile-menu'
+            >
+              Menu
+            </StyledButton>
+          </Box>
           {menuOpen &&
             createPortal(
               <Menu
@@ -238,6 +234,17 @@ const Header = () => {
               </Menu>,
               document.body,
             )}
+          <noscript>
+            {PATHS.map(({ name, path }, i) => (
+              <>
+                {i < 2 && (
+                  <Link key={path} href={path} sx={{ mr: 1 }}>
+                    {name}
+                  </Link>
+                )}
+              </>
+            ))}
+          </noscript>
         </Column>
       </Row>
     </Box>
