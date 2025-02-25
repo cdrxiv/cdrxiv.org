@@ -1,7 +1,5 @@
-import { Suspense } from 'react'
 import LandingPage from './landing-page'
 import PreprintsView from './preprints-view'
-import LoadingWrapper from './loading-wrapper'
 import { fetchWithAlerting } from '../actions/server-utils'
 
 interface HomeProps {
@@ -23,14 +21,12 @@ const Home = async ({ searchParams }: HomeProps) => {
   const results = preprints.results || []
   return (
     <LandingPage>
-      <Suspense fallback={<LoadingWrapper />}>
-        <PreprintsView
-          preprints={results}
-          nextPage={preprints.next}
-          totalCount={preprints.count}
-          preprintsPerPage={preprintsPerPage}
-        />
-      </Suspense>
+      <PreprintsView
+        preprints={results}
+        nextPage={preprints.next}
+        totalCount={preprints.count}
+        preprintsPerPage={preprintsPerPage}
+      />
     </LandingPage>
   )
 }

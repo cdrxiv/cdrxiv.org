@@ -1,8 +1,5 @@
-import { Suspense } from 'react'
-
 import ResultsWrapper from './results-wrapper'
 import PreprintsView from '../preprints-view'
-import LoadingWrapper from '../loading-wrapper'
 import { fetchWithAlerting } from '../../actions/server-utils'
 
 interface SearchProps {
@@ -34,16 +31,14 @@ const Search = async ({ searchParams }: SearchProps) => {
   const results = preprints.results || []
 
   return (
-    <Suspense key={search} fallback={<LoadingWrapper />}>
-      <ResultsWrapper count={preprints.count} search={search ?? ''}>
-        <PreprintsView
-          preprints={results}
-          nextPage={preprints.next}
-          totalCount={preprints.count}
-          preprintsPerPage={preprintsPerPage}
-        />
-      </ResultsWrapper>
-    </Suspense>
+    <ResultsWrapper count={preprints.count} search={search ?? ''}>
+      <PreprintsView
+        preprints={results}
+        nextPage={preprints.next}
+        totalCount={preprints.count}
+        preprintsPerPage={preprintsPerPage}
+      />
+    </ResultsWrapper>
   )
 }
 
