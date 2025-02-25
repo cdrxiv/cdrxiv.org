@@ -16,17 +16,34 @@ const Home = async ({ searchParams }: HomeProps) => {
   if (subject) {
     url += `&subject=${subject}`
   }
-  const res = await fetchWithAlerting(url, { next: { revalidate: 180 } })
-  const preprints = await res.json()
-  const results = preprints.results || []
+
+  let results = []
+  let nextPage = null
+  let totalCount = 0
+  let error = false
+
+  try {
+    const res = await fetchWithAlerting(url, { next: { revalidate: 180 } })
+    const preprints = await res.json()
+    results = preprints.results || []
+    nextPage = preprints.next
+    totalCount = preprints.count
+  } catch (err) {
+    error = true
+  }
+
   return (
     <LandingPage>
-      <PreprintsView
-        preprints={results}
-        nextPage={preprints.next}
-        totalCount={preprints.count}
-        preprintsPerPage={preprintsPerPage}
-      />
+      {error ? (
+        <div style={{ textAlign: 'center' }}>Unable to load preprints.</div>
+      ) : (
+        <PreprintsView
+          preprints={results}
+          nextPage={nextPage}
+          totalCount={totalCount}
+          preprintsPerPage={preprintsPerPage}
+        />
+      )}
     </LandingPage>
   )
 }
