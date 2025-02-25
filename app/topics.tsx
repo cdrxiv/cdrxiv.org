@@ -135,36 +135,49 @@ const Topics = () => {
 
           <noscript>
             <form method='get' action='/'>
-              <Select
-                name='subject'
-                defaultValue={currentSubject === 'All' ? '' : currentSubject}
-              >
-                <option value=''>All</option>
-                {subjects.map((subject) => (
-                  <option key={subject.name} value={subject.name}>
-                    {subject.name} ({subject.preprints.length})
-                  </option>
-                ))}
-              </Select>
+              <Flex sx={{ gap: 1 }}>
+                <Select
+                  name='subject'
+                  defaultValue={currentSubject === 'All' ? '' : currentSubject}
+                  sx={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    boxShadow: (
+                      theme,
+                    ) => `1px 1px 0px 1px ${theme?.colors?.text} inset,
+        -1px -1px 0px 1px ${theme?.colors?.muted} inset`,
+                    background: 'primary',
+                  }}
+                >
+                  <option value=''>All</option>
+                  {subjects.map((subject) => (
+                    <option key={subject.name} value={subject.name}>
+                      {subject.name} ({subject.preprints.length})
+                    </option>
+                  ))}
+                </Select>
 
-              <Button type='submit'>Apply</Button>
+                <Button type='submit' sx={{ flexShrink: 0 }}>
+                  Apply
+                </Button>
 
-              {/* Preserve other query parameters */}
-              {Object.entries(searchParams).map(([key, value]) => {
-                if (key !== 'subject' && value !== undefined) {
-                  return (
-                    <input
-                      key={key}
-                      type='hidden'
-                      name={key}
-                      value={
-                        Array.isArray(value) ? value[0] : (value as string)
-                      }
-                    />
-                  )
-                }
-                return null
-              })}
+                {/* Preserve other query parameters */}
+                {Object.entries(searchParams).map(([key, value]) => {
+                  if (key !== 'subject' && value !== undefined) {
+                    return (
+                      <input
+                        key={key}
+                        type='hidden'
+                        name={key}
+                        value={
+                          Array.isArray(value) ? value[0] : (value as string)
+                        }
+                      />
+                    )
+                  }
+                  return null
+                })}
+              </Flex>
             </form>
           </noscript>
         </Column>
