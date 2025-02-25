@@ -3,14 +3,12 @@
 import React, { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Box, Divider, Flex } from 'theme-ui'
-import { Column, Row, Link } from '../components'
+import { Column, Row, Link, ViewSelector, ViewType } from '../components'
 import Topics from './topics'
 
 interface LandingPageProps {
   children?: React.ReactNode
 }
-
-type ViewType = 'grid' | 'list'
 
 const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
   const searchParams = useSearchParams()
@@ -87,36 +85,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
             <Box as='h2' sx={{ variant: 'text.monoCaps' }}>
               Recent preprints
             </Box>
-            <Flex role='listbox' aria-label='View options' sx={{ gap: 3 }}>
-              <Link
-                role='option'
-                aria-selected={currentView === 'grid'}
-                onClick={(e) => {
-                  e.preventDefault()
-                  handleViewChange('grid')
-                }}
-                href={createViewUrl('grid')}
-                selected={currentView === 'grid'}
-                hoverEffect={true}
-                sx={{ ':visited': { color: 'blue' } }}
-              >
-                Grid
-              </Link>
-              <Link
-                role='option'
-                aria-selected={currentView === 'list'}
-                onClick={(e) => {
-                  e.preventDefault()
-                  handleViewChange('list')
-                }}
-                href={createViewUrl('list')}
-                selected={currentView === 'list'}
-                hoverEffect={true}
-                sx={{ ':visited': { color: 'blue' } }}
-              >
-                List
-              </Link>
-            </Flex>
+            <ViewSelector
+              currentView={currentView}
+              onViewChange={handleViewChange}
+            />
           </Flex>
         </Column>
       </Row>

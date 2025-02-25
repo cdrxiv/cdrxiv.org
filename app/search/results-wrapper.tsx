@@ -3,15 +3,13 @@
 import React, { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Box, Flex } from 'theme-ui'
-import { Column, Row, Link } from '../../components'
+import { Column, Row, ViewSelector, ViewType } from '../../components'
 
 interface ResultsWrapperProps {
   count: number
   search: string
   children?: React.ReactNode
 }
-
-type ViewType = 'grid' | 'list'
 
 const ResultsWrapper: React.FC<ResultsWrapperProps> = ({
   count,
@@ -47,30 +45,10 @@ const ResultsWrapper: React.FC<ResultsWrapperProps> = ({
             }}
           >
             <Box sx={{ variant: 'text.monoCaps' }}>Results ({count} total)</Box>
-            <Flex sx={{ gap: 3 }}>
-              <Link
-                sx={{
-                  fontSize: [2, 2, 2, 3],
-                  textDecoration: currentView === 'grid' ? 'underline' : 'none',
-                }}
-                onClick={() => {
-                  handleViewChange('grid')
-                }}
-              >
-                Grid
-              </Link>
-              <Link
-                sx={{
-                  fontSize: [2, 2, 2, 3],
-                  textDecoration: currentView === 'list' ? 'underline' : 'none',
-                }}
-                onClick={() => {
-                  handleViewChange('list')
-                }}
-              >
-                List
-              </Link>
-            </Flex>
+            <ViewSelector
+              currentView={currentView}
+              onViewChange={handleViewChange}
+            />
           </Flex>
         </Column>
       </Row>
