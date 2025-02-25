@@ -25,6 +25,18 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
     window.history.replaceState(null, '', `?${params.toString()}`)
   }
 
+  const currentSubject = searchParams.get('subject') || 'All'
+  const searchParamsObject: Record<string, string> = {}
+  searchParams.forEach((value, key) => {
+    searchParamsObject[key] = value
+  })
+
+  const createViewUrl = (view: ViewType) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('view', view)
+    return `/?${params.toString()}`
+  }
+
   return (
     <>
       <Row columns={[6, 8, 12, 12]} sx={{ mb: [4, 4, 8, 8] }}>
@@ -58,7 +70,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
           />
         </Column>
 
-        <Topics />
+        <Topics
+          currentSubject={currentSubject}
+          searchParams={searchParamsObject}
+        />
 
         <Column start={[4, 5, 1, 1]} width={[3, 4, 6, 6]}>
           <Flex
@@ -76,22 +91,28 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
               <Link
                 role='option'
                 aria-selected={currentView === 'grid'}
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault()
                   handleViewChange('grid')
                 }}
+                href={createViewUrl('grid')}
                 selected={currentView === 'grid'}
                 hoverEffect={true}
+                sx={{ ':visited': { color: 'blue' } }}
               >
                 Grid
               </Link>
               <Link
                 role='option'
                 aria-selected={currentView === 'list'}
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault()
                   handleViewChange('list')
                 }}
+                href={createViewUrl('list')}
                 selected={currentView === 'list'}
                 hoverEffect={true}
+                sx={{ ':visited': { color: 'blue' } }}
               >
                 List
               </Link>
