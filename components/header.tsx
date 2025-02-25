@@ -235,15 +235,14 @@ const Header = () => {
               document.body,
             )}
           <noscript>
-            {PATHS.map(({ name, path }, i) => (
-              <>
-                {i < 2 && (
+            {PATHS.map(
+              ({ name, path }, i) =>
+                i < 2 && (
                   <Link key={path} href={path} sx={{ mr: 1 }}>
                     {name}
                   </Link>
-                )}
-              </>
-            ))}
+                ),
+            )}
           </noscript>
         </Column>
       </Row>
