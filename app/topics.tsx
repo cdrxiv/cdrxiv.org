@@ -1,21 +1,18 @@
 import React, { useMemo, useRef, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Box, Flex } from 'theme-ui'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { Column, Link, Menu, Row } from '../components'
+import { Button, Column, Link, Menu, Row, Select } from '../components'
 import { useSubjects } from './subjects-context'
 import type { Subjects } from '../types/subject'
 
-const Topics: React.FC = () => {
-  const subjects: Subjects = useSubjects()
-  const router = useRouter()
+const Topics = () => {
   const searchParams = useSearchParams()
+  const subjects: Subjects = useSubjects()
   const topicsBoxRef = useRef<HTMLElement | null>(null)
-
-  const subjectParam = searchParams.get('subject') || 'All'
-
-  const [currentSubject, setCurrentSubject] = useState(subjectParam)
   const [subjectsMenuOpen, setSubjectsMenuOpen] = useState(false)
   const [menuPosition, setMenuPosition] = useState({ top: 0 })
+
+  const currentSubject = searchParams.get('subject') || 'All'
 
   const midPoint = Math.ceil(subjects.length / 2)
 
@@ -27,30 +24,31 @@ const Topics: React.FC = () => {
     return allPreprints.size
   }, [subjects])
 
-  const handleFilterChange = (newFilter: string) => {
-    const params = new URLSearchParams(searchParams)
-    if (newFilter === 'All' || newFilter === currentSubject) {
+  const createTopicUrl = (topic: string) => {
+    const params = new URLSearchParams(Object.fromEntries(searchParams))
+    if (topic === 'All') {
       params.delete('subject')
-      setCurrentSubject('All')
     } else {
-      params.set('subject', newFilter)
-      setCurrentSubject(newFilter)
+      params.set('subject', topic)
     }
-    router.push(`/?${params.toString()}`)
+    return `/?${params.toString()}`
   }
 
   const renderSubject = (name: string, count: number) => (
-    <Box
-      as='button'
-      onClick={() => handleFilterChange(name)}
+    <Link
+      href={createTopicUrl(name)}
       key={name}
       role='option'
       aria-selected={currentSubject === name}
       aria-label={`${name} (${count} preprints)`}
       sx={{
+        textDecoration: 'none',
+        color: 'text',
+        ':visited': {
+          color: 'text',
+        },
         display: 'block',
         variant: 'styles.h2',
-        cursor: 'pointer',
         width: 'fit-content',
         padding: 0,
         border: 'none',
@@ -70,7 +68,7 @@ const Topics: React.FC = () => {
       >
         {count}
       </Box>
-    </Box>
+    </Link>
   )
 
   return (
@@ -129,10 +127,59 @@ const Topics: React.FC = () => {
               variant: 'text.body',
               fontSize: [2, 2, 2, 3],
               textTransform: 'capitalize',
+              '@media (scripting: none)': { display: 'none' },
             }}
           >
             {currentSubject}
           </Link>
+
+          <noscript>
+            <form method='get' action='/'>
+              <Flex sx={{ gap: 1 }}>
+                <Select
+                  name='subject'
+                  defaultValue={currentSubject === 'All' ? '' : currentSubject}
+                  sx={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    boxShadow: (
+                      theme,
+                    ) => `1px 1px 0px 1px ${theme?.colors?.text} inset,
+        -1px -1px 0px 1px ${theme?.colors?.muted} inset`,
+                    background: 'primary',
+                  }}
+                >
+                  <option value=''>All</option>
+                  {subjects.map((subject) => (
+                    <option key={subject.name} value={subject.name}>
+                      {subject.name} ({subject.preprints.length})
+                    </option>
+                  ))}
+                </Select>
+
+                <Button type='submit' sx={{ flexShrink: 0 }}>
+                  Apply
+                </Button>
+
+                {/* Preserve other query parameters */}
+                {Object.entries(searchParams).map(([key, value]) => {
+                  if (key !== 'subject' && value !== undefined) {
+                    return (
+                      <input
+                        key={key}
+                        type='hidden'
+                        name={key}
+                        value={
+                          Array.isArray(value) ? value[0] : (value as string)
+                        }
+                      />
+                    )
+                  }
+                  return null
+                })}
+              </Flex>
+            </form>
+          </noscript>
         </Column>
       </Row>
 
