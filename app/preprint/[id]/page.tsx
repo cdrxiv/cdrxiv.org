@@ -47,7 +47,12 @@ export const generateMetadata = async (
           citation_pdf_url:
             getAdditionalField(preprint, 'Submission type') === 'Data'
               ? null
-              : preprint.versions[0].public_download_url,
+              : preprint.versions[0].public_download_url?.replace(
+                  process.env.NEXT_PUBLIC_JANEWAY_URL as string,
+                  process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
+                    ? 'https://cdrxiv.org'
+                    : 'https://staging.cdrxiv.org',
+                ),
         },
       }
     } else {
