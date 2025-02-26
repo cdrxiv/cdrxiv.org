@@ -8,7 +8,7 @@ const nextConfig = {
     return [
       {
         source: '/repository/object/:slug*',
-        destination: `${process.env.NEXT_PUBLIC_JANEWAY_URL}/repository/object/:slug*`,
+        destination: `${process.env.NEXT_PUBLIC_JANEWAY_URL}/repository/object/:slug*/`,
       },
     ]
   },
