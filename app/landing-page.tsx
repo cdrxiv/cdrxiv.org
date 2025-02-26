@@ -1,30 +1,15 @@
 'use client'
 
-import React, { useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { Box, Divider, Flex } from 'theme-ui'
 import { Column, Row, Link } from '../components'
 import Topics from './topics'
+import ViewSelector from './view-selector'
 
 interface LandingPageProps {
   children?: React.ReactNode
 }
 
-type ViewType = 'grid' | 'list'
-
 const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
-  const searchParams = useSearchParams()
-  const [currentView, setCurrentView] = useState<ViewType>(
-    () => (searchParams.get('view') as ViewType) || 'grid',
-  )
-
-  const handleViewChange = (view: ViewType) => {
-    setCurrentView(view)
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('view', view)
-    window.history.replaceState(null, '', `?${params.toString()}`)
-  }
-
   return (
     <>
       <Row columns={[6, 8, 12, 12]} sx={{ mb: [4, 4, 8, 8] }}>
@@ -72,30 +57,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
             <Box as='h2' sx={{ variant: 'text.monoCaps' }}>
               Recent preprints
             </Box>
-            <Flex role='listbox' aria-label='View options' sx={{ gap: 3 }}>
-              <Link
-                role='option'
-                aria-selected={currentView === 'grid'}
-                onClick={() => {
-                  handleViewChange('grid')
-                }}
-                selected={currentView === 'grid'}
-                hoverEffect={true}
-              >
-                Grid
-              </Link>
-              <Link
-                role='option'
-                aria-selected={currentView === 'list'}
-                onClick={() => {
-                  handleViewChange('list')
-                }}
-                selected={currentView === 'list'}
-                hoverEffect={true}
-              >
-                List
-              </Link>
-            </Flex>
+            <ViewSelector />
           </Flex>
         </Column>
       </Row>

@@ -6,7 +6,8 @@ import { useSearchParams } from 'next/navigation'
 
 import { fetchPublishedPreprints } from '../actions'
 import type { PublishedPreprint } from '../types/preprint'
-import { Loading } from '../components'
+import { Loading, Link } from '../components'
+import Pagination from './pagination'
 import List from './list'
 import Grid from './grid'
 
@@ -14,25 +15,19 @@ type ViewType = 'grid' | 'list'
 type Props = {
   preprints: PublishedPreprint[]
   nextPage?: string
+  totalCount?: number
+  preprintsPerPage?: number
 }
 
 const PreprintsView = (props: Props) => {
   const sentinelRef = useRef<HTMLDivElement>()
+  const searchParams = useSearchParams()
+  const currentPage = searchParams.get('page')
+  const currentPageNum = currentPage ? parseInt(currentPage) : 1
   const [nextPage, setNextPage] = useState(props.nextPage)
   const [preprints, setPreprints] = useState(props.preprints)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const searchParams = useSearchParams()
-
-  const [currentView, setCurrentView] = useState<ViewType>(
-    () => (searchParams.get('view') as ViewType) || 'grid',
-  )
-
-  useEffect(() => {
-    const view = searchParams.get('view') as ViewType
-    if (view === 'grid' || view === 'list') {
-      setCurrentView(view)
-    }
-  }, [searchParams])
+  const currentView = (searchParams.get('view') as ViewType) || 'grid'
 
   useEffect(() => {
     setPreprints(props.preprints)
@@ -77,6 +72,20 @@ const PreprintsView = (props: Props) => {
 
   return (
     <>
+      {currentPage && currentPageNum > 1 && (
+        <Box
+          sx={{
+            margin: 'auto',
+            mb: 5,
+            width: 'fit-content',
+          }}
+        >
+          <Link href={`/?page=1&view=${currentView}`}>
+            View latest preprints
+          </Link>
+        </Box>
+      )}
+
       {currentView === 'list' ? (
         <List preprints={preprints} />
       ) : (
@@ -91,6 +100,17 @@ const PreprintsView = (props: Props) => {
 
       {nextPage && (
         <Box ref={sentinelRef} sx={{ height: '1px' }} /> // Invisible sentinel
+      )}
+
+      {(nextPage || currentPageNum > 1) && (
+        <noscript>
+          <Pagination
+            totalCount={props.totalCount}
+            itemsPerPage={props.preprintsPerPage}
+            currentPage={currentPageNum}
+            hasNextPage={!!nextPage}
+          />
+        </noscript>
       )}
     </>
   )

@@ -1,35 +1,19 @@
 'use client'
 
-import React, { useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { Box, Flex } from 'theme-ui'
-import { Column, Row, Link } from '../../components'
-
+import { Column, Row } from '../../components'
+import ViewSelector from '../view-selector'
 interface ResultsWrapperProps {
   count: number
   search: string
   children?: React.ReactNode
 }
 
-type ViewType = 'grid' | 'list'
-
 const ResultsWrapper: React.FC<ResultsWrapperProps> = ({
   count,
   search,
   children,
 }) => {
-  const searchParams = useSearchParams()
-  const [currentView, setCurrentView] = useState<ViewType>(
-    () => (searchParams.get('view') as ViewType) || 'grid',
-  )
-
-  const handleViewChange = (view: ViewType) => {
-    setCurrentView(view)
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('view', view)
-    window.history.replaceState(null, '', `?${params.toString()}`)
-  }
-
   return (
     <>
       <Row columns={[6, 8, 12, 12]} sx={{ mt: 4, mb: [4, 4, 8, 8] }}>
@@ -47,30 +31,7 @@ const ResultsWrapper: React.FC<ResultsWrapperProps> = ({
             }}
           >
             <Box sx={{ variant: 'text.monoCaps' }}>Results ({count} total)</Box>
-            <Flex sx={{ gap: 3 }}>
-              <Link
-                sx={{
-                  fontSize: [2, 2, 2, 3],
-                  textDecoration: currentView === 'grid' ? 'underline' : 'none',
-                }}
-                onClick={() => {
-                  handleViewChange('grid')
-                }}
-              >
-                Grid
-              </Link>
-              <Link
-                sx={{
-                  fontSize: [2, 2, 2, 3],
-                  textDecoration: currentView === 'list' ? 'underline' : 'none',
-                }}
-                onClick={() => {
-                  handleViewChange('list')
-                }}
-              >
-                List
-              </Link>
-            </Flex>
+            <ViewSelector />
           </Flex>
         </Column>
       </Row>

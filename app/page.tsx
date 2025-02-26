@@ -1,32 +1,49 @@
-import { Suspense } from 'react'
 import LandingPage from './landing-page'
 import PreprintsView from './preprints-view'
-import LoadingWrapper from './loading-wrapper'
 import { fetchWithAlerting } from '../actions/server-utils'
+
 interface HomeProps {
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: { [key: string]: string | undefined }
 }
 
-const Preprints = async ({ subject }: { subject: string | undefined }) => {
-  let url = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/?limit=48`
+const preprintsPerPage = 48
+
+const Home = async ({ searchParams }: HomeProps) => {
+  const subject = searchParams.subject
+  const page = searchParams.page ? parseInt(searchParams.page) : 1
+  const offset = (page - 1) * preprintsPerPage
+  let url = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/?limit=${preprintsPerPage}&offset=${offset}`
   if (subject) {
     url += `&subject=${subject}`
   }
-  const res = await fetchWithAlerting(url, { next: { revalidate: 180 } })
-  const preprints = await res.json()
-  const results = preprints.results || []
-  return (
-    <PreprintsView preprints={results} nextPage={preprints.next as string} />
-  )
-}
 
-const Home = async ({ searchParams }: HomeProps) => {
-  const subject = searchParams.subject as string | undefined
+  let results = []
+  let nextPage = null
+  let totalCount = 0
+  let error = false
+
+  try {
+    const res = await fetchWithAlerting(url, { next: { revalidate: 180 } })
+    const preprints = await res.json()
+    results = preprints.results || []
+    nextPage = preprints.next
+    totalCount = preprints.count
+  } catch (err) {
+    error = true
+  }
+
   return (
     <LandingPage>
-      <Suspense fallback={<LoadingWrapper />}>
-        <Preprints subject={subject} />
-      </Suspense>
+      {error ? (
+        <div style={{ textAlign: 'center' }}>Unable to load preprints.</div>
+      ) : (
+        <PreprintsView
+          preprints={results}
+          nextPage={nextPage}
+          totalCount={totalCount}
+          preprintsPerPage={preprintsPerPage}
+        />
+      )}
     </LandingPage>
   )
 }
