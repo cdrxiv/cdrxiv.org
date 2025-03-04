@@ -213,7 +213,7 @@ const PreprintMetadata: React.FC<{
               {articleLicenseInfo.name}
             </Link>
           ) : (
-            articleLicenseInfo?.name
+            <Box>{articleLicenseInfo?.name}</Box>
           )}
           {submissionType === 'Both' ? '(Article)' : null}
         </Flex>
