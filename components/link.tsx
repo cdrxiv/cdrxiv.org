@@ -1,8 +1,9 @@
 import React from 'react'
 import { Link as ThemeUILink, LinkProps } from 'theme-ui'
 import NextLink from 'next/link'
+import type { LinkProps as NextLinkProps } from 'next/link'
 
-export interface Props extends LinkProps {
+export interface Props extends Omit<LinkProps & NextLinkProps, 'as'> {
   onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void
   forwardArrow?: boolean
   backArrow?: boolean

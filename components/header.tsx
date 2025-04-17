@@ -9,13 +9,24 @@ import useBackgroundColors from '../hooks/use-background-colors'
 type SVGBoxProps = BoxProps & SVGProps<SVGSVGElement>
 const SVGBox: React.FC<SVGBoxProps> = (props) => <Box as='svg' {...props} />
 
-const PATHS: { name: string; path: string; matchingPaths?: string[] }[] = [
+const PATHS: {
+  name: string
+  path: string
+  matchingPaths?: string[]
+  prefetch?: boolean
+}[] = [
   { name: 'Home', path: '/' },
   { name: 'About', path: '/about', matchingPaths: ['/about'] },
-  { name: 'Submit', path: '/submit/overview', matchingPaths: ['/submit'] },
+  {
+    name: 'Submit',
+    path: '/submit/overview',
+    matchingPaths: ['/submit'],
+    prefetch: false,
+  },
   {
     name: 'Account',
     path: '/account',
+    prefetch: false,
     matchingPaths: ['/account', '/submissions', '/preview', '/register'],
   },
 ]
@@ -46,10 +57,12 @@ const AccountLink = ({
   name,
   path,
   selected,
+  prefetch,
 }: {
   sx?: ThemeUIStyleObject
   name: string
   path: string
+  prefetch?: boolean
   selected: boolean
 }) => {
   const { data: session, status } = useSession()
@@ -67,6 +80,7 @@ const AccountLink = ({
     <Link
       href={path}
       selected={selected}
+      prefetch={prefetch}
       hoverEffect={true}
       sx={{
         width: 'fit-content',
@@ -105,7 +119,7 @@ const Header = () => {
   const router = useRouter()
 
   const renderLinks = () => {
-    return PATHS.map(({ name, path, matchingPaths }) => {
+    return PATHS.map(({ name, path, matchingPaths, prefetch }) => {
       const isSelected =
         pathname === path ||
         (matchingPaths?.some(
@@ -114,11 +128,18 @@ const Header = () => {
           false)
 
       return name === 'Account' ? (
-        <AccountLink key={name} name={name} path={path} selected={isSelected} />
+        <AccountLink
+          key={name}
+          name={name}
+          path={path}
+          prefetch={prefetch}
+          selected={isSelected}
+        />
       ) : (
         <Link
           key={name}
           href={path}
+          prefetch={prefetch}
           selected={isSelected}
           hoverEffect={true}
           sx={{ width: 'fit-content', variant: 'styles.h2' }}
@@ -236,9 +257,14 @@ const Header = () => {
             )}
           <noscript>
             {PATHS.map(
-              ({ name, path }, i) =>
+              ({ name, path, prefetch }, i) =>
                 i < 2 && (
-                  <Link key={path} href={path} sx={{ mr: 1 }}>
+                  <Link
+                    key={path}
+                    href={path}
+                    prefetch={prefetch}
+                    sx={{ mr: 1 }}
+                  >
                     {name}
                   </Link>
                 ),
