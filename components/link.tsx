@@ -3,7 +3,7 @@ import { Link as ThemeUILink, LinkProps } from 'theme-ui'
 import NextLink from 'next/link'
 import type { LinkProps as NextLinkProps } from 'next/link'
 
-export interface Props extends Omit<LinkProps & NextLinkProps, 'as'> {
+export interface Props extends LinkProps, Pick<NextLinkProps, 'prefetch'> {
   onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void
   forwardArrow?: boolean
   backArrow?: boolean
