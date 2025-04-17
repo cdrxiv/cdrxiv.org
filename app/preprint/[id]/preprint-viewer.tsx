@@ -173,6 +173,13 @@ const PreprintViewer = ({
         {(isDepositionLoading || deposition) && (
           <DOIDisplay label='Dataset DOI' doi={deposition?.doi_url} />
         )}
+
+        <ErrorOrTrack
+          hasError={hasData && !isDepositionLoading && !deposition?.doi_url}
+          preview={preview}
+          pk={preprint.pk}
+          errorMessage={'No dataset identifier found for data-only submission.'}
+        />
       </Flex>
       <Box sx={{ variant: 'text.mono', mt: 3, mb: 7 }}>
         <AuthorsList authors={preprint.authors} orcidLinks />
