@@ -53,7 +53,7 @@ const PreprintViewer = ({
   const [isDepositionLoading, setIsDepositionLoading] = useState<boolean>(
     hasData && !!dataUrl,
   )
-  const [isDoiLoading, setIsDoiLoading] = useState<boolean>(true)
+  const [isDoiLoading, setIsDoiLoading] = useState<boolean>(hasArticle)
 
   useEffect(() => {
     const fetchDoi = async () => {
@@ -68,8 +68,10 @@ const PreprintViewer = ({
       }
     }
 
-    fetchDoi()
-  }, [preprint.pk])
+    if (hasArticle) {
+      fetchDoi()
+    }
+  }, [hasArticle, preprint.pk])
 
   useEffect(() => {
     const fetchDeposition = async () => {
@@ -158,7 +160,7 @@ const PreprintViewer = ({
           <DOIDisplay label='DOI' doi={preprintDoi} />
         )}
         <ErrorOrTrack
-          hasError={!isDoiLoading && !preprintDoi}
+          hasError={hasArticle && !isDoiLoading && !preprintDoi}
           preview={preview}
           pk={preprint.pk}
           errorMessage={
