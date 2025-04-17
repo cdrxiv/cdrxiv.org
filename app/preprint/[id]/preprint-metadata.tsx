@@ -20,7 +20,11 @@ import VersionHistory from './version-history'
 import { formatDate } from '../../../utils/formatters'
 
 const getDataDownload = (deposition: Deposition) => {
-  return `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].filename}?download=1`
+  return deposition.files.length === 1
+    ? // Download file directly
+      `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].filename}?download=1`
+    : // Special URL that ZIPs all files together (only used in cases where CDRXIV team uploads multiple files)
+      `${process.env.NEXT_PUBLIC_ZENODO_URL}/api/records/${deposition.id}/files-archive`
 }
 
 const getVersionLabel = (version: Version, preprint: Preprint) => {
