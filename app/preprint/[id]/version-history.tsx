@@ -2,20 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { Box } from 'theme-ui'
 
 import { formatDate } from '../../../utils/formatters'
-import { getAdditionalField } from '../../../utils/data'
+import { getAdditionalField, getDataDownload } from '../../../utils/data'
 import { Field, Link } from '../../../components'
 import type { Preprint } from '../../../types/preprint'
-import type {
-  Deposition,
-  DepositionVersion,
-  VersionHistory,
-} from '../../../types/zenodo'
+import type { Deposition, VersionHistory } from '../../../types/zenodo'
 import ErrorOrTrack from './error-or-track'
 import { fetchDepositionHistory } from '../../../actions/zenodo'
-
-const getDataDownload = (deposition: DepositionVersion) => {
-  return `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].key}?download=1`
-}
 
 type Version = {
   date: string
