@@ -1,6 +1,6 @@
 import { PREPRINT_BASE } from '../actions/constants'
 import { Author, Funder, Preprint } from '../types/preprint'
-import { Creator, Deposition } from '../types/zenodo'
+import { Creator, Deposition, DepositionVersion } from '../types/zenodo'
 
 export const getAdditionalField = (
   preprint: Preprint | null,
@@ -163,4 +163,14 @@ export const isValidOrcid = (orcid: string, allowLowercase?: boolean) => {
     allowLowercase ? 'i' : undefined,
   )
   return orcidRegex.test(orcid)
+}
+
+export const getDataDownload = (
+  deposition: Deposition | DepositionVersion,
+): string => {
+  return deposition.files.length === 1
+    ? // Download file directly
+      `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${typeof deposition.files[0].filename === 'string' ? deposition.files[0].filename : deposition.files[0].key}?download=1`
+    : // Special URL that ZIPs all files together (only used in cases where CDRXIV team uploads multiple files)
+      `${process.env.NEXT_PUBLIC_ZENODO_URL}/api/records/${deposition.id}/files-archive`
 }

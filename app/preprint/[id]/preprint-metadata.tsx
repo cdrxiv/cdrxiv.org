@@ -4,6 +4,7 @@ import { Box, Flex } from 'theme-ui'
 import {
   getAdditionalField,
   getArticleLicense,
+  getDataDownload,
   getFunders,
   getZenodoLicense,
 } from '../../../utils/data'
@@ -18,14 +19,6 @@ import type { Deposition } from '../../../types/zenodo'
 import ErrorOrTrack from './error-or-track'
 import VersionHistory from './version-history'
 import { formatDate } from '../../../utils/formatters'
-
-const getDataDownload = (deposition: Deposition) => {
-  return deposition.files.length === 1
-    ? // Download file directly
-      `${process.env.NEXT_PUBLIC_ZENODO_URL}/records/${deposition.id}/files/${deposition.files[0].filename}?download=1`
-    : // Special URL that ZIPs all files together (only used in cases where CDRXIV team uploads multiple files)
-      `${process.env.NEXT_PUBLIC_ZENODO_URL}/api/records/${deposition.id}/files-archive`
-}
 
 const getVersionLabel = (version: Version, preprint: Preprint) => {
   if ((version.title || preprint.title)?.startsWith('WITHDRAWN')) {
