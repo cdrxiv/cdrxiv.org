@@ -1,11 +1,18 @@
 import React, { useState, SVGProps } from 'react'
-import { Box, Flex, BoxProps, ThemeUIStyleObject } from 'theme-ui'
+import {
+  Box,
+  Flex,
+  BoxProps,
+  ThemeUIStyleObject,
+  useThemeUI,
+  get,
+} from 'theme-ui'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 import Badge from './badge'
 import type { Author } from '../types/preprint'
-import { formatDate, authorList } from '../utils/formatters'
+import { formatDate } from '../utils/formatters'
 import AuthorsList from './authors-list'
 
 interface CardProps {
@@ -41,9 +48,12 @@ const Corner: React.FC<CornerProps> = ({
   sx,
   background,
 }) => {
+  const { theme } = useThemeUI()
+
   return (
     <SVGBox
       viewBox={`0 0 ${size + coverage} ${size + coverage}`}
+      fill='none'
       sx={{
         width: `${size + coverage}px`,
         height: 'auto',
@@ -51,7 +61,6 @@ const Corner: React.FC<CornerProps> = ({
         top: `-${coverage}px`,
         right: `-${coverage}px`,
         overflow: 'visible',
-        fill: 'none',
         stroke: hovered ? 'blue' : 'text',
         strokeWidth: borderWidth,
         ...sx,
@@ -62,16 +71,12 @@ const Corner: React.FC<CornerProps> = ({
         width={size + coverage}
         height={size + coverage}
         stroke='none'
-        sx={{
-          fill: background,
-        }}
+        fill={get(theme, `colors.${background}`)}
       />
       <ElBox
         as='polygon'
         points={`0,${coverage} 0,${size + coverage} ${size},${size + coverage}`}
-        sx={{
-          fill: hovered ? 'muted' : 'primary',
-        }}
+        fill={get(theme, `colors.${hovered ? 'muted' : 'primary'}`)}
       />
     </SVGBox>
   )
