@@ -5,38 +5,25 @@ import { Button, Column, Link, Menu, Row, Select } from '../components'
 import { useSubjects } from './subjects-context'
 import type { Subjects } from '../types/subject'
 
-const Topics = () => {
+const useTopicUrl = (topic: string) => {
   const searchParams = useSearchParams()
-  const subjects: Subjects = useSubjects()
-  const topicsBoxRef = useRef<HTMLElement | null>(null)
-  const [subjectsMenuOpen, setSubjectsMenuOpen] = useState(false)
-  const [menuPosition, setMenuPosition] = useState({ top: 0 })
+  const params = new URLSearchParams(Object.fromEntries(searchParams))
+  if (topic === 'All') {
+    params.delete('subject')
+  } else {
+    params.set('subject', topic)
+  }
+  return `/?${params.toString()}`
+}
 
+const Topic = ({ name, count }: { name: string; count: number }) => {
+  const topicUrl = useTopicUrl(name)
+  const searchParams = useSearchParams()
   const currentSubject = searchParams.get('subject') || 'All'
 
-  const midPoint = Math.ceil(subjects.length / 2)
-
-  const totalCount = useMemo(() => {
-    const allPreprints = subjects.reduce((preprints, subject) => {
-      subject.preprints.forEach((p) => preprints.add(p))
-      return preprints
-    }, new Set())
-    return allPreprints.size
-  }, [subjects])
-
-  const createTopicUrl = (topic: string) => {
-    const params = new URLSearchParams(Object.fromEntries(searchParams))
-    if (topic === 'All') {
-      params.delete('subject')
-    } else {
-      params.set('subject', topic)
-    }
-    return `/?${params.toString()}`
-  }
-
-  const renderSubject = (name: string, count: number) => (
+  return (
     <Link
-      href={createTopicUrl(name)}
+      href={topicUrl}
       key={name}
       role='option'
       aria-selected={currentSubject === name}
@@ -70,6 +57,26 @@ const Topics = () => {
       </Box>
     </Link>
   )
+}
+
+const Topics = () => {
+  const searchParams = useSearchParams()
+  const subjects: Subjects = useSubjects()
+  const topicsBoxRef = useRef<HTMLElement | null>(null)
+  const [subjectsMenuOpen, setSubjectsMenuOpen] = useState(false)
+  const [menuPosition, setMenuPosition] = useState({ top: 0 })
+
+  const currentSubject = searchParams.get('subject') || 'All'
+
+  const midPoint = Math.ceil(subjects.length / 2)
+
+  const totalCount = useMemo(() => {
+    const allPreprints = subjects.reduce((preprints, subject) => {
+      subject.preprints.forEach((p) => preprints.add(p))
+      return preprints
+    }, new Set())
+    return allPreprints.size
+  }, [subjects])
 
   return (
     <Column start={[1, 1, 5, 5]} width={[3, 4, 8, 8]} sx={{ mb: [0, 0, 8, 8] }}>
@@ -92,21 +99,25 @@ const Topics = () => {
       >
         <Column start={1} width={4}>
           <Flex sx={{ flexDirection: 'column', gap: [2, 2, 2, 3] }}>
-            {renderSubject('All', totalCount)}
-            {subjects
-              .slice(0, midPoint)
-              .map((subject) =>
-                renderSubject(subject.name, subject.preprints.length),
-              )}
+            <Topic name='All' count={totalCount} />
+            {subjects.slice(0, midPoint).map((subject) => (
+              <Topic
+                key={subject.name}
+                name={subject.name}
+                count={subject.preprints.length}
+              />
+            ))}
           </Flex>
         </Column>
         <Column start={5} width={4}>
           <Flex sx={{ flexDirection: 'column', gap: [2, 2, 2, 3] }}>
-            {subjects
-              .slice(midPoint)
-              .map((subject) =>
-                renderSubject(subject.name, subject.preprints.length),
-              )}
+            {subjects.slice(midPoint).map((subject) => (
+              <Topic
+                key={subject.name}
+                name={subject.name}
+                count={subject.preprints.length}
+              />
+            ))}
           </Flex>
         </Column>
       </Row>
@@ -193,10 +204,15 @@ const Topics = () => {
             overflowY: 'auto',
           }}
         >
-          {renderSubject('All', totalCount)}
-          {subjects.map((subject) =>
-            renderSubject(subject.name, subject.preprints.length),
-          )}
+          <Topic name='All' count={totalCount} />
+
+          {subjects.map((subject) => (
+            <Topic
+              key={subject.name}
+              name={subject.name}
+              count={subject.preprints.length}
+            />
+          ))}
         </Menu>
       )}
     </Column>
