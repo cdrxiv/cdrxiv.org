@@ -8,7 +8,7 @@ const Subjects: React.FC<{
   value: string[]
   onChange: (value: string[]) => void
 }> = ({ value, onChange }) => {
-  const subjects = useSubjects()
+  const { subjects } = useSubjects()
 
   return (
     <Flex sx={{ flexDirection: 'column' }} role='group'>

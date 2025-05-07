@@ -3,7 +3,6 @@ import { useSearchParams } from 'next/navigation'
 import { Box, Flex } from 'theme-ui'
 import { Button, Column, Link, Menu, Row, Select } from '../components'
 import { useSubjects } from './subjects-context'
-import type { Subjects } from '../types/subject'
 
 const useTopicUrl = (topic: string) => {
   const searchParams = useSearchParams()
@@ -61,14 +60,12 @@ const Topic = ({ name, count }: { name: string; count: number }) => {
 
 const Topics = () => {
   const searchParams = useSearchParams()
-  const subjects: Subjects = useSubjects()
+  const { subjects, buckets } = useSubjects()
   const topicsBoxRef = useRef<HTMLElement | null>(null)
   const [subjectsMenuOpen, setSubjectsMenuOpen] = useState(false)
   const [menuPosition, setMenuPosition] = useState({ top: 0 })
 
   const currentSubject = searchParams.get('subject') || 'All'
-
-  const midPoint = Math.ceil(subjects.length / 2)
 
   const totalCount = useMemo(() => {
     const allPreprints = subjects.reduce((preprints, subject) => {
@@ -98,9 +95,12 @@ const Topics = () => {
         aria-label='Topics'
       >
         <Column start={1} width={4}>
+          <Topic name='All' count={totalCount} />
           <Flex sx={{ flexDirection: 'column', gap: [2, 2, 2, 3] }}>
-            <Topic name='All' count={totalCount} />
-            {subjects.slice(0, midPoint).map((subject) => (
+            <Box as='h3' sx={{ variant: 'text.mono', mt: 4 }}>
+              Focus
+            </Box>
+            {buckets.focus.map((subject) => (
               <Topic
                 key={subject.name}
                 name={subject.name}
@@ -110,8 +110,26 @@ const Topics = () => {
           </Flex>
         </Column>
         <Column start={5} width={4}>
-          <Flex sx={{ flexDirection: 'column', gap: [2, 2, 2, 3] }}>
-            {subjects.slice(midPoint).map((subject) => (
+          <Flex
+            sx={{ flexDirection: 'column', gap: [2, 2, 2, 3], mt: '-24px' }}
+          >
+            <Box as='h3' sx={{ variant: 'text.mono' }}>
+              Type
+            </Box>
+
+            {buckets.type.map((subject) => (
+              <Topic
+                key={subject.name}
+                name={subject.name}
+                count={subject.preprints.length}
+              />
+            ))}
+
+            <Box as='h3' sx={{ variant: 'text.mono', mt: 4 }}>
+              Method
+            </Box>
+
+            {buckets.method.map((subject) => (
               <Topic
                 key={subject.name}
                 name={subject.name}

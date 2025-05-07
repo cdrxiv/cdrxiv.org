@@ -20,6 +20,22 @@ export const SubjectsProvider: React.FC<SubjectsProviderProps> = ({
   )
 }
 
+const FOCUSES = new Set([
+  'Removal process',
+  'Storage process',
+  'Supporting infrastructure',
+  'Environmental impacts',
+  'Socioeconomic impacts',
+  'Policy and regulation',
+])
+const TYPES = new Set(['Biological CDR', 'Geochemical CDR', 'Synthetic CDR'])
+const METHODS = new Set([
+  'Accounting',
+  'Experiments and field trials',
+  'Modeling',
+  'Qualitative research',
+])
+
 export const useSubjects = () => {
   const subjects = useContext(SubjectsContext)
 
@@ -27,5 +43,13 @@ export const useSubjects = () => {
     throw new Error('Tried to use subjects before initiated or provided')
   }
 
-  return subjects
+  const buckets = useMemo(() => {
+    return {
+      focus: subjects.filter((s) => FOCUSES.has(s.name)),
+      type: subjects.filter((s) => TYPES.has(s.name)),
+      method: subjects.filter((s) => METHODS.has(s.name)),
+    }
+  }, [subjects])
+
+  return { subjects, buckets }
 }
