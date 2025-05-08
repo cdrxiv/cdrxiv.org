@@ -123,7 +123,7 @@ const Topics = () => {
               />
             ))}
 
-            <Box as='h3' sx={{ variant: 'text.monoCaps', mt: 4 }}>
+            <Box as='h3' sx={{ variant: 'text.monoCaps', mt: 3 }}>
               Method
             </Box>
 
