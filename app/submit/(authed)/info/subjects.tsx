@@ -44,14 +44,14 @@ const Subjects: React.FC<{
     <>
       <SubjectsBucket
         bucket={buckets.type}
-        description='What type(s) of carbon removal were covered?'
+        description='What type(s) of carbon removal does your submission cover?'
         value={value}
         onChange={onChange}
       />
 
       <SubjectsBucket
         bucket={buckets.focus}
-        description='What aspect(s) of the system does were focused?'
+        description='What aspect(s) of the system does it focus on?'
         value={value}
         onChange={onChange}
       />
