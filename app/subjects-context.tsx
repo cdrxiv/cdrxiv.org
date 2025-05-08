@@ -20,21 +20,29 @@ export const SubjectsProvider: React.FC<SubjectsProviderProps> = ({
   )
 }
 
-const FOCUSES = new Set([
+const FOCUSES = [
   'Removal process',
   'Storage process',
   'Supporting infrastructure',
   'Environmental impacts',
   'Socioeconomic impacts',
   'Policy and regulation',
-])
-const TYPES = new Set(['Biological CDR', 'Geochemical CDR', 'Synthetic CDR'])
-const METHODS = new Set([
+]
+const TYPES = ['Biological CDR', 'Geochemical CDR', 'Synthetic CDR']
+const METHODS = [
   'Accounting',
   'Experiments and field trials',
   'Modeling',
   'Qualitative research',
-])
+]
+
+const getBucket = (allSubjects: Subjects, bucketSubjects: string[]) => {
+  return bucketSubjects.reduce((result: Subjects, name) => {
+    const subj = allSubjects.find((s) => s.name === name)
+    if (subj) result.push(subj)
+    return result
+  }, [])
+}
 
 export const useSubjects = () => {
   const subjects = useContext(SubjectsContext)
@@ -45,9 +53,9 @@ export const useSubjects = () => {
 
   const buckets = useMemo(() => {
     return {
-      focus: subjects.filter((s) => FOCUSES.has(s.name)),
-      type: subjects.filter((s) => TYPES.has(s.name)),
-      method: subjects.filter((s) => METHODS.has(s.name)),
+      focus: getBucket(subjects, FOCUSES),
+      type: getBucket(subjects, TYPES),
+      method: getBucket(subjects, METHODS),
     }
   }, [subjects])
 
