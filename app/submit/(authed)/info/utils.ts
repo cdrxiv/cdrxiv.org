@@ -75,7 +75,7 @@ export const validateForm = ({
   }
 
   if (subject.length === 0) {
-    result.subject = 'Please select at least one subject.'
+    result.subject = 'Please select at least one topic.'
   }
 
   if (keywords.length > 10) {
