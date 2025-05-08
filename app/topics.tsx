@@ -192,11 +192,28 @@ const Topics = () => {
                   }}
                 >
                   <option value=''>All</option>
-                  {subjects.map((subject) => (
-                    <option key={subject.name} value={subject.name}>
-                      {subject.name} ({subject.preprints.length})
-                    </option>
-                  ))}
+
+                  <optgroup label='Type'>
+                    {buckets.type.map((subject) => (
+                      <option key={subject.name} value={subject.name}>
+                        {subject.name} ({subject.preprints.length})
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label='Focus'>
+                    {buckets.focus.map((subject) => (
+                      <option key={subject.name} value={subject.name}>
+                        {subject.name} ({subject.preprints.length})
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label='Methdo'>
+                    {buckets.focus.map((subject) => (
+                      <option key={subject.name} value={subject.name}>
+                        {subject.name} ({subject.preprints.length})
+                      </option>
+                    ))}
+                  </optgroup>
                 </Select>
 
                 <Button type='submit' sx={{ flexShrink: 0 }}>
@@ -237,7 +254,35 @@ const Topics = () => {
         >
           <Topic name='All' count={totalCount} />
 
-          {subjects.map((subject) => (
+          <Box as='h3' sx={{ variant: 'text.mono' }}>
+            Type
+          </Box>
+
+          {buckets.type.map((subject) => (
+            <Topic
+              key={subject.name}
+              name={subject.name}
+              count={subject.preprints.length}
+            />
+          ))}
+
+          <Box as='h3' sx={{ variant: 'text.mono' }}>
+            Focus
+          </Box>
+
+          {buckets.focus.map((subject) => (
+            <Topic
+              key={subject.name}
+              name={subject.name}
+              count={subject.preprints.length}
+            />
+          ))}
+
+          <Box as='h3' sx={{ variant: 'text.mono' }}>
+            Method
+          </Box>
+
+          {buckets.method.map((subject) => (
             <Topic
               key={subject.name}
               name={subject.name}
