@@ -7,7 +7,7 @@ import { useSubjects } from './subjects-context'
 const useTopicUrl = (topic: string) => {
   const searchParams = useSearchParams()
   const params = new URLSearchParams(Object.fromEntries(searchParams))
-  if (topic === 'All') {
+  if (topic.startsWith('All')) {
     params.delete('subject')
   } else {
     params.set('subject', topic)
@@ -18,14 +18,16 @@ const useTopicUrl = (topic: string) => {
 const Topic = ({ name, count }: { name: string; count: number }) => {
   const topicUrl = useTopicUrl(name)
   const searchParams = useSearchParams()
-  const currentSubject = searchParams.get('subject') || 'All'
+  const selected = searchParams.get('subject')
+    ? searchParams.get('subject') === name
+    : name.startsWith('All')
 
   return (
     <Link
       href={topicUrl}
       key={name}
       role='option'
-      aria-selected={currentSubject === name}
+      aria-selected={selected}
       aria-label={`${name} (${count} preprints)`}
       sx={{
         textDecoration: 'none',
@@ -39,7 +41,7 @@ const Topic = ({ name, count }: { name: string; count: number }) => {
         padding: 0,
         border: 'none',
         textAlign: 'left',
-        bg: currentSubject === name ? 'highlight' : 'transparent',
+        bg: selected ? 'highlight' : 'transparent',
         mb: '2px',
         ':hover': {
           bg: 'highlight',
@@ -78,7 +80,11 @@ const Topics = () => {
   return (
     <Column start={[1, 1, 5, 5]} width={[3, 4, 8, 8]} sx={{ mb: [0, 0, 8, 8] }}>
       <Row columns={8}>
-        <Column start={1} width={4}>
+        <Column
+          start={1}
+          width={4}
+          sx={{ display: ['inherit', 'inherit', 'none', 'none'] }}
+        >
           <Box
             as='h2'
             ref={topicsBoxRef}
@@ -94,26 +100,18 @@ const Topics = () => {
         role='listbox'
         aria-label='Topics'
       >
-        <Column start={1} width={4}>
-          <Topic name='All' count={totalCount} />
-          <Flex sx={{ flexDirection: 'column', gap: [2, 2, 2, 3] }}>
-            <Box as='h3' sx={{ variant: 'text.mono', mt: 4 }}>
-              Focus
-            </Box>
-            {buckets.focus.map((subject) => (
-              <Topic
-                key={subject.name}
-                name={subject.name}
-                count={subject.preprints.length}
-              />
-            ))}
-          </Flex>
+        <Column start={1} width={8} sx={{ pt: 1 }}>
+          <Topic name='All topics' count={totalCount} />
         </Column>
-        <Column start={5} width={4}>
+
+        <Column start={1} width={4} sx={{ mt: 4 }}>
           <Flex
-            sx={{ flexDirection: 'column', gap: [2, 2, 2, 3], mt: '-24px' }}
+            sx={{
+              flexDirection: 'column',
+              gap: [2, 2, 2, 3],
+            }}
           >
-            <Box as='h3' sx={{ variant: 'text.mono' }}>
+            <Box as='h3' sx={{ variant: 'text.monoCaps' }}>
               Type
             </Box>
 
@@ -125,11 +123,26 @@ const Topics = () => {
               />
             ))}
 
-            <Box as='h3' sx={{ variant: 'text.mono', mt: 4 }}>
+            <Box as='h3' sx={{ variant: 'text.monoCaps', mt: 4 }}>
               Method
             </Box>
 
             {buckets.method.map((subject) => (
+              <Topic
+                key={subject.name}
+                name={subject.name}
+                count={subject.preprints.length}
+              />
+            ))}
+          </Flex>
+        </Column>
+
+        <Column start={5} width={4} sx={{ mt: 4 }}>
+          <Flex sx={{ flexDirection: 'column', gap: [2, 2, 2, 3] }}>
+            <Box as='h3' sx={{ variant: 'text.monoCaps' }}>
+              Focus
+            </Box>
+            {buckets.focus.map((subject) => (
               <Topic
                 key={subject.name}
                 name={subject.name}
