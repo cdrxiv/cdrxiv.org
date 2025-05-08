@@ -46,7 +46,10 @@ const KeywordInput: React.FC<Props> = ({
           // do nothing
           return
         } else {
-          handleValuesChange([...values, trimmed])
+          const normalized = trimmed.match(/^([^a-z])+$/)
+            ? trimmed
+            : trimmed.toLowerCase()
+          handleValuesChange([...values, normalized])
           setInputValue('')
         }
       } else if (e.key === 'Backspace' && inputValue === '') {
