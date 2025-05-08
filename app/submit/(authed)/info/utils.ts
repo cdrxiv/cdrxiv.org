@@ -4,6 +4,7 @@ import {
   getAdditionalField,
 } from '../../../../utils/data'
 import { updatePreprint } from '../../../../actions'
+import { SUGGESTED_KEYWORD_MAPPING } from '../../constants'
 
 export type FormData = {
   title: string
@@ -140,4 +141,24 @@ export const submitForm = (
   return updatePreprint(preprint, params).then((updated) =>
     setPreprint(updated),
   )
+}
+
+export const getSuggestedKeywords = (subject: string[], keywords: string[]) => {
+  let result = new Set<string>()
+
+  subject.forEach((s) => {
+    if (s in SUGGESTED_KEYWORD_MAPPING) {
+      result = result.union(
+        new Set(
+          SUGGESTED_KEYWORD_MAPPING[
+            s as keyof typeof SUGGESTED_KEYWORD_MAPPING
+          ],
+        ),
+      )
+    }
+  })
+
+  result = result.difference(new Set(keywords))
+
+  return Array.from(result)
 }
