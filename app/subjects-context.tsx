@@ -20,12 +20,30 @@ export const SubjectsProvider: React.FC<SubjectsProviderProps> = ({
   )
 }
 
-const TOPIC_AREAS = {
-  'Accounting and verification': true,
-  'Experiments and field trials': true,
-  Modeling: true,
-  'Social science and political economy': true,
+const FOCUSES = [
+  'Removal process',
+  'Storage process',
+  'Supporting infrastructure',
+  'Environmental impacts',
+  'Socioeconomic impacts',
+  'Policy and regulation',
+]
+const TYPES = ['Biological CDR', 'Geochemical CDR', 'Synthetic CDR']
+const METHODS = [
+  'Accounting',
+  'Experiments and field trials',
+  'Modeling',
+  'Qualitative research',
+]
+
+const getBucket = (allSubjects: Subjects, bucketSubjects: string[]) => {
+  return bucketSubjects.reduce((result: Subjects, name) => {
+    const subj = allSubjects.find((s) => s.name === name)
+    if (subj) result.push(subj)
+    return result
+  }, [])
 }
+
 export const useSubjects = () => {
   const subjects = useContext(SubjectsContext)
 
@@ -33,15 +51,13 @@ export const useSubjects = () => {
     throw new Error('Tried to use subjects before initiated or provided')
   }
 
-  const sortedSubjects = useMemo(() => {
-    const topics = subjects.filter((s) => TOPIC_AREAS.hasOwnProperty(s.name))
-    const pathways = subjects.filter(
-      (s) => !TOPIC_AREAS.hasOwnProperty(s.name) && s.name !== 'Other',
-    )
-    const other = subjects.filter((s) => s.name === 'Other')
-
-    return [...topics, ...pathways, ...other]
+  const buckets = useMemo(() => {
+    return {
+      focus: getBucket(subjects, FOCUSES),
+      type: getBucket(subjects, TYPES),
+      method: getBucket(subjects, METHODS),
+    }
   }, [subjects])
 
-  return sortedSubjects
+  return { subjects, buckets }
 }

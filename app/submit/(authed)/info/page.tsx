@@ -16,6 +16,7 @@ import Subjects from './subjects'
 import { usePreprint } from '../../preprint-context'
 import { useForm } from '../utils'
 import { FormData, initializeForm, validateForm, submitForm } from './utils'
+import KeywordDescription from './keyword-description'
 
 const SubmissionInformation = () => {
   const { preprint, setPreprint } = usePreprint()
@@ -87,7 +88,13 @@ const SubmissionInformation = () => {
         <Field
           label='Keywords'
           id='keywords'
-          description='Hit enter to add a new keyword. Click on a keyword to remove it.'
+          description={
+            <KeywordDescription
+              subject={data.subject}
+              keywords={data.keywords}
+              setKeywords={setters.keywords}
+            />
+          }
           error={errors.keywords}
         >
           <KeywordInput
