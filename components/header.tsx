@@ -199,7 +199,7 @@ const Header = () => {
             placeholder='Search'
             onSubmit={() => {
               router.push(
-                `/search?query=${searchRef.current?.value?.replace(/"/g, '') ?? ''}`,
+                `/search?query=${searchRef.current?.value?.replace(/"/g, '').toLowerCase() ?? ''}`,
               )
             }}
             formAction='/search'

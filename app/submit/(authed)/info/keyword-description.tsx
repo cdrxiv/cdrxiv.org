@@ -1,5 +1,6 @@
 import { Box } from 'theme-ui'
 import { getSuggestedKeywords } from './utils'
+import { formatKeyword } from '../../../../utils/formatters'
 
 const KeywordDescription: React.FC<{
   keywords: string[]
@@ -35,7 +36,7 @@ const KeywordDescription: React.FC<{
             mr: i === suggestions.length - 1 ? 0 : 2,
           }}
         >
-          {v}
+          {formatKeyword(v)}
         </Box>
       ))}
     </Box>

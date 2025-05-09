@@ -19,7 +19,7 @@ export const LICENSE_MAPPING = {
 export const SUGGESTED_KEYWORD_MAPPING = {
   'Biological CDR': [
     'bioenergy with carbon capture and storage',
-    'BECCS',
+    'beccs',
     'biochar',
     'biomass burial',
     'forests',
@@ -28,17 +28,17 @@ export const SUGGESTED_KEYWORD_MAPPING = {
   ],
   'Geochemical CDR': [
     'enhanced weathering',
-    'ERW',
+    'erw',
     'ocean alkalinity enhancement',
-    'OAE',
+    'oae',
     'mineralization',
   ],
-  'Synthetic CDR': ['direct air capture', 'DAC', 'direct ocean capture', 'DOC'],
+  'Synthetic CDR': ['direct air capture', 'dac', 'direct ocean capture', 'doc'],
   Accounting: [
     'lifecycle assessment',
-    'LCA',
+    'lca',
     'standards',
-    'MRV',
+    'mrv',
     'carbon accounting',
   ],
   'Experiments and field trials': ['lab', 'pilot', 'mesocosm', 'field'],
@@ -48,7 +48,7 @@ export const SUGGESTED_KEYWORD_MAPPING = {
     'system modeling',
     'climate modeling',
     'technoeconomic assessment',
-    'TEA',
+    'tea',
     'geospatial analysis',
   ],
   'Qualitative research': [

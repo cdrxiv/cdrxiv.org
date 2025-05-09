@@ -18,7 +18,7 @@ import type {
 import type { Deposition } from '../../../types/zenodo'
 import ErrorOrTrack from './error-or-track'
 import VersionHistory from './version-history'
-import { formatDate } from '../../../utils/formatters'
+import { formatDate, formatKeyword } from '../../../utils/formatters'
 
 const getVersionLabel = (version: Version, preprint: Preprint) => {
   if ((version.title || preprint.title)?.startsWith('WITHDRAWN')) {
@@ -259,7 +259,7 @@ const PreprintMetadata: React.FC<{
                   href={`/search?query=${word}`}
                   sx={{ display: 'inline', variant: 'text.mono' }}
                 >
-                  {word}
+                  {formatKeyword(word)}
                 </Link>
                 {index < array.length - 1 && ', '}
               </React.Fragment>
