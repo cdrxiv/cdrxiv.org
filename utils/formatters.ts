@@ -87,3 +87,27 @@ export const decodeFilename = (filename: string) => {
     return `${decoded.slice(0, 100)}...`
   }
 }
+
+export const formatKeyword = (keyword: string) => {
+  return keyword
+    .toLowerCase()
+    .split(' ')
+    .map(
+      (word) =>
+        [
+          'CDR',
+          'LCA',
+          'CO2',
+          'CH4',
+          'pH',
+          'MRV',
+          'TEA',
+          'ERW',
+          'DAC',
+          'DOC',
+          'BECCS',
+          'OAE',
+        ].find((specialWord) => specialWord.toLowerCase() === word) ?? word,
+    )
+    .join(' ')
+}

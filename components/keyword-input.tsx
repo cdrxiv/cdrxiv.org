@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Input, InputProps } from 'theme-ui'
+import { formatKeyword } from '../utils/formatters'
 
 export interface Props extends InputProps {
   validate?: (keyword: string) => boolean
@@ -36,19 +37,16 @@ const KeywordInput: React.FC<Props> = ({
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      const trimmed = inputValue.trim()
-      if (e.key === 'Enter' && trimmed !== '') {
-        const invalidated = validate && !validate(trimmed)
+      const normalized = inputValue.trim().toLowerCase()
+      if (e.key === 'Enter' && normalized !== '') {
+        const invalidated = validate && !validate(normalized)
         const duplicate = values.find(
-          (v) => v.toLowerCase() === trimmed.toLowerCase(),
+          (v) => v.toLowerCase() === normalized.toLowerCase(),
         )
         if (duplicate || invalidated) {
           // do nothing
           return
         } else {
-          const normalized = trimmed.match(/^([^a-z])+$/)
-            ? trimmed
-            : trimmed.toLowerCase()
           handleValuesChange([...values, normalized])
           setInputValue('')
         }
@@ -104,7 +102,7 @@ const KeywordInput: React.FC<Props> = ({
             lineHeight: '130%',
           }}
         >
-          {v}
+          {formatKeyword(v)}
         </Box>
       ))}
       <Input
