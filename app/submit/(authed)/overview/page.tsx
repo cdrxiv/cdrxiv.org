@@ -130,7 +130,7 @@ const SubmissionOverview = () => {
         <Field
           label='Data file'
           id='dataFile'
-          description='Your data submission must be a single file of any format, including ZIP, up to 10 GB.  If you are not submitting an article to accompany this data, please include any supplementary text files here.'
+          description='Your data submission must be a single file of any format, including ZIP, up to 10 GB.'
           error={
             errors.dataFile ?? errors.externalFile ?? errors.persistedDeposition
           }
