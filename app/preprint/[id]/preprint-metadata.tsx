@@ -204,7 +204,7 @@ const PreprintMetadata: React.FC<{
       </Field>
 
       <Field label='License'>
-        <Flex sx={{ gap: 2, variant: 'text.mono' }}>
+        <Flex sx={{ gap: 2, flexWrap: 'wrap', variant: 'text.mono' }}>
           {articleLicenseInfo?.url ? (
             <Link href={articleLicenseInfo.url} sx={{ variant: 'text.mono' }}>
               {articleLicenseInfo.name}
@@ -228,7 +228,7 @@ const PreprintMetadata: React.FC<{
         {submissionType === 'Both' && (
           <>
             {dataLicenseInfo && (
-              <Flex sx={{ gap: 2, variant: 'text.mono' }}>
+              <Flex sx={{ gap: 2, flexWrap: 'wrap', variant: 'text.mono' }}>
                 <Link href={dataLicenseInfo.url} sx={{ variant: 'text.mono' }}>
                   {dataLicenseInfo.name}
                 </Link>
