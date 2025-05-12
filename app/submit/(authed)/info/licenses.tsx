@@ -1,6 +1,5 @@
 import { Column, Row, Select } from '../../../../components'
 import { getArticleLicense } from '../../../../utils/data'
-import { LICENSE_MAPPING } from '../../constants'
 
 type Props = {
   license: number
@@ -72,7 +71,6 @@ const ArticleLicense = ({
 const DataLicense = ({
   dataLicense,
   setDataLicense,
-  setLicense,
 }: {
   dataLicense: string
   setDataLicense: (value: string) => void
@@ -82,17 +80,14 @@ const DataLicense = ({
     value={dataLicense}
     onChange={(e) => {
       setDataLicense(e.target.value)
-      if (e.target.value && setLicense) {
-        setLicense(
-          LICENSE_MAPPING[e.target.value as 'cc-by-4.0' | 'cc-by-nc-4.0'],
-        )
-      }
     }}
     id='license'
   >
     <option value={''}>Select one</option>
     <option value={'cc-by-4.0'}>CC BY 4.0</option>
     <option value={'cc-by-nc-4.0'}>CC BY-NC 4.0</option>
+    <option value={'cc-by-sa-4.0'}>CC BY-SA 4.0</option>
+    <option value={'cc-by-nc-sa-4.0'}>CC BY-NC-SA 4.0</option>
   </Select>
 )
 
@@ -109,8 +104,11 @@ const Licenses: React.FC<Props> = ({
     return (
       <DataLicense
         dataLicense={dataLicense}
-        setDataLicense={setDataLicense}
-        setLicense={setLicense}
+        setDataLicense={(value: string) => {
+          // Set preprint license to All Rights Reserved (not used in practice)
+          setLicense(6)
+          setDataLicense(value)
+        }}
       />
     )
   }
