@@ -116,7 +116,7 @@ export const getZenodoLicense = (preprint: Preprint) => {
     ?.toLowerCase()
   if (
     !dataLicense ||
-    DATA_LICENSE_DISPLAY[dataLicense as keyof typeof DATA_LICENSE_DISPLAY]
+    !DATA_LICENSE_DISPLAY[dataLicense as keyof typeof DATA_LICENSE_DISPLAY]
   ) {
     return null
   }
