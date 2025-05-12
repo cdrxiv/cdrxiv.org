@@ -101,16 +101,27 @@ const DATA_LICENSE_DISPLAY = {
     url: 'https://creativecommons.org/licenses/by/4.0/',
     name: 'CC BY 4.0',
   },
+  'cc-by-nc-sa-4.0': {
+    url: 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
+    name: 'CC BY-NC-SA 4.0',
+  },
+  'cc-by-sa-4.0': {
+    url: 'https://creativecommons.org/licenses/by-sa/4.0/',
+    name: 'CC BY-SA 4.0',
+  },
 }
 export const getZenodoLicense = (preprint: Preprint) => {
   const dataLicense = getAdditionalField(preprint, 'Data license')
     // Handle accidental capitalization (can occur in repository manager dashboard)
     ?.toLowerCase()
-  if (!dataLicense || !['cc-by-4.0', 'cc-by-nc-4.0'].includes(dataLicense)) {
+  if (
+    !dataLicense ||
+    DATA_LICENSE_DISPLAY[dataLicense as keyof typeof DATA_LICENSE_DISPLAY]
+  ) {
     return null
   }
 
-  return DATA_LICENSE_DISPLAY[dataLicense as 'cc-by-4.0' | 'cc-by-nc-4.0']
+  return DATA_LICENSE_DISPLAY[dataLicense as keyof typeof DATA_LICENSE_DISPLAY]
 }
 
 // Instead of relying on Janeway's license URLs, we override them here. This is because

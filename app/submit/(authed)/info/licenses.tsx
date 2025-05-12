@@ -93,6 +93,8 @@ const DataLicense = ({
     <option value={''}>Select one</option>
     <option value={'cc-by-4.0'}>CC BY 4.0</option>
     <option value={'cc-by-nc-4.0'}>CC BY-NC 4.0</option>
+    <option value={'cc-by-sa-4.0'}>CC BY-SA 4.0</option>
+    <option value={'cc-by-nc-sa-4.0'}>CC BY-NC-SA 4.0</option>
   </Select>
 )
 
