@@ -11,11 +11,6 @@ export const PATHS = [
   },
 ]
 
-export const LICENSE_MAPPING = {
-  'cc-by-4.0': 1,
-  'cc-by-nc-4.0': 4,
-}
-
 export const SUGGESTED_KEYWORD_MAPPING = {
   'Biological CDR': [
     'bioenergy with carbon capture and storage',

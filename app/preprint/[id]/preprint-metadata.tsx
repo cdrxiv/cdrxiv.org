@@ -204,35 +204,42 @@ const PreprintMetadata: React.FC<{
       </Field>
 
       <Field label='License'>
-        <Flex sx={{ gap: 2, variant: 'text.mono' }}>
-          {articleLicenseInfo?.url ? (
-            <Link href={articleLicenseInfo.url} sx={{ variant: 'text.mono' }}>
-              {articleLicenseInfo.name}
-            </Link>
-          ) : (
-            <Box>{articleLicenseInfo?.name}</Box>
-          )}
-          {submissionType === 'Both' ? '(Article)' : null}
-        </Flex>
-        <ErrorOrTrack
-          mt={2}
-          hasError={!articleLicenseInfo}
-          preview={preview}
-          pk={preprint.pk}
-          errorMessage={
-            preprint.license
-              ? `No license information found for pk=${preprint.license.pk}.`
-              : 'No license provided.'
-          }
-        />
-        {submissionType === 'Both' && (
+        {submissionType !== 'Data' && (
+          <>
+            <Flex sx={{ gap: 2, flexWrap: 'wrap', variant: 'text.mono' }}>
+              {articleLicenseInfo?.url ? (
+                <Link
+                  href={articleLicenseInfo.url}
+                  sx={{ variant: 'text.mono' }}
+                >
+                  {articleLicenseInfo.name}
+                </Link>
+              ) : (
+                <Box>{articleLicenseInfo?.name}</Box>
+              )}
+              {submissionType === 'Both' ? '(Article)' : null}
+            </Flex>
+            <ErrorOrTrack
+              mt={2}
+              hasError={!articleLicenseInfo}
+              preview={preview}
+              pk={preprint.pk}
+              errorMessage={
+                preprint.license
+                  ? `No license information found for pk=${preprint.license.pk}.`
+                  : 'No license provided.'
+              }
+            />
+          </>
+        )}
+        {submissionType !== 'Article' && (
           <>
             {dataLicenseInfo && (
-              <Flex sx={{ gap: 2, variant: 'text.mono' }}>
+              <Flex sx={{ gap: 2, flexWrap: 'wrap', variant: 'text.mono' }}>
                 <Link href={dataLicenseInfo.url} sx={{ variant: 'text.mono' }}>
                   {dataLicenseInfo.name}
                 </Link>
-                (Data)
+                {submissionType === 'Both' ? '(Data)' : null}
               </Flex>
             )}
             <ErrorOrTrack

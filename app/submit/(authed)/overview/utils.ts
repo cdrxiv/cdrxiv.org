@@ -12,7 +12,6 @@ import {
   createDataDeposition,
 } from '../../../../actions'
 import { FileInputValue } from '../../../../components'
-import { LICENSE_MAPPING } from '../../constants'
 import {
   handleArticleUpload,
   handleDataUpload,
@@ -195,12 +194,11 @@ const getUpdatedFields = (
           (submissionType === 'Article' && field.field?.name === 'Data license')
         ) &&
         !(
-          // Remove 'Data license' for data-only submissions when it is out-of-sync with main license
+          // Remove 'Data license' for data-only submissions when the main license is anything other than 'All Rights Reserved'
           (
             submissionType === 'Data' &&
             field.field?.name === 'Data license' &&
-            LICENSE_MAPPING[field.answer as 'cc-by-4.0' | 'cc-by-nc-4.0'] !==
-              preprint.license?.pk
+            preprint.license?.pk !== 6
           )
         ),
     ),

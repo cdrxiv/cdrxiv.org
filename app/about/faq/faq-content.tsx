@@ -85,7 +85,7 @@ If you see a confirmation page with account information, this means that your la
   {
     question: 'What license options are available for my CDRXIV submission?',
     answer:
-      'You can select your preferred license from a list on the submission page. Articles and data can be licensed differently, even if they’re part of the same submission. The article license options are: CC-BY, CC-BY-NC, and All Rights Reserved. The data license options are CC-BY and CC-BY-NC.',
+      'You can select your preferred license from a list on the submission page. Articles and data can be licensed differently, even if they’re part of the same submission. The article license options are: CC BY, CC BY-NC, and All Rights Reserved. The data license options are CC BY, CC BY-NC, CC BY-SA, and CC BY-NC-SA.',
     tags: ['submissions', 'submissions-article', 'submissions-data'],
     slug: 'license-options',
   },
