@@ -1,7 +1,7 @@
 'use client'
 
 import { Box, Divider, Flex } from 'theme-ui'
-import { Column, Row, Link } from '../components'
+import { Column, Row } from '../components'
 import Topics from './topics'
 import ViewSelector from './view-selector'
 
@@ -26,18 +26,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ children }) => {
             Preprints&nbsp;and <br />
             Data&nbsp;for&nbsp;Carbon <br />
             Dioxide&nbsp;Removal
-          </Box>
-
-          <Divider
-            sx={{ my: 6, display: ['none', 'none', 'inherit', 'inherit'] }}
-          />
-          <Box variant='text.mono' sx={{ mb: [6, 6, 8, 8] }}>
-            CDRXIV is in beta. Help grow this platform by submitting your
-            research. You can also send any feedback or questions to{' '}
-            <Link variant='text.mono' href='mailto:hello@cdrxiv.org'>
-              hello@cdrxiv.org
-            </Link>
-            .
           </Box>
           <Divider
             sx={{

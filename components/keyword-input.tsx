@@ -1,15 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Input, InputProps } from 'theme-ui'
+import { formatKeyword } from '../utils/formatters'
 
 export interface Props extends InputProps {
-  validate?: (keyword: string) => boolean
   values?: string[]
   setValues?: (keywords: string[]) => void
 }
 
 const KeywordInput: React.FC<Props> = ({
   sx,
-  validate,
   onChange,
   values: valuesProp,
   setValues: setValuesProp,
@@ -36,25 +35,20 @@ const KeywordInput: React.FC<Props> = ({
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      const trimmed = inputValue.trim()
-      if (e.key === 'Enter' && trimmed !== '') {
-        const invalidated = validate && !validate(trimmed)
-        const duplicate = values.find(
-          (v) => v.toLowerCase() === trimmed.toLowerCase(),
-        )
-        if (duplicate || invalidated) {
-          // do nothing
-          return
-        } else {
-          handleValuesChange([...values, trimmed])
-          setInputValue('')
-        }
+      const normalized = inputValue
+        .split(/\(|\)/)
+        .filter(Boolean)
+        .map((entry) => entry.trim().toLowerCase())
+        .filter((entry) => !values.includes(entry))
+      if (e.key === 'Enter' && normalized.length > 0) {
+        handleValuesChange([...values, ...normalized])
+        setInputValue('')
       } else if (e.key === 'Backspace' && inputValue === '') {
         handleValuesChange(values.slice(0, -1))
         setInputValue('')
       }
     },
-    [inputValue, values, validate, handleValuesChange],
+    [inputValue, values, handleValuesChange],
   )
 
   const handleChange = useCallback(
@@ -101,7 +95,7 @@ const KeywordInput: React.FC<Props> = ({
             lineHeight: '130%',
           }}
         >
-          {v}
+          {formatKeyword(v)}
         </Box>
       ))}
       <Input

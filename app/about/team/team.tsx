@@ -29,7 +29,7 @@ const sortByLastName = <T extends { name: string }>(arr: T[]) =>
 const contentTeam: ContentTeam[] = sortByLastName([
   {
     name: 'Tyler Kukla',
-    role: 'Content Curation Lead',
+    role: 'Content Manager',
     affiliation: 'CarbonPlan',
   },
 ])

@@ -3,43 +3,31 @@ import { useSearchParams } from 'next/navigation'
 import { Box, Flex } from 'theme-ui'
 import { Button, Column, Link, Menu, Row, Select } from '../components'
 import { useSubjects } from './subjects-context'
-import type { Subjects } from '../types/subject'
 
-const Topics = () => {
+const useTopicUrl = (topic: string) => {
   const searchParams = useSearchParams()
-  const subjects: Subjects = useSubjects()
-  const topicsBoxRef = useRef<HTMLElement | null>(null)
-  const [subjectsMenuOpen, setSubjectsMenuOpen] = useState(false)
-  const [menuPosition, setMenuPosition] = useState({ top: 0 })
-
-  const currentSubject = searchParams.get('subject') || 'All'
-
-  const midPoint = Math.ceil(subjects.length / 2)
-
-  const totalCount = useMemo(() => {
-    const allPreprints = subjects.reduce((preprints, subject) => {
-      subject.preprints.forEach((p) => preprints.add(p))
-      return preprints
-    }, new Set())
-    return allPreprints.size
-  }, [subjects])
-
-  const createTopicUrl = (topic: string) => {
-    const params = new URLSearchParams(Object.fromEntries(searchParams))
-    if (topic === 'All') {
-      params.delete('subject')
-    } else {
-      params.set('subject', topic)
-    }
-    return `/?${params.toString()}`
+  const params = new URLSearchParams(Object.fromEntries(searchParams))
+  if (topic.startsWith('All')) {
+    params.delete('subject')
+  } else {
+    params.set('subject', topic)
   }
+  return `/?${params.toString()}`
+}
 
-  const renderSubject = (name: string, count: number) => (
+const Topic = ({ name, count }: { name: string; count: number }) => {
+  const topicUrl = useTopicUrl(name)
+  const searchParams = useSearchParams()
+  const selected = searchParams.get('subject')
+    ? searchParams.get('subject') === name
+    : name.startsWith('All')
+
+  return (
     <Link
-      href={createTopicUrl(name)}
+      href={topicUrl}
       key={name}
       role='option'
-      aria-selected={currentSubject === name}
+      aria-selected={selected}
       aria-label={`${name} (${count} preprints)`}
       sx={{
         textDecoration: 'none',
@@ -53,7 +41,7 @@ const Topics = () => {
         padding: 0,
         border: 'none',
         textAlign: 'left',
-        bg: currentSubject === name ? 'highlight' : 'transparent',
+        bg: selected ? 'highlight' : 'transparent',
         mb: '2px',
         ':hover': {
           bg: 'highlight',
@@ -70,11 +58,33 @@ const Topics = () => {
       </Box>
     </Link>
   )
+}
+
+const Topics = () => {
+  const searchParams = useSearchParams()
+  const { subjects, buckets } = useSubjects()
+  const topicsBoxRef = useRef<HTMLElement | null>(null)
+  const [subjectsMenuOpen, setSubjectsMenuOpen] = useState(false)
+  const [menuPosition, setMenuPosition] = useState({ top: 0 })
+
+  const currentSubject = searchParams.get('subject') || 'All'
+
+  const totalCount = useMemo(() => {
+    const allPreprints = subjects.reduce((preprints, subject) => {
+      subject.preprints.forEach((p) => preprints.add(p))
+      return preprints
+    }, new Set())
+    return allPreprints.size
+  }, [subjects])
 
   return (
     <Column start={[1, 1, 5, 5]} width={[3, 4, 8, 8]} sx={{ mb: [0, 0, 8, 8] }}>
       <Row columns={8}>
-        <Column start={1} width={4}>
+        <Column
+          start={1}
+          width={4}
+          sx={{ display: ['inherit', 'inherit', 'none', 'none'] }}
+        >
           <Box
             as='h2'
             ref={topicsBoxRef}
@@ -90,23 +100,55 @@ const Topics = () => {
         role='listbox'
         aria-label='Topics'
       >
-        <Column start={1} width={4}>
-          <Flex sx={{ flexDirection: 'column', gap: [2, 2, 2, 3] }}>
-            {renderSubject('All', totalCount)}
-            {subjects
-              .slice(0, midPoint)
-              .map((subject) =>
-                renderSubject(subject.name, subject.preprints.length),
-              )}
+        <Column start={1} width={8} sx={{ pt: 1 }}>
+          <Topic name='All topics' count={totalCount} />
+        </Column>
+
+        <Column start={1} width={4} sx={{ mt: 4 }}>
+          <Flex
+            sx={{
+              flexDirection: 'column',
+              gap: [2, 2, 2, 3],
+            }}
+          >
+            <Box as='h3' sx={{ variant: 'text.monoCaps' }}>
+              Type
+            </Box>
+
+            {buckets.type.map((subject) => (
+              <Topic
+                key={subject.name}
+                name={subject.name}
+                count={subject.preprints.length}
+              />
+            ))}
+
+            <Box as='h3' sx={{ variant: 'text.monoCaps', mt: 3 }}>
+              Method
+            </Box>
+
+            {buckets.method.map((subject) => (
+              <Topic
+                key={subject.name}
+                name={subject.name}
+                count={subject.preprints.length}
+              />
+            ))}
           </Flex>
         </Column>
-        <Column start={5} width={4}>
+
+        <Column start={5} width={4} sx={{ mt: 4 }}>
           <Flex sx={{ flexDirection: 'column', gap: [2, 2, 2, 3] }}>
-            {subjects
-              .slice(midPoint)
-              .map((subject) =>
-                renderSubject(subject.name, subject.preprints.length),
-              )}
+            <Box as='h3' sx={{ variant: 'text.monoCaps' }}>
+              Focus
+            </Box>
+            {buckets.focus.map((subject) => (
+              <Topic
+                key={subject.name}
+                name={subject.name}
+                count={subject.preprints.length}
+              />
+            ))}
           </Flex>
         </Column>
       </Row>
@@ -150,11 +192,28 @@ const Topics = () => {
                   }}
                 >
                   <option value=''>All</option>
-                  {subjects.map((subject) => (
-                    <option key={subject.name} value={subject.name}>
-                      {subject.name} ({subject.preprints.length})
-                    </option>
-                  ))}
+
+                  <optgroup label='Type'>
+                    {buckets.type.map((subject) => (
+                      <option key={subject.name} value={subject.name}>
+                        {subject.name} ({subject.preprints.length})
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label='Focus'>
+                    {buckets.focus.map((subject) => (
+                      <option key={subject.name} value={subject.name}>
+                        {subject.name} ({subject.preprints.length})
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label='Methdo'>
+                    {buckets.focus.map((subject) => (
+                      <option key={subject.name} value={subject.name}>
+                        {subject.name} ({subject.preprints.length})
+                      </option>
+                    ))}
+                  </optgroup>
                 </Select>
 
                 <Button type='submit' sx={{ flexShrink: 0 }}>
@@ -193,10 +252,43 @@ const Topics = () => {
             overflowY: 'auto',
           }}
         >
-          {renderSubject('All', totalCount)}
-          {subjects.map((subject) =>
-            renderSubject(subject.name, subject.preprints.length),
-          )}
+          <Topic name='All' count={totalCount} />
+
+          <Box as='h3' sx={{ variant: 'text.mono' }}>
+            Type
+          </Box>
+
+          {buckets.type.map((subject) => (
+            <Topic
+              key={subject.name}
+              name={subject.name}
+              count={subject.preprints.length}
+            />
+          ))}
+
+          <Box as='h3' sx={{ variant: 'text.mono' }}>
+            Focus
+          </Box>
+
+          {buckets.focus.map((subject) => (
+            <Topic
+              key={subject.name}
+              name={subject.name}
+              count={subject.preprints.length}
+            />
+          ))}
+
+          <Box as='h3' sx={{ variant: 'text.mono' }}>
+            Method
+          </Box>
+
+          {buckets.method.map((subject) => (
+            <Topic
+              key={subject.name}
+              name={subject.name}
+              count={subject.preprints.length}
+            />
+          ))}
         </Menu>
       )}
     </Column>
