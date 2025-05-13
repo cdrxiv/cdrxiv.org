@@ -69,13 +69,29 @@ const Topics = () => {
 
   const currentSubject = searchParams.get('subject') || 'All'
 
-  const totalCount = useMemo(() => {
+  const counts = useMemo(() => {
     const allPreprints = subjects.reduce((preprints, subject) => {
       subject.preprints.forEach((p) => preprints.add(p))
       return preprints
     }, new Set())
-    return allPreprints.size
-  }, [subjects])
+    const currentPreprints = new Set(
+      subjects.find((s) => s.name === currentSubject)?.preprints ??
+        allPreprints,
+    )
+
+    const bySubject = subjects.reduce<Record<string, number>>(
+      (accum, subject) => {
+        const subjectPreprints = new Set(subject.preprints)
+        accum[subject.name] =
+          currentPreprints.intersection(subjectPreprints).size
+
+        return accum
+      },
+      {},
+    )
+
+    return { total: allPreprints.size, subjects: bySubject }
+  }, [subjects, currentSubject])
 
   return (
     <Column start={[1, 1, 5, 5]} width={[3, 4, 8, 8]} sx={{ mb: [0, 0, 8, 8] }}>
@@ -101,7 +117,7 @@ const Topics = () => {
         aria-label='Topics'
       >
         <Column start={1} width={8} sx={{ pt: 1 }}>
-          <Topic name='All topics' count={totalCount} />
+          <Topic name='All topics' count={counts.total} />
         </Column>
 
         <Column start={1} width={4} sx={{ mt: 4 }}>
@@ -119,7 +135,7 @@ const Topics = () => {
               <Topic
                 key={subject.name}
                 name={subject.name}
-                count={subject.preprints.length}
+                count={counts.subjects[subject.name]}
               />
             ))}
 
@@ -131,7 +147,7 @@ const Topics = () => {
               <Topic
                 key={subject.name}
                 name={subject.name}
-                count={subject.preprints.length}
+                count={counts.subjects[subject.name]}
               />
             ))}
           </Flex>
@@ -146,7 +162,7 @@ const Topics = () => {
               <Topic
                 key={subject.name}
                 name={subject.name}
-                count={subject.preprints.length}
+                count={counts.subjects[subject.name]}
               />
             ))}
           </Flex>
@@ -196,21 +212,21 @@ const Topics = () => {
                   <optgroup label='Type'>
                     {buckets.type.map((subject) => (
                       <option key={subject.name} value={subject.name}>
-                        {subject.name} ({subject.preprints.length})
+                        {subject.name} ({counts.subjects[subject.name]})
                       </option>
                     ))}
                   </optgroup>
                   <optgroup label='Focus'>
                     {buckets.focus.map((subject) => (
                       <option key={subject.name} value={subject.name}>
-                        {subject.name} ({subject.preprints.length})
+                        {subject.name} ({counts.subjects[subject.name]})
                       </option>
                     ))}
                   </optgroup>
                   <optgroup label='Methdo'>
                     {buckets.focus.map((subject) => (
                       <option key={subject.name} value={subject.name}>
-                        {subject.name} ({subject.preprints.length})
+                        {subject.name} ({counts.subjects[subject.name]})
                       </option>
                     ))}
                   </optgroup>
@@ -252,7 +268,7 @@ const Topics = () => {
             overflowY: 'auto',
           }}
         >
-          <Topic name='All' count={totalCount} />
+          <Topic name='All' count={counts.total} />
 
           <Box as='h3' sx={{ variant: 'text.mono' }}>
             Type
@@ -262,7 +278,7 @@ const Topics = () => {
             <Topic
               key={subject.name}
               name={subject.name}
-              count={subject.preprints.length}
+              count={counts.subjects[subject.name]}
             />
           ))}
 
@@ -274,7 +290,7 @@ const Topics = () => {
             <Topic
               key={subject.name}
               name={subject.name}
-              count={subject.preprints.length}
+              count={counts.subjects[subject.name]}
             />
           ))}
 
@@ -286,7 +302,7 @@ const Topics = () => {
             <Topic
               key={subject.name}
               name={subject.name}
-              count={subject.preprints.length}
+              count={counts.subjects[subject.name]}
             />
           ))}
         </Menu>
