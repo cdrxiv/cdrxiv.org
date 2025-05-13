@@ -30,10 +30,17 @@ const faqData: FAQ[] = [
     slug: 'what-content-will-cdrxiv-consider',
   },
   {
+    question: 'How are CDRXIV submissions categorized?',
+    answer:
+      'To help readers discover relevant work across disciplines, each CDRXIV submission is tagged across three topic dimensions: (1) the **type** of carbon removal addressed; (2) the **focus** of research within the carbon removal system; and (3) the general **methods** used. Authors can select as many topics as apply. Learn more about each topic category on our [Scope](/about/scope) page.',
+    tags: ['submissions-data'],
+    slug: 'how-are-submissions-categorized',
+  },
+  {
     question: 'Can I submit a dataset without a related preprint article?',
     answer:
       'Yes. CDRXIV accepts data submissions even if they are not accompanied by a preprint article. These data-only submissions still require an abstract which describes the provenance and contents of the data files. See our [screening process](/about/screening) for more information on the requirements for data submissions.',
-    tags: ['submissions-data'],
+    tags: ['general', 'submissions-data'],
     slug: 'submit-dataset-without-preprint',
   },
   {
@@ -155,7 +162,7 @@ If you are unsure about which revision type to use, contact [support@cdrxiv.org]
   {
     question: 'Will CDRXIV content be accessible long-term?',
     answer:
-      'Yes. CDRIXIV is designed to create a long-term archive of preprint and data submissions. Preprints are stored on [Digital Ocean](https://www.digitalocean.com/) and data is stored on [Zenodo](https://zenodo.org/communities/cdrxiv/).',
+      'Yes. CDRIXIV is designed to create a long-term archive of preprint and data submissions. Currently, data is stored for long-term archiving on [Zenodo](https://zenodo.org/communities/cdrxiv/) and preprints are stored on [Digital Ocean](https://www.digitalocean.com/) via Janeway, which includes archival backups. We may explore additional mechanisms for redundant archiving in the future.',
     tags: ['general'],
     slug: 'long-term-accessibility',
   },
