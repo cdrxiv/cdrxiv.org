@@ -4,22 +4,35 @@ import { Box, Flex } from 'theme-ui'
 import { Button, Column, Link, Menu, Row, Select } from '../components'
 import { useSubjects } from './subjects-context'
 
-const useTopicUrl = (topic: string) => {
+const useTopicUrl = (topic: string, multiSelect: boolean) => {
   const searchParams = useSearchParams()
-  const params = new URLSearchParams(Object.fromEntries(searchParams))
+
+  const params = new URLSearchParams(searchParams.toString())
   if (topic.startsWith('All')) {
     params.delete('subject')
+  } else if (multiSelect && searchParams.getAll('subject').includes(topic)) {
+    params.delete('subject', topic)
+  } else if (multiSelect) {
+    params.append('subject', topic)
   } else {
     params.set('subject', topic)
   }
   return `/?${params.toString()}`
 }
 
-const Topic = ({ name, count }: { name: string; count: number }) => {
-  const topicUrl = useTopicUrl(name)
+const Topic = ({
+  name,
+  count,
+  multiSelect = true,
+}: {
+  name: string
+  count: number
+  multiSelect?: boolean
+}) => {
+  const topicUrl = useTopicUrl(name, multiSelect)
   const searchParams = useSearchParams()
   const selected = searchParams.get('subject')
-    ? searchParams.get('subject') === name
+    ? searchParams.getAll('subject').includes(name)
     : name.startsWith('All')
 
   return (
@@ -29,6 +42,7 @@ const Topic = ({ name, count }: { name: string; count: number }) => {
       role='option'
       aria-selected={selected}
       aria-label={`${name} (${count} preprints)`}
+      disabled={multiSelect && count === 0}
       sx={{
         textDecoration: 'none',
         color: 'text',
@@ -44,7 +58,7 @@ const Topic = ({ name, count }: { name: string; count: number }) => {
         bg: selected ? 'highlight' : 'transparent',
         mb: '2px',
         ':hover': {
-          bg: 'highlight',
+          bg: count > 0 ? 'highlight' : 'none',
         },
       }}
     >
@@ -67,15 +81,46 @@ const Topics = () => {
   const [subjectsMenuOpen, setSubjectsMenuOpen] = useState(false)
   const [menuPosition, setMenuPosition] = useState({ top: 0 })
 
-  const currentSubject = searchParams.get('subject') || 'All'
+  const currentSubjects = useMemo(
+    () =>
+      searchParams.getAll('subject').length === 0
+        ? ['All']
+        : searchParams.getAll('subject'),
+    [searchParams],
+  )
 
-  const totalCount = useMemo(() => {
+  const counts = useMemo(() => {
     const allPreprints = subjects.reduce((preprints, subject) => {
       subject.preprints.forEach((p) => preprints.add(p))
       return preprints
-    }, new Set())
-    return allPreprints.size
-  }, [subjects])
+    }, new Set<string>())
+
+    const currentPreprints = currentSubjects.reduce(
+      (preprints, activeSubject) => {
+        const activePreprints = subjects.find(
+          (s) => s.name === activeSubject,
+        )?.preprints
+
+        return activePreprints
+          ? preprints.intersection(new Set(activePreprints))
+          : preprints
+      },
+      new Set(allPreprints),
+    )
+
+    const bySubject = subjects.reduce<Record<string, number>>(
+      (accum, subject) => {
+        const subjectPreprints = new Set(subject.preprints)
+        accum[subject.name] =
+          currentPreprints.intersection(subjectPreprints).size
+
+        return accum
+      },
+      {},
+    )
+
+    return { total: allPreprints.size, subjects: bySubject }
+  }, [subjects, currentSubjects])
 
   return (
     <Column start={[1, 1, 5, 5]} width={[3, 4, 8, 8]} sx={{ mb: [0, 0, 8, 8] }}>
@@ -101,7 +146,7 @@ const Topics = () => {
         aria-label='Topics'
       >
         <Column start={1} width={8} sx={{ pt: 1 }}>
-          <Topic name='All topics' count={totalCount} />
+          <Topic name='All topics' count={counts.total} />
         </Column>
 
         <Column start={1} width={4} sx={{ mt: 4 }}>
@@ -119,7 +164,7 @@ const Topics = () => {
               <Topic
                 key={subject.name}
                 name={subject.name}
-                count={subject.preprints.length}
+                count={counts.subjects[subject.name]}
               />
             ))}
 
@@ -131,7 +176,7 @@ const Topics = () => {
               <Topic
                 key={subject.name}
                 name={subject.name}
-                count={subject.preprints.length}
+                count={counts.subjects[subject.name]}
               />
             ))}
           </Flex>
@@ -146,7 +191,7 @@ const Topics = () => {
               <Topic
                 key={subject.name}
                 name={subject.name}
-                count={subject.preprints.length}
+                count={counts.subjects[subject.name]}
               />
             ))}
           </Flex>
@@ -172,7 +217,7 @@ const Topics = () => {
               '@media (scripting: none)': { display: 'none' },
             }}
           >
-            {currentSubject}
+            {currentSubjects.length > 1 ? 'Multiple' : currentSubjects[0]}
           </Link>
 
           <noscript>
@@ -180,7 +225,9 @@ const Topics = () => {
               <Flex sx={{ gap: 1 }}>
                 <Select
                   name='subject'
-                  defaultValue={currentSubject === 'All' ? '' : currentSubject}
+                  defaultValue={
+                    currentSubjects[0] === 'All' ? '' : currentSubjects[0]
+                  }
                   sx={{
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
@@ -196,21 +243,21 @@ const Topics = () => {
                   <optgroup label='Type'>
                     {buckets.type.map((subject) => (
                       <option key={subject.name} value={subject.name}>
-                        {subject.name} ({subject.preprints.length})
+                        {subject.name} ({counts.subjects[subject.name]})
                       </option>
                     ))}
                   </optgroup>
                   <optgroup label='Focus'>
                     {buckets.focus.map((subject) => (
                       <option key={subject.name} value={subject.name}>
-                        {subject.name} ({subject.preprints.length})
+                        {subject.name} ({counts.subjects[subject.name]})
                       </option>
                     ))}
                   </optgroup>
-                  <optgroup label='Methdo'>
+                  <optgroup label='Method'>
                     {buckets.focus.map((subject) => (
                       <option key={subject.name} value={subject.name}>
-                        {subject.name} ({subject.preprints.length})
+                        {subject.name} ({counts.subjects[subject.name]})
                       </option>
                     ))}
                   </optgroup>
@@ -252,7 +299,7 @@ const Topics = () => {
             overflowY: 'auto',
           }}
         >
-          <Topic name='All' count={totalCount} />
+          <Topic name='All' count={counts.total} multiSelect={false} />
 
           <Box as='h3' sx={{ variant: 'text.mono' }}>
             Type
@@ -262,7 +309,8 @@ const Topics = () => {
             <Topic
               key={subject.name}
               name={subject.name}
-              count={subject.preprints.length}
+              count={counts.subjects[subject.name]}
+              multiSelect={false}
             />
           ))}
 
@@ -274,7 +322,8 @@ const Topics = () => {
             <Topic
               key={subject.name}
               name={subject.name}
-              count={subject.preprints.length}
+              count={counts.subjects[subject.name]}
+              multiSelect={false}
             />
           ))}
 
@@ -286,7 +335,8 @@ const Topics = () => {
             <Topic
               key={subject.name}
               name={subject.name}
-              count={subject.preprints.length}
+              count={counts.subjects[subject.name]}
+              multiSelect={false}
             />
           ))}
         </Menu>
