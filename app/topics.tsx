@@ -240,7 +240,7 @@ const Topics = () => {
                       </option>
                     ))}
                   </optgroup>
-                  <optgroup label='Methdo'>
+                  <optgroup label='Method'>
                     {buckets.focus.map((subject) => (
                       <option key={subject.name} value={subject.name}>
                         {subject.name} ({counts.subjects[subject.name]})
