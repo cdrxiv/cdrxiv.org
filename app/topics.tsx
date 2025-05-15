@@ -43,6 +43,7 @@ const Topic = ({
       aria-selected={selected}
       aria-label={`${name} (${count} preprints)`}
       disabled={multiSelect && count === 0}
+      prefetch={false}
       sx={{
         textDecoration: 'none',
         color: 'text',
@@ -216,6 +217,7 @@ const Topics = () => {
               textTransform: 'capitalize',
               '@media (scripting: none)': { display: 'none' },
             }}
+            prefetch={false}
           >
             {currentSubjects.length > 1 ? 'Multiple' : currentSubjects[0]}
           </Link>
