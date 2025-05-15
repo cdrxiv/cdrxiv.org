@@ -42,7 +42,6 @@ const Topic = ({
       role='option'
       aria-selected={selected}
       aria-label={`${name} (${count} preprints)`}
-      disabled={multiSelect && count === 0}
       sx={{
         textDecoration: 'none',
         color: 'text',
@@ -58,7 +57,7 @@ const Topic = ({
         bg: selected ? 'highlight' : 'transparent',
         mb: '2px',
         ':hover': {
-          bg: count > 0 ? 'highlight' : 'none',
+          bg: 'highlight',
         },
       }}
     >
