@@ -4,32 +4,19 @@ import { Box, Flex } from 'theme-ui'
 import { Button, Column, Link, Menu, Row, Select } from '../components'
 import { useSubjects } from './subjects-context'
 
-const useTopicUrl = (topic: string, multiSelect: boolean) => {
+const useTopicUrl = (topic: string) => {
   const searchParams = useSearchParams()
-
   const params = new URLSearchParams(searchParams.toString())
   if (topic.startsWith('All')) {
     params.delete('subject')
-  } else if (multiSelect && searchParams.getAll('subject').includes(topic)) {
-    params.delete('subject', topic)
-  } else if (multiSelect) {
-    params.append('subject', topic)
   } else {
-    params.set('subject', topic)
+    params.append('subject', topic)
   }
   return `/?${params.toString()}`
 }
 
-const Topic = ({
-  name,
-  count,
-  multiSelect = true,
-}: {
-  name: string
-  count: number
-  multiSelect?: boolean
-}) => {
-  const topicUrl = useTopicUrl(name, multiSelect)
+const Topic = ({ name, count }: { name: string; count: number }) => {
+  const topicUrl = useTopicUrl(name)
   const searchParams = useSearchParams()
   const selected = searchParams.get('subject')
     ? searchParams.getAll('subject').includes(name)
@@ -216,7 +203,7 @@ const Topics = () => {
               '@media (scripting: none)': { display: 'none' },
             }}
           >
-            {currentSubjects.length > 1 ? 'Multiple' : currentSubjects[0]}
+            {currentSubjects[0]}
           </Link>
 
           <noscript>
@@ -298,7 +285,7 @@ const Topics = () => {
             overflowY: 'auto',
           }}
         >
-          <Topic name='All' count={counts.total} multiSelect={false} />
+          <Topic name='All' count={counts.total} />
 
           <Box as='h3' sx={{ variant: 'text.mono' }}>
             Type
@@ -309,7 +296,6 @@ const Topics = () => {
               key={subject.name}
               name={subject.name}
               count={counts.subjects[subject.name]}
-              multiSelect={false}
             />
           ))}
 
@@ -322,7 +308,6 @@ const Topics = () => {
               key={subject.name}
               name={subject.name}
               count={counts.subjects[subject.name]}
-              multiSelect={false}
             />
           ))}
 
@@ -335,7 +320,6 @@ const Topics = () => {
               key={subject.name}
               name={subject.name}
               count={counts.subjects[subject.name]}
-              multiSelect={false}
             />
           ))}
         </Menu>
