@@ -6,11 +6,11 @@ import { useSubjects } from './subjects-context'
 
 const useTopicUrl = (topic: string) => {
   const searchParams = useSearchParams()
-  const params = new URLSearchParams(searchParams.toString())
+  const params = new URLSearchParams(Object.fromEntries(searchParams))
   if (topic.startsWith('All')) {
     params.delete('subject')
   } else {
-    params.append('subject', topic)
+    params.set('subject', topic)
   }
   return `/?${params.toString()}`
 }
@@ -19,7 +19,7 @@ const Topic = ({ name, count }: { name: string; count: number }) => {
   const topicUrl = useTopicUrl(name)
   const searchParams = useSearchParams()
   const selected = searchParams.get('subject')
-    ? searchParams.getAll('subject').includes(name)
+    ? searchParams.get('subject') === name
     : name.startsWith('All')
 
   return (
@@ -67,31 +67,16 @@ const Topics = () => {
   const [subjectsMenuOpen, setSubjectsMenuOpen] = useState(false)
   const [menuPosition, setMenuPosition] = useState({ top: 0 })
 
-  const currentSubjects = useMemo(
-    () =>
-      searchParams.getAll('subject').length === 0
-        ? ['All']
-        : searchParams.getAll('subject'),
-    [searchParams],
-  )
+  const currentSubject = searchParams.get('subject') || 'All'
 
   const counts = useMemo(() => {
     const allPreprints = subjects.reduce((preprints, subject) => {
       subject.preprints.forEach((p) => preprints.add(p))
       return preprints
-    }, new Set<string>())
-
-    const currentPreprints = currentSubjects.reduce(
-      (preprints, activeSubject) => {
-        const activePreprints = subjects.find(
-          (s) => s.name === activeSubject,
-        )?.preprints
-
-        return activePreprints
-          ? preprints.intersection(new Set(activePreprints))
-          : preprints
-      },
-      new Set(allPreprints),
+    }, new Set())
+    const currentPreprints = new Set(
+      subjects.find((s) => s.name === currentSubject)?.preprints ??
+        allPreprints,
     )
 
     const bySubject = subjects.reduce<Record<string, number>>(
@@ -106,7 +91,7 @@ const Topics = () => {
     )
 
     return { total: allPreprints.size, subjects: bySubject }
-  }, [subjects, currentSubjects])
+  }, [subjects, currentSubject])
 
   return (
     <Column start={[1, 1, 5, 5]} width={[3, 4, 8, 8]} sx={{ mb: [0, 0, 8, 8] }}>
@@ -203,7 +188,7 @@ const Topics = () => {
               '@media (scripting: none)': { display: 'none' },
             }}
           >
-            {currentSubjects[0]}
+            {currentSubject}
           </Link>
 
           <noscript>
@@ -211,9 +196,7 @@ const Topics = () => {
               <Flex sx={{ gap: 1 }}>
                 <Select
                   name='subject'
-                  defaultValue={
-                    currentSubjects[0] === 'All' ? '' : currentSubjects[0]
-                  }
+                  defaultValue={currentSubject === 'All' ? '' : currentSubject}
                   sx={{
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
