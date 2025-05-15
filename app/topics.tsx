@@ -29,6 +29,7 @@ const Topic = ({ name, count }: { name: string; count: number }) => {
       role='option'
       aria-selected={selected}
       aria-label={`${name} (${count} preprints)`}
+      prefetch={false}
       sx={{
         textDecoration: 'none',
         color: 'text',
@@ -171,6 +172,7 @@ const Topics = () => {
               textTransform: 'capitalize',
               '@media (scripting: none)': { display: 'none' },
             }}
+            prefetch={false}
           >
             {currentSubject}
           </Link>
