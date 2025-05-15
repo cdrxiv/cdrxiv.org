@@ -75,17 +75,6 @@ const Topic = ({
   )
 }
 
-const getIntersection = (setA: Set<string>, setB: Set<string>) => {
-  const result = new Set<string>()
-  setA.forEach((value) => {
-    if (setB.has(value)) {
-      result.add(value)
-    }
-  })
-
-  return result
-}
-
 const Topics = () => {
   const searchParams = useSearchParams()
   const { subjects, buckets } = useSubjects()
@@ -114,7 +103,7 @@ const Topics = () => {
         )?.preprints
 
         return activePreprints
-          ? getIntersection(preprints, new Set(activePreprints))
+          ? preprints.intersection(new Set(activePreprints))
           : preprints
       },
       new Set(allPreprints),
@@ -123,10 +112,8 @@ const Topics = () => {
     const bySubject = subjects.reduce<Record<string, number>>(
       (accum, subject) => {
         const subjectPreprints = new Set(subject.preprints)
-        accum[subject.name] = getIntersection(
-          currentPreprints,
-          subjectPreprints,
-        ).size
+        accum[subject.name] =
+          currentPreprints.intersection(subjectPreprints).size
 
         return accum
       },
