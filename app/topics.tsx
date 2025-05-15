@@ -4,35 +4,22 @@ import { Box, Flex } from 'theme-ui'
 import { Button, Column, Link, Menu, Row, Select } from '../components'
 import { useSubjects } from './subjects-context'
 
-const useTopicUrl = (topic: string, multiSelect: boolean) => {
+const useTopicUrl = (topic: string) => {
   const searchParams = useSearchParams()
-
-  const params = new URLSearchParams(searchParams.toString())
+  const params = new URLSearchParams(Object.fromEntries(searchParams))
   if (topic.startsWith('All')) {
     params.delete('subject')
-  } else if (multiSelect && searchParams.getAll('subject').includes(topic)) {
-    params.delete('subject', topic)
-  } else if (multiSelect) {
-    params.append('subject', topic)
   } else {
     params.set('subject', topic)
   }
   return `/?${params.toString()}`
 }
 
-const Topic = ({
-  name,
-  count,
-  multiSelect = true,
-}: {
-  name: string
-  count: number
-  multiSelect?: boolean
-}) => {
-  const topicUrl = useTopicUrl(name, multiSelect)
+const Topic = ({ name, count }: { name: string; count: number }) => {
+  const topicUrl = useTopicUrl(name)
   const searchParams = useSearchParams()
   const selected = searchParams.get('subject')
-    ? searchParams.getAll('subject').includes(name)
+    ? searchParams.get('subject') === name
     : name.startsWith('All')
 
   return (
@@ -42,7 +29,6 @@ const Topic = ({
       role='option'
       aria-selected={selected}
       aria-label={`${name} (${count} preprints)`}
-      disabled={multiSelect && count === 0}
       prefetch={false}
       sx={{
         textDecoration: 'none',
@@ -59,7 +45,7 @@ const Topic = ({
         bg: selected ? 'highlight' : 'transparent',
         mb: '2px',
         ':hover': {
-          bg: count > 0 ? 'highlight' : 'none',
+          bg: 'highlight',
         },
       }}
     >
@@ -75,17 +61,6 @@ const Topic = ({
   )
 }
 
-const getIntersection = (setA: Set<string>, setB: Set<string>) => {
-  const result = new Set<string>()
-  setA.forEach((value) => {
-    if (setB.has(value)) {
-      result.add(value)
-    }
-  })
-
-  return result
-}
-
 const Topics = () => {
   const searchParams = useSearchParams()
   const { subjects, buckets } = useSubjects()
@@ -93,48 +68,15 @@ const Topics = () => {
   const [subjectsMenuOpen, setSubjectsMenuOpen] = useState(false)
   const [menuPosition, setMenuPosition] = useState({ top: 0 })
 
-  const currentSubjects = useMemo(
-    () =>
-      searchParams.getAll('subject').length === 0
-        ? ['All']
-        : searchParams.getAll('subject'),
-    [searchParams],
-  )
+  const currentSubject = searchParams.get('subject') || 'All'
 
-  const counts = useMemo(() => {
+  const totalCount = useMemo(() => {
     const allPreprints = subjects.reduce((preprints, subject) => {
       subject.preprints.forEach((p) => preprints.add(p))
       return preprints
-    }, new Set<string>())
-
-    const currentPreprints = currentSubjects.reduce(
-      (preprints, activeSubject) => {
-        const activePreprints = subjects.find(
-          (s) => s.name === activeSubject,
-        )?.preprints
-
-        return activePreprints
-          ? getIntersection(preprints, new Set(activePreprints))
-          : preprints
-      },
-      new Set(allPreprints),
-    )
-
-    const bySubject = subjects.reduce<Record<string, number>>(
-      (accum, subject) => {
-        const subjectPreprints = new Set(subject.preprints)
-        accum[subject.name] = getIntersection(
-          currentPreprints,
-          subjectPreprints,
-        ).size
-
-        return accum
-      },
-      {},
-    )
-
-    return { total: allPreprints.size, subjects: bySubject }
-  }, [subjects, currentSubjects])
+    }, new Set())
+    return allPreprints.size
+  }, [subjects])
 
   return (
     <Column start={[1, 1, 5, 5]} width={[3, 4, 8, 8]} sx={{ mb: [0, 0, 8, 8] }}>
@@ -160,7 +102,7 @@ const Topics = () => {
         aria-label='Topics'
       >
         <Column start={1} width={8} sx={{ pt: 1 }}>
-          <Topic name='All topics' count={counts.total} />
+          <Topic name='All topics' count={totalCount} />
         </Column>
 
         <Column start={1} width={4} sx={{ mt: 4 }}>
@@ -178,7 +120,7 @@ const Topics = () => {
               <Topic
                 key={subject.name}
                 name={subject.name}
-                count={counts.subjects[subject.name]}
+                count={subject.preprints.length}
               />
             ))}
 
@@ -190,7 +132,7 @@ const Topics = () => {
               <Topic
                 key={subject.name}
                 name={subject.name}
-                count={counts.subjects[subject.name]}
+                count={subject.preprints.length}
               />
             ))}
           </Flex>
@@ -205,7 +147,7 @@ const Topics = () => {
               <Topic
                 key={subject.name}
                 name={subject.name}
-                count={counts.subjects[subject.name]}
+                count={subject.preprints.length}
               />
             ))}
           </Flex>
@@ -232,7 +174,7 @@ const Topics = () => {
             }}
             prefetch={false}
           >
-            {currentSubjects.length > 1 ? 'Multiple' : currentSubjects[0]}
+            {currentSubject}
           </Link>
 
           <noscript>
@@ -240,9 +182,7 @@ const Topics = () => {
               <Flex sx={{ gap: 1 }}>
                 <Select
                   name='subject'
-                  defaultValue={
-                    currentSubjects[0] === 'All' ? '' : currentSubjects[0]
-                  }
+                  defaultValue={currentSubject === 'All' ? '' : currentSubject}
                   sx={{
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
@@ -258,21 +198,21 @@ const Topics = () => {
                   <optgroup label='Type'>
                     {buckets.type.map((subject) => (
                       <option key={subject.name} value={subject.name}>
-                        {subject.name} ({counts.subjects[subject.name]})
+                        {subject.name} ({subject.preprints.length})
                       </option>
                     ))}
                   </optgroup>
                   <optgroup label='Focus'>
                     {buckets.focus.map((subject) => (
                       <option key={subject.name} value={subject.name}>
-                        {subject.name} ({counts.subjects[subject.name]})
+                        {subject.name} ({subject.preprints.length})
                       </option>
                     ))}
                   </optgroup>
                   <optgroup label='Method'>
                     {buckets.focus.map((subject) => (
                       <option key={subject.name} value={subject.name}>
-                        {subject.name} ({counts.subjects[subject.name]})
+                        {subject.name} ({subject.preprints.length})
                       </option>
                     ))}
                   </optgroup>
@@ -314,7 +254,7 @@ const Topics = () => {
             overflowY: 'auto',
           }}
         >
-          <Topic name='All' count={counts.total} multiSelect={false} />
+          <Topic name='All' count={totalCount} />
 
           <Box as='h3' sx={{ variant: 'text.mono' }}>
             Type
@@ -324,8 +264,7 @@ const Topics = () => {
             <Topic
               key={subject.name}
               name={subject.name}
-              count={counts.subjects[subject.name]}
-              multiSelect={false}
+              count={subject.preprints.length}
             />
           ))}
 
@@ -337,8 +276,7 @@ const Topics = () => {
             <Topic
               key={subject.name}
               name={subject.name}
-              count={counts.subjects[subject.name]}
-              multiSelect={false}
+              count={subject.preprints.length}
             />
           ))}
 
@@ -350,8 +288,7 @@ const Topics = () => {
             <Topic
               key={subject.name}
               name={subject.name}
-              count={counts.subjects[subject.name]}
-              multiSelect={false}
+              count={subject.preprints.length}
             />
           ))}
         </Menu>
