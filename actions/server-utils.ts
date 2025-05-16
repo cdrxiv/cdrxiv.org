@@ -26,7 +26,7 @@ export async function alertOnError({
   apiError,
 }: {
   endpoint: string
-  status: number
+  status: number | string
   statusText: string
   method: string
   apiError?: string
@@ -73,7 +73,21 @@ export const fetchWithAlerting = async (
   options: RequestInit = {},
   expectedStatuses: number[] = [200, 201, 204],
 ) => {
+  // Trigger timeout error if request takes longer than 10 seconds
+  // This should ensure that Vercel timeout of 15s [0] is not reached
+  //
+  // [0] https://vercel.com/docs/functions/configuring-functions/duration
+  const interval = setTimeout(() => {
+    alertOnError({
+      endpoint: url,
+      status: 'n/a',
+      statusText: 'Timeout (10s exceeded)',
+      method: options?.method ?? 'GET',
+    })
+  }, 10000)
   const response = await fetch(url, options)
+  // Clear timeout when response is returned
+  clearInterval(interval)
 
   if (!expectedStatuses.includes(response.status)) {
     let apiError
