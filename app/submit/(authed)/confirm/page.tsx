@@ -255,7 +255,7 @@ const SubmissionConfirmation = () => {
             <Box sx={{ variant: 'text.body' }}>
               {info.data.title || 'No title'}
             </Box>
-            <Box sx={{ whiteSpace: 'pre-wrap' }}>
+            <Box sx={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}>
               {info.data.abstract || 'No abstract'}
             </Box>
             <Flex sx={{ gap: 2, flexWrap: 'wrap' }}>
