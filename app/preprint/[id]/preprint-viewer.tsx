@@ -187,7 +187,14 @@ const PreprintViewer = ({
       <Box sx={{ variant: 'text.monoCaps', fontSize: [3, 3, 3, 4], mb: 4 }}>
         Abstract
       </Box>
-      <Box sx={{ variant: 'text.body', whiteSpace: 'pre-wrap', mb: 9 }}>
+      <Box
+        sx={{
+          variant: 'text.body',
+          whiteSpace: 'pre-wrap',
+          overflowWrap: 'break-word',
+          mb: 9,
+        }}
+      >
         {preprint.abstract}
       </Box>
       {hasArticle && preprint.versions.length > 0 && (
