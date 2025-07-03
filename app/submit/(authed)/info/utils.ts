@@ -145,20 +145,19 @@ export const submitForm = (
 
 export const getSuggestedKeywords = (subject: string[], keywords: string[]) => {
   let result = new Set<string>()
+  const existingKeywords = new Set(keywords)
 
   subject.forEach((s) => {
     if (s in SUGGESTED_KEYWORD_MAPPING) {
-      result = result.union(
-        new Set(
-          SUGGESTED_KEYWORD_MAPPING[
-            s as keyof typeof SUGGESTED_KEYWORD_MAPPING
-          ],
-        ),
-      )
+      SUGGESTED_KEYWORD_MAPPING[
+        s as keyof typeof SUGGESTED_KEYWORD_MAPPING
+      ].forEach((keyword) => {
+        if (!existingKeywords.has(keyword)) {
+          result.add(keyword)
+        }
+      })
     }
   })
-
-  result = result.difference(new Set(keywords))
 
   return Array.from(result)
 }
