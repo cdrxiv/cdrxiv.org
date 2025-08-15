@@ -21,6 +21,7 @@ import { AuthorsList } from '../../../components'
 import { Deposition } from '../../../types/zenodo'
 import { fetchDataDeposition, fetchPreprintIdentifier } from '../../../actions'
 import ErrorOrTrack from './error-or-track'
+import { alertOnError } from '../../../actions/server-utils'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
@@ -111,10 +112,6 @@ const PreprintViewer = ({
     })
   }, [track, preprint.pk, submissionType])
 
-  const onDocumentLoadSuccess = (pdf: PDFDocumentProxy): void => {
-    setPdf(pdf)
-  }
-
   useEffect(() => {
     if (pdf && !hidePdfOutline) {
       pdf.getOutline().then(setPdfOutline).catch(console.error)
@@ -201,7 +198,16 @@ const PreprintViewer = ({
         <div ref={containerRef} style={{ width: '100%' }}>
           <Document
             file={preprint.versions[0].public_download_url}
-            onLoadSuccess={onDocumentLoadSuccess}
+            onLoadSuccess={(pdf: PDFDocumentProxy) => setPdf(pdf)}
+            onLoadError={(error) =>
+              alertOnError({
+                endpoint: preprint.versions[0].public_download_url,
+                status: 'n/a',
+                statusText: 'unknown',
+                method: 'GET',
+                apiError: error.message,
+              })
+            }
             loading={
               <Flex
                 sx={{
