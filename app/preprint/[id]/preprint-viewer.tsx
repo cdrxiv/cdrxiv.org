@@ -200,13 +200,15 @@ const PreprintViewer = ({
             file={preprint.versions[0].public_download_url}
             onLoadSuccess={(pdf: PDFDocumentProxy) => setPdf(pdf)}
             onLoadError={(error) =>
-              alertOnError({
-                endpoint: preprint.versions[0].public_download_url,
-                status: 'n/a',
-                statusText: 'unknown',
-                method: 'GET',
-                apiError: error.message,
-              })
+              window.location.hostname.includes('cdrxiv.org')
+                ? alertOnError({
+                    endpoint: preprint.versions[0].public_download_url,
+                    status: 'n/a',
+                    statusText: 'unknown',
+                    method: 'GET',
+                    apiError: error.message,
+                  })
+                : undefined
             }
             loading={
               <Flex
