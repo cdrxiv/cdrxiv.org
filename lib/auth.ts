@@ -38,6 +38,16 @@ export const authOptions: NextAuthOptions = {
     error: '/',
   },
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      // Clean up signOut parameter from redirect URLs to prevent loop
+      try {
+        const redirectUrl = new URL(url, baseUrl)
+        redirectUrl.searchParams.delete('signOut')
+        return redirectUrl.toString()
+      } catch {
+        return url
+      }
+    },
     async jwt({ token, trigger, account, user, session }) {
       // Refresh token logic adapted from from https://authjs.dev/guides/refresh-token-rotation?_gl=1*116ih1f*_gcl_au*NDA1OTU5Mzg1LjE3MjEyMzMwMzguNDQ4ODcyNDc2LjE3MjEzMzM1OTkuMTcyMTMzNTY2NQ..
 
