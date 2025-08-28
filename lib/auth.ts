@@ -39,13 +39,14 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async redirect({ url, baseUrl }) {
-      // Clean up signOut parameter from redirect URLs to prevent loop
       try {
         const redirectUrl = new URL(url, baseUrl)
+        if (redirectUrl.origin !== new URL(baseUrl).origin) return baseUrl
+        // Clean up signOut parameter from redirect URLs to prevent loop
         redirectUrl.searchParams.delete('signOut')
         return redirectUrl.toString()
       } catch {
-        return url
+        return baseUrl
       }
     },
     async jwt({ token, trigger, account, user, session }) {
