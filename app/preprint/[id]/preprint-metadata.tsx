@@ -58,8 +58,6 @@ const PreprintMetadata: React.FC<{
   const dataLicense = getAdditionalField(preprint, 'Data license')
   const dataLicenseInfo = getZenodoLicense(preprint)
   const articleLicenseInfo = getArticleLicense(preprint.license?.pk)
-  const hasConflictOfInterest =
-    conflictOfInterest && conflictOfInterest !== 'None'
 
   return (
     <Flex sx={{ flexDirection: 'column', gap: [6, 8, 9, 9] }}>
@@ -275,11 +273,19 @@ const PreprintMetadata: React.FC<{
         </Field>
       )}
 
-      {hasConflictOfInterest && (
-        <Field label='Conflict of interest'>
-          <Box sx={{ variant: 'text.mono' }}>{conflictOfInterest}</Box>
-        </Field>
-      )}
+      <Field label='Conflict of interest'>
+        <Box
+          sx={{
+            variant: 'text.mono',
+            color:
+              conflictOfInterest && conflictOfInterest !== 'None'
+                ? 'text'
+                : 'listBorderGrey',
+          }}
+        >
+          {conflictOfInterest ?? 'None'}
+        </Box>
+      </Field>
 
       {preprint.date_published && (
         <Field label={preprint.versions.length === 1 ? 'Published' : 'Dates'}>
