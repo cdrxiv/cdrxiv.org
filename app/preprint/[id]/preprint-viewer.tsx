@@ -200,7 +200,7 @@ const PreprintViewer = ({
             file={preprint.versions[0].public_download_url}
             onLoadSuccess={(pdf: PDFDocumentProxy) => setPdf(pdf)}
             onLoadError={(error) =>
-              window.location.hostname.includes('cdrxiv.org')
+              window.location.hostname.includes('cdrxiv.org') && !preview
                 ? alertOnError({
                     endpoint: preprint.versions[0].public_download_url,
                     status: 'n/a',
