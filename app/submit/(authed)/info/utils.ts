@@ -13,6 +13,7 @@ export type FormData = {
   data_license: string
   subject: string[]
   keywords: string[]
+  channel: string
   funding: string
   conflict_of_interest: string
   comments_editor: string
@@ -39,6 +40,9 @@ export const initializeForm = (preprint: Preprint): FormData => {
     conflict_of_interest:
       getAdditionalField(preprint, 'Conflict of interest statement') ?? '',
     comments_editor: '',
+    channel:
+      preprint.keywords.find(({ word }) => word.startsWith('_CHANNEL-'))
+        ?.word ?? '',
     submission_type: submissionType, // not editable; stored in form state for convenience
   }
 }
@@ -104,6 +108,7 @@ export const submitForm = (
     comments_editor,
     data_license,
     submission_type,
+    channel,
   }: FormData,
 ) => {
   const additional_field_answers = [
@@ -128,12 +133,18 @@ export const submitForm = (
       createAdditionalField('Data license', data_license),
     )
   }
+
+  const combinedKeywords = keywords.map((word) => ({ word }))
+  if (channel) {
+    combinedKeywords.push({ word: channel })
+  }
+
   const params = {
     title,
     abstract,
     license,
     subject: subject.map((name) => ({ name })),
-    keywords: keywords.map((word) => ({ word })),
+    keywords: combinedKeywords,
     additional_field_answers,
     ...(comments_editor ? { comments_editor } : {}),
   }

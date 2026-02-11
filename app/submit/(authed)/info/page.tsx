@@ -17,6 +17,7 @@ import { usePreprint } from '../../preprint-context'
 import { useForm } from '../utils'
 import { FormData, initializeForm, validateForm, submitForm } from './utils'
 import KeywordDescription from './keyword-description'
+import Channel from './channel'
 
 const SubmissionInformation = () => {
   const { preprint, setPreprint } = usePreprint()
@@ -102,6 +103,15 @@ const SubmissionInformation = () => {
             values={data.keywords}
             setValues={setters.keywords}
           />
+        </Field>
+
+        <Field
+          label='Channel'
+          id='channel'
+          error={errors.channel}
+          description='(Most submitters can ignore this step). If your submission should be added to an organization’s channel on CDRXIV, please select it from the drop-down menu. The channel’s point of contact will be asked to approve the submission to add it to the channel.'
+        >
+          <Channel channel={data.channel} setChannel={setters.channel} />
         </Field>
 
         <Field label='Funding sources' id='funding' error={errors.funding}>
