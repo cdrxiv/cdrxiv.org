@@ -20,6 +20,8 @@ export type FormData = {
   submission_type: string
 }
 
+const CHANNEL_PREFIX = '_CHANNEL-'
+
 export const initializeForm = (preprint: Preprint): FormData => {
   const submissionType = getAdditionalField(preprint, 'Submission type') ?? ''
   return {
@@ -41,8 +43,9 @@ export const initializeForm = (preprint: Preprint): FormData => {
       getAdditionalField(preprint, 'Conflict of interest statement') ?? '',
     comments_editor: '',
     channel:
-      preprint.keywords.find(({ word }) => word.startsWith('_CHANNEL-'))
-        ?.word ?? '',
+      preprint.keywords
+        .find(({ word }) => word.startsWith(CHANNEL_PREFIX))
+        ?.word.replace(CHANNEL_PREFIX, '') ?? '',
     submission_type: submissionType, // not editable; stored in form state for convenience
   }
 }
@@ -136,7 +139,7 @@ export const submitForm = (
 
   const combinedKeywords = keywords.map((word) => ({ word }))
   if (channel) {
-    combinedKeywords.push({ word: channel })
+    combinedKeywords.push({ word: `${CHANNEL_PREFIX}${channel}` })
   }
 
   const params = {

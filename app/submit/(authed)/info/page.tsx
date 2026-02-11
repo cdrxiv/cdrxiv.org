@@ -109,7 +109,7 @@ const SubmissionInformation = () => {
           label='Channel'
           id='channel'
           error={errors.channel}
-          description='(Most submitters can ignore this step). If your submission should be added to an organization’s channel on CDRXIV, please select it from the drop-down menu. The channel’s point of contact will be asked to approve the submission to add it to the channel.'
+          description='For most submissions, this can be skipped.'
         >
           <Channel channel={data.channel} setChannel={setters.channel} />
         </Field>
