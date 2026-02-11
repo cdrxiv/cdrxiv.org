@@ -1,16 +1,11 @@
 import { Box, Flex, Label } from 'theme-ui'
 import { Checkbox, Link } from '../../../../components'
+import { CHANNELS } from '../../../../utils/data'
 
 type Props = {
   channel: string
   setChannel: (value: string) => void
 }
-const CHANNELS = [
-  { id: 'ycncc', label: 'Yale Center for Natural Carbon Capture' },
-  { id: 'mati', label: 'Mati Carbon' },
-  { id: 'cascade', label: 'Cascade Data Quarry' },
-]
-
 const Channel: React.FC<Props> = ({ channel, setChannel }) => {
   return (
     <>

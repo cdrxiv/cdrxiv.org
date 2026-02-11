@@ -2,6 +2,31 @@ import { PREPRINT_BASE } from '../actions/constants'
 import { Author, Funder, Preprint } from '../types/preprint'
 import { Creator, Deposition, DepositionVersion } from '../types/zenodo'
 
+export const CHANNEL_PREFIX = '_CHANNEL-'
+export const CHANNELS = [
+  { id: 'ycncc', label: 'Yale Center for Natural Carbon Capture' },
+  { id: 'mati', label: 'Mati Carbon' },
+  { id: 'cascade', label: 'Cascade Data Quarry' },
+]
+
+export const getChannel = (preprint: Preprint): string | null => {
+  const channel = preprint.keywords.find(({ word }) =>
+    word.startsWith(CHANNEL_PREFIX),
+  )?.word
+
+  if (!channel) {
+    return null
+  }
+
+  return channel.replace(CHANNEL_PREFIX, '')
+}
+
+export const getKeywords = (preprint: Preprint): string[] => {
+  return preprint.keywords
+    .filter(({ word }) => !word.startsWith(CHANNEL_PREFIX))
+    .map(({ word }) => word)
+}
+
 export const getAdditionalField = (
   preprint: Preprint | null,
   fieldName: string,

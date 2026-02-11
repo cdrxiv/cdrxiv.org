@@ -2,10 +2,13 @@ import React from 'react'
 import { Box, Flex } from 'theme-ui'
 
 import {
+  CHANNELS,
   getAdditionalField,
   getArticleLicense,
+  getChannel,
   getDataDownload,
   getFunders,
+  getKeywords,
   getZenodoLicense,
 } from '../../../utils/data'
 import { Field, Button, Link, Loading } from '../../../components'
@@ -58,6 +61,7 @@ const PreprintMetadata: React.FC<{
   const dataLicense = getAdditionalField(preprint, 'Data license')
   const dataLicenseInfo = getZenodoLicense(preprint)
   const articleLicenseInfo = getArticleLicense(preprint.license?.pk)
+  const channel = getChannel(preprint)
 
   return (
     <Flex sx={{ flexDirection: 'column', gap: [6, 8, 9, 9] }}>
@@ -95,6 +99,27 @@ const PreprintMetadata: React.FC<{
           errorMessage={`No subjects provided.`}
         />
       </Field>
+
+      {channel && (
+        <Field label='Channel'>
+          <Link
+            href={`/channels/${channel}`}
+            forwardArrow
+            sx={{
+              variant: 'text.mono',
+              display: 'block',
+            }}
+          >
+            {CHANNELS.find(({ id }) => id === channel)?.label}
+          </Link>
+          <ErrorOrTrack
+            hasError={!CHANNELS.find(({ id }) => id === channel)?.label}
+            preview={preview}
+            pk={preprint.pk}
+            errorMessage={`Unexpected channel found: ${channel}`}
+          />
+        </Field>
+      )}
 
       <Flex sx={{ flexDirection: 'column', gap: 5 }}>
         {hasArticle && (
@@ -255,10 +280,10 @@ const PreprintMetadata: React.FC<{
         )}
       </Field>
 
-      {preprint.keywords.length > 0 && (
+      {getKeywords(preprint).length > 0 && (
         <Field label='Keywords'>
           <Box sx={{ variant: 'text.mono' }}>
-            {preprint.keywords.map(({ word }, index, array) => (
+            {getKeywords(preprint).map((word, index, array) => (
               <React.Fragment key={word}>
                 <Link
                   href={`/search?query=${word}`}

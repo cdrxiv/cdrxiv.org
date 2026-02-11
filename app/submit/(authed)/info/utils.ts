@@ -1,7 +1,10 @@
 import { Preprint } from '../../../../types/preprint'
 import {
+  CHANNEL_PREFIX,
   createAdditionalField,
   getAdditionalField,
+  getChannel,
+  getKeywords,
 } from '../../../../utils/data'
 import { updatePreprint } from '../../../../actions'
 import { SUGGESTED_KEYWORD_MAPPING } from '../../constants'
@@ -20,8 +23,6 @@ export type FormData = {
   submission_type: string
 }
 
-const CHANNEL_PREFIX = '_CHANNEL-'
-
 export const initializeForm = (preprint: Preprint): FormData => {
   const submissionType = getAdditionalField(preprint, 'Submission type') ?? ''
   return {
@@ -36,16 +37,13 @@ export const initializeForm = (preprint: Preprint): FormData => {
         ? ''
         : (getAdditionalField(preprint, 'Data license') ?? ''),
     subject: preprint.subject.map(({ name }) => name),
-    keywords: preprint.keywords.map(({ word }) => word),
+    keywords: getKeywords(preprint),
     funding:
       getAdditionalField(preprint, 'Funder(s) and award numbers') ?? '[]',
     conflict_of_interest:
       getAdditionalField(preprint, 'Conflict of interest statement') ?? '',
     comments_editor: '',
-    channel:
-      preprint.keywords
-        .find(({ word }) => word.startsWith(CHANNEL_PREFIX))
-        ?.word.replace(CHANNEL_PREFIX, '') ?? '',
+    channel: getChannel(preprint) ?? '',
     submission_type: submissionType, // not editable; stored in form state for convenience
   }
 }
