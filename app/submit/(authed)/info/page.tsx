@@ -108,10 +108,10 @@ const SubmissionInformation = () => {
         <Field
           label='Channel'
           id='channel'
-          error={errors.channel}
+          error={errors.channels}
           description='For most submissions, this can be skipped.'
         >
-          <Channel channel={data.channel} setChannel={setters.channel} />
+          <Channel channels={data.channels} setChannels={setters.channels} />
         </Field>
 
         <Field label='Funding sources' id='funding' error={errors.funding}>

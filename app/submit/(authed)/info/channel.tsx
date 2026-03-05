@@ -3,10 +3,10 @@ import { Checkbox, Link } from '../../../../components'
 import { CHANNELS } from '../../../../utils/data'
 
 type Props = {
-  channel: string
-  setChannel: (value: string) => void
+  channels: string[]
+  setChannels: (value: string[]) => void
 }
-const Channel: React.FC<Props> = ({ channel, setChannel }) => {
+const Channel: React.FC<Props> = ({ channels, setChannels }) => {
   return (
     <>
       <Box sx={{ variant: 'text.mono' }}>
@@ -18,9 +18,11 @@ const Channel: React.FC<Props> = ({ channel, setChannel }) => {
         {CHANNELS.map(({ id, label }) => (
           <Label key={id}>
             <Checkbox
-              checked={channel === id}
+              checked={channels.includes(id)}
               onChange={(e) =>
-                e.target.checked ? setChannel(id) : setChannel('')
+                e.target.checked
+                  ? setChannels([...channels, id])
+                  : setChannels(channels.filter((c) => c !== id))
               }
               sx={{ mt: '-1px' }}
             />

@@ -5,7 +5,7 @@ import {
   CHANNELS,
   getAdditionalField,
   getArticleLicense,
-  getChannel,
+  getChannels,
   getDataDownload,
   getFunders,
   getKeywords,
@@ -61,7 +61,7 @@ const PreprintMetadata: React.FC<{
   const dataLicense = getAdditionalField(preprint, 'Data license')
   const dataLicenseInfo = getZenodoLicense(preprint)
   const articleLicenseInfo = getArticleLicense(preprint.license?.pk)
-  const channel = getChannel(preprint)
+  const channels = getChannels(preprint)
 
   return (
     <Flex sx={{ flexDirection: 'column', gap: [6, 8, 9, 9] }}>
@@ -100,24 +100,28 @@ const PreprintMetadata: React.FC<{
         />
       </Field>
 
-      {channel && (
+      {channels.length > 0 && (
         <Field label='Channel'>
-          <Link
-            href={`/channels/${channel}`}
-            forwardArrow
-            sx={{
-              variant: 'text.mono',
-              display: 'block',
-            }}
-          >
-            {CHANNELS.find(({ id }) => id === channel)?.label}
-          </Link>
-          <ErrorOrTrack
-            hasError={!CHANNELS.find(({ id }) => id === channel)?.label}
-            preview={preview}
-            pk={preprint.pk}
-            errorMessage={`Unexpected channel found: ${channel}`}
-          />
+          {channels.map((channel) => (
+            <Box key={channel}>
+              <Link
+                href={`/channels/${channel}`}
+                forwardArrow
+                sx={{
+                  variant: 'text.mono',
+                  display: 'block',
+                }}
+              >
+                {CHANNELS.find(({ id }) => id === channel)?.label}
+              </Link>
+              <ErrorOrTrack
+                hasError={!CHANNELS.find(({ id }) => id === channel)?.label}
+                preview={preview}
+                pk={preprint.pk}
+                errorMessage={`Unexpected channel found: ${channel}`}
+              />
+            </Box>
+          ))}
         </Field>
       )}
 

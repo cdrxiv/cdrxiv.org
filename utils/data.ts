@@ -11,16 +11,10 @@ export const CHANNELS: Channel[] = [
   { id: 'cascade', label: 'Cascade Data Quarry' },
 ]
 
-export const getChannel = (preprint: Preprint): string | null => {
-  const channel = preprint.keywords.find(({ word }) =>
-    word.startsWith(CHANNEL_PREFIX),
-  )?.word
-
-  if (!channel) {
-    return null
-  }
-
-  return channel.replace(CHANNEL_PREFIX, '')
+export const getChannels = (preprint: Preprint): string[] => {
+  return preprint.keywords
+    .filter(({ word }) => word.startsWith(CHANNEL_PREFIX))
+    .map((keyword) => keyword.word.replace(CHANNEL_PREFIX, ''))
 }
 
 export const getKeywords = (preprint: Preprint): string[] => {

@@ -3,7 +3,7 @@ import {
   CHANNEL_PREFIX,
   createAdditionalField,
   getAdditionalField,
-  getChannel,
+  getChannels,
   getKeywords,
 } from '../../../../utils/data'
 import { updatePreprint } from '../../../../actions'
@@ -16,7 +16,7 @@ export type FormData = {
   data_license: string
   subject: string[]
   keywords: string[]
-  channel: string
+  channels: string[]
   funding: string
   conflict_of_interest: string
   comments_editor: string
@@ -43,7 +43,7 @@ export const initializeForm = (preprint: Preprint): FormData => {
     conflict_of_interest:
       getAdditionalField(preprint, 'Conflict of interest statement') ?? '',
     comments_editor: '',
-    channel: getChannel(preprint) ?? '',
+    channels: getChannels(preprint),
     submission_type: submissionType, // not editable; stored in form state for convenience
   }
 }
@@ -109,7 +109,7 @@ export const submitForm = (
     comments_editor,
     data_license,
     submission_type,
-    channel,
+    channels,
   }: FormData,
 ) => {
   const additional_field_answers = [
@@ -135,10 +135,10 @@ export const submitForm = (
     )
   }
 
-  const combinedKeywords = keywords.map((word) => ({ word }))
-  if (channel) {
-    combinedKeywords.push({ word: `${CHANNEL_PREFIX}${channel}` })
-  }
+  const combinedKeywords = [
+    ...keywords.map((word) => ({ word })),
+    ...channels.map((channel) => ({ word: `${CHANNEL_PREFIX}${channel}` })),
+  ]
 
   const params = {
     title,
