@@ -97,16 +97,14 @@ const MultiSelect: React.FC<Props> = ({
           flexWrap: 'wrap',
           gap: 2,
           cursor: 'pointer',
-          minHeight: 36,
+          minHeight: 42,
           pr: 28,
           py: 2,
           ':focus-visible': { borderColor: 'blue' },
         }}
       >
         {values.length === 0 && placeholder && (
-          <Box sx={{ color: 'secondary', variant: 'text.mono' }}>
-            {placeholder}
-          </Box>
+          <Box sx={{ color: 'secondary' }}>{placeholder}</Box>
         )}
         {values.map((v) => {
           const option = options.find((o) => o.value === v)
@@ -143,7 +141,7 @@ const MultiSelect: React.FC<Props> = ({
             color: 'blue',
             position: 'absolute',
             right: 19,
-            top: 18,
+            top: 21,
             transform: 'translateY(-50%)',
             pointerEvents: 'none',
           }}

@@ -18,7 +18,6 @@ const Channel: React.FC<Props> = ({ channels, setChannels }) => {
         options={CHANNELS.map(({ id, label }) => ({ value: id, label }))}
         values={channels}
         setValues={setChannels}
-        placeholder='None'
       />
     </>
   )
