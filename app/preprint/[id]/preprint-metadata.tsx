@@ -62,6 +62,9 @@ const PreprintMetadata: React.FC<{
   const dataLicenseInfo = getZenodoLicense(preprint)
   const articleLicenseInfo = getArticleLicense(preprint.license?.pk)
   const channels = getChannels(preprint)
+  const channelStatus = getAdditionalField(preprint, 'Channel(s) status')
+  const shouldRenderChannels =
+    channels.length > 0 && (channelStatus === 'Approved' || preview)
 
   return (
     <Flex sx={{ flexDirection: 'column', gap: [6, 8, 9, 9] }}>
@@ -100,8 +103,8 @@ const PreprintMetadata: React.FC<{
         />
       </Field>
 
-      {channels.length > 0 && (
-        <Field label='Channel'>
+      {shouldRenderChannels && (
+        <Field label={channels.length > 1 ? 'Channels' : 'Channel'}>
           {channels.map((channel) => (
             <Box key={channel}>
               <Link
@@ -122,6 +125,14 @@ const PreprintMetadata: React.FC<{
               />
             </Box>
           ))}
+          <ErrorOrTrack
+            hasError={channelStatus !== 'Approved'}
+            preview={preview}
+            pk={preprint.pk}
+            errorMessage={
+              'Channel(s) waiting for approval. Channel(s) will not be rendered in production.'
+            }
+          />
         </Field>
       )}
 
