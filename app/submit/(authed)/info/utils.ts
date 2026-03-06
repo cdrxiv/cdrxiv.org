@@ -120,6 +120,7 @@ export const submitForm = (
           'Funder(s) and award numbers',
           'Conflict of interest statement',
           'Data license',
+          'Channel(s) status',
         ].includes(el.field.name),
     ),
     createAdditionalField('Funder(s) and award numbers', funding),
@@ -135,8 +136,16 @@ export const submitForm = (
     )
   }
 
+  if (channels.length > 0) {
+    additional_field_answers.push(
+      createAdditionalField('Channel(s) status', 'Requested'),
+    )
+  }
+
   const combinedKeywords = [
-    ...keywords.map((word) => ({ word })),
+    ...keywords
+      .filter((k) => !k.startsWith(CHANNEL_PREFIX)) // ensure no manual entry
+      .map((word) => ({ word })),
     ...channels.map((channel) => ({ word: `${CHANNEL_PREFIX}${channel}` })),
   ]
 
