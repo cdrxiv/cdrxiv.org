@@ -1,5 +1,5 @@
-import { Box, Flex, Label } from 'theme-ui'
-import { Checkbox, Link } from '../../../../components'
+import { Box } from 'theme-ui'
+import { MultiSelect } from '../../../../components'
 import { CHANNELS } from '../../../../utils/data'
 
 type Props = {
@@ -14,27 +14,12 @@ const Channel: React.FC<Props> = ({ channels, setChannels }) => {
         contact will be asked to approve the submission to add it to the
         channel.
       </Box>
-      <Flex sx={{ flexDirection: 'column' }} role='group'>
-        {CHANNELS.map(({ id, label }) => (
-          <Label key={id}>
-            <Checkbox
-              checked={channels.includes(id)}
-              onChange={(e) =>
-                e.target.checked
-                  ? setChannels([...channels, id])
-                  : setChannels(channels.filter((c) => c !== id))
-              }
-              sx={{ mt: '-1px' }}
-            />
-            {label}
-            <Link
-              href={`/channels/${id}`}
-              sx={{ variant: 'forms.label', ml: 2 }}
-              forwardArrow
-            />
-          </Label>
-        ))}
-      </Flex>
+      <MultiSelect
+        options={CHANNELS.map(({ id, label }) => ({ value: id, label }))}
+        values={channels}
+        setValues={setChannels}
+        placeholder='None'
+      />
     </>
   )
 }
