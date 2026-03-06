@@ -173,6 +173,8 @@ const MultiSelect: React.FC<Props> = ({
             <Label
               key={option.value}
               sx={{
+                display: 'flex',
+                alignItems: 'center',
                 px: 2,
                 py: 2,
                 cursor: 'pointer',
