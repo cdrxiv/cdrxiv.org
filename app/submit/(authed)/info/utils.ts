@@ -130,7 +130,7 @@ export const submitForm = (
     ),
   ]
 
-  if (submission_type !== 'Article') {
+  if (submission_type && submission_type !== 'Article') {
     additional_field_answers.push(
       createAdditionalField('Data license', data_license),
     )
