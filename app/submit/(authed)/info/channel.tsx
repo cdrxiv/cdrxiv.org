@@ -10,9 +10,7 @@ const Channel: React.FC<Props> = ({ channels, setChannels }) => {
   return (
     <>
       <Box sx={{ variant: 'text.mono' }}>
-        Select applicable organizational channel(s) here. The channel’s point of
-        contact will be asked to approve the submission to add it to the
-        channel.
+        For most submissions, this can be skipped.
       </Box>
       <MultiSelect
         options={CHANNELS.map(({ id, label }) => ({ value: id, label }))}

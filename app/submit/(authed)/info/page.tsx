@@ -109,7 +109,9 @@ const SubmissionInformation = () => {
           label='Channel'
           id='channel'
           error={errors.channels}
-          description='For most submissions, this can be skipped.'
+          description={
+            'Select applicable organizational channel(s) here. The channel’s point of contact will be asked to approve the submission to add it to the channel.'
+          }
         >
           <Channel channels={data.channels} setChannels={setters.channels} />
         </Field>
