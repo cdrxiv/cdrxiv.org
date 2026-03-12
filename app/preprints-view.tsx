@@ -80,7 +80,9 @@ const PreprintsView = (props: Props) => {
             width: 'fit-content',
           }}
         >
-          <Link href={`/?page=1&view=${currentView}`}>
+          <Link
+            href={`?${new URLSearchParams({ ...Object.fromEntries(searchParams), page: '1' })}`}
+          >
             View latest preprints
           </Link>
         </Box>
