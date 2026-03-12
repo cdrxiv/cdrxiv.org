@@ -4,7 +4,12 @@ import { redirect } from 'next/navigation'
 import ResultsWrapper from './results-wrapper'
 import PreprintsView from '../../preprints-view'
 import { fetchWithAlerting } from '../../../actions/server-utils'
-import { CHANNEL_PREFIX, CHANNELS } from '../../../utils/data'
+import {
+  CHANNEL_PREFIX,
+  CHANNELS,
+  getAdditionalField,
+} from '../../../utils/data'
+import { Preprint } from '../../../types/preprint'
 
 interface Props {
   params: { id: string }
@@ -70,10 +75,20 @@ const Channel = async ({ searchParams, params }: SearchProps) => {
 
   const res = await fetchWithAlerting(url, { next: { revalidate: 180 } })
   const preprints = await res.json()
-  const results = preprints.results || []
+  const results =
+    preprints.results?.filter(
+      (p: Preprint) =>
+        getAdditionalField(p, 'Channel(s) status') === 'Approved',
+    ) || []
+
+  const diff = preprints.results?.length - results.length
+
   return (
     <ResultsWrapper
-      count={preprints.count}
+      count={
+        // imperfect count when filtered preprints are spread across pages
+        preprints.count - diff
+      }
       label={channel.label}
       shortDescription={CHANNEL_TEXT[channel.id].shortDescription}
       description={CHANNEL_TEXT[channel.id].description}
