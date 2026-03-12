@@ -98,7 +98,7 @@ export const getZenodoMetadata = (
     doi: preprint.doi ?? undefined,
     communities: [{ identifier: 'cdrxiv' }],
     license: getAdditionalField(preprint, 'Data license') as string,
-    keywords: preprint.keywords.map((keyword) => keyword.word),
+    keywords: getKeywords(preprint),
     subjects: preprint.subject.map((s) => ({
       term: s.name,
       identifier: `${domain}/?subject=${s.name}`,
