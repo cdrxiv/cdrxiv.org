@@ -17,6 +17,7 @@ import { usePreprint } from '../../preprint-context'
 import { useForm } from '../utils'
 import { FormData, initializeForm, validateForm, submitForm } from './utils'
 import KeywordDescription from './keyword-description'
+import Channel from './channel'
 
 const SubmissionInformation = () => {
   const { preprint, setPreprint } = usePreprint()
@@ -102,6 +103,17 @@ const SubmissionInformation = () => {
             values={data.keywords}
             setValues={setters.keywords}
           />
+        </Field>
+
+        <Field
+          label='Channel'
+          id='channel'
+          error={errors.channels}
+          description={
+            'Select applicable organizational channel(s) here. The channel’s point of contact will be asked to approve the submission to add it to the channel.'
+          }
+        >
+          <Channel channels={data.channels} setChannels={setters.channels} />
         </Field>
 
         <Field label='Funding sources' id='funding' error={errors.funding}>

@@ -1,6 +1,13 @@
+import { CSSProperties } from 'react'
 import { theme } from '../../theme/theme'
 
-const LogoSVG = ({ size }: { size: number }) => (
+const LogoSVG = ({
+  size,
+  style,
+}: {
+  size: number
+  style?: Partial<CSSProperties>
+}) => (
   <svg
     id='Layer_1'
     xmlns='http://www.w3.org/2000/svg'
@@ -8,6 +15,7 @@ const LogoSVG = ({ size }: { size: number }) => (
     style={{
       height: `${size}px`,
       width: `${size}px`,
+      ...style,
     }}
   >
     <path

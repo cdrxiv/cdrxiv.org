@@ -1,7 +1,10 @@
 import { Preprint } from '../../../../types/preprint'
 import {
+  CHANNEL_PREFIX,
   createAdditionalField,
   getAdditionalField,
+  getChannels,
+  getKeywords,
 } from '../../../../utils/data'
 import { updatePreprint } from '../../../../actions'
 import { SUGGESTED_KEYWORD_MAPPING } from '../../constants'
@@ -13,6 +16,7 @@ export type FormData = {
   data_license: string
   subject: string[]
   keywords: string[]
+  channels: string[]
   funding: string
   conflict_of_interest: string
   comments_editor: string
@@ -33,12 +37,13 @@ export const initializeForm = (preprint: Preprint): FormData => {
         ? ''
         : (getAdditionalField(preprint, 'Data license') ?? ''),
     subject: preprint.subject.map(({ name }) => name),
-    keywords: preprint.keywords.map(({ word }) => word),
+    keywords: getKeywords(preprint),
     funding:
       getAdditionalField(preprint, 'Funder(s) and award numbers') ?? '[]',
     conflict_of_interest:
       getAdditionalField(preprint, 'Conflict of interest statement') ?? '',
     comments_editor: '',
+    channels: getChannels(preprint),
     submission_type: submissionType, // not editable; stored in form state for convenience
   }
 }
@@ -104,6 +109,7 @@ export const submitForm = (
     comments_editor,
     data_license,
     submission_type,
+    channels,
   }: FormData,
 ) => {
   const additional_field_answers = [
@@ -114,6 +120,7 @@ export const submitForm = (
           'Funder(s) and award numbers',
           'Conflict of interest statement',
           'Data license',
+          'Channel(s) status',
         ].includes(el.field.name),
     ),
     createAdditionalField('Funder(s) and award numbers', funding),
@@ -123,17 +130,31 @@ export const submitForm = (
     ),
   ]
 
-  if (submission_type !== 'Article') {
+  if (submission_type && submission_type !== 'Article') {
     additional_field_answers.push(
       createAdditionalField('Data license', data_license),
     )
   }
+
+  if (channels.length > 0) {
+    additional_field_answers.push(
+      createAdditionalField('Channel(s) status', 'Requested'),
+    )
+  }
+
+  const combinedKeywords = [
+    ...keywords
+      .filter((k) => !k.startsWith(CHANNEL_PREFIX)) // ensure no manual entry
+      .map((word) => ({ word })),
+    ...channels.map((channel) => ({ word: `${CHANNEL_PREFIX}${channel}` })),
+  ]
+
   const params = {
     title,
     abstract,
     license,
     subject: subject.map((name) => ({ name })),
-    keywords: keywords.map((word) => ({ word })),
+    keywords: combinedKeywords,
     additional_field_answers,
     ...(comments_editor ? { comments_editor } : {}),
   }

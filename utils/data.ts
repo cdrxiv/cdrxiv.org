@@ -2,6 +2,27 @@ import { PREPRINT_BASE } from '../actions/constants'
 import { Author, Funder, Preprint } from '../types/preprint'
 import { Creator, Deposition, DepositionVersion } from '../types/zenodo'
 
+export const CHANNEL_PREFIX = '_CDRXIV-CHANNEL-'
+export type ChannelKey = 'ycncc' | 'mati' | 'cascade'
+export type Channel = { id: ChannelKey; label: string }
+export const CHANNELS: Channel[] = [
+  { id: 'ycncc', label: 'Yale Center for Natural Carbon Capture' },
+  { id: 'mati', label: 'Mati Carbon' },
+  { id: 'cascade', label: 'Cascade Data Quarry' },
+]
+
+export const getChannels = (preprint: Preprint): string[] => {
+  return preprint.keywords
+    .filter(({ word }) => word.startsWith(CHANNEL_PREFIX))
+    .map((keyword) => keyword.word.replace(CHANNEL_PREFIX, ''))
+}
+
+export const getKeywords = (preprint: Preprint): string[] => {
+  return preprint.keywords
+    .filter(({ word }) => !word.startsWith(CHANNEL_PREFIX))
+    .map(({ word }) => word)
+}
+
 export const getAdditionalField = (
   preprint: Preprint | null,
   fieldName: string,
@@ -77,7 +98,7 @@ export const getZenodoMetadata = (
     doi: preprint.doi ?? undefined,
     communities: [{ identifier: 'cdrxiv' }],
     license: getAdditionalField(preprint, 'Data license') as string,
-    keywords: preprint.keywords.map((keyword) => keyword.word),
+    keywords: getKeywords(preprint),
     subjects: preprint.subject.map((s) => ({
       term: s.name,
       identifier: `${domain}/?subject=${s.name}`,

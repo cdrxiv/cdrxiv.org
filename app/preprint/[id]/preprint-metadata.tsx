@@ -2,10 +2,13 @@ import React from 'react'
 import { Box, Flex } from 'theme-ui'
 
 import {
+  CHANNELS,
   getAdditionalField,
   getArticleLicense,
+  getChannels,
   getDataDownload,
   getFunders,
+  getKeywords,
   getZenodoLicense,
 } from '../../../utils/data'
 import { Field, Button, Link, Loading } from '../../../components'
@@ -58,6 +61,10 @@ const PreprintMetadata: React.FC<{
   const dataLicense = getAdditionalField(preprint, 'Data license')
   const dataLicenseInfo = getZenodoLicense(preprint)
   const articleLicenseInfo = getArticleLicense(preprint.license?.pk)
+  const channels = getChannels(preprint)
+  const channelStatus = getAdditionalField(preprint, 'Channel(s) status')
+  const shouldRenderChannels =
+    channels.length > 0 && (channelStatus === 'Approved' || preview)
 
   return (
     <Flex sx={{ flexDirection: 'column', gap: [6, 8, 9, 9] }}>
@@ -95,6 +102,39 @@ const PreprintMetadata: React.FC<{
           errorMessage={`No subjects provided.`}
         />
       </Field>
+
+      {shouldRenderChannels && (
+        <Field label={channels.length > 1 ? 'Channels' : 'Channel'}>
+          {channels.map((channel) => (
+            <Box key={channel}>
+              <Link
+                href={`/channels/${channel}`}
+                forwardArrow
+                sx={{
+                  variant: 'text.mono',
+                  display: 'block',
+                }}
+              >
+                {CHANNELS.find(({ id }) => id === channel)?.label}
+              </Link>
+              <ErrorOrTrack
+                hasError={!CHANNELS.find(({ id }) => id === channel)?.label}
+                preview={preview}
+                pk={preprint.pk}
+                errorMessage={`Unexpected channel found: ${channel}`}
+              />
+            </Box>
+          ))}
+          <ErrorOrTrack
+            hasError={channelStatus !== 'Approved'}
+            preview={preview}
+            pk={preprint.pk}
+            errorMessage={
+              'Channel(s) waiting for approval. Channel(s) will not be rendered in production.'
+            }
+          />
+        </Field>
+      )}
 
       <Flex sx={{ flexDirection: 'column', gap: 5 }}>
         {hasArticle && (
@@ -255,10 +295,10 @@ const PreprintMetadata: React.FC<{
         )}
       </Field>
 
-      {preprint.keywords.length > 0 && (
+      {getKeywords(preprint).length > 0 && (
         <Field label='Keywords'>
           <Box sx={{ variant: 'text.mono' }}>
-            {preprint.keywords.map(({ word }, index, array) => (
+            {getKeywords(preprint).map((word, index, array) => (
               <React.Fragment key={word}>
                 <Link
                   href={`/search?query=${word}`}
