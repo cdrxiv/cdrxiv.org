@@ -3,7 +3,12 @@ import { theme } from '../../../theme/theme'
 import BorderFrame from '../../../components/og-image/border-frame'
 import { getFonts } from '../../../utils/og-fonts'
 import LogoSVG from '../../../components/og-image/logo'
-import { CHANNEL_PREFIX, CHANNELS } from '../../../utils/data'
+import {
+  CHANNEL_PREFIX,
+  CHANNELS,
+  getAdditionalField,
+} from '../../../utils/data'
+import { Preprint } from '../../../types/preprint'
 
 export const runtime = 'edge'
 export const contentType = 'image/png'
@@ -41,7 +46,16 @@ const getPreprintCount = async (id: string) => {
     },
   )
   const data = await preprints.json()
-  return data.count
+  const filtered =
+    data.results?.filter(
+      (p: Preprint) =>
+        getAdditionalField(p, 'Channel(s) status') === 'Approved',
+    ) || []
+
+  const diff = data.results?.length - filtered.length
+
+  // imperfect count when filtered preprints are spread across pages
+  return data.count - diff
 }
 
 export default async function Image({ params }: { params: { id: string } }) {
