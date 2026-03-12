@@ -71,109 +71,95 @@ export default async function Image({ params }: { params: { id: string } }) {
             style={{
               display: 'flex',
               gap: '64px',
-              marginTop: '10px',
             }}
           >
-            <LogoSVG size={275} />
+            <LogoSVG size={275} style={{ marginTop: '-5px' }} />
             <div
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'space-between',
-                height: '260px',
+                gap: '62px',
               }}
             >
               <div
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  fontFamily: 'Quadrant Regular',
-                  fontSize: '60px',
-                  width: '800px',
+                  justifyContent: 'space-between',
+                  height: '284px',
                 }}
               >
-                <div>{channel?.label}</div>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    fontFamily: 'Quadrant Regular',
+                    fontSize: '60px',
+                    width: '800px',
+                  }}
+                >
+                  <div>{channel?.label}</div>
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'flex-end',
+                    fontSize: '40px',
+                    fontFamily: 'Quadrant Italic',
+                    color: theme?.colors?.blue as string,
+                  }}
+                >
+                  <div>Special collection!</div>
+                </div>
               </div>
               <div
                 style={{
                   display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'flex-end',
-                  fontSize: '40px',
-                  fontFamily: 'Quadrant Italic',
-                  color: theme?.colors?.blue as string,
+                  gap: '10px',
+                  paddingLeft: '6px',
                 }}
               >
-                <div>Special collection!</div>
-              </div>
-            </div>
-          </div>
-
-          <div
-            style={{
-              display: 'flex',
-              gap: '50px',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'flex-end',
-                fontSize: '40px',
-                fontFamily: 'Quadrant Italic',
-                color: 'transparent',
-                marginTop: '5px',
-                paddingRight: '107px',
-              }}
-            >
-              <div>Special</div>
-              <div>collection!</div>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                gap: '10px',
-              }}
-            >
-              {String(preprintCount)
-                .padStart(5, '0')
-                .split('')
-                .map((digit, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: '60px',
-                      height: '80px',
-                      backgroundColor: theme?.colors?.background as string,
-                      borderTop: `3px solid ${theme?.colors?.text}`,
-                      borderLeft: `3px solid ${theme?.colors?.text}`,
-                      fontSize: '65px',
-                      fontFamily: 'GT Pressura',
-                    }}
-                  >
-                    <div style={{ marginTop: '-10px' }}>{digit}</div>
-                  </div>
-                ))}
-              <div
-                style={{
-                  fontSize: '40px',
-                  lineHeight: 1,
-                  fontFamily: 'GT Pressura',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.03em',
-                  width: '100px',
-                  marginLeft: '10px',
-                  display: 'flex',
-                  height: '80px',
-                  alignItems: 'center',
-                  marginTop: '-5px',
-                }}
-              >
-                {preprintCount === 1 ? 'Submission' : 'Submissions'} Contributed
+                {String(preprintCount)
+                  .padStart(5, '0')
+                  .split('')
+                  .map((digit, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '60px',
+                        height: '80px',
+                        backgroundColor: theme?.colors?.background as string,
+                        borderTop: `3px solid ${theme?.colors?.text}`,
+                        borderLeft: `3px solid ${theme?.colors?.text}`,
+                        fontSize: '65px',
+                        fontFamily: 'GT Pressura',
+                      }}
+                    >
+                      <div style={{ marginTop: '-10px' }}>{digit}</div>
+                    </div>
+                  ))}
+                <div
+                  style={{
+                    fontSize: '40px',
+                    lineHeight: 1,
+                    fontFamily: 'GT Pressura',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.03em',
+                    width: '100px',
+                    marginLeft: '10px',
+                    display: 'flex',
+                    height: '80px',
+                    alignItems: 'center',
+                    marginTop: '-5px',
+                  }}
+                >
+                  {preprintCount === 1 ? 'Submission' : 'Submissions'}{' '}
+                  Contributed
+                </div>
               </div>
             </div>
           </div>
