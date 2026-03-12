@@ -173,8 +173,7 @@ export default async function Image({ params }: { params: { id: string } }) {
                   marginTop: '-5px',
                 }}
               >
-                {preprintCount === '1' ? 'Submissions' : 'Submission'}{' '}
-                Contributed
+                {preprintCount === 1 ? 'Submission' : 'Submissions'} Contributed
               </div>
             </div>
           </div>
