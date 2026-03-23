@@ -21,16 +21,29 @@ interface SearchProps extends Props {
 
 const preprintsPerPage = 48
 const CHANNEL_TEXT = {
-  ycncc: { shortDescription: 'TK', description: 'TK' },
-  mati: { shortDescription: 'TK', description: 'TK' },
-  cascade: {
+  ycncc: {
     shortDescription:
-      'An enhanced rock weathering data-sharing system accelerating scientific progress. Proactively sharing commercial and academic field data for the benefit of broad scientific learning while protecting farmer privacy and commercial rights',
+      'Scientific research center at Yale exploring how natural systems can be enhanced and scaled to mitigate climate change.',
+    description: (
+      <>
+        These submissions are part of the Yale Center for Natural Carbon
+        Capture’s (<a href='https://naturalcarboncapture.yale.edu/'>YCNCC</a>)
+        work to advance fundamental and applied science on enhancing natural
+        Earth systems to reduce greenhouse gas concentrations in the atmosphere.
+        The YCNCC mission emphasizes the responsible implementation and scaling
+        of methods of climate mitigation that are safe, effective, and scalable,
+        while prioritizing ecological, economic, and social co-drivers.
+      </>
+    ),
+  },
+  'erw-data-quarry': {
+    shortDescription:
+      'An enhanced rock weathering data-sharing system accelerating scientific progress. Proactively sharing commercial and academic field data for the benefit of broad scientific learning while protecting farmer privacy and commercial rights.',
     description: (
       <>
         <p>
-          This data-sharing system shares both commercial and academic enhanced
-          rock weathering (ERW) field data for the benefit of broad scientific
+          The ERW Data Quarry shares both commercial and academic enhanced rock
+          weathering (ERW) field data for the benefit of broad scientific
           learning in the CDR space. Multiple ERW companies have committed to
           sharing specific datasets from one or more deployments within a set
           timeframe. Catalytic ERW buyers also require dataset contributions to
@@ -38,16 +51,16 @@ const CHANNEL_TEXT = {
           of community-wide data sharing in growing a quality ERW market.
         </p>
         <p>
-          Datasets from these organizations are uploaded as they become
-          available. Health and safety data from every contributing dataset are
-          made fully public on CDRXIV in order to build trust in the safety of
-          ERW. Additional data are made available to researchers through a
-          proposal-based request system managed at{' '}
+          Datasets are uploaded as they become available. Health and safety data
+          from every contributing dataset are made fully public on CDRXIV in
+          order to build trust in the safety of ERW. Additional data are made
+          available to researchers through a proposal-based request system
+          managed at{' '}
           <a href='https://data.cascadeclimate.org'>
             https://data.cascadeclimate.org
           </a>
           . If a Data Quarry dataset is used in an academic peer-review
-          publication, the dataset will be released publicly upon peer review
+          publication, the dataset will be released publicly upon peer reviewed
           article publication.
         </p>
       </>
