@@ -25,7 +25,9 @@ import {
 import AuthorsList from '../authors/authors-list'
 import FileDisplay from '../overview/file-display'
 import {
+  CHANNELS,
   createAdditionalField,
+  getChannels,
   getZenodoMetadata,
 } from '../../../../utils/data'
 import { getSubmissionType } from '../overview/utils'
@@ -269,6 +271,21 @@ const SubmissionConfirmation = () => {
                   }}
                 >
                   {subject}
+                </Link>
+              ))}
+            </Flex>
+            <Flex sx={{ gap: 2, flexWrap: 'wrap' }}>
+              {getChannels(preprint).map((channel) => (
+                <Link
+                  key={channel}
+                  href={`/channels/${channel}`}
+                  sx={{
+                    variant: 'text.mono',
+                    display: 'block',
+                  }}
+                  forwardArrow
+                >
+                  {CHANNELS.find(({ id }) => id === channel)?.label}
                 </Link>
               ))}
             </Flex>
