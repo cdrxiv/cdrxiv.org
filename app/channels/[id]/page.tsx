@@ -36,7 +36,7 @@ const CHANNEL_TEXT = {
       </>
     ),
   },
-  cascade: {
+  'erw-data-quarry': {
     shortDescription:
       'An enhanced rock weathering data-sharing system accelerating scientific progress. Proactively sharing commercial and academic field data for the benefit of broad scientific learning while protecting farmer privacy and commercial rights.',
     description: (
