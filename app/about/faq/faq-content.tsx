@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import { ValidTag } from './tag-selector'
 import { useTag } from './tag-selector'
+import { CHANNELS } from '../../../utils/data'
 
 interface FAQ {
   question: string
@@ -135,8 +136,12 @@ If you are unsure about which revision type to use, contact [support@cdrxiv.org]
   {
     question:
       'What are Channels, and how can I request one for my organization?',
-    answer:
-      'Channels help organizations collect all of their submissions in one place, making it easier to share a body of work with a single link. Organizations with more than one affiliated submission can request a channel by contacting [support@cdrxiv.org](mailto:support@cdrxiv.org). We will ask you to provide some basic metadata and assign a point of contact to confirm future additions to the channel. If your organization has a channel already, you can add your new submission by selecting the channel during the submission process. To add a submission that was already posted on CDRXIV to a channel, please have the channel’s point of contact email the request to [support@cdrxiv.org](mailto:support@cdrxiv.org).',
+    answer: `
+Channels help organizations collect all of their submissions in one place, making it easier to share a body of work with a single link. Organizations with more than one affiliated submission can request a channel by contacting [support@cdrxiv.org](mailto:support@cdrxiv.org). We will ask you to provide some basic metadata and assign a point of contact to confirm future additions to the channel. If your organization has a channel already, you can add your new submission by selecting the channel during the submission process. To add a submission that was already posted on CDRXIV to a channel, please have the channel’s point of contact email the request to [support@cdrxiv.org](mailto:support@cdrxiv.org).
+
+Check out the channels below:
+${CHANNELS.map(({ id, label }) => `- [${label}](/channels/${id})`).join('\n')}
+`,
     tags: ['general'],
     slug: 'channels-request',
   },

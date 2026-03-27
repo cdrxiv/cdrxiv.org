@@ -66,6 +66,34 @@ const CHANNEL_TEXT = {
       </>
     ),
   },
+  stanford: {
+    shortDescription:
+      'Stanford-wide research on carbon dioxide removal science, measurement, and deployment.',
+    description: (
+      <>
+        <p>
+          This channel aggregates preprints from across Stanford University
+          related to carbon dioxide removal (CDR), spanning earth system
+          science, engineering, data science, and policy. It includes work on
+          fundamental process understanding, field and laboratory studies,
+          monitoring, reporting, and verification (MRV), and the design of
+          scalable, accountable CDR systems. See the{' '}
+          <a href='https://sustainability-accelerator.stanford.edu/'>
+            Stanford Sustainability Accelerator
+          </a>
+          , the{' '}
+          <a href='https://woods.stanford.edu/research/natural-climate-solutions-initiative'>
+            Woods Institute Natural Climate Solutions
+          </a>
+          , and the{' '}
+          <a href='https://energy.stanford.edu/about'>
+            Precourt Institute for Energy
+          </a>{' '}
+          for more CDR-relevant work at Stanford.
+        </p>
+      </>
+    ),
+  },
 }
 
 const Channel = async ({ searchParams, params }: SearchProps) => {
