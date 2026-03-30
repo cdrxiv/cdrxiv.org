@@ -3,7 +3,7 @@ import { Author, Funder, Preprint } from '../types/preprint'
 import { Creator, Deposition, DepositionVersion } from '../types/zenodo'
 
 export const CHANNEL_PREFIX = '_CDRXIV-CHANNEL-'
-export type ChannelKey = 'ycncc' | 'erw-data-quarry' | 'stanford'
+export type ChannelKey = 'ycncc' | 'erw-data-quarry' | 'stanford-cdr'
 export type Channel = { id: ChannelKey; label: string }
 export const CHANNELS: Channel[] = [
   { id: 'ycncc', label: 'Yale Center for Natural Carbon Capture' },
@@ -12,7 +12,7 @@ export const CHANNELS: Channel[] = [
     label: 'Enhanced Rock Weathering Data Quarry: Cascade Climate',
   },
   {
-    id: 'stanford',
+    id: 'stanford-cdr',
     label: 'Stanford University Carbon Dioxide Removal Research',
   },
 ]
