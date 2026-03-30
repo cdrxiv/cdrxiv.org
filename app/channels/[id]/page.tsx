@@ -66,7 +66,7 @@ const CHANNEL_TEXT = {
       </>
     ),
   },
-  stanford: {
+  'stanford-cdr': {
     shortDescription:
       'Stanford-wide research on carbon dioxide removal science, measurement, and deployment.',
     description: (
