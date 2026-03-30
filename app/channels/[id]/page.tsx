@@ -6,6 +6,7 @@ import PreprintsView from '../../preprints-view'
 import { fetchWithAlerting } from '../../../actions/server-utils'
 import {
   CHANNEL_PREFIX,
+  ChannelKey,
   CHANNELS,
   getAdditionalField,
 } from '../../../utils/data'
@@ -149,10 +150,10 @@ export const generateMetadata = (
   parent: ResolvingMetadata,
 ) => {
   const channel = CHANNELS.find(({ id }) => id === params.id)
-  if (channel) {
+  if (channel && CHANNEL_TEXT.hasOwnProperty(params.id)) {
     return {
       title: `${channel.label} – CDRXIV`,
-      description: 'TK',
+      description: CHANNEL_TEXT[params.id as ChannelKey]?.shortDescription,
     }
   } else {
     return parent
