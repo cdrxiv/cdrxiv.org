@@ -194,7 +194,13 @@ const Card: React.FC<CardProps> = ({
               </Box>
               <Box
                 id={`card-description-${title}`}
-                sx={{ variant: 'text.mono' }}
+                sx={{
+                  variant: 'text.mono',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 4,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                }}
               >
                 <AuthorsList authors={authors} />
               </Box>
