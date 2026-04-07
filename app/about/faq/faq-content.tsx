@@ -26,7 +26,7 @@ const faqData: FAQ[] = [
   {
     question: 'What content will CDRXIV consider publishing?',
     answer:
-      'CDRXIV will consider preprint articles and data that represent new research results on human-driven carbon dioxide removal. For more information on the format and scope of submissions we consider, see the CDRXIV [scope](/about/scope) page.',
+      'CDRXIV will consider preprint articles and data that represent new research results on human-driven carbon dioxide removal. For more information on the format and scope of submissions we consider, see the CDRXIV [Scope](/about/scope) page.',
     tags: ['general'],
     slug: 'what-content-will-cdrxiv-consider',
   },
@@ -73,7 +73,7 @@ Because there can be some ambiguity around authorship, especially for data submi
   {
     question: 'How do I create a CDRXIV account?',
     answer: `
-You will need an account to submit content to CDRXIV. You can visit the [account page](/account) to [create a new account](/register). Once you create your account, check your email for an activation link, which will allow you to use your new account to log into Janeway and authenticate with CDRXIV.
+You will need an account to submit content to CDRXIV. You can visit the [Account](/account) page to [create a new account](/register). Once you create your account, check your email for an activation link, which will allow you to use your new account to log into Janeway and authenticate with CDRXIV.
 
 If there is an existing account associated with your email, you can [use the Janeway system](${process.env.NEXT_PUBLIC_JANEWAY_URL}/reset/step/1/) to reset your password.
     `,
@@ -83,7 +83,7 @@ If there is an existing account associated with your email, you can [use the Jan
   {
     question: 'How do I log into my CDRXIV account using Janeway?',
     answer: `
-CDRXIV relies on Janeway for authentication. To access your account, visit the [account page](/account) and follow the directions to log in on the Janeway website. If you do not have an active Janeway session, you will be prompted for your email and password. 
+CDRXIV relies on Janeway for authentication. To access your account, visit the [Account](/account) page and follow the directions to log in on the Janeway website. If you do not have an active Janeway session, you will be prompted for your email and password.
 
 If you see a confirmation page with account information, this means that your last session is still active with Janeway. If you’d like to use CDRXIV with a different account, you should clear your cookies or use a new browser, after which you should be prompted for your email and password.
 `,
@@ -93,7 +93,7 @@ If you see a confirmation page with account information, this means that your la
   {
     question: 'What license options are available for my CDRXIV submission?',
     answer:
-      'You can select your preferred license from a list on the submission page. Articles and data can be licensed differently, even if they’re part of the same submission. The article license options are: CC BY, CC BY-NC, and All Rights Reserved. The data license options are CC BY, CC BY-NC, CC BY-SA, and CC BY-NC-SA.',
+      'You can select your preferred license from a list on the Submission page. Articles and data can be licensed differently, even if they’re part of the same submission. The article license options are: CC BY, CC BY-NC, and All Rights Reserved. The data license options are CC BY, CC BY-NC, CC BY-SA, and CC BY-NC-SA.',
     tags: ['submissions', 'submissions-article', 'submissions-data'],
     slug: 'license-options',
   },
@@ -121,7 +121,7 @@ If you see a confirmation page with account information, this means that your la
   {
     question: 'Can I update my submission?',
     answer: `
-Yes. In the [account page](/account), you can view a list of all of your previous [submissions](/submissions). You will find an option to submit a revision on the right side of each of your submitted titles. 
+Yes. In the [Account](/account) page, you can view a list of all of your previous [submissions](/submissions). You will find an option to submit a revision on the right side of each of your submitted titles.
 
 Submitting a revision can take three forms:
 1. **New version**: You can submit a new version of the preprint. This is a significant update consistent with changes made in response to peer review, for example. 
@@ -182,7 +182,7 @@ ${CHANNELS.map(({ id, label }) => `- [${label}](/channels/${id})`).join('\n')}
   {
     question: 'How do I cite CDRXIV content?',
     answer: `
-Use the Digital Object Identifier (DOI) to cite content on CDRXIV. You can use a version-specific DOI and URL for submissions that have more than one version.
+Use the Digital Object Identifier (DOI) to cite content on CDRXIV. For submissions with more than one version, check that the DOI you use points to the version of the submission that you wish to reference.
 
 _Example:_ Author A. 2024. Article title. CDRXIV doi: 10.70212/cdrxiv.5555.
 
