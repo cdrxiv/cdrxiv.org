@@ -1,6 +1,18 @@
 import { PREPRINT_BASE } from '../actions/constants'
+import { fetchWithAlerting } from '../actions/server-utils'
 import { Author, Funder, Preprint } from '../types/preprint'
 import { Creator, Deposition, DepositionVersion } from '../types/zenodo'
+
+export const getSubjects = async () => {
+  const res = await fetchWithAlerting(
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/repository_subjects/`,
+    { next: { revalidate: 180 } },
+  )
+
+  if (res.status === 200) {
+    return res.json()
+  }
+}
 
 export const CHANNEL_PREFIX = '_CDRXIV-CHANNEL-'
 export type ChannelKey = 'ycncc' | 'erw-data-quarry' | 'stanford-cdr'

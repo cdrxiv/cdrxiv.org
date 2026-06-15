@@ -1,6 +1,8 @@
 import LandingPage from './landing-page'
 import PreprintsView from './preprints-view'
+import { getSubjects } from '../utils/data'
 import { fetchWithAlerting } from '../actions/server-utils'
+import type { Subjects } from '../types/subject'
 
 interface HomeProps {
   searchParams: { [key: string]: string | undefined }
@@ -14,7 +16,11 @@ const Home = async ({ searchParams }: HomeProps) => {
   const offset = (page - 1) * preprintsPerPage
   let url = `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/?limit=${preprintsPerPage}&offset=${offset}`
   if (subject) {
-    url += `&subject=${subject}`
+    const subjects: Subjects = (await getSubjects())?.results ?? []
+    const isValid = subjects.find((s) => s.name === searchParams.subject)
+    if (isValid) {
+      url += `&subject=${encodeURIComponent(subject)}`
+    }
   }
 
   let results = []
