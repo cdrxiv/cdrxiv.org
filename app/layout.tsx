@@ -6,7 +6,7 @@ import PageCard from '../components/layouts/page-card'
 import { authOptions } from '../lib/auth'
 import Providers from './providers'
 import { SubjectsProvider } from './subjects-context'
-import { fetchWithAlerting } from '../actions/server-utils'
+import { getSubjects } from '../utils/data'
 
 export const metadata: Metadata = {
   title: 'CDRXIV',
@@ -18,17 +18,6 @@ export const metadata: Metadata = {
         ? '/images/icon.png'
         : '/images/staging-icon.png',
   },
-}
-
-export const getSubjects = async () => {
-  const res = await fetchWithAlerting(
-    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/repository_subjects/`,
-    { next: { revalidate: 180 } },
-  )
-
-  if (res.status === 200) {
-    return res.json()
-  }
 }
 
 export default async function RootLayout({
