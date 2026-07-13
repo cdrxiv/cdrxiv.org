@@ -92,7 +92,7 @@ export const fetchWithAlerting = async (
   if (!expectedStatuses.includes(response.status)) {
     let apiError
     try {
-      const data = await response.json()
+      const data = await response.clone().json()
       apiError = JSON.stringify(data)
     } catch {
       console.warn('Unable to extract error message from response')
