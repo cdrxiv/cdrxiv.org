@@ -302,7 +302,7 @@ const SubmissionConfirmation = () => {
         <Field
           label='Comments'
           id='comments_editor'
-          description='Add any comments you’d like the CDRXIV staff to consider here.'
+          description='Add any comments for the CDRXIV staff here.'
         >
           <Textarea
             value={comments}
