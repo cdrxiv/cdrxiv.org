@@ -300,9 +300,9 @@ const SubmissionConfirmation = () => {
         </SectionWrapper>
 
         <Field
-          label='Comments to the CDRXIV staff'
+          label='Comments'
           id='comments_editor'
-          description='For most submissions, this can be left blank.'
+          description='Add any comments you’d like the CDRXIV staff to consider here.'
         >
           <Textarea
             value={comments}
