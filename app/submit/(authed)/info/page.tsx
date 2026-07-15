@@ -121,19 +121,6 @@ const SubmissionInformation = () => {
         </Field>
 
         <Field
-          label='Comments to the CDRXIV staff'
-          id='comments_editor'
-          description='For most submissions, this can be left blank.'
-          error={errors.comments_editor}
-        >
-          <Textarea
-            value={data.comments_editor}
-            onChange={(e) => setters.comments_editor(e.target.value)}
-            id='comments_editor'
-          />
-        </Field>
-
-        <Field
           label='Conflict of interest statement*'
           id='conflict_of_interest'
           description='If you and/or your authorship team have conflicts of interest to declare, please do so here. If not, check the no conflicts of interest box above.'

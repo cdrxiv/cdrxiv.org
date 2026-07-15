@@ -19,7 +19,6 @@ export type FormData = {
   channels: string[]
   funding: string
   conflict_of_interest: string
-  comments_editor: string
   submission_type: string
 }
 
@@ -42,7 +41,6 @@ export const initializeForm = (preprint: Preprint): FormData => {
       getAdditionalField(preprint, 'Funder(s) and award numbers') ?? '[]',
     conflict_of_interest:
       getAdditionalField(preprint, 'Conflict of interest statement') ?? '',
-    comments_editor: '',
     channels: getChannels(preprint),
     submission_type: submissionType, // not editable; stored in form state for convenience
   }
@@ -106,7 +104,6 @@ export const submitForm = (
     keywords,
     funding,
     conflict_of_interest,
-    comments_editor,
     data_license,
     submission_type,
     channels,
@@ -156,7 +153,6 @@ export const submitForm = (
     subject: subject.map((name) => ({ name })),
     keywords: combinedKeywords,
     additional_field_answers,
-    ...(comments_editor ? { comments_editor } : {}),
   }
 
   return updatePreprint(preprint, params).then((updated) =>
