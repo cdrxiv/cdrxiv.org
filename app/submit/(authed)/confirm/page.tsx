@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Flex } from 'theme-ui'
+import { Box, Flex, Textarea } from 'theme-ui'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -90,6 +90,7 @@ const SubmissionConfirmation = () => {
   const [submitError, setSubmitError] = useState<string | null>(null)
   const { setIsLoading } = useLoading()
   const [deposition, setDeposition] = useState<Deposition | null>(null)
+  const [comments, setComments] = useState<string>('')
 
   const dataUrl = useMemo(
     () =>
@@ -168,6 +169,7 @@ const SubmissionConfirmation = () => {
         // Ensure that submission type is up-to-date with files provided
         createAdditionalField('Submission type', submissionType),
       ],
+      ...(comments ? { comments_editor: comments } : {}),
     })
       .then(() => {
         if (overview.data.dataFile?.url) {
@@ -201,6 +203,7 @@ const SubmissionConfirmation = () => {
     preprint,
     router,
     submissionType,
+    comments,
     overview.data.dataFile,
     setIsLoading,
     track,
@@ -295,6 +298,17 @@ const SubmissionConfirmation = () => {
         <SectionWrapper index={2} error={authors.error}>
           <AuthorsList removable={false} />
         </SectionWrapper>
+
+        <Field
+          label='Comments'
+          id='comments_editor'
+          description='Add any comments for the CDRXIV staff here.'
+        >
+          <Textarea
+            value={comments}
+            onChange={(e) => setComments(e.target.value)}
+          />
+        </Field>
 
         <Button
           onClick={handleSubmit}
