@@ -25,6 +25,112 @@ import { alertOnError } from '../../../actions/server-utils'
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs'
 
+const PAGE_RENDER_AHEAD_SCREENS = 4
+const PAGE_RETAIN_SCREENS = 8
+
+const LazyPdfPage = ({
+  pdf,
+  pageNumber,
+  width,
+  viewportHeight,
+  fallbackAspectRatio,
+  registerPage,
+}: {
+  pdf: PDFDocumentProxy
+  pageNumber: number
+  width: number
+  viewportHeight: number
+  fallbackAspectRatio: number
+  registerPage: (pageIndex: number, element: HTMLDivElement | null) => void
+}) => {
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const [isNearViewport, setIsNearViewport] = useState(pageNumber === 1)
+  const [pageAspectRatio, setPageAspectRatio] = useState<number | null>(null)
+
+  const pageHeight = Math.floor(
+    width * (pageAspectRatio ?? fallbackAspectRatio),
+  )
+
+  const setContainerRef = useCallback(
+    (element: HTMLDivElement | null) => {
+      containerRef.current = element
+      registerPage(pageNumber - 1, element)
+    },
+    [pageNumber, registerPage],
+  )
+
+  useEffect(() => {
+    let cancelled = false
+    setPageAspectRatio(null)
+
+    pdf
+      .getPage(pageNumber)
+      .then((page) => {
+        const viewport = page.getViewport({ scale: 1 })
+        if (!cancelled) {
+          setPageAspectRatio(viewport.height / viewport.width)
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) console.error(error)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [pageNumber, pdf])
+
+  useEffect(() => {
+    const element = containerRef.current
+    if (!element) return
+
+    const renderObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setIsNearViewport(true)
+      },
+      {
+        rootMargin: `${PAGE_RENDER_AHEAD_SCREENS * viewportHeight}px 0px`,
+      },
+    )
+    const retentionObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) setIsNearViewport(false)
+      },
+      { rootMargin: `${PAGE_RETAIN_SCREENS * viewportHeight}px 0px` },
+    )
+    renderObserver.observe(element)
+    retentionObserver.observe(element)
+
+    return () => {
+      renderObserver.disconnect()
+      retentionObserver.disconnect()
+    }
+  }, [viewportHeight])
+
+  return (
+    <div ref={setContainerRef}>
+      <Box
+        sx={{
+          height: ['1px', '1px', 5, 8],
+          background: ['text', 'text', 'background', 'background'],
+          px: [5, 0, 6, 8],
+          mx: [-5, 0, -6, -8],
+        }}
+      />
+      <div style={{ height: pageHeight }}>
+        <Page
+          pageNumber={pageNumber}
+          width={width}
+          loading={<Box sx={{ height: pageHeight }} />}
+          renderMode={isNearViewport ? 'canvas' : 'none'}
+          renderTextLayer={isNearViewport}
+          renderAnnotationLayer={isNearViewport}
+        />
+      </div>
+    </div>
+  )
+}
+
 const PreprintViewer = ({
   preprint,
   preview,
@@ -33,7 +139,9 @@ const PreprintViewer = ({
   preview?: boolean
 }) => {
   const [containerWidth, setContainerWidth] = useState<number>(0)
+  const [viewportHeight, setViewportHeight] = useState<number>(0)
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null)
+  const [pageAspectRatio, setPageAspectRatio] = useState<number>(11 / 8.5)
   const [pdfOutline, setPdfOutline] = useState<Awaited<
     ReturnType<PDFDocumentProxy['getOutline']>
   > | null>(null)
@@ -90,18 +198,21 @@ const PreprintViewer = ({
   }, [dataUrl])
 
   useEffect(() => {
-    const updateWidth = () => {
+    const updateDimensions = () => {
       if (containerRef.current) {
         setContainerWidth(containerRef.current.getBoundingClientRect().width)
       }
+      setViewportHeight(window.innerHeight)
     }
-    const resizeObserver = new ResizeObserver(updateWidth)
+    const resizeObserver = new ResizeObserver(updateDimensions)
     if (containerRef.current) {
       resizeObserver.observe(containerRef.current)
     }
-    updateWidth()
+    window.addEventListener('resize', updateDimensions)
+    updateDimensions()
     return () => {
       resizeObserver.disconnect()
+      window.removeEventListener('resize', updateDimensions)
     }
   }, [])
 
@@ -127,6 +238,24 @@ const PreprintViewer = ({
     },
     [],
   )
+
+  const registerPage = useCallback(
+    (pageIndex: number, element: HTMLDivElement | null) => {
+      pageRefs.current[pageIndex] = element
+    },
+    [],
+  )
+
+  const onPdfLoadSuccess = useCallback((loadedPdf: PDFDocumentProxy) => {
+    setPdf(loadedPdf)
+    loadedPdf
+      .getPage(1)
+      .then((page) => {
+        const viewport = page.getViewport({ scale: 1 })
+        setPageAspectRatio(viewport.height / viewport.width)
+      })
+      .catch(console.error)
+  }, [])
 
   return (
     <PaneledPage
@@ -198,7 +327,7 @@ const PreprintViewer = ({
         <div ref={containerRef} style={{ width: '100%' }}>
           <Document
             file={preprint.versions[0].public_download_url}
-            onLoadSuccess={(pdf: PDFDocumentProxy) => setPdf(pdf)}
+            onLoadSuccess={onPdfLoadSuccess}
             onLoadError={(error) =>
               window.location.hostname.includes('cdrxiv.org') && !preview
                 ? alertOnError({
@@ -222,29 +351,19 @@ const PreprintViewer = ({
               </Flex>
             }
           >
-            {containerWidth > 0 &&
-              Array.from(new Array(pdf?.numPages ?? 0), (_, index) => (
-                <div
+            {pdf &&
+              containerWidth > 0 &&
+              viewportHeight > 0 &&
+              Array.from(new Array(pdf.numPages), (_, index) => (
+                <LazyPdfPage
                   key={`page_${index + 1}`}
-                  ref={(el: HTMLDivElement | null) => {
-                    if (el) pageRefs.current[index] = el
-                  }}
-                >
-                  <Box
-                    sx={{
-                      height: ['1px', '1px', 5, 8],
-                      background: ['text', 'text', 'background', 'background'],
-                      px: [5, 0, 6, 8],
-                      mx: [-5, 0, -6, -8],
-                    }}
-                  />
-                  <Page
-                    key={`page_${index + 1}`}
-                    pageNumber={index + 1}
-                    width={containerWidth}
-                    loading={''}
-                  />
-                </div>
+                  pdf={pdf}
+                  pageNumber={index + 1}
+                  width={containerWidth}
+                  viewportHeight={viewportHeight}
+                  fallbackAspectRatio={pageAspectRatio}
+                  registerPage={registerPage}
+                />
               ))}
           </Document>
         </div>
