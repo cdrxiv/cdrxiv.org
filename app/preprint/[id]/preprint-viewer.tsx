@@ -25,19 +25,21 @@ import { alertOnError } from '../../../actions/server-utils'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
-const PAGE_RENDER_MARGIN = '200% 0px'
-const PAGE_RETAIN_MARGIN = '400% 0px'
+const PAGE_RENDER_AHEAD_SCREENS = 4
+const PAGE_RETAIN_SCREENS = 8
 
 const LazyPdfPage = ({
   pdf,
   pageNumber,
   width,
+  viewportHeight,
   fallbackAspectRatio,
   registerPage,
 }: {
   pdf: PDFDocumentProxy
   pageNumber: number
   width: number
+  viewportHeight: number
   fallbackAspectRatio: number
   registerPage: (pageIndex: number, element: HTMLDivElement | null) => void
 }) => {
@@ -86,13 +88,15 @@ const LazyPdfPage = ({
       ([entry]) => {
         if (entry.isIntersecting) setIsNearViewport(true)
       },
-      { rootMargin: PAGE_RENDER_MARGIN },
+      {
+        rootMargin: `${PAGE_RENDER_AHEAD_SCREENS * viewportHeight}px 0px`,
+      },
     )
     const retentionObserver = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) setIsNearViewport(false)
       },
-      { rootMargin: PAGE_RETAIN_MARGIN },
+      { rootMargin: `${PAGE_RETAIN_SCREENS * viewportHeight}px 0px` },
     )
     renderObserver.observe(element)
     retentionObserver.observe(element)
@@ -101,7 +105,7 @@ const LazyPdfPage = ({
       renderObserver.disconnect()
       retentionObserver.disconnect()
     }
-  }, [])
+  }, [viewportHeight])
 
   return (
     <div ref={setContainerRef}>
@@ -135,6 +139,7 @@ const PreprintViewer = ({
   preview?: boolean
 }) => {
   const [containerWidth, setContainerWidth] = useState<number>(0)
+  const [viewportHeight, setViewportHeight] = useState<number>(0)
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null)
   const [pageAspectRatio, setPageAspectRatio] = useState<number>(11 / 8.5)
   const [pdfOutline, setPdfOutline] = useState<Awaited<
@@ -193,18 +198,21 @@ const PreprintViewer = ({
   }, [dataUrl])
 
   useEffect(() => {
-    const updateWidth = () => {
+    const updateDimensions = () => {
       if (containerRef.current) {
         setContainerWidth(containerRef.current.getBoundingClientRect().width)
       }
+      setViewportHeight(window.innerHeight)
     }
-    const resizeObserver = new ResizeObserver(updateWidth)
+    const resizeObserver = new ResizeObserver(updateDimensions)
     if (containerRef.current) {
       resizeObserver.observe(containerRef.current)
     }
-    updateWidth()
+    window.addEventListener('resize', updateDimensions)
+    updateDimensions()
     return () => {
       resizeObserver.disconnect()
+      window.removeEventListener('resize', updateDimensions)
     }
   }, [])
 
@@ -345,12 +353,14 @@ const PreprintViewer = ({
           >
             {pdf &&
               containerWidth > 0 &&
+              viewportHeight > 0 &&
               Array.from(new Array(pdf.numPages), (_, index) => (
                 <LazyPdfPage
                   key={`page_${index + 1}`}
                   pdf={pdf}
                   pageNumber={index + 1}
                   width={containerWidth}
+                  viewportHeight={viewportHeight}
                   fallbackAspectRatio={pageAspectRatio}
                   registerPage={registerPage}
                 />
