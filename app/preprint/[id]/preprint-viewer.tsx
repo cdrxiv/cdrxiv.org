@@ -23,7 +23,7 @@ import { fetchDataDeposition, fetchPreprintIdentifier } from '../../../actions'
 import ErrorOrTrack from './error-or-track'
 import { alertOnError } from '../../../actions/server-utils'
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs'
 
 const PreprintViewer = ({
   preprint,
