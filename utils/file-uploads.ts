@@ -14,6 +14,16 @@ interface ProgressOptions {
   maxProgress?: number
 }
 
+export const sanitizeArticleFilename = (filename: string) => {
+  const extensionIndex = filename.lastIndexOf('.')
+  if (extensionIndex <= 0) {
+    return filename
+  }
+
+  const stem = filename.slice(0, extensionIndex).replace(/\./g, '_')
+  return `${stem}${filename.slice(extensionIndex)}`
+}
+
 export const uploadFile = async <T>(
   url: string,
   options?: RequestInit & {
@@ -188,11 +198,13 @@ export const handleArticleUpload = async (
 ) => {
   if (!articleFile?.file) return null
 
+  const filename = sanitizeArticleFilename(articleFile.original_filename)
+
   const formData = new FormData()
-  formData.set('file', articleFile.file)
+  formData.set('file', articleFile.file, filename)
   formData.set('preprint', String(preprintId))
   formData.set('mime_type', articleFile.mime_type)
-  formData.set('original_filename', articleFile.original_filename)
+  formData.set('original_filename', filename)
 
   return uploadFile<PreprintFile>(
     `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/preprint_files/`,
