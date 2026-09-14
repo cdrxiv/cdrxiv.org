@@ -3,6 +3,8 @@
 import { Deposition, VersionHistory } from '../types/zenodo'
 import { fetchWithAlerting } from './server-utils'
 
+const ZENODO_USER_AGENT = 'cdrxiv.org (contact: support@cdrxiv.org)'
+
 export async function createDataDeposition(): Promise<Deposition> {
   const res = await fetchWithAlerting(
     process.env.NEXT_PUBLIC_ZENODO_URL + '/api/deposit/depositions',
@@ -11,6 +13,7 @@ export async function createDataDeposition(): Promise<Deposition> {
       headers: {
         Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
         'Content-Type': 'application/json',
+        'User-Agent': ZENODO_USER_AGENT,
       },
       body: JSON.stringify({
         metadata: {
@@ -35,6 +38,7 @@ export async function fetchDataDeposition(url: string): Promise<Deposition> {
   const res = await fetchWithAlerting(url, {
     headers: {
       Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+      'User-Agent': ZENODO_USER_AGENT,
     },
   })
 
@@ -63,6 +67,7 @@ export async function updateDataDeposition(
     headers: {
       Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
       'Content-Type': 'application/json',
+      'User-Agent': ZENODO_USER_AGENT,
     },
     body: JSON.stringify(params),
   })
@@ -91,6 +96,7 @@ export async function deleteZenodoEntity(url: string): Promise<true> {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+        'User-Agent': ZENODO_USER_AGENT,
       },
     },
     [204, 404],
@@ -120,6 +126,7 @@ export async function createDataDepositionVersion(
     method: 'POST',
     headers: {
       Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+      'User-Agent': ZENODO_USER_AGENT,
     },
   })
 
@@ -147,6 +154,7 @@ export async function fetchDepositionHistory(
   const res = await fetchWithAlerting(url, {
     headers: {
       Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+      'User-Agent': ZENODO_USER_AGENT,
     },
   })
 
