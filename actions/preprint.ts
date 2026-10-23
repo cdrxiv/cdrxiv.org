@@ -194,7 +194,11 @@ export async function createVersionQueue(versionQueue: VersionQueueParams) {
 }
 
 export async function fetchPublishedPreprints(url: string) {
-  const res = await fetchWithAlerting(url)
+  // For safety, only reuse the query string (pagination params) and always fetch from Janeway.
+  const { search } = new URL(url)
+  const res = await fetchWithAlerting(
+    `${process.env.NEXT_PUBLIC_JANEWAY_URL}/api/published_preprints/${search}`,
+  )
   if (![200].includes(res.status)) {
     throw new Error(
       `Status ${res.status}: Unable to fetch preprints. ${res.statusText}`,
