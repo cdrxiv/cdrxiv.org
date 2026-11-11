@@ -68,6 +68,72 @@ export async function alertOnError({
   })
 }
 
+const PDF_RESPONSE_ERRORS = [
+  'MissingPDFException',
+  'UnexpectedResponseException',
+  'InvalidPDFException',
+]
+
+const checkUrl = async (url: string) => {
+  try {
+    const response = await fetch(url, {
+      cache: 'no-store',
+      signal: AbortSignal.timeout(10000),
+    })
+    await response.body?.cancel()
+    return {
+      ok: response.ok,
+      status: response.status,
+      statusText: response.statusText,
+    }
+  } catch (e: any) {
+    return { ok: false, status: 'n/a', statusText: e?.message ?? 'unknown' }
+  }
+}
+
+// Client-side network failures (dropped connections, navigating away, blocked
+// worker scripts) are not actionable, so only alert when the server can
+// reproduce the failure or pdf.js reports a bad response or invalid file.
+export async function alertOnPdfLoadError({
+  url,
+  name,
+  message,
+  status,
+}: {
+  url: string
+  name: string
+  message: string
+  status?: number
+}) {
+  const janewayUrl = process.env.NEXT_PUBLIC_JANEWAY_URL as string
+  if (
+    !url.startsWith(janewayUrl) ||
+    !/^\/repository\/object\/\d+\/download\/\d+\/?$/.test(
+      url.slice(janewayUrl.length),
+    )
+  ) {
+    return
+  }
+
+  let statusText = name
+  if (!PDF_RESPONSE_ERRORS.includes(name)) {
+    const check = await checkUrl(url)
+    if (check.ok) return
+    status = typeof check.status === 'number' ? check.status : undefined
+    statusText = `Server check failed: ${check.statusText}`
+  }
+
+  await alertOnError({
+    endpoint: url,
+    method: 'GET',
+    status: status ?? 'n/a',
+    statusText,
+    apiError: message,
+  }).catch((err) => {
+    console.error('Failed to send alert to Slack:', err)
+  })
+}
+
 export const fetchWithAlerting = async (
   url: string,
   options: RequestInit = {},

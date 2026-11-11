@@ -21,7 +21,7 @@ import { AuthorsList } from '../../../components'
 import { Deposition } from '../../../types/zenodo'
 import { fetchDataDeposition, fetchPreprintIdentifier } from '../../../actions'
 import ErrorOrTrack from './error-or-track'
-import { alertOnError } from '../../../actions/server-utils'
+import { alertOnPdfLoadError } from '../../../actions/server-utils'
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs'
 
@@ -328,17 +328,20 @@ const PreprintViewer = ({
           <Document
             file={preprint.versions[0].public_download_url}
             onLoadSuccess={onPdfLoadSuccess}
-            onLoadError={(error) =>
-              window.location.hostname.includes('cdrxiv.org') && !preview
-                ? alertOnError({
-                    endpoint: preprint.versions[0].public_download_url,
-                    status: 'n/a',
-                    statusText: 'unknown',
-                    method: 'GET',
-                    apiError: error.message,
-                  })
-                : undefined
-            }
+            onLoadError={(error) => {
+              if (preview || !window.location.hostname.includes('cdrxiv.org'))
+                return
+              track('pdf_load_error', {
+                preprint: preprint.pk,
+                error: `${error.name}: ${error.message}`,
+              })
+              alertOnPdfLoadError({
+                url: preprint.versions[0].public_download_url,
+                name: error.name,
+                message: error.message,
+                status: (error as { status?: number }).status,
+              }).catch(console.error)
+            }}
             loading={
               <Flex
                 sx={{
