@@ -157,11 +157,21 @@ export const fetchWithAlerting = async (
 
   if (!expectedStatuses.includes(response.status)) {
     let apiError
+    let body: string | undefined
     try {
-      const data = await response.clone().json()
-      apiError = JSON.stringify(data)
+      body = await response.clone().text()
+      apiError = JSON.stringify(JSON.parse(body))
     } catch {
-      console.warn('Unable to extract error message from response')
+      // Non-JSON error bodies (e.g. firewall/bot-block pages) are logged
+      // server-side only, never forwarded to the client, Slack, or analytics.
+      console.error('Non-JSON error response', {
+        endpoint: url,
+        method: options?.method ?? 'GET',
+        status: response.status,
+        contentType: response.headers.get('content-type'),
+        server: response.headers.get('server'),
+        body: body?.slice(0, 500) ?? '(unreadable)',
+      })
     }
 
     await alertOnError({
