@@ -152,9 +152,12 @@ export async function createDataDepositionVersion(
 }
 
 export async function fetchDepositionHistory(
-  deposition: Deposition,
+  id: number,
 ): Promise<VersionHistory> {
-  const url = `${deposition.links.record}/versions`
+  if (!Number.isInteger(id) || id <= 0) {
+    throw new Error(`Invalid deposition id: ${id}`)
+  }
+  const url = `${process.env.NEXT_PUBLIC_ZENODO_URL}/api/records/${id}/versions`
 
   assertZenodoApiUrl(url)
   const res = await fetchWithAlerting(url, {

@@ -12,16 +12,39 @@ import PaneledPage from '../../../components/layouts/paneled-page'
 import MetadataView from './preprint-metadata'
 import Outline from './preprint-outline'
 import DOIDisplay from './doi-display'
-import { getAdditionalField, getDataRecordUrl } from '../../../utils/data'
+import {
+  getAdditionalField,
+  getDataRecordId,
+  getDataRecordUrl,
+} from '../../../utils/data'
+import { fetchPublicRecord } from '../../../utils/zenodo-public'
 
 import type { Preprint, SupplementaryFile } from '../../../types/preprint'
 import Loading from '../../../components/loading'
 import useTracking from '../../../hooks/use-tracking'
 import { AuthorsList } from '../../../components'
-import { Deposition } from '../../../types/zenodo'
+import type { Deposition, DepositionVersion } from '../../../types/zenodo'
 import { fetchDataDeposition, fetchPreprintIdentifier } from '../../../actions'
 import ErrorOrTrack from './error-or-track'
 import { alertOnPdfLoadError } from '../../../actions/server-utils'
+
+// Published records are read directly from Zenodo's public API in the browser.
+// Fall back to the authenticated server action for unpublished drafts (e.g.
+// when previewing a submission).
+const fetchDepositionWithFallback = async (
+  dataUrl: string,
+): Promise<Deposition | DepositionVersion> => {
+  const id = getDataRecordId(dataUrl)
+  if (id) {
+    try {
+      return await fetchPublicRecord(id)
+    } catch {
+      // Fall through to authenticated fetch
+    }
+  }
+  // Skip Slack alerts when a failed fetch can fall back to the public Zenodo record link
+  return fetchDataDeposition(dataUrl, { alert: !getDataRecordUrl(dataUrl) })
+}
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs'
 
@@ -154,8 +177,11 @@ const PreprintViewer = ({
   const submissionType = getAdditionalField(preprint, 'Submission type')
   const hasArticle = ['Article', 'Both'].includes(submissionType ?? '')
   const hasData = ['Data', 'Both'].includes(submissionType ?? '')
-  const [deposition, setDeposition] = useState<Deposition>()
+  const [deposition, setDeposition] = useState<Deposition | DepositionVersion>()
   const [preprintDoi, setPreprintDoi] = useState<string>()
+  // Prefer the bare DOI: `doi_url` may point at a non-doi.org resolver (e.g.
+  // DataCite's test handle server for sandbox records).
+  const datasetDoi = deposition?.doi || deposition?.doi_url
   const dataUrl = preprint.supplementary_files.find(
     (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_PUBLISHED',
   )?.url
@@ -186,11 +212,7 @@ const PreprintViewer = ({
     const fetchDeposition = async () => {
       if (dataUrl) {
         try {
-          // Skip Slack alerts when a failed fetch can fall back to the public Zenodo record link
-          const deposition = await fetchDataDeposition(dataUrl, {
-            alert: !getDataRecordUrl(dataUrl),
-          })
-          setDeposition(deposition)
+          setDeposition(await fetchDepositionWithFallback(dataUrl))
           setIsDepositionLoading(false)
         } catch {
           setIsDepositionLoading(false)
@@ -300,11 +322,11 @@ const PreprintViewer = ({
           <DOIDisplay label='Published DOI' doi={preprint.doi} />
         )}
         {(isDepositionLoading || deposition) && (
-          <DOIDisplay label='Dataset DOI' doi={deposition?.doi_url} />
+          <DOIDisplay label='Dataset DOI' doi={datasetDoi} />
         )}
 
         <ErrorOrTrack
-          hasError={hasData && !isDepositionLoading && !deposition?.doi_url}
+          hasError={hasData && !isDepositionLoading && !datasetDoi}
           preview={preview}
           pk={preprint.pk}
           errorMessage={'No dataset identifier found for data-only submission.'}

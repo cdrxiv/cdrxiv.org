@@ -19,7 +19,7 @@ import type {
   SupplementaryFile,
   Version,
 } from '../../../types/preprint'
-import type { Deposition } from '../../../types/zenodo'
+import type { Deposition, DepositionVersion } from '../../../types/zenodo'
 import ErrorOrTrack from './error-or-track'
 import VersionHistory from './version-history'
 import { formatDate, formatKeyword } from '../../../utils/formatters'
@@ -36,7 +36,7 @@ const getVersionLabel = (version: Version, preprint: Preprint) => {
 
 const PreprintMetadata: React.FC<{
   preprint: Preprint
-  deposition?: Deposition
+  deposition?: Deposition | DepositionVersion
   isDepositionLoading: boolean
   preview?: boolean
 }> = ({ deposition, isDepositionLoading, preprint, preview }) => {

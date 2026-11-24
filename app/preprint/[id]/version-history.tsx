@@ -5,9 +5,26 @@ import { formatDate } from '../../../utils/formatters'
 import { getAdditionalField, getDataDownload } from '../../../utils/data'
 import { Field, Link } from '../../../components'
 import type { Preprint } from '../../../types/preprint'
-import type { Deposition, VersionHistory } from '../../../types/zenodo'
+import type {
+  Deposition,
+  DepositionVersion,
+  VersionHistory,
+} from '../../../types/zenodo'
 import ErrorOrTrack from './error-or-track'
 import { fetchDepositionHistory } from '../../../actions/zenodo'
+import { fetchPublicRecordVersions } from '../../../utils/zenodo-public'
+
+// Published versions are read from Zenodo's public API in the browser; fall
+// back to the authenticated server action (e.g. when the record is a draft).
+const fetchHistoryWithFallback = async (
+  id: number,
+): Promise<VersionHistory> => {
+  try {
+    return await fetchPublicRecordVersions(id)
+  } catch {
+    return fetchDepositionHistory(id)
+  }
+}
 
 type Version = {
   date: string
@@ -33,20 +50,23 @@ const VersionsList: React.FC<{
 
 const VersionHistory: React.FC<{
   preprint: Preprint
-  deposition?: Deposition
+  deposition?: Deposition | DepositionVersion
   preview?: boolean
 }> = ({ deposition, preprint, preview }) => {
   const submissionType = getAdditionalField(preprint, 'Submission type')
   const hasArticle = ['Article', 'Both'].includes(submissionType ?? '')
   const [dataHistory, setDataHistory] = useState<VersionHistory>()
+  const depositionId = deposition?.id
 
   useEffect(() => {
-    if (deposition) {
-      fetchDepositionHistory(deposition).then((history) => {
-        setDataHistory(history)
-      })
+    if (depositionId) {
+      fetchHistoryWithFallback(depositionId)
+        .then(setDataHistory)
+        .catch(() => {
+          // Older versions are omitted when history is unavailable
+        })
     }
-  }, [deposition])
+  }, [depositionId])
 
   const olderVersions = hasArticle
     ? preprint.versions.slice(1).map((version) => ({
