@@ -5,6 +5,27 @@ import { fetchWithAlerting } from './server-utils'
 
 const ZENODO_USER_AGENT = 'cdrxiv.org (contact: support@cdrxiv.org)'
 
+// These server actions can be invoked directly with arbitrary arguments, and
+// they attach ZENODO_ACCESS_TOKEN to the request. Only allow URLs whose origin
+// exactly matches the configured Zenodo instance and that target its API, so
+// the token can never be sent to another host. Fails closed if unconfigured.
+function assertZenodoApiUrl(url: string): void {
+  const zenodoUrl = process.env.NEXT_PUBLIC_ZENODO_URL
+  let parsed: URL
+  try {
+    if (!zenodoUrl) throw new Error('NEXT_PUBLIC_ZENODO_URL is not set')
+    parsed = new URL(url)
+    if (
+      parsed.origin !== new URL(zenodoUrl).origin ||
+      !parsed.pathname.startsWith('/api/')
+    ) {
+      throw new Error()
+    }
+  } catch {
+    throw new Error(`Invalid data URL: ${url}`)
+  }
+}
+
 export async function createDataDeposition(): Promise<Deposition> {
   const res = await fetchWithAlerting(
     process.env.NEXT_PUBLIC_ZENODO_URL + '/api/deposit/depositions',
@@ -29,12 +50,7 @@ export async function createDataDeposition(): Promise<Deposition> {
 }
 
 export async function fetchDataDeposition(url: string): Promise<Deposition> {
-  if (
-    process.env.NEXT_PUBLIC_ZENODO_URL &&
-    !url.startsWith(process.env.NEXT_PUBLIC_ZENODO_URL)
-  ) {
-    throw new Error(`Invalid data URL: ${url}`)
-  }
+  assertZenodoApiUrl(url)
   const res = await fetchWithAlerting(url, {
     headers: {
       Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
@@ -56,12 +72,7 @@ export async function updateDataDeposition(
   url: string,
   params: Partial<Deposition>,
 ): Promise<Deposition> {
-  if (
-    process.env.NEXT_PUBLIC_ZENODO_URL &&
-    !url.startsWith(process.env.NEXT_PUBLIC_ZENODO_URL)
-  ) {
-    throw new Error(`Invalid data URL: ${url}`)
-  }
+  assertZenodoApiUrl(url)
   const res = await fetchWithAlerting(url, {
     method: 'PUT',
     headers: {
@@ -83,12 +94,7 @@ export async function updateDataDeposition(
 }
 
 export async function deleteZenodoEntity(url: string): Promise<true> {
-  if (
-    process.env.NEXT_PUBLIC_ZENODO_URL &&
-    !url.startsWith(process.env.NEXT_PUBLIC_ZENODO_URL)
-  ) {
-    throw new Error(`Invalid data URL: ${url}`)
-  }
+  assertZenodoApiUrl(url)
 
   const res = await fetchWithAlerting(
     url,
@@ -116,12 +122,7 @@ export async function deleteZenodoEntity(url: string): Promise<true> {
 export async function createDataDepositionVersion(
   url: string,
 ): Promise<Deposition> {
-  if (
-    process.env.NEXT_PUBLIC_ZENODO_URL &&
-    !url.startsWith(process.env.NEXT_PUBLIC_ZENODO_URL)
-  ) {
-    throw new Error(`Invalid data URL: ${url}`)
-  }
+  assertZenodoApiUrl(url)
   const res = await fetchWithAlerting(url, {
     method: 'POST',
     headers: {
@@ -145,12 +146,7 @@ export async function fetchDepositionHistory(
 ): Promise<VersionHistory> {
   const url = `${deposition.links.record}/versions`
 
-  if (
-    process.env.NEXT_PUBLIC_ZENODO_URL &&
-    !url.startsWith(process.env.NEXT_PUBLIC_ZENODO_URL)
-  ) {
-    throw new Error(`Invalid data URL: ${url}`)
-  }
+  assertZenodoApiUrl(url)
   const res = await fetchWithAlerting(url, {
     headers: {
       Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
