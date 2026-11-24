@@ -138,12 +138,14 @@ export const fetchWithAlerting = async (
   url: string,
   options: RequestInit = {},
   expectedStatuses: number[] = [200, 201, 204],
+  { alert = true }: { alert?: boolean } = {},
 ) => {
   // Trigger timeout error if request takes longer than 10 seconds
   // This should ensure that Vercel timeout of 15s [0] is not reached
   //
   // [0] https://vercel.com/docs/functions/configuring-functions/duration
   const interval = setTimeout(() => {
+    if (!alert) return
     alertOnError({
       endpoint: url,
       status: 'n/a',
@@ -183,6 +185,8 @@ export const fetchWithAlerting = async (
         raw: body?.replace(/\s+/g, ' ').trim().slice(0, 1000),
       })
     }
+
+    if (!alert) return response
 
     await alertOnError({
       endpoint: url,

@@ -49,14 +49,24 @@ export async function createDataDeposition(): Promise<Deposition> {
   return result
 }
 
-export async function fetchDataDeposition(url: string): Promise<Deposition> {
+// Pass `alert: false` when the caller has a fallback for a failed fetch (e.g.
+// linking to the public record page) and Slack alerts are not needed.
+export async function fetchDataDeposition(
+  url: string,
+  { alert = true }: { alert?: boolean } = {},
+): Promise<Deposition> {
   assertZenodoApiUrl(url)
-  const res = await fetchWithAlerting(url, {
-    headers: {
-      Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
-      'User-Agent': ZENODO_USER_AGENT,
+  const res = await fetchWithAlerting(
+    url,
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.ZENODO_ACCESS_TOKEN}`,
+        'User-Agent': ZENODO_USER_AGENT,
+      },
     },
-  })
+    undefined,
+    { alert },
+  )
 
   if (res.status !== 200) {
     throw new Error(

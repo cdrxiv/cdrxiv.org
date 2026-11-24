@@ -215,6 +215,24 @@ export const isValidOrcid = (orcid: string, allowLowercase?: boolean) => {
   return orcidRegex.test(orcid)
 }
 
+// Fallback link to the public Zenodo record page, derived from a stored
+// deposition API URL (e.g. `<zenodo>/api/deposit/depositions/<id>`). Used when
+// fetching the deposition itself fails.
+export const getDataRecordUrl = (
+  depositionUrl?: string,
+): string | undefined => {
+  const zenodoUrl = process.env.NEXT_PUBLIC_ZENODO_URL
+  if (!depositionUrl || !zenodoUrl) return
+  try {
+    const parsed = new URL(depositionUrl)
+    if (parsed.origin !== new URL(zenodoUrl).origin) return
+    const match = parsed.pathname.match(/\/depositions\/(\d+)\/?$/)
+    return match ? `${zenodoUrl}/records/${match[1]}` : undefined
+  } catch {
+    return
+  }
+}
+
 export const getDataDownload = (
   deposition: Deposition | DepositionVersion,
 ): string => {

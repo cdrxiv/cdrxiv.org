@@ -7,6 +7,7 @@ import {
   getArticleLicense,
   getChannels,
   getDataDownload,
+  getDataRecordUrl,
   getFunders,
   getKeywords,
   getZenodoLicense,
@@ -51,6 +52,9 @@ const PreprintMetadata: React.FC<{
   const externalData = preprint.supplementary_files.find(
     (file: SupplementaryFile) => !file.label.startsWith('CDRXIV_DATA_'),
   )
+
+  const dataRecordUrl =
+    !isDepositionLoading && !deposition ? getDataRecordUrl(dataUrl) : undefined
 
   const funders = getFunders(preprint) ?? []
 
@@ -156,8 +160,8 @@ const PreprintMetadata: React.FC<{
         {hasData && (
           <Box>
             <Button
-              disabled={!(deposition?.submitted || preview)}
-              href={deposition && getDataDownload(deposition)}
+              disabled={!(deposition?.submitted || preview || dataRecordUrl)}
+              href={deposition ? getDataDownload(deposition) : dataRecordUrl}
               sx={{
                 textAlign: isDepositionLoading ? 'left' : 'center',
                 width: [129, 129, 146, 164],

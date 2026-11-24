@@ -12,7 +12,7 @@ import PaneledPage from '../../../components/layouts/paneled-page'
 import MetadataView from './preprint-metadata'
 import Outline from './preprint-outline'
 import DOIDisplay from './doi-display'
-import { getAdditionalField } from '../../../utils/data'
+import { getAdditionalField, getDataRecordUrl } from '../../../utils/data'
 
 import type { Preprint, SupplementaryFile } from '../../../types/preprint'
 import Loading from '../../../components/loading'
@@ -186,7 +186,10 @@ const PreprintViewer = ({
     const fetchDeposition = async () => {
       if (dataUrl) {
         try {
-          const deposition = await fetchDataDeposition(dataUrl)
+          // Skip Slack alerts when a failed fetch can fall back to the public Zenodo record link
+          const deposition = await fetchDataDeposition(dataUrl, {
+            alert: !getDataRecordUrl(dataUrl),
+          })
           setDeposition(deposition)
           setIsDepositionLoading(false)
         } catch {
