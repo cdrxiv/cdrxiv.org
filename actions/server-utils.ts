@@ -164,13 +164,23 @@ export const fetchWithAlerting = async (
     } catch {
       // Non-JSON error bodies (e.g. firewall/bot-block pages) are logged
       // server-side only, never forwarded to the client, Slack, or analytics.
+      const title = body?.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]
+      // Visible text only: drop <head>, scripts, styles, and tags
+      const text = body
+        ?.replace(/<head[\s\S]*?<\/head>/gi, ' ')
+        .replace(/<(script|style)[\s\S]*?<\/\1>/gi, ' ')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
       console.error('Non-JSON error response', {
         endpoint: url,
         method: options?.method ?? 'GET',
         status: response.status,
         contentType: response.headers.get('content-type'),
         server: response.headers.get('server'),
-        body: body?.slice(0, 500) ?? '(unreadable)',
+        title: title?.replace(/\s+/g, ' ').trim(),
+        text: text?.slice(0, 1000) ?? '(unreadable)',
+        raw: body?.replace(/\s+/g, ' ').trim().slice(0, 1000),
       })
     }
 
