@@ -179,6 +179,9 @@ const PreprintViewer = ({
   const hasData = ['Data', 'Both'].includes(submissionType ?? '')
   const [deposition, setDeposition] = useState<Deposition | DepositionVersion>()
   const [preprintDoi, setPreprintDoi] = useState<string>()
+  // Prefer the bare DOI: `doi_url` may point at a non-doi.org resolver (e.g.
+  // DataCite's test handle server for sandbox records).
+  const datasetDoi = deposition?.doi || deposition?.doi_url
   const dataUrl = preprint.supplementary_files.find(
     (file: SupplementaryFile) => file.label === 'CDRXIV_DATA_PUBLISHED',
   )?.url
@@ -319,11 +322,11 @@ const PreprintViewer = ({
           <DOIDisplay label='Published DOI' doi={preprint.doi} />
         )}
         {(isDepositionLoading || deposition) && (
-          <DOIDisplay label='Dataset DOI' doi={deposition?.doi_url} />
+          <DOIDisplay label='Dataset DOI' doi={datasetDoi} />
         )}
 
         <ErrorOrTrack
-          hasError={hasData && !isDepositionLoading && !deposition?.doi_url}
+          hasError={hasData && !isDepositionLoading && !datasetDoi}
           preview={preview}
           pk={preprint.pk}
           errorMessage={'No dataset identifier found for data-only submission.'}
